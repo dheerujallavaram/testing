@@ -2,59 +2,61 @@ import React from 'react';
 import { Sparkles, Moon, Star, Sunrise, Sunset, Clock, Compass } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import { getAyanaAndRutu } from '../utils/panchangaLogic';
+import { useLanguage } from '../context/LanguageContext';
 
 interface PanchangaCardProps {
   day: DayData;
 }
 
 export const PanchangaCard: React.FC<PanchangaCardProps> = ({ day }) => {
+  const { t, tr } = useLanguage();
   const { ayanam, rutuvu, rutuDesc } = getAyanaAndRutu(day.panchanga.masam, day.isoDate);
 
   const rows = [
     {
       icon: Sparkles,
-      label: 'సంవత్సరం',
-      value: day.panchanga.samvatsaram,
-      desc: day.panchanga.samvatsaram,
+      label: t('సంవత్సరం', 'Samvatsaram (Vedic Year)'),
+      value: tr(day.panchanga.samvatsaram),
+      desc: t('ప్రస్తుత తెలుగు సంవత్సరం', 'Current 60-year Jovian cycle year'),
     },
     {
       icon: Compass,
-      label: 'ఆయనం & ఋతువు',
-      value: `${ayanam} · ${rutuvu}`,
-      desc: rutuDesc,
+      label: t('ఆయనం & ఋతువు', 'Ayanam & Rutuvu (Solstice & Season)'),
+      value: `${tr(ayanam)} · ${tr(rutuvu)}`,
+      desc: tr(rutuDesc),
     },
     {
       icon: Moon,
-      label: 'మాసం & పక్షం',
-      value: day.panchanga.masam,
+      label: t('మాసం & పక్షం', 'Masam & Paksham (Lunar Month & Fortnight)'),
+      value: tr(day.panchanga.masam),
       highlight: true,
     },
     {
       icon: Moon,
-      label: 'తిథి',
-      value: day.panchanga.tithi,
+      label: t('తిథి', 'Tithi (Lunar Day)'),
+      value: tr(day.panchanga.tithi),
       highlight: true,
     },
     {
       icon: Star,
-      label: 'నక్షత్రం',
-      value: day.panchanga.nakshatram,
+      label: t('నక్షత్రం', 'Nakshatram (Lunar Constellation)'),
+      value: tr(day.panchanga.nakshatram),
       highlight: true,
     },
     {
       icon: Sunrise,
-      label: 'యోగం',
-      value: day.panchanga.yogam,
+      label: t('యోగం', 'Yogam (Luni-Solar Combination)'),
+      value: tr(day.panchanga.yogam),
     },
     {
       icon: Clock,
-      label: 'కరణం',
-      value: day.panchanga.karanam,
+      label: t('కరణం', 'Karanam (Half Lunar Day)'),
+      value: tr(day.panchanga.karanam),
     },
     {
       icon: Sunset,
-      label: 'సూర్యోదయం / సూర్యాస్తమయం',
-      value: 'ఉదయం 06:34 AM / సాయంత్రం 05:40 PM',
+      label: t('సూర్యోదయం / సూర్యాస్తమయం', 'Sunrise / Sunset (Suryodayam / Suryastamayam)'),
+      value: t('ఉదయం 06:34 AM / సాయంత్రం 05:40 PM', 'Morning 06:34 AM / Evening 05:40 PM'),
     },
   ];
 
@@ -64,10 +66,10 @@ export const PanchangaCard: React.FC<PanchangaCardProps> = ({ day }) => {
         <div className="flex items-center justify-between border-b border-amber-100 pb-4 mb-6">
           <h3 className="text-2xl text-amber-950 flex items-center gap-2.5 font-bold font-telugu">
             <Sparkles size={22} className="text-amber-600" />
-            <span>పంచాంగ వివరాలు</span>
+            <span>{t('పంచాంగ వివరాలు', 'Panchangam Details (Five Limbs)')}</span>
           </h3>
           <span className="text-xs px-2.5 py-1 bg-amber-50 text-amber-800 rounded-md border border-amber-200 font-telugu font-semibold">
-            పంచాంగ పంచాంగాలు
+            {t('పంచాంగ పంచాంగాలు', 'Vedic Almanac')}
           </span>
         </div>
 
@@ -102,8 +104,8 @@ export const PanchangaCard: React.FC<PanchangaCardProps> = ({ day }) => {
       </div>
 
       <div className="mt-6 pt-4 border-t border-amber-100 text-xs text-slate-500 font-telugu flex items-center justify-between">
-        <span>గణిత ప్రామాణికం: దృక్సిద్ధాంతం</span>
-        <span>ప్రాంతం: ఆంధ్రప్రదేశ్ / తెలంగాణ</span>
+        <span>{t('గణిత ప్రామాణికం: దృక్సిద్ధాంతం', 'Calculation Standard: Drik Siddhantam')}</span>
+        <span>{t('ప్రాంతం: ఆంధ్రప్రదేశ్ / తెలంగాణ', 'Region: Andhra Pradesh / Telangana (IST)')}</span>
       </div>
     </div>
   );

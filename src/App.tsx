@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { WEEK_DATA } from './data/panchangamData';
 import { PoojaService } from './types/panchangam';
-import { findActiveLagna } from './utils/panchangaLogic';
+import { findActiveLagna, getTodayAndTomorrowIds } from './utils/panchangaLogic';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { Header, NavTab } from './components/Header';
 import { Banner } from './components/Banner';
 import { DaySelector } from './components/DaySelector';
@@ -13,6 +14,7 @@ import { MuhurthaTimings } from './components/MuhurthaTimings';
 import { LagnaPramanalu } from './components/LagnaPramanalu';
 import { ChandraNavatara } from './components/ChandraNavatara';
 import { DevoteeCompatibilityChecker } from './components/DevoteeCompatibilityChecker';
+import { PanchangamFAQ } from './components/PanchangamFAQ';
 import { ActionControls } from './components/ActionControls';
 import { PoojaServicesSection } from './components/PoojaServicesSection';
 import { PoojaBookingModal } from './components/PoojaBookingModal';
@@ -23,11 +25,12 @@ import { AwardsSection } from './components/AwardsSection';
 import { ContactSection } from './components/ContactSection';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 
-export default function App() {
+function AppContent() {
   const [activeTab, setActiveTab] = useState<NavTab>('home');
-  const [selectedDayId, setSelectedDayId] = useState<string>(WEEK_DATA[0].id);
+  const [selectedDayId, setSelectedDayId] = useState<string>(() => getTodayAndTomorrowIds(WEEK_DATA).todayId);
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
   const [selectedPoojaForBooking, setSelectedPoojaForBooking] = useState<PoojaService | null>(null);
+  const { t, tr } = useLanguage();
 
   const currentDay = WEEK_DATA.find((d) => d.id === selectedDayId) ?? WEEK_DATA[0];
 
@@ -58,7 +61,7 @@ export default function App() {
 
   return (
     <div id="top" className="min-h-screen flex flex-col bg-[#faf7f2] text-slate-900 font-telugu">
-      {/* Top Navigation with tabs, live time, bell & booking CTA */}
+      {/* Top Navigation with language switcher, tabs, bell & booking CTA */}
       <Header
         activeTab={activeTab}
         onSelectTab={(tab) => setActiveTab(tab)}
@@ -101,14 +104,14 @@ export default function App() {
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-amber-200/80 pb-4">
               <div>
                 <span className="text-xs font-semibold text-amber-800 uppercase tracking-widest font-display">
-                  Selected Day Overview
+                  {t('ఎంచుకున్న రోజు వివరాలు • Selected Day Overview', 'Selected Day Overview')}
                 </span>
                 <h2 className="text-3xl sm:text-4xl font-bold text-amber-950 font-telugu mt-0.5">
-                  {currentDay.label} పంచాంగం
+                  {tr(currentDay.label)} {t('పంచాంగం', 'Panchangam')}
                 </h2>
               </div>
               <p className="text-base sm:text-lg text-amber-900 font-semibold font-telugu bg-amber-100/70 px-4 py-1.5 rounded-xl border border-amber-200">
-                {currentDay.teediVaram}
+                {tr(currentDay.teediVaram)}
               </p>
             </div>
 
@@ -146,6 +149,9 @@ export default function App() {
             {/* Interactive Personal Zodiac & Nakshatra Checker */}
             <DevoteeCompatibilityChecker day={currentDay} />
 
+            {/* Beginner-Friendly Panchangam FAQ Section (Tithi, Nakshatra, Muhurtham, etc.) */}
+            <PanchangamFAQ />
+
             {/* Sharing & Quick Action Controls */}
             <ActionControls
               day={currentDay}
@@ -162,10 +168,13 @@ export default function App() {
                 Vedic Rituals & Homams
               </span>
               <h2 className="text-3xl sm:text-4xl font-bold text-amber-950">
-                వైదిక పూజా సేవలు & క్రతువులు
+                {t('వైదిక పూజా సేవలు & క్రతువులు', 'Vedic Pooja Services & Homams')}
               </h2>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి నేతృత్వంలో సమస్త పూజలు, వివాహ, గృహప్రవేశ క్రతువులు మరియు శాంతి హోమాలు శాస్త్రోక్తంగా స్వయంగా నిర్వహించబడును.
+                {t(
+                  'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి నేతృత్వంలో సమస్త పూజలు, వివాహ, గృహప్రవేశ క్రతువులు మరియు శాంతి హోమాలు శాస్త్రోక్తంగా స్వయంగా నిర్వహించబడును.',
+                  'All Vedic rituals, weddings, Gruhapravesham ceremonies, and Shanti Homams are personally conducted according to authentic Shastra traditions by Sri Jallavaram Sai Dheeraj Sharma Garu.'
+                )}
               </p>
             </div>
 
@@ -197,5 +206,13 @@ export default function App() {
       {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }

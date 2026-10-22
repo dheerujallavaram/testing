@@ -6,8 +6,10 @@ import {
   findActiveLagna,
   checkChandrashtamam,
   generateWhatsAppShareText,
+  getTodayAndTomorrowIds,
 } from './panchangaLogic';
 import { WEEK_DATA } from '../data/panchangamData';
+import { translatePanchangamString } from '../context/LanguageContext';
 
 test('parseTimeToMinutes parses 12-hour AM/PM times accurately', () => {
   assert.equal(parseTimeToMinutes('06:34 AM'), 394);
@@ -73,12 +75,63 @@ test('checkChandrashtamam correctly flags affected zodiac signs', () => {
   assert.equal(checkChandrashtamam('mesham', dec3), false);
 });
 
-test('generateWhatsAppShareText creates complete formatted message', () => {
-  const oct21 = WEEK_DATA.find((d) => d.id === '2026-10-21')!;
-  const text = generateWhatsAppShareText(oct21);
-  assert.ok(text.includes('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం'));
-  assert.ok(text.includes('21 అక్టోబర్ 2026'));
-  assert.ok(text.includes('దశమి'));
-  assert.ok(text.includes('ధనిష్ఠ'));
-  assert.ok(text.includes('రాహు కాలం'));
+test('generateWhatsAppShareText creates Panchangam message with Mesham-Mithunam teaser, website CTA, and no phone number', () => {
+  const oct22 = WEEK_DATA.find((d) => d.id === '2026-10-22')!;
+  const testUrl = 'https://sreelakshmi-ganapathi-astrology.com/';
+  const textWithUrl = generateWhatsAppShareText(oct22, testUrl);
+
+  assert.ok(textWithUrl.includes('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం'));
+  assert.ok(textWithUrl.includes('22 అక్టోబర్ 2026'));
+  assert.ok(textWithUrl.includes('రాహు కాలం'));
+
+  // Should NOT include Guruji's phone number
+  assert.equal(textWithUrl.includes('8977986166'), false);
+
+  // Should include Mesha, Vrushabha, and Mithuna Rashi daily fortune teaser
+  assert.ok(textWithUrl.includes('మేష రాశి'));
+  assert.ok(textWithUrl.includes('వృషభ రాశి'));
+  assert.ok(textWithUrl.includes('మిథున రాశి'));
+
+  // Should include the teaser CTA for remaining rashis and website link
+  assert.ok(textWithUrl.includes('మిగతా రాశి ఫలితాలు'));
+  assert.ok(textWithUrl.includes(testUrl));
 });
+
+test('getTodayAndTomorrowIds resolves 22 Oct as today and 23 Oct as tomorrow when date is Oct 22, 2026', () => {
+  const oct22Date = new Date('2026-10-22T08:00:00Z');
+  const res = getTodayAndTomorrowIds(WEEK_DATA, oct22Date);
+  assert.equal(res.todayId, '2026-10-22');
+  assert.equal(res.tomorrowId, '2026-10-23');
+  assert.equal(res.todayDay.dateNum, '22');
+  assert.equal(res.tomorrowDay.dateNum, '23');
+});
+
+test('no consecutive days repeat the same festival specialEvent', () => {
+  for (let i = 1; i < WEEK_DATA.length; i++) {
+    const prev = WEEK_DATA[i - 1];
+    const curr = WEEK_DATA[i];
+    if (prev.specialEvent && curr.specialEvent) {
+      assert.notEqual(
+        prev.specialEvent,
+        curr.specialEvent,
+        `Duplicate consecutive festival on ${prev.id} and ${curr.id}: ${curr.specialEvent}`
+      );
+    }
+  }
+});
+
+test('translatePanchangamString keeps Telugu in te mode and translates Panchangam terminology in en mode', () => {
+  const sampleTithi = 'ఏకాదశి (రాత్రి 10:15 PM వరకు)';
+  assert.equal(translatePanchangamString(sampleTithi, 'te'), sampleTithi);
+
+  const enTithi = translatePanchangamString(sampleTithi, 'en');
+  assert.ok(enTithi.includes('Ekadashi'));
+  assert.ok(enTithi.includes('Night'));
+
+  const sampleNakshatra = 'ధనిష్ఠ (మధ్యాహ్నం 02:30 PM వరకు)';
+  const enNakshatra = translatePanchangamString(sampleNakshatra, 'en');
+  assert.ok(enNakshatra.includes('Dhanishtha'));
+  assert.ok(enNakshatra.includes('Afternoon'));
+});
+
+

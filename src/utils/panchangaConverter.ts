@@ -20,11 +20,7 @@ import { DayData, LagnaPramanam } from '../types/panchangam';
 // [16] durMuhurtam ("11:46-12:29" or "8:49-9:33,13:57-14:41")
 // [17] lagnas ("Sco:7:12,Sag:9:19,Cap:11:10,Aqu:12:49,Pis:14:24,Ari:16:08,Tau:18:07,Gem:20:19,Can:22:32,Leo:0:39,Vir:2:44,Lib:4:54")
 // [18] planets ("5:Mars|Jup|Ket;7:Ven;8:Sun|Moon|Merc;11:Rah;12:Sat")
-export type CompactPanchangamRow = [
-  string, string, string, string, string, string, string, string,
-  string, string, string, string, string, string, string, string,
-  string, string, string
-];
+export type CompactPanchangamRow = string[];
 
 const MONTH_TELUGU: Record<number, string> = {
   1: 'జనవరి',
@@ -379,21 +375,36 @@ function buildNavataraBalamText(nakCode: string): string {
   return `${info.telugu.split(' ')[0]} నక్షత్రం కావున ${getTriad(1)} (సంపత్తార), ${getTriad(3)} (క్షేమతార), ${getTriad(5)} (సాధక తార), ${getTriad(7)} (మిత్ర తార), ${getTriad(8)} (పరమ మిత్ర తార) నక్షత్రాల వారికి తారాబలం అనుకూలంగా ఉండి శుభ ఫలితాలు కలుగుతాయి.`;
 }
 
+const ADHIKA_TITHI_FIRST_DAYS = new Set<string>([
+  '2026-12-09',
+  '2027-01-10',
+  '2027-03-03',
+  '2027-04-25',
+  '2027-05-27',
+  '2027-06-18',
+  '2027-07-22',
+  '2027-08-14',
+  '2027-09-17',
+  '2027-10-07',
+  '2027-11-08',
+]);
+
 function detectSpecialEvent(isoDate: string, lunarMonth: string, paksha: string, tithi: string): string | undefined {
   const fixedEvents: Record<string, string> = {
     '2026-12-09': 'మార్గశిర మాస ప్రారంభం',
-    '2026-12-20': 'మోక్షద ఏకాదశి · గీతా జయంతి',
-    '2026-12-24': 'శ్రీ దత్తాత్రేయ జయంతి · మార్గశిర పౌర్ణమి',
+    '2026-12-20': 'వైకుంఠ (ముక్కోటి) ఏకాదశి · గీతా జయంతి',
+    '2026-12-23': 'శ్రీ దత్తాత్రేయ జయంతి · మార్గశిర పౌర్ణమి',
     '2027-01-01': 'ఆంగ్ల నూతన సంవత్సరాది (2027)',
     '2027-01-03': 'సఫల ఏకాదశి వ్రతం',
     '2027-01-13': 'భోగి పండుగ',
     '2027-01-14': 'మకర సంక్రాంతి పుణ్యకాలం',
     '2027-01-15': 'కనుమ పండుగ · ఉత్తరాయణ పుణ్యకాలం',
-    '2027-01-18': 'వైకుంఠ (ముక్కోటి) ఏకాదశి',
+    '2027-01-18': 'పుష్య పుత్రదా ఏకాదశి వ్రతం',
     '2027-02-06': 'మౌని అమావాస్య',
     '2027-02-11': 'వసంత పంచమి (శ్రీ సరస్వతీ పూజ)',
     '2027-02-13': 'రథ సప్తమి (సూర్య జయంతి)',
     '2027-02-17': 'భీష్మ ఏకాదశి',
+    '2027-03-04': 'విజయ ఏకాదశి వ్రతం',
     '2027-03-06': 'మహా శివరాత్రి పర్వదినం',
     '2027-03-22': 'హోళికా పౌర్ణమి (కామదహనం)',
     '2027-04-07': 'శ్రీ ప్లవంగ నామ సంవత్సర ఉగాది పండుగ',
@@ -403,20 +414,31 @@ function detectSpecialEvent(isoDate: string, lunarMonth: string, paksha: string,
     '2027-06-18': 'వట సావిత్రి వ్రతం · జ్యేష్ఠ పౌర్ణమి',
     '2027-07-14': 'తొలి ఏకాదశి (శయన ఏకాదశి)',
     '2027-07-18': 'గురు పౌర్ణమి (వ్యాస పౌర్ణమి)',
-    '2027-08-06': 'వరలక్ష్మీ వ్రతం',
+    '2027-08-13': 'వరలక్ష్మీ వ్రతం',
     '2027-08-17': 'శ్రావణ పౌర్ణమి · రాఖీ పౌర్ణమి',
     '2027-08-25': 'శ్రీ కృష్ణాష్టమి (జన్మాష్టమి)',
     '2027-09-04': 'శ్రీ వినాయక చవితి పర్వదినం',
     '2027-09-15': 'భాద్రపద పౌర్ణమి · మహాలయ పక్ష ప్రారంభం',
     '2027-09-30': 'మహాలయ అమావాస్య',
     '2027-10-01': 'శరన్నవరాత్రి కలశ స్థాపన',
-    '2027-10-08': 'దుర్గాష్టమి పూజ',
-    '2027-10-09': 'మహానవమి · ఆయుధ పూజ',
-    '2027-10-10': 'శ్రీ విజయదశమి (దసరా పండుగ)',
+    '2027-10-07': 'దుర్గాష్టమి పూజ',
+    '2027-10-08': 'మహానవమి · ఆయుధ పూజ',
+    '2027-10-09': 'శ్రీ విజయదశమి (దసరా పండుగ)',
     '2027-10-29': 'దీపావళి అమావాస్య · శ్రీ మహాలక్ష్మీ పూజ',
     '2027-11-14': 'కార్తీక పౌర్ణమి · జ్వాలా తోరణం',
   };
   if (fixedEvents[isoDate]) return fixedEvents[isoDate];
+
+  // Prevent 2-day duplicate festival labels when a tithi spans across two sunrises (Adhika Tithi)
+  const skipDuplicateTithiDates = new Set<string>([
+    '2026-12-24', // Margasira Pournami already on 2026-12-23
+    '2027-03-03', // Vijaya Ekadasi is on 2027-03-04 (Smarta/Vaishnava)
+    '2027-06-19', // Jyeshtha Pournami already on 2027-06-18
+    '2027-07-23', // Sankashtahara Chaturthi moonrise is on 2027-07-22
+    '2027-08-15', // Pradosham sunset is on 2027-08-14
+  ]);
+  if (skipDuplicateTithiDates.has(isoDate)) return undefined;
+
   if (tithi === 'Ekadasi') return `${LUNAR_MONTH_TELUGU[lunarMonth]?.split(' ')[0] || ''} ${paksha === 'Sukla' ? 'శుద్ధ' : 'బహుళ'} ఏకాదశి వ్రతం`;
   if (tithi === 'Pournimasya') return `${LUNAR_MONTH_TELUGU[lunarMonth]?.split(' ')[0] || ''} పౌర్ణమి వ్రతం`;
   if (tithi === 'Amavasya') return `${LUNAR_MONTH_TELUGU[lunarMonth]?.split(' ')[0] || ''} అమావాస్య`;
@@ -487,6 +509,9 @@ export function convertCompactRowToDayData(row: CompactPanchangamRow): DayData {
 
   const rashiInfo = RASHI_INFO_BY_KEY[moonHouseKey] || RASHI_INFO_BY_KEY.mesham;
   const specialEvent = detectSpecialEvent(isoDate, lunarMonth, paksha, tithi);
+  const tithiFormatted = ADHIKA_TITHI_FIRST_DAYS.has(isoDate)
+    ? `${tithiTelugu} - సూర్యోదయం నుండి పూర్తి రోజు (మరుసటి రోజు ${format24ToTelugu(tithiEnd)} వరకు)`
+    : `${tithiTelugu} - సూర్యోదయం నుండి ${format24ToTelugu(tithiEnd)} వరకు (తదుపరి ${nextTithiTelugu})`;
 
   return {
     id: isoDate,
@@ -501,7 +526,7 @@ export function convertCompactRowToDayData(row: CompactPanchangamRow): DayData {
     panchanga: {
       samvatsaram: yearName === 'Plavanga' ? 'శ్రీ ప్లవంగ నామ సంవత్సరం' : 'శ్రీ పరాభవ నామ సంవత్సరం',
       masam: `${LUNAR_MONTH_TELUGU[lunarMonth] || lunarMonth}, ${paksha === 'Sukla' ? 'శుక్ల పక్షం' : 'కృష్ణ పక్షం'}`,
-      tithi: `${tithiTelugu} - సూర్యోదయం నుండి ${format24ToTelugu(tithiEnd)} వరకు (తదుపరి ${nextTithiTelugu})`,
+      tithi: tithiFormatted,
       nakshatram: `${nakObj.telugu} - సూర్యోదయం నుండి ${format24ToTelugu(nakEnd)} వరకు (తదుపరి ${nextNakTelugu})`,
       yogam: YOGA_TELUGU[yoga] || `${yoga} యోగం`,
       karanam: KARANA_TELUGU[karana] || `${karana} కరణం`,

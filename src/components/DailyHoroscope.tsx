@@ -1,224 +1,112 @@
 import React, { useState } from 'react';
 import { Sparkles, Star, AlertTriangle, CheckCircle2, Info } from 'lucide-react';
 import { DayData } from '../types/panchangam';
-import { ALL_RASHIS } from '../data/panchangamData';
-import { checkChandrashtamam } from '../utils/panchangaLogic';
+import { RASHI_META_LIST, findMoonRashiIndex, getDailyRashiFortunes } from '../utils/panchangaLogic';
+import { RashiMedallion, RashiGlyph } from './RashiGlyph';
+import { useLanguage } from '../context/LanguageContext';
 
 interface DailyHoroscopeProps {
   day: DayData;
 }
 
-interface RashiMeta {
-  id: string;
-  teluguName: string;
-  englishName: string;
-  symbol: string;
-  lord: string;
-  luckyColor: string;
-  baseLuckyNumber: number;
-}
-
-const RASHI_META_LIST: RashiMeta[] = [
-  { id: 'mesham', teluguName: 'మేషం', englishName: 'Aries', symbol: '♈', lord: 'కుజుడు', luckyColor: 'ఎరుపు (Red)', baseLuckyNumber: 9 },
-  { id: 'vrushabham', teluguName: 'వృషభం', englishName: 'Taurus', symbol: '♉', lord: 'శుక్రుడు', luckyColor: 'తెలుపు (White)', baseLuckyNumber: 6 },
-  { id: 'mithunam', teluguName: 'మిథునం', englishName: 'Gemini', symbol: '♊', lord: 'బుధుడు', luckyColor: 'ఆకుపచ్చ (Green)', baseLuckyNumber: 5 },
-  { id: 'karkatakam', teluguName: 'కర్కాటకం', englishName: 'Cancer', symbol: '♋', lord: 'చంద్రుడు', luckyColor: 'ముత్యపు తెలుపు (Pearl)', baseLuckyNumber: 2 },
-  { id: 'simham', teluguName: 'సింహం', englishName: 'Leo', symbol: '♌', lord: 'సూర్యుడు', luckyColor: 'బంగారు పసుపు (Gold)', baseLuckyNumber: 1 },
-  { id: 'kanya', teluguName: 'కన్య', englishName: 'Virgo', symbol: '♍', lord: 'బుధుడు', luckyColor: 'లేత ఆకుపచ్చ (Light Green)', baseLuckyNumber: 5 },
-  { id: 'tula', teluguName: 'తుల', englishName: 'Libra', symbol: '♎', lord: 'శుక్రుడు', luckyColor: 'గులాబీ / తెలుపు (Cream)', baseLuckyNumber: 6 },
-  { id: 'vruschikam', teluguName: 'వృశ్చికం', englishName: 'Scorpio', symbol: '♏', lord: 'కుజుడు', luckyColor: 'కాషాయం / ఎరుపు (Coral)', baseLuckyNumber: 9 },
-  { id: 'dhanussu', teluguName: 'ధనుస్సు', englishName: 'Sagittarius', symbol: '♐', lord: 'గురుడు', luckyColor: 'పసుపు (Yellow)', baseLuckyNumber: 3 },
-  { id: 'makaram', teluguName: 'మకరం', englishName: 'Capricorn', symbol: '♑', lord: 'శని', luckyColor: 'నీలం (Blue)', baseLuckyNumber: 8 },
-  { id: 'kumbham', teluguName: 'కుంభం', englishName: 'Aquarius', symbol: '♒', lord: 'శని', luckyColor: 'లేత నీలం (Sky Blue)', baseLuckyNumber: 4 },
-  { id: 'meenam', teluguName: 'మీనం', englishName: 'Pisces', symbol: '♓', lord: 'గురుడు', luckyColor: 'పసుపు / కాషాయం (Saffron)', baseLuckyNumber: 7 },
-];
-
-// Gochara house results (1 to 12 from Janma Rashi to Moon's current Rashi)
-const GOCHARA_FORTUNES: Record<
+const ENGLISH_HOUSE_SUMMARIES: Record<
   number,
-  {
-    houseLabel: string;
-    status: 'favorable' | 'mixed' | 'caution';
-    statusLabel: string;
-    summaries: string[];
-    remedy: string;
-  }
+  { houseLabel: string; statusLabel: string; summary: string; remedy: string }
 > = {
   1: {
-    houseLabel: 'జన్మ చంద్రుడు (1వ స్థానం)',
-    status: 'favorable',
-    statusLabel: 'శుభం',
-    summaries: [
-      'మనస్సు ప్రశాంతంగా ఉంటుంది. తలపెట్టిన పనులు ఉత్సాహంగా పూర్తి చేస్తారు. బంధుమిత్రుల కలయిక ఆనందాన్ని ఇస్తుంది.',
-      'ఆత్మవిశ్వాసం పెరుగుతుంది. గౌరవ మర్యాదలు లభిస్తాయి. నూతన వస్తు లాభం మరియు శుభవార్తా శ్రవణం ఉంటుంది.',
-    ],
-    remedy: 'శివారాధన, అభిషేకం శ్రేయస్కరం',
+    houseLabel: 'Janma Chandra (1st House)',
+    statusLabel: 'Auspicious',
+    summary:
+      'Mental enthusiasm, family joy, and respect in society increase today. Auspicious tasks and spiritual plans progress smoothly.',
+    remedy: 'Chant Sri Shiva Sahasranama or Panchakshari',
   },
   2: {
-    houseLabel: 'ధన స్థాన చంద్రుడు (2వ స్థానం)',
-    status: 'mixed',
-    statusLabel: 'మిశ్రమం',
-    summaries: [
-      'ఆర్థిక వ్యవహారాలలో ఆచితూచి వ్యవహరించాలి. మాటతీరులో సంయమనం పాటించడం వల్ల కుటుంబంలో సామరస్యం నిలుస్తుంది.',
-      'రావలసిన ధనం చేతికి అందుతుంది కానీ వృథా ఖర్చులను నియంత్రించాలి. కుటుంబ సభ్యుల సలహాలు మేలు చేస్తాయి.',
-    ],
-    remedy: 'శ్రీ లక్ష్మీ గణపతి స్మరణ శుభప్రదం',
+    houseLabel: 'Dhana Sthana (2nd House)',
+    statusLabel: 'Mixed',
+    summary:
+      'Maintain restraint in speech and financial matters. Family discussions succeed with patience and calm deliberation.',
+    remedy: 'Recite Sri Subrahmanya Stotram',
   },
   3: {
-    houseLabel: 'తృతీయ చంద్రుడు (3వ స్థానం)',
-    status: 'favorable',
-    statusLabel: 'అత్యంత శుభం',
-    summaries: [
-      'చేపట్టిన ప్రతి పనిలోనూ విజయం లభిస్తుంది. సోదరులు, మిత్రుల సహకారంతో కీలక వ్యవహారాలు సానుకూలమవుతాయి.',
-      'ధైర్య సాహసాలతో ముందడుగు వేస్తారు. ఉద్యోగ, వ్యాపారాలలో ఆశించిన పురోగతి మరియు ధనలాభం కలుగుతుంది.',
-    ],
-    remedy: 'సుబ్రహ్మణ్య స్వామి స్తోత్ర పారాయణ',
+    houseLabel: 'Parakrama Sthana (3rd House)',
+    statusLabel: 'Highly Auspicious',
+    summary:
+      'Excellent day for new initiatives, sibling support, and career victories. Financial gains and timely completion of tasks are indicated.',
+    remedy: 'Worship Goddess Maha Lakshmi',
   },
   4: {
-    houseLabel: 'చతుర్థ చంద్రుడు (4వ స్థానం)',
-    status: 'mixed',
-    statusLabel: 'మిశ్రమం',
-    summaries: [
-      'గృహ సంబంధ పనులలో కొంత శ్రమ అధికంగా ఉండవచ్చు. ప్రయాణాలలో తగిన జాగ్రత్తలు పాటించడం మంచిది.',
-      'పనులలో స్వల్ప ఆలస్యం జరిగినప్పటికీ పట్టుదలతో పూర్తి చేస్తారు. మాతృవర్గీయుల ఆరోగ్యం పట్ల శ్రద్ధ వహించండి.',
-    ],
-    remedy: 'అమ్మవారి కుంకుమార్చన, దుర్గా స్తుతి',
+    houseLabel: 'Chaturtha Sthana (4th House)',
+    statusLabel: 'Mixed',
+    summary:
+      'Domestic responsibilities may require extra attention. Focus on steady planning and avoid hasty property or travel decisions.',
+    remedy: 'Recite Sri Durga Kavacham',
   },
   5: {
-    houseLabel: 'పంచమ చంద్రుడు (5వ స్థానం)',
-    status: 'mixed',
-    statusLabel: 'మిశ్రమం',
-    summaries: [
-      'సంతాన సంబంధ విషయాలలో ఆలోచనలు పెరుగుతాయి. ఆధ్యాత్మిక కార్యక్రమాలలో పాల్గొనడం వల్ల మనశ్శాంతి లభిస్తుంది.',
-      'కీలక నిర్ణయాలు తీసుకునే ముందు పెద్దల సలహా తీసుకోవడం ఉత్తమం. విద్యా, పరిశోధన రంగాల వారికి అనుకూలం.',
-    ],
-    remedy: 'శ్రీ దత్తాత్రేయ / గురు స్తోత్ర పఠనం',
+    houseLabel: 'Panchama Sthana (5th House)',
+    statusLabel: 'Mixed',
+    summary:
+      'Creative efforts and children-related matters progress gradually. Consult experienced elders before major investments.',
+    remedy: 'Chant Hayagriva or Saraswati Stotram',
   },
   6: {
-    houseLabel: 'షష్ఠ చంద్రుడు (6వ స్థానం)',
-    status: 'favorable',
-    statusLabel: 'శుభం',
-    summaries: [
-      'ఆరోగ్యం కుదుటపడుతుంది. పోటీలలోనూ, వృత్తి ఉద్యోగాలలోనూ మీ మాటకు విలువ పెరుగుతుంది. రుణ బాధలు తొలగుతాయి.',
-      'పెండింగ్‌లో ఉన్న పనులు వేగంగా పూర్తవుతాయి. శత్రువులపై విజయం సాధిస్తారు, ఆర్థిక పరిస్థితి మెరుగుపడుతుంది.',
-    ],
-    remedy: 'శ్రీ విష్ణు సహస్రనామ శ్రవణం',
+    houseLabel: 'Shashtha Sthana (6th House)',
+    statusLabel: 'Very Auspicious',
+    summary:
+      'Victory over obstacles, recovery in health, and financial relief are indicated. Pending workplace matters resolve favorably.',
+    remedy: 'Worship Lord Lakshmi Narasimha',
   },
   7: {
-    houseLabel: 'సప్తమ చంద్రుడు (7వ స్థానం)',
-    status: 'favorable',
-    statusLabel: 'శుభం',
-    summaries: [
-      'భాగస్వామ్య వ్యాపారాలు, నూతన ఒప్పందాలకు అనుకూల సమయం. జీవిత భాగస్వామితో ఆనందంగా గడుపుతారు.',
-      'సామాజిక గౌరవం పెరుగుతుంది. ప్రయాణాలు లాభసాటిగా సాగుతాయి. శుభకార్య ప్రయత్నాలు ఫలిస్తాయి.',
-    ],
-    remedy: 'లక్ష్మీ నారాయణుల ఆరాధన',
+    houseLabel: 'Saptama Sthana (7th House)',
+    statusLabel: 'Auspicious',
+    summary:
+      'Partnerships, business collaborations, and family harmony flourish. Short journeys and social meetings bring positive outcomes.',
+    remedy: 'Worship Sri Lalita Tripura Sundari',
   },
   8: {
-    houseLabel: 'అష్టమ చంద్రుడు (చంద్రాష్టమం)',
-    status: 'caution',
-    statusLabel: 'చంద్రాష్టమం • జాగ్రత్త',
-    summaries: [
-      'నేడు చంద్రాష్టమ ప్రభావం ఉన్నందున కొత్త పనులు, కీలక ఆర్థిక నిర్ణయాలు వాయిదా వేయడం శ్రేయస్కరం. ప్రశాంతంగా ఉండండి.',
-      'అనవసర వాదనలకు దూరంగా ఉండాలి. ప్రయాణాలలో అప్రమత్తత అవసరం. దైవ ధ్యానం వల్ల ఆటంకాలు తొలగుతాయి.',
-    ],
-    remedy: 'శివాభిషేకం, చంద్ర శ్లోక పఠనం తప్పనిసరి',
+    houseLabel: 'Ashtama Chandra (8th House • Chandrashtamam)',
+    statusLabel: 'Chandrashtamam • Caution',
+    summary:
+      'Moon transits the 8th house today. Postpone major new agreements or disputes, maintain calm, and focus on routine duties and prayer.',
+    remedy: 'Chant Om Namah Shivaya (Rudrabhishekam / Shiva Archana)',
   },
   9: {
-    houseLabel: 'నవమ చంద్రుడు (9వ స్థానం)',
-    status: 'mixed',
-    statusLabel: 'మిశ్రమం',
-    summaries: [
-      'పుణ్యక్షేత్ర సందర్శన లేదా ధార్మిక కార్యక్రమాల పట్ల ఆసక్తి చూపుతారు. పెద్దల ఆశీస్సులు లభిస్తాయి.',
-      'శ్రమకు తగిన ఫలితం లభిస్తుంది. దూర ప్రయాణ సూచనలు ఉన్నాయి. దానధర్మాలు చేయడం వల్ల శుభం కలుగుతుంది.',
-    ],
-    remedy: 'గురు గ్రహ ఆరాధన, దక్షిణామూర్తి స్తోత్రం',
+    houseLabel: 'Bhagya Sthana (9th House)',
+    statusLabel: 'Mixed',
+    summary:
+      'Spiritual inclinations, temple visits, and blessings of elders bring peace. Steady effort yields rewards in ongoing tasks.',
+    remedy: 'Recite Sri Dakshinamurthy Stotram',
   },
   10: {
-    houseLabel: 'దశమ చంద్రుడు (10వ స్థానం)',
-    status: 'favorable',
-    statusLabel: 'అత్యంత శుభం',
-    summaries: [
-      'ఉద్యోగ, వ్యాపార రంగాలలో ఉన్నత ఫలితాలు సాధిస్తారు. అధికారుల ప్రశంసలు మరియు నూతన బాధ్యతలు లభిస్తాయి.',
-      'తలపెట్టిన కార్యాలు నిర్విఘ్నంగా నెరవేరుతాయి. కీర్తి ప్రతిష్ఠలు పెరుగుతాయి, ఆర్థిక లాభాలు చేకూరుతాయి.',
-    ],
-    remedy: 'శ్రీ వేంకటేశ్వర స్వామి దర్శనం / స్మరణ',
+    houseLabel: 'Karma Sthana (10th House)',
+    statusLabel: 'Auspicious',
+    summary:
+      'Professional recognition, support from superiors, and career advancement are favored. Planned projects move forward.',
+    remedy: 'Worship Lord Venkateswara',
   },
   11: {
-    houseLabel: 'ఏకాదశ చంద్రుడు (11వ స్థానం)',
-    status: 'favorable',
-    statusLabel: 'అత్యంత శుభం',
-    summaries: [
-      'ఆకస్మిక ధనలాభం, వ్యాపార విస్తరణ మరియు శుభవార్తలు వింటారు. మిత్రుల ద్వారా విశేష ప్రయోజనాలు కలుగుతాయి.',
-      'సర్వకార్య విజయం చేకూరుతుంది. కోరుకున్న పనులు సకాలంలో పూర్తవుతాయి. కుటుంబంలో సంతోషకర వాతావరణం ఉంటుంది.',
-    ],
-    remedy: 'శ్రీ మహా గణపతి ఆరాధన',
+    houseLabel: 'Labha Sthana (11th House)',
+    statusLabel: 'Highly Auspicious',
+    summary:
+      'Financial gains, business expansion, and joyful news are indicated. Support from friends and fulfillment of desires.',
+    remedy: 'Worship Lord Maha Ganapathi',
   },
   12: {
-    houseLabel: 'ద్వాదశ చంద్రుడు (12వ స్థానం)',
-    status: 'mixed',
-    statusLabel: 'మిశ్రమం',
-    summaries: [
-      'శుభకార్యాల నిమిత్తం ఖర్చులు పెరిగే అవకాశం ఉంది. విశ్రాంతి మరియు ఆరోగ్యంపై తగిన శ్రద్ధ వహించాలి.',
-      'దూర ప్రాంత వ్యవహారాలు అనుకూలిస్తాయి. ఆర్థిక లావాదేవీలలో తొందరపాటు వద్దు. ఆధ్యాత్మిక చింతన మేలు చేస్తుంది.',
-    ],
-    remedy: 'ఆంజనేయ స్వామి చాలీసా పారాయణ',
+    houseLabel: 'Vyaya Sthana (12th House)',
+    statusLabel: 'Mixed',
+    summary:
+      'Auspicious or family expenses may rise today. Prioritize rest, mindful budgeting, and spiritual contemplation.',
+    remedy: 'Recite Sri Hanuman Chalisa',
   },
 };
 
-function findMoonRashiIndex(day: DayData): number {
-  // 1. Check grahaStithi for చంద్రుడు
-  for (let i = 0; i < RASHI_META_LIST.length; i++) {
-    const key = RASHI_META_LIST[i].id;
-    const planets = day.grahaStithi?.[key] || '';
-    if (planets.includes('చంద్రుడు')) {
-      return i;
-    }
-  }
-  // 2. Fallback: check day.chandra.sancharam text
-  const sancharam = day.chandra?.sancharam || '';
-  for (let i = 0; i < RASHI_META_LIST.length; i++) {
-    const stem = RASHI_META_LIST[i].teluguName.replace(/ం$/, '');
-    if (sancharam.includes(stem)) {
-      return i;
-    }
-  }
-  return 0;
-}
-
 export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
   const [filter, setFilter] = useState<'all' | 'favorable' | 'mixed' | 'caution'>('all');
+  const { language, t, tr } = useLanguage();
 
   const moonRashiIdx = findMoonRashiIndex(day);
-  const moonRashiName = RASHI_META_LIST[moonRashiIdx]?.teluguName || 'మేషం';
+  const moonRashiMeta = RASHI_META_LIST[moonRashiIdx] || RASHI_META_LIST[0];
 
-  // Deterministic day seed from isoDate so summaries vary nicely across dates
-  const daySeed = day.isoDate
-    .split('-')
-    .reduce((acc, part) => acc + parseInt(part, 10), 0);
-
-  const rashiCards = RASHI_META_LIST.map((rashi, idx) => {
-    const isChandrashtamam = checkChandrashtamam(rashi.id, day);
-    const gocharaHouse = isChandrashtamam
-      ? 8
-      : ((moonRashiIdx - idx + 12) % 12) + 1;
-
-    const fortune = GOCHARA_FORTUNES[gocharaHouse] || GOCHARA_FORTUNES[1];
-    const summaryIdx = (daySeed + idx) % fortune.summaries.length;
-    const summaryText = fortune.summaries[summaryIdx];
-    const luckyNum = ((rashi.baseLuckyNumber + daySeed) % 9) + 1;
-
-    return {
-      ...rashi,
-      gocharaHouse,
-      houseLabel: fortune.houseLabel,
-      status: isChandrashtamam ? ('caution' as const) : fortune.status,
-      statusLabel: isChandrashtamam ? 'చంద్రాష్టమం • జాగ్రత్త' : fortune.statusLabel,
-      summary: summaryText,
-      remedy: fortune.remedy,
-      luckyNumber: luckyNum,
-    };
-  });
+  const rashiCards = getDailyRashiFortunes(day);
 
   const filteredCards = rashiCards.filter((card) =>
     filter === 'all' ? true : card.status === filter
@@ -227,87 +115,98 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
   return (
     <section
       id="dina-phalam"
-      className="bg-white border border-amber-300 shadow-md rounded-2xl p-6 sm:p-8 scroll-mt-24"
+      className="bg-white border border-amber-300 shadow-md rounded-2xl p-4 sm:p-6 lg:p-8 scroll-mt-24"
     >
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-amber-200 pb-5 mb-6">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-amber-200 pb-5 mb-5 sm:mb-6">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs uppercase tracking-widest font-bold text-amber-800 font-display bg-amber-100 px-2.5 py-0.5 rounded-md border border-amber-300">
-              Daily Horoscope • దిన ఫలం
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[11px] sm:text-xs uppercase tracking-widest font-bold text-amber-800 font-display bg-amber-100 px-2.5 py-0.5 rounded-md border border-amber-300">
+              {t('Daily Horoscope • దిన ఫలం', 'Daily Horoscope • Gochara Rashi Phalithalu')}
             </span>
-            <span className="text-xs font-telugu font-semibold text-amber-900 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200">
-              చంద్ర సంచారం: {moonRashiName} రాశి
+            <span className="text-[11px] sm:text-xs font-telugu font-semibold text-amber-900 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200 flex items-center gap-1.5">
+              <span>{t('చంద్ర సంచారం:', 'Moon Transit:')}</span>
+              <RashiGlyph rashi={moonRashiMeta.id} size={14} className="text-amber-800 shrink-0" />
+              <strong>
+                {language === 'en'
+                  ? `${moonRashiMeta.englishName} (${moonRashiMeta.teluguName})`
+                  : `${moonRashiMeta.teluguName} రాశి`}
+              </strong>
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-amber-950 font-telugu flex items-center gap-2.5 mt-2">
-            <Sparkles className="text-amber-600 shrink-0" size={26} />
-            <span>దిన ఫలం (ద్వాదశ రాశి ఫలితాలు)</span>
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-950 font-telugu flex items-center gap-2 mt-2">
+            <Sparkles className="text-amber-600 shrink-0" size={24} />
+            <span>{t('దిన ఫలం (ద్వాదశ రాశి ఫలితాలు)', 'Daily Horoscope (12 Zodiac Signs)')}</span>
           </h2>
-          <p className="text-sm text-slate-600 font-telugu mt-1">
-            {day.teediVaram} — నేటి గ్రహ స్థితి మరియు గోచార చంద్ర బలం ఆధారంగా ద్వాదశ రాశుల సంక్షిప్త దిన ఫలితాలు
+          <p className="text-xs sm:text-sm text-slate-600 font-telugu mt-1 leading-relaxed">
+            {tr(day.teediVaram)} —{' '}
+            {t(
+              'నేటి గ్రహ స్థితి మరియు గోచార చంద్ర బలం ఆధారంగా ద్వాదశ రాశుల సంక్షిప్త దిన ఫలితాలు',
+              'Daily zodiac predictions calculated from today’s lunar transit (Gochara Chandra Balam) and planetary positions.'
+            )}
           </p>
         </div>
 
-        {/* Status Filter Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5">
+        {/* Status Filter Tabs - Horizontally scrollable on mobile */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 lg:pb-0 scrollbar-none -mx-1 px-1">
           <button
             type="button"
             onClick={() => setFilter('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-telugu font-bold transition-all cursor-pointer border ${
+            className={`px-3 py-2 sm:py-1.5 rounded-xl text-xs font-telugu font-bold whitespace-nowrap transition-all cursor-pointer border shrink-0 ${
               filter === 'all'
                 ? 'bg-amber-900 text-amber-50 border-amber-900 shadow-xs'
                 : 'bg-amber-50/70 text-amber-900 border-amber-200 hover:bg-amber-100'
             }`}
           >
-            అన్ని రాశులు (12)
+            {t('అన్ని రాశులు (12)', 'All Signs (12)')}
           </button>
           <button
             type="button"
             onClick={() => setFilter('favorable')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-telugu font-bold transition-all cursor-pointer border ${
+            className={`px-3 py-2 sm:py-1.5 rounded-xl text-xs font-telugu font-bold whitespace-nowrap transition-all cursor-pointer border shrink-0 ${
               filter === 'favorable'
                 ? 'bg-emerald-700 text-white border-emerald-700 shadow-xs'
                 : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
             }`}
           >
-            శుభ ఫలితాలు
+            {t('శుభ ఫలితాలు', 'Favorable')}
           </button>
           <button
             type="button"
             onClick={() => setFilter('mixed')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-telugu font-bold transition-all cursor-pointer border ${
+            className={`px-3 py-2 sm:py-1.5 rounded-xl text-xs font-telugu font-bold whitespace-nowrap transition-all cursor-pointer border shrink-0 ${
               filter === 'mixed'
                 ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
                 : 'bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100'
             }`}
           >
-            మిశ్రమ ఫలితాలు
+            {t('మిశ్రమ ఫలితాలు', 'Mixed')}
           </button>
           <button
             type="button"
             onClick={() => setFilter('caution')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-telugu font-bold transition-all cursor-pointer border ${
+            className={`px-3 py-2 sm:py-1.5 rounded-xl text-xs font-telugu font-bold whitespace-nowrap transition-all cursor-pointer border shrink-0 ${
               filter === 'caution'
                 ? 'bg-rose-700 text-white border-rose-700 shadow-xs'
                 : 'bg-rose-50 text-rose-800 border-rose-200 hover:bg-rose-100'
             }`}
           >
-            చంద్రాష్టమం / జాగ్రత్త
+            {t('చంద్రాష్టమం / జాగ్రత్త', 'Chandrashtamam / Caution')}
           </button>
         </div>
       </div>
 
-      {/* 12 Rashis Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* 12 Rashis Grid: Mobile 1-col, Tablet 2-col, Desktop 3-col */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
         {filteredCards.map((rashi) => {
           const isFav = rashi.status === 'favorable';
           const isCaution = rashi.status === 'caution';
+          const enFortune = ENGLISH_HOUSE_SUMMARIES[rashi.gocharaHouse] || ENGLISH_HOUSE_SUMMARIES[1];
 
           return (
             <div
               key={rashi.id}
-              className={`rounded-xl border p-4 flex flex-col justify-between transition-all hover:shadow-md ${
+              className={`rounded-2xl border p-4 flex flex-col justify-between transition-all hover:shadow-md ${
                 isFav
                   ? 'bg-gradient-to-br from-emerald-50/50 via-white to-amber-50/30 border-emerald-200/90'
                   : isCaution
@@ -316,35 +215,36 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
               }`}
             >
               <div>
-                {/* Card Top Row: Rashi Identity & Status Badge */}
+                {/* Card Top Row: Iconic Astrological Glyph & Status Badge */}
                 <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold shrink-0 border ${
-                        isFav
-                          ? 'bg-emerald-100/80 text-emerald-900 border-emerald-300'
-                          : isCaution
-                          ? 'bg-rose-100/80 text-rose-900 border-rose-300'
-                          : 'bg-amber-100/80 text-amber-900 border-amber-300'
-                      }`}
-                    >
-                      {rashi.symbol}
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <RashiMedallion
+                      rashi={rashi.id}
+                      size="md"
+                      variant={isFav ? 'emerald' : isCaution ? 'rose' : 'amber'}
+                      className="shadow-xs shrink-0"
+                    />
                     <div>
-                      <h3 className="text-lg font-bold text-amber-950 font-telugu leading-tight">
-                        {rashi.teluguName}{' '}
+                      <h3 className="text-base sm:text-lg font-bold text-amber-950 font-telugu leading-tight flex items-baseline gap-1.5">
+                        <span>{language === 'en' ? rashi.englishName : rashi.teluguName}</span>
                         <span className="text-xs font-normal text-slate-500 font-sans">
-                          ({rashi.englishName})
+                          ({language === 'en' ? rashi.teluguName : rashi.englishName})
                         </span>
                       </h3>
-                      <p className="text-xs text-slate-600 font-telugu">
-                        అధిపతి: <strong className="text-amber-900">{rashi.lord}</strong> • {rashi.houseLabel}
+                      <p className="text-[11px] sm:text-xs text-slate-600 font-telugu mt-0.5">
+                        {t('చిహ్నం:', 'Symbol:')}{' '}
+                        <strong className="text-amber-950 font-medium">{rashi.vedicSymbolName}</strong>
+                      </p>
+                      <p className="text-[11px] sm:text-xs text-slate-500 font-telugu">
+                        {t('అధిపతి:', 'Lord:')}{' '}
+                        <strong className="text-amber-900">{tr(rashi.lord)}</strong> •{' '}
+                        {language === 'en' ? enFortune.houseLabel : rashi.houseLabel}
                       </p>
                     </div>
                   </div>
 
                   <span
-                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-telugu font-bold shrink-0 border ${
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-telugu font-bold shrink-0 border ${
                       isFav
                         ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
                         : isCaution
@@ -352,16 +252,16 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                         : 'bg-amber-100 text-amber-900 border-amber-300'
                     }`}
                   >
-                    {isFav && <CheckCircle2 size={12} className="text-emerald-700" />}
-                    {isCaution && <AlertTriangle size={12} className="text-rose-700" />}
-                    {!isFav && !isCaution && <Info size={12} className="text-amber-700" />}
-                    {rashi.statusLabel}
+                    {isFav && <CheckCircle2 size={12} className="text-emerald-700 shrink-0" />}
+                    {isCaution && <AlertTriangle size={12} className="text-rose-700 shrink-0" />}
+                    {!isFav && !isCaution && <Info size={12} className="text-amber-700 shrink-0" />}
+                    <span>{language === 'en' ? enFortune.statusLabel : rashi.statusLabel}</span>
                   </span>
                 </div>
 
                 {/* Daily Fortune Summary */}
-                <p className="text-sm text-slate-800 font-telugu leading-relaxed mb-3">
-                  {rashi.summary}
+                <p className="text-xs sm:text-sm text-slate-800 font-telugu leading-relaxed mb-3">
+                  {language === 'en' ? enFortune.summary : rashi.summary}
                 </p>
               </div>
 
@@ -369,10 +269,13 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
               <div className="pt-2.5 border-t border-amber-200/60 flex flex-wrap items-center justify-between gap-2 text-xs font-telugu text-slate-700">
                 <span className="flex items-center gap-1 text-amber-950 font-medium">
                   <Star size={12} className="text-amber-600 shrink-0" />
-                  <span>పరిహారం: <strong>{rashi.remedy}</strong></span>
+                  <span>
+                    {t('పరిహారం:', 'Remedy:')}{' '}
+                    <strong>{language === 'en' ? enFortune.remedy : rashi.remedy}</strong>
+                  </span>
                 </span>
-                <span className="text-slate-600 bg-amber-50/90 px-2 py-0.5 rounded border border-amber-200/80">
-                  సంఖ్య: <strong>{rashi.luckyNumber}</strong>
+                <span className="text-slate-700 bg-amber-50/90 px-2 py-0.5 rounded border border-amber-200/80 font-medium">
+                  {t('శుభ సంఖ్య:', 'Lucky No:')} <strong>{rashi.luckyNumber}</strong>
                 </span>
               </div>
             </div>
