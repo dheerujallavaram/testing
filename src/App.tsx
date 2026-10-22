@@ -24,6 +24,8 @@ import { AboutGurujiSection } from './components/AboutGurujiSection';
 import { AwardsSection } from './components/AwardsSection';
 import { ContactSection } from './components/ContactSection';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
+import { CityAstrologyPage } from './components/CityAstrologyPage';
+import { CitySEOData, findCityBySlug } from './data/citiesData';
 
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
@@ -33,6 +35,29 @@ export const TAB_PATHS: Record<NavTab, string> = {
   about: '/about',
   contact: '/contact',
 };
+
+export function resolveCityFromLocation(): CitySEOData | null {
+  if (typeof window === 'undefined') return null;
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  
+  if (pathname.startsWith('/telugu-astrologer-in-')) {
+    const slug = pathname.replace('/telugu-astrologer-in-', '');
+    const found = findCityBySlug(slug);
+    if (found) return found;
+  }
+  
+  // Also check query param ?city=
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const cityParam = params.get('city');
+    if (cityParam) {
+      const found = findCityBySlug(cityParam);
+      if (found) return found;
+    }
+  } catch {}
+
+  return null;
+}
 
 export function resolveTabFromLocation(): NavTab {
   if (typeof window === 'undefined') return 'home';
@@ -68,12 +93,14 @@ export function resolveTabFromLocation(): NavTab {
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<NavTab>(() => resolveTabFromLocation());
+  const [selectedCity, setSelectedCity] = useState<CitySEOData | null>(() => resolveCityFromLocation());
   const [selectedDayId, setSelectedDayId] = useState<string>(() => getTodayAndTomorrowIds(WEEK_DATA).todayId);
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
   const [selectedPoojaForBooking, setSelectedPoojaForBooking] = useState<PoojaService | null>(null);
   const { t, tr } = useLanguage();
 
   const handleSelectTab = useCallback((tab: NavTab) => {
+    setSelectedCity(null);
     setActiveTab(tab);
     if (typeof window !== 'undefined') {
       const targetPath = TAB_PATHS[tab] || '/';
@@ -87,17 +114,38 @@ function AppContent() {
     }
   }, []);
 
+  const handleSelectCity = useCallback((citySlug: string) => {
+    const city = findCityBySlug(citySlug);
+    if (city) {
+      setSelectedCity(city);
+      if (typeof window !== 'undefined') {
+        const targetPath = `/telugu-astrologer-in-${city.slug}`;
+        try {
+          if (window.location.pathname !== targetPath) {
+            window.history.pushState({ city: city.slug }, '', targetPath);
+          }
+        } catch {}
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  }, []);
+
   // Listen to browser Back / Forward navigation (popstate)
   useEffect(() => {
     const onPopState = () => {
-      setActiveTab(resolveTabFromLocation());
+      const matchedCity = resolveCityFromLocation();
+      setSelectedCity(matchedCity);
+      if (!matchedCity) {
+        setActiveTab(resolveTabFromLocation());
+      }
     };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  // Sync document title, canonical link, og:url, and meta tags dynamically with current tab route
+  // Sync document title, canonical link, og:url, and meta tags dynamically with current tab route (when not in city page)
   useEffect(() => {
+    if (selectedCity) return; // CityAstrologyPage component manages its own programmatic metadata
     const path = TAB_PATHS[activeTab] || '/';
     const canonicalHref = `https://telugujyothisham.com${path === '/' ? '/' : path}`;
 
@@ -191,8 +239,33 @@ function AppContent() {
         onOpenBooking={() => handleOpenBooking()}
       />
 
-      {/* Main Content Router based on Active Tab */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      {/* Main Content Router based on Active Tab or Programmatic City Page */}
+      {selectedCity ? (
+        <CityAstrologyPage
+          city={selectedCity}
+          onOpenBooking={(service) =>
+            handleOpenBooking(
+              service
+                ? ({
+                    id: 'city-service',
+                    name: service,
+                    description: service,
+                    teluguName: service,
+                    costINR: 'సంప్రదించండి',
+                    costUSD: 'Contact',
+                    idealFor: 'భక్తుల విశేష సంకల్పం',
+                    samagriList: ['పసుపు', 'కుంకుమ', 'హారతి', 'నవధాన్యాలు'],
+                    duration: 'శాస్త్రోక్తంగా'
+                  } as unknown as PoojaService)
+                : undefined
+            )
+          }
+          onNavigateHome={() => handleSelectTab('home')}
+          onNavigatePanchangam={() => handleSelectTab('panchangam')}
+          onSelectCity={handleSelectCity}
+        />
+      ) : (
+        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* TAB 1: HOME (SRI DHEERAJ SHARMA GARU PROFILE) */}
         {activeTab === 'home' && (
           <GuruProfileHome
@@ -315,6 +388,7 @@ function AppContent() {
         {/* TAB 5: CONTACT */}
         {activeTab === 'contact' && <ContactSection />}
       </main>
+      )}
 
       {/* Floating WhatsApp Action Widget (8977986166) */}
       <FloatingWhatsApp />
@@ -327,7 +401,7 @@ function AppContent() {
       />
 
       {/* Footer */}
-      <Footer />
+      <Footer onSelectCity={handleSelectCity} />
     </div>
   );
 }

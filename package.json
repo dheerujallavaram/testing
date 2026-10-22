@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
+    "generate:sitemap": "tsx scripts/generate-sitemap.ts",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "@types/react-dom": "^19.3.0",
     "esbuild": "^0.28.0",
     "sharp": "^0.35.5",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },
   "overrides": {

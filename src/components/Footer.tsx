@@ -2,7 +2,11 @@ import React from 'react';
 import { Sparkles, MapPin, Phone, Mail, Clock, ShieldCheck, Heart } from 'lucide-react';
 import { OmEmblem } from './OmEmblem';
 
-export const Footer: React.FC = () => {
+export interface FooterProps {
+  onSelectCity?: (citySlug: string) => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
   return (
     <footer className="bg-amber-950 text-amber-100/90 pt-14 pb-8 border-t-4 border-amber-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -90,6 +94,8 @@ export const Footer: React.FC = () => {
             </div>
           </div>
         </div>
+
+
 
         {/* Shloka and Dedication */}
         <div className="pt-8 text-center space-y-3 font-telugu">
