@@ -81,11 +81,11 @@ export const Footer: React.FC = () => {
               </p>
 
               <a
-                href="mailto:dheerujallavaram@gmail.com"
+                href="mailto:astrologer@telugujyothisham.com"
                 className="flex items-center gap-2 hover:text-white transition-colors"
               >
                 <Mail size={16} className="text-amber-400 shrink-0" />
-                <span className="font-mono text-xs text-amber-300">dheerujallavaram@gmail.com</span>
+                <span className="font-mono text-xs text-amber-300">astrologer@telugujyothisham.com</span>
               </a>
             </div>
           </div>

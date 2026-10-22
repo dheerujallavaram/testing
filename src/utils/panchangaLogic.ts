@@ -360,6 +360,72 @@ export function generateWhatsAppShareText(day: DayData, shareUrl?: string): stri
 }
 
 /**
+ * Generates a custom Daily Horoscope (దిన ఫలం / ద్వాదశ రాశి ఫలితాలు) share message
+ * for all 12 Rashis or a selected Rashi, strictly excluding personal contact numbers
+ * and appending the website URL.
+ */
+export function generateHoroscopeShareText(
+  day: DayData,
+  selectedRashiId: string = 'all',
+  shareUrl?: string
+): string {
+  const appLink = shareUrl || CANONICAL_DOMAIN_URL;
+  const fortunes = getDailyRashiFortunes(day);
+  const moonRashiIdx = findMoonRashiIndex(day);
+  const moonRashiName = RASHI_META_LIST[moonRashiIdx]?.teluguName || 'మేషం';
+
+  if (selectedRashiId && selectedRashiId !== 'all') {
+    const rashi = fortunes.find((r) => r.id === selectedRashiId) || fortunes[0];
+    const lines = [
+      `🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — నేటి రాశి ఫలితం* 🕉️`,
+      `📅 *తేదీ:* ${day.teediVaram}`,
+      `🌙 *తిథి:* ${day.panchanga.tithi.split('-')[0].trim()} | *నక్షత్రం:* ${day.panchanga.nakshatram.split('-')[0].trim()}`,
+      `✨ *చంద్ర సంచారం:* ${moonRashiName} రాశి`,
+      ``,
+      `🔮 *${rashi.teluguName} రాశి (${rashi.englishName}) — దిన ఫలం:*`,
+      `• *గోచార స్థితి:* ${rashi.houseLabel} (${rashi.statusLabel})`,
+      `• *రాశి అధిపతి:* ${rashi.lord}`,
+      `• *ఫలితం:* ${rashi.summary}`,
+      `• *నేటి పరిహారం:* ${rashi.remedy}`,
+      `• *శుభ సంఖ్య:* ${rashi.luckyNumber}`,
+      ``,
+      `🌐 *నేటి పూర్తి పంచాంగం & ద్వాదశ రాశి ఫలితాల కోసం వెబ్‌సైట్ చూడండి:*`,
+      `👉 ${appLink}`,
+      ``,
+      `సర్వేజనా సుఖినోభవంతు 🙏`,
+    ];
+    return lines.join('\n');
+  }
+
+  // Default ('all'): Custom summary message for each of the 12 Rashis
+  const lines = [
+    `🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — ద్వాదశ రాశి ఫలితాలు (దిన ఫలం)* 🕉️`,
+    `📅 *తేదీ & వారం:* ${day.teediVaram}`,
+    `🌙 *తిథి:* ${day.panchanga.tithi.split('-')[0].trim()} | *నక్షత్రం:* ${day.panchanga.nakshatram.split('-')[0].trim()}`,
+    `✨ *నేటి చంద్ర సంచారం:* ${moonRashiName} రాశి`,
+    ``,
+  ];
+
+  fortunes.forEach((rashi, idx) => {
+    lines.push(
+      `${idx + 1}. *${rashi.teluguName} రాశి (${rashi.englishName}):* [${rashi.statusLabel}]`,
+      `   ${rashi.summary}`,
+      `   🙏 *పరిహారం:* ${rashi.remedy} | *శుభ సంఖ్య:* ${rashi.luckyNumber}`,
+      ``
+    );
+  });
+
+  lines.push(
+    `🌐 *నేటి సంపూర్ణ పంచాంగం, ముహూర్తాలు మరియు రాశి చక్రం కోసం వెబ్‌సైట్ చూడండి:*`,
+    `👉 ${appLink}`,
+    ``,
+    `సర్వేజనా సుఖినోభవంతు 🙏`
+  );
+
+  return lines.join('\n');
+}
+
+/**
  * Calculates correct Ayana and Rutu dynamically based on Masam
  * Ashwayuja, Kartika -> Sharad Rutuvu (శరద్ ఋతువు)
  * Margashira, Pushya -> Hemanta Rutuvu (హేమంత ఋతువు)

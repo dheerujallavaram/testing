@@ -1,9 +1,27 @@
 import React, { useState } from 'react';
-import { Share2, Copy, Check, Printer, Bell, ArrowRight, Bot, Send, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  Share2,
+  Copy,
+  Check,
+  Printer,
+  Bell,
+  ArrowRight,
+  Bot,
+  Send,
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 import { DayData } from '../types/panchangam';
-import { generateWhatsAppShareText, CANONICAL_DOMAIN_URL } from '../utils/panchangaLogic';
+import {
+  generateWhatsAppShareText,
+  generateHoroscopeShareText,
+  RASHI_META_LIST,
+  CANONICAL_DOMAIN_URL,
+} from '../utils/panchangaLogic';
 import { playTempleBell } from '../utils/audioChime';
 import { useLanguage } from '../context/LanguageContext';
+import { RashiGlyph } from './RashiGlyph';
 
 interface ActionControlsProps {
   day: DayData;
@@ -12,12 +30,18 @@ interface ActionControlsProps {
 
 export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooking }) => {
   const [copied, setCopied] = useState<boolean>(false);
+  const [horoscopeCopied, setHoroscopeCopied] = useState<boolean>(false);
+  const [selectedRashiForShare, setSelectedRashiForShare] = useState<string>('all');
+  const [showHoroscopePreview, setShowHoroscopePreview] = useState<boolean>(false);
   const [showAutomationGuide, setShowAutomationGuide] = useState<boolean>(false);
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
 
   const shareText = generateWhatsAppShareText(day, CANONICAL_DOMAIN_URL);
   const whatsAppUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
   const directToMyNumberUrl = `https://wa.me/918977986166?text=${encodeURIComponent(shareText)}`;
+
+  const horoscopeShareText = generateHoroscopeShareText(day, selectedRashiForShare, CANONICAL_DOMAIN_URL);
+  const horoscopeWhatsAppUrl = `https://wa.me/?text=${encodeURIComponent(horoscopeShareText)}`;
 
   const handleCopy = async () => {
     try {
@@ -25,6 +49,16 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
+    } catch (e) {
+      console.warn('Clipboard failed', e);
+    }
+  };
+
+  const handleCopyHoroscope = async () => {
+    try {
+      await navigator.clipboard.writeText(horoscopeShareText);
+      setHoroscopeCopied(true);
+      setTimeout(() => setHoroscopeCopied(false), 3000);
     } catch (e) {
       console.warn('Clipboard failed', e);
     }
@@ -46,17 +80,166 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
     }
   };
 
+  const handleHoroscopeWhatsAppShare = (e: React.MouseEvent) => {
+    if (navigator.share && /mobile|android|iphone|ipad/i.test(navigator.userAgent)) {
+      e.preventDefault();
+      navigator.share({
+        title: `శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — దిన ఫలం (${day.teediVaram})`,
+        text: horoscopeShareText,
+      }).catch((err) => {
+        if (err.name !== 'AbortError') {
+          window.open(`https://wa.me/?text=${encodeURIComponent(horoscopeShareText)}`, '_blank');
+        }
+      });
+    }
+  };
+
   const handlePrint = () => {
     if (typeof window !== 'undefined') {
       window.print();
     }
   };
 
+  const selectedRashiMeta = RASHI_META_LIST.find((r) => r.id === selectedRashiForShare);
+
   return (
     <div className="my-10 space-y-8">
-      {/* Action Buttons Row */}
+      {/* Dynamic 'Share Daily Horoscope' Feature Card (12 Rashis Summary without personal contact info) */}
+      <div className="bg-gradient-to-br from-amber-50 via-white to-amber-50/70 border-2 border-amber-300 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-md font-telugu">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-amber-200 pb-4 mb-5">
+          <div>
+            <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-widest text-amber-900 bg-amber-200/70 px-3 py-1 rounded-md border border-amber-300 mb-1.5">
+              <Sparkles size={13} className="text-amber-700" />
+              <span>Share Daily Horoscope • దిన ఫలం షేర్ చేయండి</span>
+            </span>
+            <h3 className="text-xl sm:text-2xl font-bold text-amber-950">
+              {t(
+                'ద్వాదశ రాశి ఫలితాలు (దిన ఫలం) షేర్ చేయండి',
+                'Share Custom Daily Horoscope (12 Rashis)'
+              )}
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 mt-1">
+              {t(
+                'వ్యక్తిగత ఫోన్ నంబర్ లేకుండా, 12 రాశుల పూర్తి దిన ఫలం లేదా ఏదైనా ఒక రాశి ఫలితాన్ని వెబ్‌సైట్ లింక్‌తో (telugujyothisham.com) షేర్ చేయండి.',
+                'Generate and share a custom daily fortune summary for all 12 Rashis or any individual Rashi with the website URL (excluding personal contact details).'
+              )}
+            </p>
+          </div>
+
+          {/* Primary Share Horoscope CTA Buttons */}
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <a
+              href={horoscopeWhatsAppUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleHoroscopeWhatsAppShare}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white px-5 py-3 rounded-2xl sm:rounded-full font-bold text-xs sm:text-sm shadow-md transition-transform hover:scale-105 active:scale-95"
+            >
+              <Share2 size={16} />
+              <span>
+                {selectedRashiForShare === 'all'
+                  ? t('12 రాశుల దిన ఫలం షేర్ చేయండి', 'Share All 12 Rashis Horoscope')
+                  : t(
+                      `${selectedRashiMeta?.teluguName} రాశి ఫలితం షేర్ చేయండి`,
+                      `Share ${selectedRashiMeta?.englishName} Horoscope`
+                    )}
+              </span>
+            </a>
+
+            <button
+              type="button"
+              onClick={handleCopyHoroscope}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-amber-100 text-amber-950 border border-amber-400 px-4 py-3 rounded-2xl sm:rounded-full font-bold text-xs sm:text-sm shadow-2xs transition-transform active:scale-95 cursor-pointer"
+            >
+              {horoscopeCopied ? (
+                <Check size={16} className="text-emerald-600" />
+              ) : (
+                <Copy size={16} className="text-amber-700" />
+              )}
+              <span>
+                {horoscopeCopied
+                  ? t('రాశి ఫలితాలు కాపీ అయ్యాయి!', 'Horoscope Copied!')
+                  : t('రాశి ఫలితాలు కాపీ చేయండి', 'Copy Horoscope Text')}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Rashi Selector Pills: All 12 Rashis + Individual 12 Rashis */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-amber-900">
+              {t('రాశిని ఎంచుకోండి (Select Rashi to Share):', 'Select Rashi to Customize Share Message:')}
+            </span>
+            <button
+              type="button"
+              onClick={() => setShowHoroscopePreview(!showHoroscopePreview)}
+              className="text-xs font-bold text-amber-800 hover:text-amber-950 underline underline-offset-4 cursor-pointer flex items-center gap-1"
+            >
+              <span>{showHoroscopePreview ? t('ప్రివ్యూ మూసివేయండి', 'Hide Message Preview') : t('మెసేజ్ ప్రివ్యూ చూడండి', 'Preview Share Message')}</span>
+              {showHoroscopePreview ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none -mx-1 px-1">
+            <button
+              type="button"
+              onClick={() => setSelectedRashiForShare('all')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition-all cursor-pointer shrink-0 ${
+                selectedRashiForShare === 'all'
+                  ? 'bg-amber-900 text-white border-amber-950 shadow-sm'
+                  : 'bg-white text-amber-950 border-amber-300 hover:bg-amber-100/70'
+              }`}
+            >
+              {t('అన్ని 12 రాశులు (All 12 Rashis)', 'All 12 Rashis Summary')}
+            </button>
+
+            {RASHI_META_LIST.map((rashi) => {
+              const isSelected = selectedRashiForShare === rashi.id;
+              return (
+                <button
+                  key={rashi.id}
+                  type="button"
+                  onClick={() => setSelectedRashiForShare(rashi.id)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition-all cursor-pointer shrink-0 ${
+                    isSelected
+                      ? 'bg-amber-700 text-white border-amber-800 shadow-sm'
+                      : 'bg-white text-amber-950 border-amber-200 hover:bg-amber-100/60'
+                  }`}
+                >
+                  <RashiGlyph
+                    rashi={rashi.id}
+                    size={13}
+                    className={isSelected ? 'text-amber-200' : 'text-amber-700'}
+                  />
+                  <span>{language === 'en' ? rashi.englishName : rashi.teluguName}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Live Preview Box */}
+          {showHoroscopePreview && (
+            <div className="mt-3 p-4 bg-amber-950/5 border border-amber-300/90 rounded-2xl">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-amber-900">
+                  {t('షేర్ అయ్యే మెసేజ్ ప్రివ్యూ (ఫోన్ నంబర్ లేకుండా):', 'Generated Message Preview (No Personal Contact Info):')}
+                </span>
+                <span className="text-[11px] font-mono text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
+                  {CANONICAL_DOMAIN_URL}
+                </span>
+              </div>
+              <pre className="text-xs sm:text-sm text-slate-800 font-telugu whitespace-pre-wrap leading-relaxed max-h-60 overflow-y-auto bg-white p-3.5 rounded-xl border border-amber-200">
+                {horoscopeShareText}
+              </pre>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Panchangam Action Buttons Row */}
       <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-        {/* WhatsApp Share */}
+        {/* WhatsApp Share Panchangam */}
         <a
           href={whatsAppUrl}
           target="_blank"
@@ -66,7 +249,7 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
           title={t('వాట్సాప్‌లో షేర్ చేయండి', 'Share on WhatsApp')}
         >
           <Share2 size={18} />
-          <span>{t('వాట్సాప్‌లో షేర్ చేయండి (telugujyothisham.com లింక్‌తో)', 'Share on WhatsApp (with Link)')}</span>
+          <span>{t('వాట్సాప్‌లో పంచాంగం షేర్ చేయండి (లింక్‌తో)', 'Share Panchangam on WhatsApp')}</span>
         </a>
 
         {/* Direct Send to Guruji's Own WhatsApp Number (8977986166) */}
@@ -81,7 +264,7 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
           <span>{t('నా నంబర్‌కు నేటి పంచాంగం పంపండి', 'Send to My WhatsApp')}</span>
         </a>
 
-        {/* Copy Text */}
+        {/* Copy Panchangam Text */}
         <button
           type="button"
           onClick={handleCopy}

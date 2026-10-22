@@ -6,6 +6,8 @@ import {
   findActiveLagna,
   checkChandrashtamam,
   generateWhatsAppShareText,
+  generateHoroscopeShareText,
+  RASHI_META_LIST,
   getTodayAndTomorrowIds,
 } from './panchangaLogic';
 import { WEEK_DATA } from '../data/panchangamData';
@@ -132,6 +134,28 @@ test('translatePanchangamString keeps Telugu in te mode and translates Panchanga
   const enNakshatra = translatePanchangamString(sampleNakshatra, 'en');
   assert.ok(enNakshatra.includes('Dhanishtha'));
   assert.ok(enNakshatra.includes('Afternoon'));
+});
+
+test('generateHoroscopeShareText generates custom 12-Rashi and single-Rashi summaries without phone number and with website URL', () => {
+  const oct22 = WEEK_DATA.find((d) => d.id === '2026-10-22')!;
+  const siteUrl = 'https://telugujyothisham.com';
+
+  // 1. All 12 Rashis mode
+  const allHoroscopeText = generateHoroscopeShareText(oct22, 'all', siteUrl);
+  assert.equal(allHoroscopeText.includes('8977986166'), false);
+  assert.ok(allHoroscopeText.includes(siteUrl));
+  for (const rashi of RASHI_META_LIST) {
+    assert.ok(
+      allHoroscopeText.includes(rashi.teluguName),
+      `Expected ${rashi.teluguName} in 12-Rashi share text`
+    );
+  }
+
+  // 2. Single Rashi mode (e.g., Simham)
+  const simhamText = generateHoroscopeShareText(oct22, 'simham', siteUrl);
+  assert.equal(simhamText.includes('8977986166'), false);
+  assert.ok(simhamText.includes('సింహం రాశి'));
+  assert.ok(simhamText.includes(siteUrl));
 });
 
 

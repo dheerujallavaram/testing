@@ -114,9 +114,12 @@ export const ContactSection: React.FC = () => {
               <Mail size={20} className="text-amber-700 shrink-0 mt-0.5" />
               <div>
                 <strong className="text-amber-950 text-sm block">ఈమెయిల్ సంప్రదింపు:</strong>
-                <p className="text-amber-800 font-mono text-sm">
-                  dheerujallavaram@gmail.com
-                </p>
+                <a
+                  href="mailto:astrologer@telugujyothisham.com"
+                  className="text-amber-800 hover:text-amber-950 font-mono text-sm underline underline-offset-2"
+                >
+                  astrologer@telugujyothisham.com
+                </a>
               </div>
             </div>
           </div>
