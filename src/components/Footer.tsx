@@ -1,0 +1,103 @@
+import React from 'react';
+import { Sparkles, MapPin, Phone, Mail, Clock, ShieldCheck, Heart } from 'lucide-react';
+import { OmEmblem } from './OmEmblem';
+
+export const Footer: React.FC = () => {
+  return (
+    <footer className="bg-amber-950 text-amber-100/90 pt-14 pb-8 border-t-4 border-amber-600">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-3 gap-8 pb-10 border-b border-amber-900/80">
+          {/* Col 1: Temple info */}
+          <div>
+            <h4 className="text-xl font-bold font-telugu text-white flex items-center gap-2 mb-3">
+              <OmEmblem className="w-6 h-6 text-amber-400" size={24} />
+              <span>శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం</span>
+            </h4>
+            <p className="text-sm font-telugu text-amber-200/80 leading-relaxed mb-4">
+              వేద పండితులు, జ్యోతిష నిపుణులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి నేతృత్వంలో ప్రాచీన వేద గణిత సిద్ధాంతాల ప్రకారం రోజువారీ పంచాంగం మరియు జ్యోతిష సేవలు అందించబడును.
+            </p>
+            <p className="text-xs font-display tracking-widest uppercase text-amber-400">
+              Vedic Almanac & Astrological Research
+            </p>
+          </div>
+
+          {/* Col 2: Services & Timings */}
+          <div>
+            <h4 className="text-base font-bold font-telugu text-white mb-3 flex items-center gap-2">
+              <Clock size={16} className="text-amber-400" />
+              <span>జ్యోతిషాలయ సమయాలు & సేవలు</span>
+            </h4>
+            <ul className="text-sm font-telugu space-y-2 text-amber-200/80">
+              <li>ఉదయం: 06:30 AM నుండి 12:30 PM వరకు</li>
+              <li>సాయంత్రం: 04:30 PM నుండి 08:30 PM వరకు</li>
+              <li className="pt-2 text-xs text-amber-300">
+                • జాతక పరిశీలన, వివాహ పొంతన, నవగ్రహ శాంతి, వాస్తు సలహాలు
+              </li>
+              <li className="text-xs text-amber-300">
+                • సంపూర్ణ గృహప్రవేశ మరియు వైదిక హోమ క్రతువులు
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 3: Contact & Devotee Desk */}
+          <div>
+            <h4 className="text-base font-bold font-telugu text-white mb-3 flex items-center gap-2">
+              <Phone size={16} className="text-amber-400" />
+              <span>సంప్రదించవలసిన వివరాలు</span>
+            </h4>
+            <div className="text-sm font-telugu space-y-3 text-amber-200/90">
+              <a
+                href="https://wa.me/918977986166?text=%E0%B0%A8%E0%B0%AE%E0%B0%B8%E0%B1%8D%E0%B0%95%E0%B0%BE%E0%B0%B0%E0%B0%82%20%E0%B0%97%E0%B0%B0%E0%B1%81%E0%B0%B5%E0%B1%81%E0%B0%97%E0%B0%BE%E0%B0%B0%E0%B1%81%2C%20%E0%B0%AA%E0%B1%82%E0%B0%9C%20/%20%E0%B0%9C%E0%B1%8D%E0%B0%AF%E0%B1%8B%E0%B0%A4%E0%B0%BF%E0%B0%B7%20%E0%B0%B5%E0%B0%BF%E0%B0%B5%E0%B0%B0%E0%B0%BE%E0%B0%B2%20%E0%B0%95%E0%B1%8B%E0%B0%B8%E0%B0%82%20%E0%B0%B8%E0%B0%82%E0%B0%AA%E0%B1%8D%E0%B0%B0%E0%B0%A6%E0%B0%BF%E0%B0%B8%E0%B1%8D%E0%B0%A4%E0%B1%81%E0%B0%A8%E0%B1%8D%E0%B0%A8%E0%B0%BE%E0%B0%A8%E0%B1%81."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 p-2.5 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/60 rounded-xl text-emerald-200 transition-colors group"
+              >
+                <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform">
+                  💬
+                </div>
+                <div>
+                  <span className="text-xs text-emerald-300 block font-semibold">వాట్సాప్ సంప్రదింపులు</span>
+                  <span className="font-mono text-base font-bold text-white tracking-wide">8977986166</span>
+                </div>
+              </a>
+
+              <a
+                href="tel:+918977986166"
+                className="flex items-center gap-2 hover:text-white transition-colors"
+              >
+                <Phone size={16} className="text-amber-400 shrink-0" />
+                <span>ఫోన్ కాల్: <strong className="font-mono text-amber-200 font-semibold tracking-wide">+91 8977986166</strong></span>
+              </a>
+
+              <p className="flex items-start gap-2">
+                <MapPin size={16} className="text-amber-400 shrink-0 mt-0.5" />
+                <span>పసుమాముల, హయత్‌నగర్, హైదరాబాద్</span>
+              </p>
+
+              <a
+                href="mailto:dheerujallavaram@gmail.com"
+                className="flex items-center gap-2 hover:text-white transition-colors"
+              >
+                <Mail size={16} className="text-amber-400 shrink-0" />
+                <span className="font-mono text-xs text-amber-300">dheerujallavaram@gmail.com</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Shloka and Dedication */}
+        <div className="pt-8 text-center space-y-3 font-telugu">
+          <p className="text-base sm:text-lg font-bold text-amber-300">
+            సర్వేజనా సుఖినోభవంతు · లోకాః సమస్తాః సుఖినోభవంతు
+          </p>
+          <p className="text-xs sm:text-sm text-amber-200/70">
+            సమర్పణ: <strong>జల్లవరం సాయి ధీరజ్ శర్మ</strong>
+          </p>
+          <p className="text-[11px] text-amber-400/60 max-w-2xl mx-auto leading-normal">
+            గమనిక: ఈ సమయాలు ఆంధ్రప్రదేశ్ మరియు తెలంగాణ ప్రాంతాలకు సంబంధించిన ప్రామాణిక సూర్యోదయ గణనలు. ప్రాంతీయ అక్షాంశ, రేఖాంశాలను బట్టి కొన్ని నిమిషాల వ్యత్యాసం ఉండవచ్చు. శుభ కార్యాల కోసం గురుజీ సలహా తప్పనిసరి.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+};

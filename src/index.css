@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-telugu: 'Noto Serif Telugu', serif;
+    --font-display: 'Cinzel', serif;
+    --font-body: 'Noto Serif Telugu', 'Lora', serif;
+  }
+
+  html, body {
+    font-family: 'Noto Serif Telugu', 'Lora', serif;
+    background-color: #faf7f2;
+    color: #1e293b;
+    scroll-behavior: smooth;
+  }
+}
+
+.font-telugu {
+  font-family: 'Noto Serif Telugu', serif;
+}
+
+.font-display {
+  font-family: 'Cinzel', 'Noto Serif Telugu', serif;
+}
+
+.font-serif-pro {
+  font-family: 'Lora', 'Noto Serif Telugu', serif;
+}
+
+/* Custom scrollbar for clean appearance */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #fbf8f3;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4a373;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b07d50;
+}
