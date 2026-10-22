@@ -312,13 +312,11 @@ export function getDailyRashiFortunes(day: DayData): RashiDailyFortune[] {
 /**
  * Formats a clean WhatsApp share message with Panchangam + Mesha to Mithuna Rashi teaser and website link (no phone number)
  */
+export const CANONICAL_DOMAIN_URL = 'https://telugujyothisham.com';
+
 export function generateWhatsAppShareText(day: DayData, shareUrl?: string): string {
-  // Resolve current website URL if available
-  const appLink =
-    shareUrl ||
-    (typeof window !== 'undefined' && window.location?.href
-      ? window.location.href
-      : '');
+  // Resolve canonical website URL (defaults to https://telugujyothisham.com)
+  const appLink = shareUrl || CANONICAL_DOMAIN_URL;
 
   const fortunes = getDailyRashiFortunes(day);
   const mesham = fortunes[0];

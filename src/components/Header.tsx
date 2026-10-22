@@ -52,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
             'Sreelakshmi Ganapathi Astrology - Sri Jallavaram Sai Dheeraj Sharma'
           )}
         >
-          <OmEmblem className="w-8 h-8 sm:w-9 sm:h-9 text-amber-300 group-hover:scale-105 transition-transform shrink-0" size={34} />
+          <OmEmblem className="w-10 h-10 sm:w-11 sm:h-11 group-hover:scale-105 transition-transform shrink-0 drop-shadow-md" size={44} />
           <div>
             <span className="text-base sm:text-lg md:text-xl font-bold tracking-tight text-white block group-hover:text-amber-200 transition-colors leading-tight">
               {t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం', 'Sreelakshmi Ganapathi Astrology')}

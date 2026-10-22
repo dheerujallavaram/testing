@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Share2, Copy, Check, Printer, Bell, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Share2, Copy, Check, Printer, Bell, ArrowRight, Bot, Send, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import { DayData } from '../types/panchangam';
-import { generateWhatsAppShareText } from '../utils/panchangaLogic';
+import { generateWhatsAppShareText, CANONICAL_DOMAIN_URL } from '../utils/panchangaLogic';
 import { playTempleBell } from '../utils/audioChime';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -12,22 +12,16 @@ interface ActionControlsProps {
 
 export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooking }) => {
   const [copied, setCopied] = useState<boolean>(false);
-  const [currentUrl, setCurrentUrl] = useState<string>('');
+  const [showAutomationGuide, setShowAutomationGuide] = useState<boolean>(false);
   const { t } = useLanguage();
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setCurrentUrl(window.location.href);
-    }
-  }, []);
-
-  const shareText = generateWhatsAppShareText(day, currentUrl);
+  const shareText = generateWhatsAppShareText(day, CANONICAL_DOMAIN_URL);
   const whatsAppUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+  const directToMyNumberUrl = `https://wa.me/918977986166?text=${encodeURIComponent(shareText)}`;
 
   const handleCopy = async () => {
     try {
-      const url = currentUrl || (typeof window !== 'undefined' ? window.location.href : '');
-      const text = generateWhatsAppShareText(day, url);
+      const text = generateWhatsAppShareText(day, CANONICAL_DOMAIN_URL);
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
@@ -37,8 +31,7 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
   };
 
   const handleWhatsAppShare = (e: React.MouseEvent) => {
-    const url = currentUrl || (typeof window !== 'undefined' ? window.location.href : '');
-    const textToShare = generateWhatsAppShareText(day, url);
+    const textToShare = generateWhatsAppShareText(day, CANONICAL_DOMAIN_URL);
 
     if (navigator.share && /mobile|android|iphone|ipad/i.test(navigator.userAgent)) {
       e.preventDefault();
@@ -73,7 +66,19 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
           title={t('వాట్సాప్‌లో షేర్ చేయండి', 'Share on WhatsApp')}
         >
           <Share2 size={18} />
-          <span>{t('వాట్సాప్‌లో షేర్ చేయండి (లింక్‌తో)', 'Share on WhatsApp (with Link)')}</span>
+          <span>{t('వాట్సాప్‌లో షేర్ చేయండి (telugujyothisham.com లింక్‌తో)', 'Share on WhatsApp (with Link)')}</span>
+        </a>
+
+        {/* Direct Send to Guruji's Own WhatsApp Number (8977986166) */}
+        <a
+          href={directToMyNumberUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-800 hover:bg-emerald-700 text-white px-5 py-3.5 sm:py-3 rounded-2xl sm:rounded-full font-bold text-sm sm:text-base shadow-md transition-transform hover:scale-105 active:scale-95 font-telugu"
+          title={t('నా వాట్సాప్‌కు నేటి పంచాంగం పంపండి', 'Send Today Panchangam to My WhatsApp')}
+        >
+          <Send size={16} />
+          <span>{t('నా నంబర్‌కు నేటి పంచాంగం పంపండి', 'Send to My WhatsApp')}</span>
         </a>
 
         {/* Copy Text */}
@@ -88,6 +93,17 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
               ? t('పంచాంగం కాపీ అయింది!', 'Panchangam Copied!')
               : t('పంచాంగం కాపీ చేయండి', 'Copy Panchangam')}
           </span>
+        </button>
+
+        {/* Daily 6 AM WhatsApp Automation Guide Toggle */}
+        <button
+          type="button"
+          onClick={() => setShowAutomationGuide(!showAutomationGuide)}
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-900 hover:bg-amber-800 text-amber-100 border border-amber-600 px-5 py-3 rounded-xl sm:rounded-full font-semibold text-xs sm:text-sm shadow-sm transition-all cursor-pointer font-telugu"
+        >
+          <Bot size={16} className="text-amber-300" />
+          <span>{t('ప్రతిరోజూ 6 AM వాట్సాప్ ఆటోమేషన్ సెటప్', 'Daily 6 AM WhatsApp Automation Setup')}</span>
+          {showAutomationGuide ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
         </button>
 
         {/* Print / PDF */}
@@ -112,11 +128,79 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
         </button>
       </div>
 
+      {/* Expandable Daily WhatsApp Automation Setup Panel */}
+      {showAutomationGuide && (
+        <div className="bg-white border-2 border-amber-400 rounded-2xl p-5 sm:p-7 shadow-lg font-telugu space-y-4">
+          <div className="flex items-start justify-between gap-3 border-b border-amber-200 pb-3">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md">
+                Daily 6:00 AM IST Auto-Delivery
+              </span>
+              <h4 className="text-lg sm:text-xl font-bold text-amber-950 mt-1">
+                {t(
+                  'ప్రతిరోజూ ఉదయం 6:00 గంటలకు మీ వాట్సాప్‌లోకి ఆటోమేటిక్‌గా పంచాంగం రావాలంటే:',
+                  'How to Receive Today’s Panchangam Automatically on WhatsApp Every Morning at 6:00 AM:'
+                )}
+              </h4>
+            </div>
+            <Sparkles size={22} className="text-amber-600 shrink-0" />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4 text-xs sm:text-sm text-slate-800 leading-relaxed">
+            <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-4 space-y-2">
+              <p className="font-bold text-amber-950 text-sm sm:text-base">
+                1. {t('ఉచిత GitHub Actions + CallMeBot ఆటోమేషన్ (సిఫార్సు చేయబడినది)', 'Method 1: Free GitHub Actions + CallMeBot (Already Added to Repo!)')}
+              </p>
+              <ol className="list-decimal list-inside space-y-1.5 text-slate-700">
+                <li>
+                  {t(
+                    'మీ ప్రాజెక్ట్‌లో ఇప్పటికే `.github/workflows/daily-whatsapp-panchangam.yml` మరియు `scripts/sendDailyPanchangam.ts` సిద్ధంగా ఉన్నాయి.',
+                    'We have already added `.github/workflows/daily-whatsapp-panchangam.yml` and `scripts/sendDailyPanchangam.ts` to your repository.'
+                  )}
+                </li>
+                <li>
+                  {t(
+                    'మీ ఫోన్ నుండి `+34 644 51 95 23` నంబర్‌కు వాట్సాప్‌లో `I allow callmebot to send me messages` అని మెసేజ్ పంపితే మీకు ఉచిత `API Key` వస్తుంది.',
+                    'Send "I allow callmebot to send me messages" on WhatsApp to +34 644 51 95 23 to get your free personal API Key.'
+                  )}
+                </li>
+                <li>
+                  {t(
+                    'మీ GitHub Repo -> Settings -> Secrets -> Actions లో `WHATSAPP_PHONE` (`918977986166`) మరియు `CALLMEBOT_API_KEY` సేవ్ చేస్తే చాలు! ప్రతిరోజూ ఉదయం 6:00 AM కు ఆటోమేటిక్‌గా నేటి పంచాంగం + మేషం నుండి మిథున రాశి ఫలితాలు + `https://telugujyothisham.com` లింక్ మీ వాట్సాప్‌కు వచ్చేస్తుంది.',
+                    'Add `WHATSAPP_PHONE` (918977986166) and `CALLMEBOT_API_KEY` in GitHub Repo -> Settings -> Secrets. Every day at 6:00 AM IST, the Panchangam message will be sent to your WhatsApp automatically!'
+                  )}
+                </li>
+              </ol>
+            </div>
+
+            <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-4 space-y-2">
+              <p className="font-bold text-emerald-950 text-sm sm:text-base">
+                2. {t('అధికారిక Meta WhatsApp Cloud API / Wati / Aisensy (భక్తులందరికీ బ్రాడ్‌కాస్ట్)', 'Method 2: Official Meta WhatsApp Cloud API (For Devotees Broadcast)')}
+              </p>
+              <ol className="list-decimal list-inside space-y-1.5 text-slate-700">
+                <li>
+                  {t(
+                    'మీరు భక్తుల గ్రూపులకు లేదా బ్రాడ్‌కాస్ట్ లిస్ట్‌కు ఆటోమేటిక్‌గా పంపాలనుకుంటే `developers.facebook.com` లో ఉచిత WhatsApp Cloud API టోకెన్ తీసుకోండి.',
+                    'Create a free Meta App at developers.facebook.com and enable WhatsApp Cloud API.'
+                  )}
+                </li>
+                <li>
+                  {t(
+                    'GitHub Secrets లో `META_WA_TOKEN` మరియు `META_PHONE_ID` పెడితే ప్రతిరోజూ ఉదయం 6:00 గంటలకు అఫీషియల్ వాట్సాప్ మెసేజ్ ఆటోమేటిక్‌గా డెలివరీ అవుతుంది.',
+                    'Add `META_WA_TOKEN` and `META_PHONE_ID` in GitHub Secrets—our script automatically detects them and sends via official Meta Graph API at 6:00 AM daily.'
+                  )}
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Guruji Consultation Banner */}
       <div className="bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 text-white rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl border border-amber-500/40 text-center relative overflow-hidden">
         <div className="relative z-10 max-w-2xl mx-auto">
           <p className="text-amber-300 font-display tracking-widest text-[11px] sm:text-xs uppercase mb-2">
-            Personal Astrology Consultation
+            Personal Astrology Consultation • telugujyothisham.com
           </p>
           <h3 className="text-xl sm:text-3xl font-bold font-telugu mb-3">
             {t(

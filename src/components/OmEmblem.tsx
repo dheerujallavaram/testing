@@ -5,35 +5,146 @@ interface OmEmblemProps {
   size?: number;
 }
 
-export const OmEmblem: React.FC<OmEmblemProps> = ({ className = 'w-6 h-6', size = 24 }) => {
+/**
+ * Sacred Sri Lakshmi Ganapathi Emblem (Lord Ganesha Traditional Temple Icon)
+ * Renders an ornate golden-haloed Lord Ganapathi illustration with Kireetam (crown),
+ * sacred Vibhuti & Kumkuma Tilak, elephant ears, Ekadanta (tusk), and curved trunk holding a Modakam.
+ */
+export const OmEmblem: React.FC<OmEmblemProps> = ({ className = 'w-9 h-9', size = 38 }) => {
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 100 100"
-      fill="currentColor"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      aria-label="Om Sacred Symbol"
+      aria-label="శ్రీ మహా గణపతి (Lord Sri Maha Ganapathi)"
       role="img"
     >
-      {/* Sacred Om Symbol Vector Path */}
-      <circle cx="50" cy="50" r="46" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="3" />
-      <path
-        d="M38.5 32.2c-2.4-2.8-5.7-4.2-9.8-4.2-5.4 0-9.8 2.2-13.1 6.6-3.3 4.4-5 9.9-5 16.5 0 6.8 1.9 12.3 5.7 16.5 3.8 4.2 8.7 6.3 14.7 6.3 5.2 0 9.6-1.5 13.2-4.5 3.6-3 5.4-7.2 5.4-12.6 0-3.9-1.1-7.1-3.3-9.6-2.2-2.5-5.2-4.1-9-4.8 2.8-.8 5.1-2.2 6.9-4.2 1.8-2 2.7-4.5 2.7-7.5 0-4.3-1.4-7.7-4.2-10.2-2.8-2.5-6.6-3.8-11.4-3.8-5.3 0-9.6 1.6-12.9 4.8-3.3 3.2-5 7.4-5 12.6h7.5c0-3.3.9-5.8 2.7-7.5 1.8-1.7 4.3-2.6 7.5-2.6 3 0 5.4.8 7.2 2.4 1.8 1.6 2.7 3.8 2.7 6.6 0 3-1 5.3-3 6.9-2 1.6-4.9 2.4-8.7 2.4h-4.5v6.5h4.5c4.6 0 8.1 1 10.5 3 2.4 2 3.6 4.9 3.6 8.7 0 3.8-1.3 6.8-3.9 9-2.6 2.2-6.2 3.3-10.8 3.3-4.4 0-7.9-1.3-10.5-3.9-2.6-2.6-3.9-6.3-3.9-11.1 0-4.8 1.2-8.7 3.6-11.7 2.4-3 5.6-4.5 9.6-4.5 2.6 0 4.8.7 6.6 2.1 1.8 1.4 2.7 3.3 2.7 5.7h7.5c0-4.2-1.6-7.6-4.8-10.2z"
-        fill="currentColor"
+      {/* 1. Outer Sacred Golden Halo Circle (Targeted by CSS selector svg > circle:nth-of-type(1)) */}
+      <circle
+        cx="50"
+        cy="50"
+        r="47"
+        fill="url(#ganapathiBgGrad)"
+        stroke="url(#goldRimGrad)"
+        strokeWidth="3.5"
       />
-      {/* Chandra and Bindu */}
-      <path
-        d="M58 22c5 0 9.5 2 13 5.5l-4 4c-2.5-2.5-5.5-4-9-4s-6.5 1.5-9 4l-4-4c3.5-3.5 8-5.5 13-5.5z"
-        fill="currentColor"
+
+      {/* Inner Temple Arch / Prabhavali Ring */}
+      <circle
+        cx="50"
+        cy="50"
+        r="42"
+        fill="none"
+        stroke="#FCD34D"
+        strokeOpacity="0.45"
+        strokeWidth="1.2"
+        strokeDasharray="3 2"
       />
-      <circle cx="58" cy="14" r="3.5" fill="currentColor" />
-      {/* Tail flourish */}
+
+      {/* Sacred Lotus Petals at Base */}
       <path
-        d="M48 55c5 5 11 8 18 8 9 0 16-5 19-14l7 3c-4 12-14 18-26 18-9 0-17-4-23-10l5-5z"
-        fill="currentColor"
+        d="M24 82 C32 75, 42 76, 50 82 C58 76, 68 75, 76 82 C67 88, 33 88, 24 82 Z"
+        fill="#F43F5E"
+        stroke="#FDE68A"
+        strokeWidth="1.2"
       />
+      <path
+        d="M34 84 C40 77, 46 77, 50 83 C54 77, 60 77, 66 84 C58 89, 42 89, 34 84 Z"
+        fill="#FB7185"
+        stroke="#FEF08A"
+        strokeWidth="1"
+      />
+
+      {/* Left & Right Sacred Ears (Karna) */}
+      <path
+        d="M32 42 C16 36, 13 50, 19 61 C23 67, 30 65, 34 59 Z"
+        fill="url(#ganapathiSkinGrad)"
+        stroke="#B45309"
+        strokeWidth="1.6"
+      />
+      <path
+        d="M68 42 C84 36, 87 50, 81 61 C77 67, 70 65, 66 59 Z"
+        fill="url(#ganapathiSkinGrad)"
+        stroke="#B45309"
+        strokeWidth="1.6"
+      />
+      {/* Inner Ear Detail */}
+      <path d="M28 46 C20 44, 19 53, 23 58" stroke="#D97706" strokeWidth="1.3" strokeLinecap="round" />
+      <path d="M72 46 C80 44, 81 53, 77 58" stroke="#D97706" strokeWidth="1.3" strokeLinecap="round" />
+
+      {/* Royal Golden Kireetam (Temple Crown) */}
+      <path
+        d="M33 37 L38 20 L45 27 L50 13 L55 27 L62 20 L67 37 Z"
+        fill="url(#goldCrownGrad)"
+        stroke="#FEF08A"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      {/* Crown Kalasham Top Finial */}
+      <circle cx="50" cy="11" r="2.5" fill="#FDE047" />
+      {/* Crown Central Ruby Gem */}
+      <circle cx="50" cy="27" r="3.2" fill="#E11D48" stroke="#FEF08A" strokeWidth="1" />
+      {/* Crown Base Band */}
+      <rect x="31" y="35" width="38" height="5" rx="2.5" fill="#F59E0B" stroke="#FEF08A" strokeWidth="1.2" />
+
+      {/* Lord Ganapathi Face & Curved Trunk (Vakratunda) */}
+      <path
+        d="M33 40 C33 38, 67 38, 67 40 C69 51, 65 60, 58 64 C56 71, 58 76, 63 75 C67 74, 68 70, 65 68 C63 67, 64 64, 67 65 C72 67, 73 74, 67 79 C60 83, 47 81, 44 71 C43 67, 42 63, 41 61 C35 58, 31 50, 33 40 Z"
+        fill="url(#ganapathiSkinGrad)"
+        stroke="#92400E"
+        strokeWidth="1.6"
+      />
+
+      {/* Sacred Vibhuti Tripundra & Red Kumkuma Tilak on Forehead */}
+      <line x1="42" y1="44" x2="58" y2="44" stroke="#FFFBEB" strokeWidth="1.6" strokeLinecap="round" />
+      <line x1="40" y1="47" x2="60" y2="47" stroke="#FFFBEB" strokeWidth="1.6" strokeLinecap="round" />
+      <line x1="43" y1="50" x2="57" y2="50" stroke="#FFFBEB" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M50 42 L53 48 L50 52 L47 48 Z" fill="#DC2626" stroke="#FEF08A" strokeWidth="0.7" />
+
+      {/* Compassionate Eyes (Netra) */}
+      <path d="M37 52 Q41 49 45 52" stroke="#451A03" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+      <circle cx="41" cy="52.5" r="1.5" fill="#451A03" />
+      <path d="M55 52 Q59 49 63 52" stroke="#451A03" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+      <circle cx="59" cy="52.5" r="1.5" fill="#451A03" />
+
+      {/* Ekadanta — Left Whole Tusk & Right Broken Tusk */}
+      <path d="M41 62 L36 68 L43 65 Z" fill="#FFFBEB" stroke="#D97706" strokeWidth="1" />
+      <path d="M58 62 L62 65 L57 65 Z" fill="#FFFBEB" stroke="#D97706" strokeWidth="1" />
+
+      {/* Trunk Sacred Horizontal Lines */}
+      <path d="M47 63 Q51 64 54 63" stroke="#D97706" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M48 68 Q52 69 55 67" stroke="#D97706" strokeWidth="1.2" strokeLinecap="round" />
+
+      {/* Golden Modakam / Laddu Held in Curved Trunk Tip */}
+      <circle cx="65" cy="71" r="4.2" fill="#FBBF24" stroke="#FFFBEB" strokeWidth="1.2" />
+      <circle cx="64" cy="70" r="1" fill="#FEF08A" />
+
+      {/* Gradients */}
+      <defs>
+        <radialGradient id="ganapathiBgGrad" cx="50%" cy="45%" r="55%">
+          <stop offset="0%" stopColor="#991B1B" />
+          <stop offset="70%" stopColor="#7F1D1D" />
+          <stop offset="100%" stopColor="#450A0A" />
+        </radialGradient>
+        <linearGradient id="goldRimGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FEF08A" />
+          <stop offset="50%" stopColor="#F59E0B" />
+          <stop offset="100%" stopColor="#B45309" />
+        </linearGradient>
+        <linearGradient id="goldCrownGrad" x1="33" y1="13" x2="67" y2="37" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FEF08A" />
+          <stop offset="50%" stopColor="#FBBF24" />
+          <stop offset="100%" stopColor="#D97706" />
+        </linearGradient>
+        <linearGradient id="ganapathiSkinGrad" x1="20" y1="35" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FDE68A" />
+          <stop offset="50%" stopColor="#FBBF24" />
+          <stop offset="100%" stopColor="#F59E0B" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 };

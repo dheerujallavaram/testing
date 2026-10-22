@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://telugujyothisham.com/sitemap.xml
+Host: https://telugujyothisham.com

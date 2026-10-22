@@ -9,15 +9,21 @@ export const Footer: React.FC = () => {
         <div className="grid md:grid-cols-3 gap-8 pb-10 border-b border-amber-900/80">
           {/* Col 1: Temple info */}
           <div>
-            <h4 className="text-xl font-bold font-telugu text-white flex items-center gap-2 mb-3">
-              <OmEmblem className="w-6 h-6 text-amber-400" size={24} />
+            <h4 className="text-xl font-bold font-telugu text-white flex items-center gap-2.5 mb-3">
+              <OmEmblem className="w-8 h-8 shrink-0" size={32} />
               <span>శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం</span>
             </h4>
-            <p className="text-sm font-telugu text-amber-200/80 leading-relaxed mb-4">
+            <p className="text-sm font-telugu text-amber-200/80 leading-relaxed mb-3">
               వేద పండితులు, జ్యోతిష నిపుణులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి నేతృత్వంలో ప్రాచీన వేద గణిత సిద్ధాంతాల ప్రకారం రోజువారీ పంచాంగం మరియు జ్యోతిష సేవలు అందించబడును.
             </p>
+            <a
+              href="https://telugujyothisham.com"
+              className="inline-block text-xs font-mono font-bold text-amber-300 hover:text-white underline underline-offset-4 mb-2"
+            >
+              www.telugujyothisham.com
+            </a>
             <p className="text-xs font-display tracking-widest uppercase text-amber-400">
-              Vedic Almanac & Astrological Research
+              Vedic Almanac &amp; Astrological Research
             </p>
           </div>
 

@@ -1,0 +1,30 @@
+name: Daily 6AM IST WhatsApp Panchangam Automation
+
+on:
+  schedule:
+    # Runs every day at 00:30 UTC (06:00 AM IST)
+    - cron: '30 0 * * *'
+  workflow_dispatch: # Allows manual 1-click test from GitHub Actions tab
+
+jobs:
+  send-whatsapp-panchangam:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Generate & Send Today's Panchangam to WhatsApp
+        env:
+          WHATSAPP_PHONE: ${{ secrets.WHATSAPP_PHONE }} # e.g. 918977986166
+          CALLMEBOT_API_KEY: ${{ secrets.CALLMEBOT_API_KEY }} # Optional free personal WhatsApp API key
+          META_WA_TOKEN: ${{ secrets.META_WA_TOKEN }} # Optional Meta WhatsApp Cloud API token
+          META_PHONE_ID: ${{ secrets.META_PHONE_ID }} # Optional Meta Phone Number ID
+        run: npx tsx scripts/sendDailyPanchangam.ts
