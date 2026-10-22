@@ -93,7 +93,7 @@ export const AboutGurujiSection: React.FC<AboutGurujiSectionProps> = ({ onOpenBo
       <div className="bg-amber-50 border border-amber-300 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-2 text-center md:text-left">
           <h4 className="text-xl font-bold text-amber-950">
-            మీ కుటుంబ శుభకార్యం కోసం గురువుగారిని సంప్రదించండి
+            మీ కుటుంబ శుభకార్యం కోసం ధీరజ్ శర్మ గారిని సంప్రదించండి
           </h4>
           <p className="text-sm text-slate-700 max-w-xl leading-relaxed">
             వివాహం, గృహప్రవేశం లేదా హోమ క్రతువుల కొరకు ముందస్తుగా తేదీలు నమోదు చేసుకోగలరు.

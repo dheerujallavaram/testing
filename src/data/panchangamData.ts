@@ -1,4 +1,6 @@
 import { DayData, RashiHouse, NakshatraInfo, PoojaService } from '../types/panchangam';
+import { convertCompactRowToDayData } from '../utils/panchangaConverter';
+import { EXTENDED_PANCHANGAM_ROWS } from './extendedPanchangamRaw';
 
 export const WEEK_DATA: DayData[] = [
   {
@@ -4851,7 +4853,8 @@ export const WEEK_DATA: DayData[] = [
     },
     "phalitham": "ఈ రోజు కార్తీక బహుళ అమావాస్య, పోలి స్వర్గం. ఈ పర్వదినాన నదీ స్నానం చేసి, దీప దానం లేదా వస్త్ర దానం చేయడం వలన పితృ దేవతల అనుగ్రహం కలుగుతుంది. కుజ దోష నివారణకు సుబ్రహ్మణ్య స్వామి ఆరాధన శ్రేష్ఠం.",
     "monthName": "డిసెంబర్"
-  }
+  },
+  ...EXTENDED_PANCHANGAM_ROWS.map(convertCompactRowToDayData)
 ];
 
 export const RASHI_CHART_ORDER: RashiHouse[] = [
@@ -4959,7 +4962,7 @@ export const POOJA_SERVICES: PoojaService[] = [
     id: 'muhurtha-nirnayam',
     name: 'Shubha Muhurtha Nirnayam (Consultation)',
     teluguName: 'శుభ ముహూర్త నిర్ణయం (జాతక పరిశీలన)',
-    description: 'వివాహం, గృహప్రవేశం, ఉపనయనం, నామకరణం లేదా వ్యాపార ప్రారంభానికి గురుజీ స్వయంగా వేద గణిత సిద్ధాంతాల ప్రకారం నిర్ణయించే ముహూర్తం.',
+    description: 'వివాహం, గృహప్రవేశం, ఉపనయనం, నామకరణం లేదా వ్యాపార ప్రారంభానికి శ్రీ ధీరజ్ శర్మ గారు స్వయంగా వేద గణిత సిద్ధాంతాల ప్రకారం నిర్ణయించే ముహూర్తం.',
     duration: '45 నిమిషాల సమగ్ర సంభాషణ',
     benefits: 'నిర్దుష్ట ముహూర్త బలం, దోష రహిత కాల నిర్ణయం',
     category: 'muhurtham',

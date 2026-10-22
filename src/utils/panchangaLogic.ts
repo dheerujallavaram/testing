@@ -126,8 +126,23 @@ export function generateWhatsAppShareText(day: DayData): string {
  * Ashwayuja, Kartika -> Sharad Rutuvu (శరద్ ఋతువు)
  * Margashira, Pushya -> Hemanta Rutuvu (హేమంత ఋతువు)
  */
-export function getAyanaAndRutu(masamStr: string): { ayanam: string; rutuvu: string; rutuDesc: string } {
-  const ayanam = 'దక్షిణాయనం';
+export function getAyanaAndRutu(masamStr: string, isoDate?: string): { ayanam: string; rutuvu: string; rutuDesc: string } {
+  let ayanam = 'దక్షిణాయనం';
+  if (isoDate) {
+    const md = isoDate.slice(5); // MM-DD
+    if (md >= '01-15' && md <= '07-16') {
+      ayanam = 'ఉత్తరాయణం';
+    }
+  } else if (
+    masamStr.includes('మాఘ') ||
+    masamStr.includes('ఫాల్గుణ') ||
+    masamStr.includes('చైత్ర') ||
+    masamStr.includes('వైశాఖ') ||
+    masamStr.includes('జ్యేష్ఠ')
+  ) {
+    ayanam = 'ఉత్తరాయణం';
+  }
+
   let rutuvu = 'శరద్ ఋతువు';
   let rutuDesc = 'శరదృతువు - దసరా, దీపావళి దీపకాంతుల పవిత్ర కాలం';
 

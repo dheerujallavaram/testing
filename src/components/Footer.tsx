@@ -47,7 +47,7 @@ export const Footer: React.FC = () => {
             </h4>
             <div className="text-sm font-telugu space-y-3 text-amber-200/90">
               <a
-                href="https://wa.me/918977986166?text=%E0%B0%A8%E0%B0%AE%E0%B0%B8%E0%B1%8D%E0%B0%95%E0%B0%BE%E0%B0%B0%E0%B0%82%20%E0%B0%97%E0%B0%B0%E0%B1%81%E0%B0%B5%E0%B1%81%E0%B0%97%E0%B0%BE%E0%B0%B0%E0%B1%81%2C%20%E0%B0%AA%E0%B1%82%E0%B0%9C%20/%20%E0%B0%9C%E0%B1%8D%E0%B0%AF%E0%B1%8B%E0%B0%A4%E0%B0%BF%E0%B0%B7%20%E0%B0%B5%E0%B0%BF%E0%B0%B5%E0%B0%B0%E0%B0%BE%E0%B0%B2%20%E0%B0%95%E0%B1%8B%E0%B0%B8%E0%B0%82%20%E0%B0%B8%E0%B0%82%E0%B0%AA%E0%B1%8D%E0%B0%B0%E0%B0%A6%E0%B0%BF%E0%B0%B8%E0%B1%8D%E0%B0%A4%E0%B1%81%E0%B0%A8%E0%B1%8D%E0%B0%A8%E0%B0%BE%E0%B0%A8%E0%B1%81."
+                href={`https://wa.me/918977986166?text=${encodeURIComponent('నమస్కారం శ్రీ ధీరజ్ శర్మ గారు, పూజ / జ్యోతిష వివరాల కోసం సంప్రదిస్తున్నాను.')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2.5 p-2.5 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/60 rounded-xl text-emerald-200 transition-colors group"
@@ -94,7 +94,7 @@ export const Footer: React.FC = () => {
             సమర్పణ: <strong>జల్లవరం సాయి ధీరజ్ శర్మ</strong>
           </p>
           <p className="text-[11px] text-amber-400/60 max-w-2xl mx-auto leading-normal">
-            గమనిక: ఈ సమయాలు ఆంధ్రప్రదేశ్ మరియు తెలంగాణ ప్రాంతాలకు సంబంధించిన ప్రామాణిక సూర్యోదయ గణనలు. ప్రాంతీయ అక్షాంశ, రేఖాంశాలను బట్టి కొన్ని నిమిషాల వ్యత్యాసం ఉండవచ్చు. శుభ కార్యాల కోసం గురుజీ సలహా తప్పనిసరి.
+            గమనిక: ఈ సమయాలు ఆంధ్రప్రదేశ్ మరియు తెలంగాణ ప్రాంతాలకు సంబంధించిన ప్రామాణిక సూర్యోదయ గణనలు. ప్రాంతీయ అక్షాంశ, రేఖాంశాలను బట్టి కొన్ని నిమిషాల వ్యత్యాసం ఉండవచ్చు. శుభ కార్యాల కోసం శ్రీ ధీరజ్ శర్మ గారి సలహా తప్పనిసరి.
           </p>
         </div>
       </div>

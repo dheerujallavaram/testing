@@ -6,6 +6,7 @@ import { Header, NavTab } from './components/Header';
 import { Banner } from './components/Banner';
 import { DaySelector } from './components/DaySelector';
 import { DayVisheshamCard } from './components/DayVisheshamCard';
+import { DailyHoroscope } from './components/DailyHoroscope';
 import { PanchangaCard } from './components/PanchangaCard';
 import { RashiChakra } from './components/RashiChakra';
 import { MuhurthaTimings } from './components/MuhurthaTimings';
@@ -66,7 +67,7 @@ export default function App() {
 
       {/* Main Content Router based on Active Tab */}
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        {/* TAB 1: HOME (GURUJI PROFILE & HYPE - NOT FULL PANCHANGAM DIRECTLY) */}
+        {/* TAB 1: HOME (SRI DHEERAJ SHARMA GARU PROFILE) */}
         {activeTab === 'home' && (
           <GuruProfileHome
             currentDay={currentDay}
@@ -113,6 +114,9 @@ export default function App() {
 
             {/* Day Special Vishesham / Phalitham */}
             <DayVisheshamCard day={currentDay} />
+
+            {/* Daily Horoscope (దిన ఫలం) for all 12 Rashis */}
+            <DailyHoroscope day={currentDay} />
 
             {/* Core 2-Column: Panchanga Limbs & South Indian Rashi Kundli */}
             <section id="panchangam" className="scroll-mt-24">

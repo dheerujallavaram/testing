@@ -16,7 +16,7 @@ export const FloatingWhatsApp: React.FC = () => {
         className="hidden md:flex items-center gap-2 bg-white/95 hover:bg-white text-emerald-900 px-3.5 py-2 rounded-full shadow-lg border border-emerald-300 text-xs font-bold font-telugu backdrop-blur-xs transition-all hover:scale-105"
       >
         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-        <span>గురువుగారితో వాట్సాప్‌లో మాట్లాడండి (8977986166)</span>
+        <span>ధీరజ్ శర్మ గారితో వాట్సాప్‌లో మాట్లాడండి (8977986166)</span>
       </a>
 
       {/* Pulsing Floating Button */}

@@ -139,7 +139,7 @@ export const ContactSection: React.FC = () => {
                   వాట్సాప్ సందేశం పంపబడింది!
                 </h4>
                 <p className="text-sm text-slate-600">
-                  గురువుగారు మీ వివరాలను పరిశీలించి త్వరలోనే స్పందిస్తారు.
+                  ధీరజ్ శర్మ గారు మీ వివరాలను పరిశీలించి త్వరలోనే స్పందిస్తారు.
                 </p>
                 <button
                   type="button"
@@ -216,7 +216,7 @@ export const ContactSection: React.FC = () => {
                   className="w-full py-3.5 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold rounded-xl text-base shadow-lg transition-transform hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send size={18} />
-                  <span>వాట్సాప్‌లో గురువుగారికి పంపండి (8977986166)</span>
+                  <span>వాట్సాప్‌లో ధీరజ్ శర్మ గారికి పంపండి (8977986166)</span>
                 </button>
               </form>
             )}

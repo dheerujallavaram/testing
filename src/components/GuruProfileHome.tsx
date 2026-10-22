@@ -98,26 +98,26 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
     {
       name: 'రామకృష్ణ శాస్త్రి & కుటుంబం',
       place: 'విజయవాడ',
-      text: 'జల్లవరం సాయి ధీరజ్ శర్మ గారి అమృత ముహూర్తంలో మా అమ్మాయి వివాహం జరిగింది. గురువుగారి వాక్శుద్ధి, శాస్త్ర పరిజ్ఞానం అనితరసాధ్యం. వారి ఆశీస్సులతో నేడు మా కుటుంబం ఎంతో సంతోషంగా ఉంది.',
+      text: 'జల్లవరం సాయి ధీరజ్ శర్మ గారి అమృత ముహూర్తంలో మా అమ్మాయి వివాహం జరిగింది. ధీరజ్ శర్మ గారి వాక్శుద్ధి, శాస్త్ర పరిజ్ఞానం అనితరసాధ్యం. వారి ఆశీస్సులతో నేడు మా కుటుంబం ఎంతో సంతోషంగా ఉంది.',
       rating: 5,
     },
     {
       name: 'శ్రీనివాసరావు (సాఫ్ట్‌వేర్ ఇంజనీర్)',
       place: 'హైదరాబాద్',
-      text: 'మా నూతన గృహప్రవేశం మరియు లక్ష్మీ గణపతి హోమం గురువుగారి ఆధ్వర్యంలో ఎంతో భక్తి శ్రద్ధలతో సంపూర్ణంగా జరిగింది. పూజా విధానం, మంత్రాల ఉచ్చారణ అద్భుతం.',
+      text: 'మా నూతన గృహప్రవేశం మరియు లక్ష్మీ గణపతి హోమం ధీరజ్ శర్మ గారి ఆధ్వర్యంలో ఎంతో భక్తి శ్రద్ధలతో సంపూర్ణంగా జరిగింది. పూజా విధానం, మంత్రాల ఉచ్చారణ అద్భుతం.',
       rating: 5,
     },
     {
       name: 'వెంకటేశ్వర్లు & లక్ష్మి',
       place: 'తిరుపతి',
-      text: 'చాలా కాలంగా పెండింగ్‌లో ఉన్న ఉద్యోగ సమస్యకు గురువుగారి జాతక పరిశీలన మరియు దోష పరిహార హోమం అద్భుత ఫలితాన్ని ఇచ్చింది. సాయి ధీరజ్ శర్మ గారికి మా హృదయపూర్వక ధన్యవాదాలు.',
+      text: 'చాలా కాలంగా పెండింగ్‌లో ఉన్న ఉద్యోగ సమస్యకు ధీరజ్ శర్మ గారి జాతక పరిశీలన మరియు దోష పరిహార హోమం అద్భుత ఫలితాన్ని ఇచ్చింది. సాయి ధీరజ్ శర్మ గారికి మా హృదయపూర్వక ధన్యవాదాలు.',
       rating: 5,
     },
   ];
 
   return (
     <div className="space-y-16 pb-12 font-telugu">
-      {/* 1. Grand Hero Showcase of Guruji */}
+      {/* 1. Grand Hero Showcase of Sri Dheeraj Sharma Garu */}
       <section className="relative overflow-hidden bg-gradient-to-b from-amber-950 via-amber-900 to-amber-950 text-amber-50 rounded-3xl shadow-2xl border-2 border-amber-600/40 p-6 sm:p-12 lg:p-16">
         {/* Sacred background ambient pattern */}
         <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#ffd166_1px,transparent_1px)] [background-size:24px_24px]" />
@@ -137,17 +137,15 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
 
           {/* Hero Profile Block */}
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 text-center lg:text-left">
-            {/* Guruji Profile Sacred Vedic Emblem (Photo removed from main page as requested) */}
+            {/* Sri Dheeraj Sharma Garu Profile Portrait inside Circular Golden Frame */}
             <div className="shrink-0 relative group">
-              <div className="w-44 h-44 sm:w-52 sm:h-52 rounded-full p-2.5 bg-gradient-to-tr from-amber-500 via-amber-300 to-amber-600 shadow-2xl relative">
-                <div className="w-full h-full rounded-full bg-gradient-to-b from-amber-950 to-amber-900 flex flex-col items-center justify-center p-4 border-2 border-amber-400/60 text-center relative overflow-hidden shadow-inner">
-                  <OmEmblem className="w-20 h-20 text-amber-300 mb-1 drop-shadow-md group-hover:scale-105 transition-transform" size={76} />
-                  <span className="text-amber-100 font-bold text-xs tracking-wider">
-                    వైదిక పండితులు
-                  </span>
-                  <span className="text-[10px] text-amber-300 font-display tracking-widest uppercase">
-                    జ్యోతిష్యులు
-                  </span>
+              <div className="w-44 h-44 sm:w-52 sm:h-52 rounded-full p-2 bg-gradient-to-tr from-amber-500 via-amber-300 to-amber-600 shadow-2xl relative">
+                <div className="w-full h-full rounded-full bg-amber-950 overflow-hidden border-2 border-amber-300/80 relative shadow-inner">
+                  <img
+                    src="/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg"
+                    alt="శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు"
+                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
               </div>
               <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white text-xs font-bold px-3.5 py-1 rounded-full border border-amber-300 shadow-lg whitespace-nowrap flex items-center gap-1.5">
@@ -191,7 +189,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                   className="flex items-center gap-2 px-5 py-3.5 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-amber-950 font-bold rounded-2xl shadow-xl transition-all transform hover:scale-105 active:scale-95 cursor-pointer text-sm sm:text-base"
                 >
                   <Calendar size={18} />
-                  <span>నిత్య పంచాంగం (సబ్ మెనూ)</span>
+                  <span>నిత్య పంచాంగం</span>
                   <ArrowRight size={16} />
                 </button>
 
@@ -319,14 +317,14 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
         )}
       </section>
 
-      {/* 4. Core Specialization & Services by Guruji */}
+      {/* 4. Core Specialization & Services by Sri Dheeraj Sharma Garu */}
       <section className="space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-xs font-bold text-amber-800 uppercase tracking-widest bg-amber-100 px-3 py-1 rounded-full">
             Vedic Services & Consultations
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-amber-950">
-            గురువుగారి ముఖ్య వైదిక సేవలు
+            శ్రీ ధీరజ్ శర్మ గారి ముఖ్య వైదిక సేవలు
           </h2>
           <p className="text-slate-600 text-sm sm:text-base">
             సమస్త వైదిక కర్మలు, హోమాలు, ముహూర్త నిర్ణయాలు ప్రాచీన వేదోక్త శాస్త్రాల ప్రకారం స్వయంగా జల్లవరం సాయి ధీరజ్ శర్మ గారిచే నిర్వహించబడును.
@@ -362,7 +360,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                 <div className="pt-4 border-t border-amber-100 flex flex-wrap items-center justify-between gap-3">
                   <a
                     href={`https://wa.me/918977986166?text=${encodeURIComponent(
-                      `నమస్కారం గురుజీ, నాకు "${service.title}" సేవ గురించి వివరాలు మరియు సంప్రదింపు సమయం కావాలి.`
+                      `నమస్కారం శ్రీ ధీరజ్ శర్మ గారు, నాకు "${service.title}" సేవ గురించి వివరాలు మరియు సంప్రదింపు సమయం కావాలి.`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -439,7 +437,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
               ప్రత్యక్ష & ఆన్‌లైన్ సంప్రదింపులు
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-white">
-              గురువుగారితో నేరుగా మాట్లాడండి
+              ధీరజ్ శర్మ గారితో నేరుగా మాట్లాడండి
             </h2>
             <p className="text-amber-100/90 text-sm sm:text-base leading-relaxed max-w-xl">
               వివాహం, గృహప్రవేశం, చండీ హోమం, జాతక దోష నివారణ కొరకు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారిని నేరుగా ఫోన్ లేదా వాట్సాప్ ద్వారా సంప్రదించవచ్చు.

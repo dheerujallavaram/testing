@@ -154,7 +154,7 @@ export const DevoteeCompatibilityChecker: React.FC<DevoteeCompatibilityCheckerPr
         {/* Guruji Consultation Note */}
         <div className="mt-8 pt-6 border-t border-amber-700/60 text-center font-telugu text-sm text-amber-200">
           <p>
-            ముఖ్యమైన కార్యాలకు లగ్న శుద్ధి, గురు-శుక్రుల స్థితిని కూడా పరిశీలించడం అవసరం. మరింత స్పష్టత కొరకు గురుజీని సంప్రదించండి.
+            ముఖ్యమైన కార్యాలకు లగ్న శుద్ధి, గురు-శుక్రుల స్థితిని కూడా పరిశీలించడం అవసరం. మరింత స్పష్టత కొరకు శ్రీ ధీరజ్ శర్మ గారిని సంప్రదించండి.
           </p>
         </div>
       </div>

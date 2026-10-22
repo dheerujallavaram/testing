@@ -86,7 +86,7 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
             Personal Astrology Consultation
           </p>
           <h3 className="text-2xl sm:text-3xl font-bold font-telugu mb-3">
-            మీ కార్యానికి సరైన శుభ ముహూర్తాన్ని గురుజీ నిర్ణయించగలరు
+            మీ కార్యానికి సరైన శుభ ముహూర్తాన్ని శ్రీ ధీరజ్ శర్మ గారు నిర్ణయించగలరు
           </h3>
           <p className="text-amber-100/90 font-telugu text-base mb-6 leading-relaxed">
             వివాహం, గృహప్రవేశం, నూతన వ్యాపార ప్రారంభం మరియు నామకరణం మొదలైన శుభ కార్యాలకు దోషరహితమైన, బలమైన లగ్న ముహూర్తాన్ని శాస్త్రోక్తంగా నిర్ణయించుకోండి.

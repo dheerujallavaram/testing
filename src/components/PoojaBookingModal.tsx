@@ -76,7 +76,7 @@ export const PoojaBookingModal: React.FC<PoojaBookingModalProps> = ({
 
   const generateWhatsAppMessage = (b: BookingSubmission) => {
     return encodeURIComponent(
-      `నమస్కారం గురుజీ 🙏\nనేను శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం వెబ్‌సైట్ ద్వారా పూజ బుకింగ్ చేశాను.\n\n` +
+      `నమస్కారం శ్రీ ధీరజ్ శర్మ గారు 🙏\nనేను శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం వెబ్‌సైట్ ద్వారా పూజ బుకింగ్ చేశాను.\n\n` +
       `బుకింగ్ ఐడీ: ${b.id}\n` +
       `సేవ: ${b.poojaName}\n` +
       `భక్తుని పేరు: ${b.name}\n` +
@@ -101,7 +101,7 @@ export const PoojaBookingModal: React.FC<PoojaBookingModalProps> = ({
                 వైదిక పూజా సంకల్ప బుకింగ్
               </h3>
               <p className="text-xs text-amber-200 font-telugu">
-                శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం · గురుజీ సాయి ధీరజ్ శర్మ
+                శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం · శ్రీ సాయి ధీరజ్ శర్మ గారు
               </p>
             </div>
           </div>
@@ -126,7 +126,7 @@ export const PoojaBookingModal: React.FC<PoojaBookingModalProps> = ({
                 పూజ బుకింగ్ విజయవంతమైంది!
               </h4>
               <p className="text-sm font-telugu text-slate-600 mb-6">
-                మీ సంకల్ప వివరాలు నమోదు చేయబడ్డాయి. గురుజీ వారు త్వరలోనే మిమ్మల్ని సంప్రదిస్తారు.
+                మీ సంకల్ప వివరాలు నమోదు చేయబడ్డాయి. శ్రీ ధీరజ్ శర్మ గారు త్వరలోనే మిమ్మల్ని సంప్రదిస్తారు.
               </p>
 
               {/* Receipt Box */}
@@ -164,7 +164,7 @@ export const PoojaBookingModal: React.FC<PoojaBookingModalProps> = ({
                   className="w-full py-3 px-6 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-xl font-telugu font-bold text-base flex items-center justify-center gap-2 shadow-lg transition-transform hover:scale-[1.02]"
                 >
                   <Send size={18} />
-                  <span>గురుజీకి వాట్సాప్‌లో వివరాలు పంపండి (8977986166)</span>
+                  <span>ధీరజ్ శర్మ గారికి వాట్సాప్‌లో వివరాలు పంపండి (8977986166)</span>
                 </a>
 
                 <button

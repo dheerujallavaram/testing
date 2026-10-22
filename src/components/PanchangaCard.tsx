@@ -8,14 +8,14 @@ interface PanchangaCardProps {
 }
 
 export const PanchangaCard: React.FC<PanchangaCardProps> = ({ day }) => {
-  const { ayanam, rutuvu, rutuDesc } = getAyanaAndRutu(day.panchanga.masam);
+  const { ayanam, rutuvu, rutuDesc } = getAyanaAndRutu(day.panchanga.masam, day.isoDate);
 
   const rows = [
     {
       icon: Sparkles,
       label: 'సంవత్సరం',
       value: day.panchanga.samvatsaram,
-      desc: 'శ్రీ పరాభవ నామ సంవత్సరం',
+      desc: day.panchanga.samvatsaram,
     },
     {
       icon: Compass,
