@@ -109,9 +109,19 @@ export interface RashiDailyFortune {
   houseLabel: string;
   status: 'favorable' | 'mixed' | 'caution';
   statusLabel: string;
+  navagrahaTransitLabel: string;
+  grahaSthitiLine: string;
+  careerFinanceLine: string;
+  familyHealthLine: string;
+  dairyamLine: string;
+  remedyLine: string;
+  fullSummary: string;
   summary: string;
   remedy: string;
   luckyNumber: number;
+  englishNavagrahaLabel: string;
+  englishFullSummary: string;
+  englishDairyam: string;
 }
 
 export const RASHI_META_LIST = [
@@ -135,131 +145,210 @@ export const GOCHARA_FORTUNES: Record<
     houseLabel: string;
     status: 'favorable' | 'mixed' | 'caution';
     statusLabel: string;
-    summaries: string[];
+    careerFinance: string;
+    familyHealth: string;
+    dairyam: string;
     remedy: string;
+    enHouseLabel: string;
+    enStatusLabel: string;
+    enCareerFinance: string;
+    enFamilyHealth: string;
+    enDairyam: string;
+    enRemedy: string;
   }
 > = {
   1: {
     houseLabel: 'జన్మ చంద్రుడు (1వ స్థానం)',
     status: 'favorable',
     statusLabel: 'శుభం',
-    summaries: [
-      'మనస్సు ప్రశాంతంగా ఉంటుంది. తలపెట్టిన పనులు ఉత్సాహంగా పూర్తి చేస్తారు. బంధుమిత్రుల కలయిక ఆనందాన్ని ఇస్తుంది.',
-      'ఆత్మవిశ్వాసం పెరుగుతుంది. గౌరవ మర్యాదలు లభిస్తాయి. నూతన వస్తు లాభం మరియు శుభవార్తా శ్రవణం ఉంటుంది.',
-    ],
-    remedy: 'శివారాధన, అభిషేకం శ్రేయస్కరం',
+    careerFinance: 'ఉద్యోగంలో మీ మాటకు విలువ పెరుగుతుంది. నూతన బాధ్యతలు మరియు వ్యాపారంలో అనుకూల ఒప్పందాలు లభిస్తాయి.',
+    familyHealth: 'మనస్సు ఉత్సాహంగా ఉంటుంది. కుటుంబ సభ్యులతో ఆనందంగా గడుపుతారు, బంధువుల రాక సంతోషాన్ని ఇస్తుంది.',
+    dairyam: 'ధైర్యం & మనోధైర్యం: ఆత్మవిశ్వాసంతో ముందడుగు వేయండి. తలపెట్టిన ప్రతి పనిలోనూ మీ సంకల్ప బలమే మీకు విజయాన్ని చేకూరుస్తుంది.',
+    remedy: 'శివాభిషేకం లేదా శ్రీ లక్ష్మీ నారాయణుల దర్శనం శ్రేయస్కరం',
+    enHouseLabel: 'Janma Chandra (1st House)',
+    enStatusLabel: 'Auspicious',
+    enCareerFinance: 'Career growth and valuable business agreements progress smoothly with leadership confidence.',
+    enFamilyHealth: 'Peace of mind and warmth in family relationships prevail throughout the day.',
+    enDairyam: 'Courage: Step forward boldly with faith; your personal determination brings assured success.',
+    enRemedy: 'Perform Shiva Puja or Lakshmi Narayana Archana',
   },
   2: {
     houseLabel: 'ధన స్థాన చంద్రుడు (2వ స్థానం)',
     status: 'mixed',
     statusLabel: 'మిశ్రమం',
-    summaries: [
-      'ఆర్థిక వ్యవహారాలలో ఆచితూచి వ్యవహరించాలి. మాటతీరులో సంయమనం పాటించడం వల్ల కుటుంబంలో సామరస్యం నిలుస్తుంది.',
-      'రావలసిన ధనం చేతికి అందుతుంది కానీ వృథా ఖర్చులను నియంత్రించాలి. కుటుంబ సభ్యుల సలహాలు మేలు చేస్తాయి.',
-    ],
-    remedy: 'శ్రీ లక్ష్మీ గణపతి స్మరణ శుభప్రదం',
+    careerFinance: 'ఆర్థిక వ్యవహారాలలో ఆచితూచి అడుగు వేయాలి. వ్యాపార లావాదేవీలలో స్పష్టత పాటించండి, తొందరపాటు పెట్టుబడులు వద్దు.',
+    familyHealth: 'మాటతీరులో సంయమనం పాటిస్తే కుటుంబంలో శాంతి నిలుస్తుంది. గొంతు లేదా కంటి సమస్యల పట్ల కొద్దిపాటి శ్రద్ధ అవసరం.',
+    dairyam: 'ధైర్యం & మనోధైర్యం: ఆర్థిక ఒడిదుడుకులకు భయపడకండి. శాంతంగా ఆలోచించి నిర్ణయాలు తీసుకుంటే ప్రతి సమస్యకు పరిష్కారం దొరుకుతుంది.',
+    remedy: 'శ్రీ లక్ష్మీ గణపతి స్తోత్ర పఠనం, ఆవుకు బెల్లం తినిపించడం',
+    enHouseLabel: 'Dhana Sthana (2nd House)',
+    enStatusLabel: 'Moderate',
+    enCareerFinance: 'Exercise prudence in financial commitments and avoid hasty speculative investments today.',
+    enFamilyHealth: 'Cultivate gentleness in communication to preserve joyful domestic harmony.',
+    enDairyam: 'Courage: Do not worry about temporary financial delays; calm wisdom unlocks the right solutions.',
+    enRemedy: 'Chant Sri Lakshmi Ganapathi Stotram',
   },
   3: {
-    houseLabel: 'తృతీయ చంద్రుడు (3వ స్థానం)',
+    houseLabel: 'తృతీయ చంద్రుడు (3వ పరాక్రమ స్థానం)',
     status: 'favorable',
     statusLabel: 'అత్యంత శుభం',
-    summaries: [
-      'చేపట్టిన ప్రతి పనిలోనూ విజయం లభిస్తుంది. సోదరులు, మిత్రుల సహకారంతో కీలక వ్యవహారాలు సానుకూలమవుతాయి.',
-      'ధైర్య సాహసాలతో ముందడుగు వేస్తారు. ఉద్యోగ, వ్యాపారాలలో ఆశించిన పురోగతి మరియు ధనలాభం కలుగుతుంది.',
-    ],
-    remedy: 'సుబ్రహ్మణ్య స్వామి స్తోత్ర పారాయణ',
+    careerFinance: 'చేపట్టిన పనులలో తిరుగులేని విజయం లభిస్తుంది. ఉద్యోగ వ్యాపారాలలో పదోన్నతి మరియు ఆశించిన ధనలాభం కలుగుతుంది.',
+    familyHealth: 'సోదరులు, మిత్రుల పూర్తి సహకారం అందుతుంది. శారీరక దృఢత్వం, ఉల్లాసమైన ప్రయాణాలు ఆహ్లాదాన్నిస్తాయి.',
+    dairyam: 'ధైర్యం & మనోధైర్యం: మీ ధైర్య సాహసాలకు ఇది పరీక్ష కాదు, విజయ సమయం! ఉత్సాహంతో ముందడుగు వేయండి, దైవానుగ్రహం మీ వెంటే ఉంది.',
+    remedy: 'శ్రీ సుబ్రహ్మణ్య స్వామి ఆరాధన, ఆంజనేయ దండకం పఠనం',
+    enHouseLabel: 'Parakrama Sthana (3rd House)',
+    enStatusLabel: 'Highly Favorable',
+    enCareerFinance: 'Exceptional progress, timely completion of projects, and lucrative rewards in business endeavors.',
+    enFamilyHealth: 'Energetic health and complete support from siblings and close allies.',
+    enDairyam: 'Courage: An empowering transit for decisive action; your courage leads to triumph.',
+    enRemedy: 'Worship Lord Subrahmanya and chant Hanuman Dandakam',
   },
   4: {
-    houseLabel: 'చతుర్థ చంద్రుడు (4వ స్థానం)',
+    houseLabel: 'చతుర్థ చంద్రుడు (4వ సుఖ స్థానం)',
     status: 'mixed',
     statusLabel: 'మిశ్రమం',
-    summaries: [
-      'గృహ సంబంధ పనులలో కొంత శ్రమ అధికంగా ఉండవచ్చు. ప్రయాణాలలో తగిన జాగ్రత్తలు పాటించడం మంచిది.',
-      'పనులలో స్వల్ప ఆలస్యం జరిగినప్పటికీ పట్టుదలతో పూర్తి చేస్తారు. మాతృవర్గీయుల ఆరోగ్యం పట్ల శ్రద్ధ వహించండి.',
-    ],
-    remedy: 'అమ్మవారి కుంకుమార్చన, దుర్గా స్తుతి',
+    careerFinance: 'వృత్తి ఉద్యోగాలలో పనిభారం కొంత ఎక్కువ ఉండవచ్చు. స్థిరాస్తి లేదా వాహన వ్యవహారాలలో కీలక నిర్ణయాలు వాయిదా వేయండి.',
+    familyHealth: 'గృహ సంబంధ విషయాలలో శ్రమ పెరుగుతుంది. తల్లిగారి ఆరోగ్యం పట్ల శ్రద్ధ వహించండి, ప్రయాణాలలో అప్రమత్తత అవసరం.',
+    dairyam: 'ధైర్యం & మనోధైర్యం: మానసిక ఒత్తిడికి లోనుకాకండి. విశ్రాంతి తీసుకుంటూ ధ్యానం చేయండి. శాంతితో ఉండడం వల్ల ఆటంకాలు తొలగిపోతాయి.',
+    remedy: 'శ్రీ దుర్గాదేవి స్తుతి లేదా అమ్మవారికి కుంకుమార్చన',
+    enHouseLabel: 'Chaturtha Sthana (4th House)',
+    enStatusLabel: 'Moderate',
+    enCareerFinance: 'Workplace demands require steady focus; postpone major property or vehicle contracts.',
+    enFamilyHealth: 'Pay attention to mother’s well-being and maintain domestic tranquility.',
+    enDairyam: 'Courage: Do not succumb to mental anxiety; peaceful patience will smooth out all friction.',
+    enRemedy: 'Recite Sri Durga Kavacham',
   },
   5: {
-    houseLabel: 'పంచమ చంద్రుడు (5వ స్థానం)',
+    houseLabel: 'పంచమ చంద్రుడు (5వ పూర్వపుణ్య స్థానం)',
     status: 'mixed',
-    statusLabel: 'మిశ్రమం',
-    summaries: [
-      'సంతాన సంబంధ విషయాలలో ఆలోచనలు పెరుగుతాయి. ఆధ్యాత్మిక కార్యక్రమాలలో పాల్గొనడం వల్ల మనశ్శాంతి లభిస్తుంది.',
-      'కీలక నిర్ణయాలు తీసుకునే ముందు పెద్దల సలహా తీసుకోవడం ఉత్తమం. విద్యా, పరిశోధన రంగాల వారికి అనుకూలం.',
-    ],
-    remedy: 'శ్రీ దత్తాత్రేయ / గురు స్తోత్ర పఠనం',
+    statusLabel: 'మిశ్రమం • జ్ఞాన లాభం',
+    careerFinance: 'విద్యా, పరిశోధన, సృజనాత్మక రంగాల వారికి అనుకూలం. నూతన ప్రాజెక్టులకు పెద్దల సలహా తప్పనిసరిగా తీసుకోండి.',
+    familyHealth: 'సంతాన సంబంధ విషయాలలో ఆలోచనలు పెరుగుతాయి. ఆధ్యాత్మిక చింతన మరియు పూజల వల్ల మనశ్శాంతి లభిస్తుంది.',
+    dairyam: 'ధైర్యం & మనోధైర్యం: మీ ఆలోచనలు సన్మార్గంలో ఉన్నాయి. పూర్వపుణ్యం మీకు రక్షగా నిలుస్తుంది, కలవరపడకుండా ముందుకు సాగండి.',
+    remedy: 'శ్రీ దక్షిణామూర్తి లేదా దత్తాత్రేయ స్వామి స్మరణ',
+    enHouseLabel: 'Panchama Sthana (5th House)',
+    enStatusLabel: 'Mixed-Good',
+    enCareerFinance: 'Intellectual pursuits and creative enterprises yield positive growth; consult elders.',
+    enFamilyHealth: 'Children’s matters require affectionate attention; devotional prayers restore serenity.',
+    enDairyam: 'Courage: Your past good deeds protect you; stay grounded and make decisions thoughtfully.',
+    enRemedy: 'Chant Sri Medha Dakshinamurthy Stotram',
   },
   6: {
-    houseLabel: 'షష్ఠ చంద్రుడు (6వ స్థానం)',
+    houseLabel: 'షష్ఠ చంద్రుడు (6వ శత్రుజయ స్థానం)',
     status: 'favorable',
-    statusLabel: 'శుభం',
-    summaries: [
-      'ఆరోగ్యం కుదుటపడుతుంది. పోటీలలోనూ, వృత్తి ఉద్యోగాలలోనూ మీ మాటకు విలువ పెరుగుతుంది. రుణ బాధలు తొలగుతాయి.',
-      'పెండింగ్‌లో ఉన్న పనులు వేగంగా పూర్తవుతాయి. శత్రువులపై విజయం సాధిస్తారు, ఆర్థిక పరిస్థితి మెరుగుపడుతుంది.',
-    ],
-    remedy: 'శ్రీ విష్ణు సహస్రనామ శ్రవణం',
+    statusLabel: 'శుభం • శత్రుజయం',
+    careerFinance: 'ఉద్యోగంలో మీ ప్రతిభకు గుర్తింపు వస్తుంది. రుణ విముక్తి ప్రయత్నాలు ఫలిస్తాయి, వ్యాపార విస్తరణకు అనుకూలం.',
+    familyHealth: 'ఆరోగ్యం మెరుగుపడుతుంది, దీర్ఘకాలిక సమస్యల నుండి ఉపశమనం లభిస్తుంది. పోటీలలో విజయం మీదే.',
+    dairyam: 'ధైర్యం & మనోధైర్యం: ఎలాంటి వ్యతిరేకతలైనా మీ ముందు తలవంచుతాయి. అడ్డంకులను ధైర్యంగా ఎదుర్కొని తిరుగులేని విజయం సాధించండి.',
+    remedy: 'శ్రీ విష్ణు సహస్రనామ స్తోత్ర పారాయణం లేదా శ్రవణం',
+    enHouseLabel: 'Shashtha Sthana (6th House)',
+    enStatusLabel: 'Auspicious Victory',
+    enCareerFinance: 'Recognition of skills at workplace, relief from debts, and victory in competitive pursuits.',
+    enFamilyHealth: 'Health strengthens noticeably and pending disputes resolve peacefully in your favor.',
+    enDairyam: 'Courage: No obstacle can stop your momentum; courageously claim your rightful progress.',
+    enRemedy: 'Chant Sri Vishnu Sahasranamam',
   },
   7: {
-    houseLabel: 'సప్తమ చంద్రుడు (7వ స్థానం)',
+    houseLabel: 'సప్తమ చంద్రుడు (7వ కళత్ర స్థానం)',
     status: 'favorable',
-    statusLabel: 'శుభం',
-    summaries: [
-      'భాగస్వామ్య వ్యాపారాలు, నూతన ఒప్పందాలకు అనుకూల సమయం. జీవిత భాగస్వామితో ఆనందంగా గడుపుతారు.',
-      'సామాజిక గౌరవం పెరుగుతుంది. ప్రయాణాలు లాభసాటిగా సాగుతాయి. శుభకార్య ప్రయత్నాలు ఫలిస్తాయి.',
-    ],
-    remedy: 'లక్ష్మీ నారాయణుల ఆరాధన',
+    statusLabel: 'శుభం • సుఖం',
+    careerFinance: 'భాగస్వామ్య వ్యాపారాలు, విదేశీ లేదా దూరప్రాంత ఒప్పందాలు లాభిస్తాయి. నూతన వ్యక్తుల పరిచయం ప్రయోజనకరం.',
+    familyHealth: 'జీవిత భాగస్వామితో ఆనందంగా గడుపుతారు. శుభకార్య చర్చలు ఫలిస్తాయి, సామాజిక గౌరవం ఇనుమడిస్తుంది.',
+    dairyam: 'ధైర్యం & మనోధైర్యం: అనుకూలమైన గ్రహబలం మీకు రక్షగా ఉంది. సత్సంబంధాలు కాపాడుకుంటూ నమ్మకంతో ముందుకు వెళ్లండి.',
+    remedy: 'శ్రీ లలితా త్రిపురసుందరి అష్టోత్తర శతనామ స్తోత్రం',
+    enHouseLabel: 'Saptama Sthana (7th House)',
+    enStatusLabel: 'Auspicious Harmony',
+    enCareerFinance: 'Partnership collaborations and client meetings yield joyful, profitable agreements.',
+    enFamilyHealth: 'Spousal harmony and marital happiness flourish; social prestige rises.',
+    enDairyam: 'Courage: Strong cosmic blessings surround you; proceed with heartfelt trust.',
+    enRemedy: 'Chant Sri Lalita Tripura Sundari Ashtottaram',
   },
   8: {
-    houseLabel: 'అష్టమ చంద్రుడు (చంద్రాష్టమం)',
+    houseLabel: 'అష్టమ చంద్రుడు (చంద్రాష్టమం • 8వ స్థానం)',
     status: 'caution',
     statusLabel: 'చంద్రాష్టమం • జాగ్రత్త',
-    summaries: [
-      'నేడు చంద్రాష్టమ ప్రభావం ఉన్నందున కొత్త పనులు, కీలక ఆర్థిక నిర్ణయాలు వాయిదా వేయడం శ్రేయస్కరం. ప్రశాంతంగా ఉండండి.',
-      'అనవసర వాదనలకు దూరంగా ఉండాలి. ప్రయాణాలలో అప్రమత్తత అవసరం. దైవ ధ్యానం వల్ల ఆటంకాలు తొలగుతాయి.',
-    ],
-    remedy: 'శివాభిషేకం, చంద్ర శ్లోక పఠనం తప్పనిసరి',
+    careerFinance: 'నేడు చంద్రాష్టమ ప్రభావం ఉన్నందున నూతన ఒప్పందాలు, పెద్ద పెట్టుబడులు మరియు వివాదాలకు దూరంగా ఉండండి. పనులు వాయిదా వేయడం మేలు.',
+    familyHealth: 'ప్రయాణాలలో అత్యంత అప్రమత్తత అవసరం. కోపావేశాలకు దూరంగా ఉండండి, ఆహార నియమాలు పాటించండి.',
+    dairyam: 'ధైర్యం & మానసిక భరోసా: చంద్రాష్టమం ఉందని భయపడాల్సిన పనిలేదు! ఇది కేవలం 2 రోజుల తాత్కాలిక గ్రహ పరీక్ష మాత్రమే. శాంతంగా, దైవస్మరణతో ఉంటే ఎలాంటి ఆపదలైనా తొలగిపోతాయి. మనోధైర్యమే మీ ప్రధాన రక్ష.',
+    remedy: 'శివాభిషేకం, "ఓం నమః శివాయ" పంచాక్షరీ జపం మరియు చంద్ర శ్లోకం తప్పనిసరి',
+    enHouseLabel: 'Ashtama Chandra (Chandrashtamam • 8th House)',
+    enStatusLabel: 'Chandrashtamam • Caution',
+    enCareerFinance: 'Postpone major business commitments, speculative ventures, or heated office discussions today.',
+    enFamilyHealth: 'Exercise cautiousness during travel, avoid temper flare-ups, and ensure calm rest.',
+    enDairyam: 'Courage & Reassurance: Do not be frightened by Chandrashtamam! This is a brief 2-day cosmic testing period. With steady mindfulness and Shiva prayer, divine grace shields you completely.',
+    enRemedy: 'Perform Shiva Archana and chant Om Namah Shivaya 108 times',
   },
   9: {
-    houseLabel: 'నవమ చంద్రుడు (9వ స్థానం)',
+    houseLabel: 'నవమ చంద్రుడు (9వ భాగ్య స్థానం)',
     status: 'mixed',
-    statusLabel: 'మిశ్రమం',
-    summaries: [
-      'పుణ్యక్షేత్ర సందర్శన లేదా ధార్మిక కార్యక్రమాల పట్ల ఆసక్తి చూపుతారు. పెద్దల ఆశీస్సులు లభిస్తాయి.',
-      'శ్రమకు తగిన ఫలితం లభిస్తుంది. దూర ప్రయాణ సూచనలు ఉన్నాయి. దానధర్మాలు చేయడం వల్ల శుభం కలుగుతుంది.',
-    ],
-    remedy: 'గురు గ్రహ ఆరాధన, దక్షిణామూర్తి స్తోత్రం',
+    statusLabel: 'మిశ్రమం • దైవానుగ్రహం',
+    careerFinance: 'ఉద్యోగంలో పెద్దల ఆశీస్సులు లభిస్తాయి. దూరప్రాంత వ్యవహారాలు నిదానంగా అనుకూలిస్తాయి, ధర్మ మార్గంలో పయనించండి.',
+    familyHealth: 'దేవాలయ సందర్శనలు, తీర్థయాత్రల ఆలోచనలు కలుగుతాయి. తండ్రిగారి ఆరోగ్యం పట్ల శ్రద్ధ వహించండి.',
+    dairyam: 'ధైర్యం & మనోధైర్యం: దైవం మీ పక్షాన ఉంది. సత్యనిష్ఠతో చేసే పనులు ఆలస్యమైనా చివరికి గొప్ప విజయాన్ని చేకూరుస్తాయి.',
+    remedy: 'గురు గ్రహ ఆరాధన, శ్రీ వేంకటేశ్వర స్వామి గోవింద నామ స్మరణ',
+    enHouseLabel: 'Bhagya Sthana (9th House)',
+    enStatusLabel: 'Auspicious Grace',
+    enCareerFinance: 'Fortunate mentor support guides your professional endeavors; ethical actions yield enduring gains.',
+    enFamilyHealth: 'Inclination towards pilgrimage and sacred traditions brings deep spiritual contentment.',
+    enDairyam: 'Courage: The divine hand is always with you; steadfast righteousness guarantees your triumph.',
+    enRemedy: 'Chant Sri Venkateswara Govinda Namavali',
   },
   10: {
-    houseLabel: 'దశమ చంద్రుడు (10వ స్థానం)',
+    houseLabel: 'దశమ చంద్రుడు (10వ రాజ్య-కర్మ స్థానం)',
     status: 'favorable',
-    statusLabel: 'అత్యంత శుభం',
-    summaries: [
-      'ఉద్యోగ, వ్యాపార రంగాలలో ఉన్నత ఫలితాలు సాధిస్తారు. అధికారుల ప్రశంసలు మరియు నూతన బాధ్యతలు లభిస్తాయి.',
-      'తలపెట్టిన కార్యాలు నిర్విఘ్నంగా నెరవేరుతాయి. కీర్తి ప్రతిష్ఠలు పెరుగుతాయి, ఆర్థిక లాభాలు చేకూరుతాయి.',
-    ],
-    remedy: 'శ్రీ వేంకటేశ్వర స్వామి దర్శనం / స్మరణ',
+    statusLabel: 'అత్యంత శుభం • కార్యసిద్ధి',
+    careerFinance: 'ఉద్యోగంలో ఉన్నత అధికారులు మీ పనితీరును ప్రశంసిస్తారు. నూతన ఉద్యోగ, వ్యాపార అవకాశాలు మరియు కీర్తి ప్రతిష్ఠలు పెరుగుతాయి.',
+    familyHealth: 'తలపెట్టిన కార్యాలు నిర్విఘ్నంగా నెరవేరుతాయి. కుటుంబంలో గౌరవ మర్యాదలు మరియు సర్వజన సౌఖ్యం చేకూరుతుంది.',
+    dairyam: 'ధైర్యం & మనోధైర్యం: మీ కార్యాచరణకు గ్రహబలం సంపూర్ణంగా ఉంది. సంకోచం లేకుండా మీ లక్ష్యాలపై దృష్టి పెట్టండి, విజయం మీదే.',
+    remedy: 'సూర్యనమస్కారాలు, శ్రీ ఆదిత్య హృదయ స్తోత్ర పఠనం',
+    enHouseLabel: 'Karma Sthana (10th House)',
+    enStatusLabel: 'Highly Auspicious Career',
+    enCareerFinance: 'Outstanding professional recognition, promotions, and lucrative new enterprise opportunities.',
+    enFamilyHealth: 'Accomplishment of long-pending tasks brings joy and family honor.',
+    enDairyam: 'Courage: The planetary transit is exceptionally favorable; focus firmly on your goals.',
+    enRemedy: 'Chant Sri Aditya Hrudaya Stotram',
   },
   11: {
-    houseLabel: 'ఏకాదశ చంద్రుడు (11వ స్థానం)',
+    houseLabel: 'ఏకాదశ చంద్రుడు (11వ లాభ స్థానం)',
     status: 'favorable',
-    statusLabel: 'అత్యంత శుభం',
-    summaries: [
-      'ఆకస్మిక ధనలాభం, వ్యాపార విస్తరణ మరియు శుభవార్తలు వింటారు. మిత్రుల ద్వారా విశేష ప్రయోజనాలు కలుగుతాయి.',
-      'సర్వకార్య విజయం చేకూరుతుంది. కోరుకున్న పనులు సకాలంలో పూర్తవుతాయి. కుటుంబంలో సంతోషకర వాతావరణం ఉంటుంది.',
-    ],
-    remedy: 'శ్రీ మహా గణపతి ఆరాధన',
+    statusLabel: 'అత్యంత శుభం • సర్వలాభం',
+    careerFinance: 'ఆకస్మిక ధనలాభం, బకాయిలు వసూలవుతాయి. నూతన పెట్టుబడులు విశేష లాభాలను తెచ్చిపెడతాయి, కోరుకున్న కోరికలు తీరుతాయి.',
+    familyHealth: 'మిత్రుల కలయిక ఆనందాన్ని ఇస్తుంది. కుటుంబంలో వేడుకలు, శుభవార్తలు వింటారు, ఆరోగ్యం అత్యుత్తమంగా ఉంటుంది.',
+    dairyam: 'ధైర్యం & మనోధైర్యం: సర్వత్ర విజయం మీ పక్షాన ఉంది. వచ్చిన అవకాశాలను సద్వినియోగం చేసుకుని దీవించండి.',
+    remedy: 'శ్రీ మహాలక్ష్మి పూజ, కనకధారా స్తోత్ర పారాయణం',
+    enHouseLabel: 'Labha Sthana (11th House)',
+    enStatusLabel: 'All-Round Prosperity',
+    enCareerFinance: 'Sudden financial windfalls, clearance of pending receivables, and lucrative investments.',
+    enFamilyHealth: 'Celebrations with dear friends, joyful news, and vibrant health and well-being.',
+    enDairyam: 'Courage: Abundance and victory grace your path; welcome new opportunities with open arms.',
+    enRemedy: 'Chant Sri Kanakadhara Stotram',
   },
   12: {
-    houseLabel: 'ద్వాదశ చంద్రుడు (12వ స్థానం)',
+    houseLabel: 'ద్వాదశ చంద్రుడు (12వ వ్యయ స్థానం)',
     status: 'mixed',
-    statusLabel: 'మిశ్రమం',
-    summaries: [
-      'శుభకార్యాల నిమిత్తం ఖర్చులు పెరిగే అవకాశం ఉంది. విశ్రాంతి మరియు ఆరోగ్యంపై తగిన శ్రద్ధ వహించాలి.',
-      'దూర ప్రాంత వ్యవహారాలు అనుకూలిస్తాయి. ఆర్థిక లావాదేవీలలో తొందరపాటు వద్దు. ఆధ్యాత్మిక చింతన మేలు చేస్తుంది.',
-    ],
-    remedy: 'ఆంజనేయ స్వామి చాలీసా పారాయణ',
+    statusLabel: 'మిశ్రమం • వ్యయం',
+    careerFinance: 'శుభకార్యాల నిమిత్తం ఖర్చులు అధికమవుతాయి. పత్రాలపై సంతకాలు చేసేముందు జాగ్రత్తగా పరిశీలించండి, అప్పులు ఇవ్వవద్దు.',
+    familyHealth: 'కంటి లేదా పాదాల అలసట ఉండవచ్చు. నిద్రలేమి సమస్యలు రాకుండా ధ్యానం చేయండి, ప్రశాంతమైన వాతావరణంలో ఉండండి.',
+    dairyam: 'ధైర్యం & మానసిక భరోసా: ఖర్చులు పెరిగినా అవన్నీ శుభకార్యాలకే జరుగుతాయి. అధైర్యపడకండి, దైవధ్యానంతో మనస్సును నిలకడగా ఉంచుకోండి.',
+    remedy: 'శ్రీ ఆంజనేయ స్వామి ఆలయ దర్శనం, హనుమాన్ చాలీసా పారాయణం',
+    enHouseLabel: 'Vyaya Sthana (12th House)',
+    enStatusLabel: 'Moderate Expenditure',
+    enCareerFinance: 'Auspicious expenses for family or charitable purposes rise; avoid extending informal loans.',
+    enFamilyHealth: 'Prioritize adequate sleep and physical rest; spiritual meditation alleviates tiredness.',
+    enDairyam: 'Courage: Rising expenses are for good causes; maintain equanimity with faith in Lord Hanuman.',
+    enRemedy: 'Recite Sri Hanuman Chalisa',
   },
 };
+
+function findPlanetRashiIndex(day: DayData, planetName: string, fallbackIdx: number = 0): number {
+  if (!day.grahaStithi) return fallbackIdx;
+  for (let i = 0; i < RASHI_META_LIST.length; i++) {
+    const planets = day.grahaStithi[RASHI_META_LIST[i].id] || '';
+    if (planets.includes(planetName)) {
+      return i;
+    }
+  }
+  return fallbackIdx;
+}
 
 export function findMoonRashiIndex(day: DayData): number {
   for (let i = 0; i < RASHI_META_LIST.length; i++) {
@@ -281,6 +370,10 @@ export function findMoonRashiIndex(day: DayData): number {
 
 export function getDailyRashiFortunes(day: DayData): RashiDailyFortune[] {
   const moonRashiIdx = findMoonRashiIndex(day);
+  const rahuRashiIdx = findPlanetRashiIndex(day, 'రాహువు', 10);
+  const guruRashiIdx = findPlanetRashiIndex(day, 'గురుడు', 4);
+  const shaniRashiIdx = findPlanetRashiIndex(day, 'శని', 11);
+
   const daySeed = day.isoDate
     .split('-')
     .reduce((acc, part) => acc + parseInt(part, 10), 0);
@@ -292,9 +385,97 @@ export function getDailyRashiFortunes(day: DayData): RashiDailyFortune[] {
       : ((moonRashiIdx - idx + 12) % 12) + 1;
 
     const fortune = GOCHARA_FORTUNES[gocharaHouse] || GOCHARA_FORTUNES[1];
-    const summaryIdx = (daySeed + idx) % fortune.summaries.length;
-    const summaryText = fortune.summaries[summaryIdx];
     const luckyNum = ((rashi.baseLuckyNumber + daySeed) % 9) + 1;
+
+    // Calculate specific Navagraha houses for this Rashi
+    const rahuHouse = ((rahuRashiIdx - idx + 12) % 12) + 1;
+    const guruHouse = ((guruRashiIdx - idx + 12) % 12) + 1;
+    const shaniHouse = ((shaniRashiIdx - idx + 12) % 12) + 1;
+
+    let rahuTag = '';
+    let enRahuTag = '';
+    if (rahuHouse === 2) {
+      rahuTag = 'ద్వితీయ రాహువు';
+      enRahuTag = 'Rahu in 2nd House';
+    } else if (rahuHouse === 8) {
+      rahuTag = 'అష్టమ రాహువు';
+      enRahuTag = 'Rahu in 8th House';
+    } else if (rahuHouse === 11) {
+      rahuTag = 'లాభ రాహువు';
+      enRahuTag = 'Rahu in 11th House';
+    } else if (rahuHouse === 1) {
+      rahuTag = 'జన్మ రాహువు';
+      enRahuTag = 'Rahu in 1st House';
+    }
+
+    let guruTag = '';
+    let enGuruTag = '';
+    if (guruHouse === 5 || guruHouse === 9 || guruHouse === 11) {
+      guruTag = 'గురు శుభ దృష్టి';
+      enGuruTag = 'Auspicious Jupiter Aspect';
+    } else if (guruHouse === 1 || guruHouse === 7) {
+      guruTag = 'గురు కేంద్ర యోగం';
+      enGuruTag = 'Jupiter Kendra Placement';
+    }
+
+    let shaniTag = '';
+    let enShaniTag = '';
+    if (shaniHouse === 12 || shaniHouse === 1 || shaniHouse === 2) {
+      shaniTag = 'శని గోచారం';
+      enShaniTag = 'Saturn Transit';
+    } else if (shaniHouse === 4) {
+      shaniTag = 'అర్ధాష్టమ శని';
+      enShaniTag = 'Ardhastama Shani';
+    } else if (shaniHouse === 8) {
+      shaniTag = 'అష్టమ శని';
+      enShaniTag = 'Ashtama Shani';
+    } else if (shaniHouse === 3 || shaniHouse === 6 || shaniHouse === 11) {
+      shaniTag = 'లాభ/ఉపచయ శని';
+      enShaniTag = 'Favorable Saturn';
+    }
+
+    // Build the dynamic Navagraha Transit Badge
+    const transitParts: string[] = [isChandrashtamam ? 'చంద్రాష్టమం' : fortune.houseLabel.split(' ')[0]];
+    const enTransitParts: string[] = [isChandrashtamam ? 'Chandrashtamam' : fortune.enHouseLabel.split(' ')[0]];
+
+    if (rahuTag) {
+      transitParts.push(rahuTag);
+      enTransitParts.push(enRahuTag);
+    }
+    if (guruTag) {
+      transitParts.push(guruTag);
+      enTransitParts.push(enGuruTag);
+    }
+    if (shaniTag && transitParts.length < 3) {
+      transitParts.push(shaniTag);
+      enTransitParts.push(enShaniTag);
+    }
+
+    const navagrahaTransitLabel = transitParts.join(' • ');
+    const englishNavagrahaLabel = enTransitParts.join(' • ');
+
+    // Build the 4-5 lines of comprehensive prediction
+    const grahaSthitiLine = `1. గ్రహ గోచార స్థితి: ${fortune.houseLabel}${rahuTag ? `, ${rahuTag}` : ''}${guruTag ? `, ${guruTag}` : ''}${shaniTag ? `, ${shaniTag}` : ''} ప్రభావం నేడు మీ రాశిపై ఉంది.`;
+    const careerFinanceLine = `2. ఉద్యోగ & ఆర్థిక ఫలం: ${fortune.careerFinance}`;
+    const familyHealthLine = `3. కుటుంబం & ఆరోగ్యం: ${fortune.familyHealth}`;
+    const dairyamLine = `4. ${fortune.dairyam}`;
+    const remedyLine = `5. శాస్త్రోక్త పరిహారం: ${fortune.remedy}`;
+
+    const fullSummary = [
+      grahaSthitiLine,
+      careerFinanceLine,
+      familyHealthLine,
+      dairyamLine,
+      remedyLine,
+    ].join('\n');
+
+    const englishFullSummary = [
+      `1. Planetary Transit: ${fortune.enHouseLabel}${enRahuTag ? `, ${enRahuTag}` : ''}${enGuruTag ? `, ${enGuruTag}` : ''}.`,
+      `2. Career & Finance: ${fortune.enCareerFinance}`,
+      `3. Family & Health: ${fortune.enFamilyHealth}`,
+      `4. ${fortune.enDairyam}`,
+      `5. Vedic Remedy: ${fortune.enRemedy}`,
+    ].join('\n');
 
     return {
       ...rashi,
@@ -302,9 +483,19 @@ export function getDailyRashiFortunes(day: DayData): RashiDailyFortune[] {
       houseLabel: fortune.houseLabel,
       status: isChandrashtamam ? ('caution' as const) : fortune.status,
       statusLabel: isChandrashtamam ? 'చంద్రాష్టమం • జాగ్రత్త' : fortune.statusLabel,
-      summary: summaryText,
+      navagrahaTransitLabel,
+      grahaSthitiLine,
+      careerFinanceLine,
+      familyHealthLine,
+      dairyamLine,
+      remedyLine,
+      fullSummary,
+      summary: fullSummary,
       remedy: fortune.remedy,
       luckyNumber: luckyNum,
+      englishNavagrahaLabel,
+      englishFullSummary,
+      englishDairyam: fortune.enDairyam,
     };
   });
 }
@@ -424,12 +615,12 @@ export function generateWhatsAppShareText(day: DayData, shareUrl?: string): stri
     ``,
     `🌟 *నేటి విశేషం:* ${day.phalitham}`,
     ``,
-    `🔮 *నేటి రాశి ఫలితాలు (దిన ఫలం):*`,
-    `• *మేష రాశి:* ${mesham.summary} (${mesham.statusLabel})`,
-    `• *వృషభ రాశి:* ${vrushabham.summary} (${vrushabham.statusLabel})`,
-    `• *మిథున రాశి:* ${mithunam.summary} (${mithunam.statusLabel})`,
+    `🔮 *నేటి రాశి ఫలితాలు (నవ గ్రహ దిన ఫలం):*`,
+    `• *మేష రాశి (${mesham.navagrahaTransitLabel}):* ${mesham.careerFinanceLine.replace(/^2\.\s*/, '')} [${mesham.statusLabel}]`,
+    `• *వృషభ రాశి (${vrushabham.navagrahaTransitLabel}):* ${vrushabham.careerFinanceLine.replace(/^2\.\s*/, '')} [${vrushabham.statusLabel}]`,
+    `• *మిథున రాశి (${mithunam.navagrahaTransitLabel}):* ${mithunam.careerFinanceLine.replace(/^2\.\s*/, '')} [${mithunam.statusLabel}]`,
     ``,
-    `✨ *కర్కాటకం నుండి మీన రాశి వరకు మిగతా రాశి ఫలితాలు మరియు పూర్తి రాశి చక్రం కోసం క్రింది వెబ్‌సైట్ చూడండి:*`,
+    `✨ *కర్కాటకం నుండి మీన రాశి వరకు మిగతా రాశి ఫలితాలు, పూర్తి 4-5 లైన్ల ఫలితాలు & రాశి చక్రం కోసం క్రింది వెబ్‌సైట్ చూడండి:*`,
   ];
 
   if (appLink) {
@@ -462,17 +653,21 @@ export function generateHoroscopeShareText(
   if (selectedRashiId && selectedRashiId !== 'all') {
     const rashi = fortunes.find((r) => r.id === selectedRashiId) || fortunes[0];
     const lines = [
-      `🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — నేటి రాశి ఫలితం* 🕉️`,
+      `🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — నేటి నవ గ్రహ రాశి ఫలితం* 🕉️`,
       `📅 *తేదీ:* ${day.teediVaram}`,
       `🌙 *తిథి:* ${day.panchanga.tithi.split('-')[0].trim()} | *నక్షత్రం:* ${day.panchanga.nakshatram.split('-')[0].trim()}`,
       `✨ *చంద్ర సంచారం:* ${moonRashiName} రాశి`,
       ``,
-      `🔮 *${rashi.teluguName} రాశి (${rashi.englishName}) — దిన ఫలం:*`,
-      `• *గోచార స్థితి:* ${rashi.houseLabel} (${rashi.statusLabel})`,
-      `• *రాశి అధిపతి:* ${rashi.lord}`,
-      `• *ఫలితం:* ${rashi.summary}`,
-      `• *నేటి పరిహారం:* ${rashi.remedy}`,
-      `• *శుభ సంఖ్య:* ${rashi.luckyNumber}`,
+      `🔮 *${rashi.teluguName} రాశి (${rashi.englishName}) — సంపూర్ణ దిన ఫలం:*`,
+      `🪐 *గోచార సంయోగం:* ${rashi.navagrahaTransitLabel} (${rashi.statusLabel})`,
+      `👑 *రాశి అధిపతి:* ${rashi.lord}`,
+      ``,
+      `${rashi.grahaSthitiLine}`,
+      `${rashi.careerFinanceLine}`,
+      `${rashi.familyHealthLine}`,
+      `🛡️ ${rashi.dairyamLine.replace(/^4\.\s*/, '')}`,
+      `🙏 ${rashi.remedyLine.replace(/^5\.\s*/, '')}`,
+      `🔢 *శుభ సంఖ్య:* ${rashi.luckyNumber} | 🎨 *శుభ రంగు:* ${rashi.luckyColor}`,
       ``,
       `🌐 *నేటి పూర్తి పంచాంగం & ద్వాదశ రాశి ఫలితాల కోసం వెబ్‌సైట్ చూడండి:*`,
       `👉 ${appLink}`,
@@ -482,9 +677,9 @@ export function generateHoroscopeShareText(
     return lines.join('\n');
   }
 
-  // Default ('all'): Custom summary message for each of the 12 Rashis
+  // Default ('all'): Custom summary message for each of the 12 Rashis with Navagraha & Courage reassurance
   const lines = [
-    `🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — ద్వాదశ రాశి ఫలితాలు (దిన ఫలం)* 🕉️`,
+    `🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — ద్వాదశ రాశి ఫలితాలు (నవ గ్రహ దిన ఫలం)* 🕉️`,
     `📅 *తేదీ & వారం:* ${day.teediVaram}`,
     `🌙 *తిథి:* ${day.panchanga.tithi.split('-')[0].trim()} | *నక్షత్రం:* ${day.panchanga.nakshatram.split('-')[0].trim()}`,
     `✨ *నేటి చంద్ర సంచారం:* ${moonRashiName} రాశి`,
@@ -493,8 +688,10 @@ export function generateHoroscopeShareText(
 
   fortunes.forEach((rashi, idx) => {
     lines.push(
-      `${idx + 1}. *${rashi.teluguName} రాశి (${rashi.englishName}):* [${rashi.statusLabel}]`,
-      `   ${rashi.summary}`,
+      `${idx + 1}. *${rashi.teluguName} రాశి (${rashi.englishName})* [${rashi.navagrahaTransitLabel} • ${rashi.statusLabel}]:`,
+      `   💼 ${rashi.careerFinanceLine.replace(/^2\.\s*/, '')}`,
+      `   🏡 ${rashi.familyHealthLine.replace(/^3\.\s*/, '')}`,
+      `   🛡️ ${rashi.dairyamLine.replace(/^4\.\s*/, '')}`,
       `   🙏 *పరిహారం:* ${rashi.remedy} | *శుభ సంఖ్య:* ${rashi.luckyNumber}`,
       ``
     );

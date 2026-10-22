@@ -8,6 +8,8 @@ import {
   generateWhatsAppShareText,
   generateHoroscopeShareText,
   calculateGocharaStrengths,
+  getDailyRashiFortunes,
+  RashiDailyFortune,
   PANCHANGAM_PAGE_URL,
   RASHI_META_LIST,
   getTodayAndTomorrowIds,
@@ -173,6 +175,32 @@ test('calculateGocharaStrengths computes valid 0-100 transit strength scores for
   assert.ok(cautionRashi);
   assert.ok(cautionRashi!.strength <= 50);
 });
+
+test('getDailyRashiFortunes generates 4-5 lines of comprehensive Navagraha predictions and courage reassurance', () => {
+  const oct22 = WEEK_DATA.find((d) => d.id === '2026-10-22')!;
+  const fortunes = getDailyRashiFortunes(oct22);
+  assert.equal(fortunes.length, 12);
+
+  for (const f of fortunes) {
+    assert.ok(f.navagrahaTransitLabel.length > 0);
+    assert.ok(f.grahaSthitiLine.includes('గ్రహ గోచార స్థితి'));
+    assert.ok(f.careerFinanceLine.includes('ఉద్యోగ & ఆర్థిక ఫలం'));
+    assert.ok(f.familyHealthLine.includes('కుటుంబం & ఆరోగ్యం'));
+    assert.ok(f.dairyamLine.includes('ధైర్యం'));
+    assert.ok(f.remedyLine.includes('శాస్త్రోక్త పరిహారం'));
+
+    const lines = f.fullSummary.split('\n');
+    assert.equal(lines.length, 5, `Expected 5 lines in fullSummary for ${f.id}`);
+  }
+
+  // Check Chandrashtamam rashi (Karkatakam on Oct 22)
+  const karkatakam = fortunes.find((f) => f.id === 'karkatakam');
+  assert.ok(karkatakam);
+  assert.equal(karkatakam?.status, 'caution');
+  assert.ok(karkatakam?.navagrahaTransitLabel.includes('చంద్రాష్టమం'));
+  assert.ok(karkatakam?.dairyamLine.includes('భయపడాల్సిన పనిలేదు'));
+});
+
 
 
 

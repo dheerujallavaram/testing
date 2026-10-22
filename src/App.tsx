@@ -96,24 +96,63 @@ function AppContent() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  // Sync document title & canonical link tag with current tab route
+  // Sync document title, canonical link, og:url, and meta tags dynamically with current tab route
   useEffect(() => {
     const path = TAB_PATHS[activeTab] || '/';
     const canonicalHref = `https://telugujyothisham.com${path === '/' ? '/' : path}`;
+
     const canonicalEl = document.querySelector('link[rel="canonical"]');
     if (canonicalEl) {
       canonicalEl.setAttribute('href', canonicalHref);
     }
 
+    const ogUrlEl = document.querySelector('meta[property="og:url"]');
+    if (ogUrlEl) {
+      ogUrlEl.setAttribute('content', canonicalHref);
+    }
+
+    const twitterUrlEl = document.querySelector('meta[name="twitter:url"]');
+    if (twitterUrlEl) {
+      twitterUrlEl.setAttribute('content', canonicalHref);
+    }
+
     const titles: Record<NavTab, string> = {
-      home: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం | శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ — తెలుగు పంచాంగం & రాశి ఫలితాలు (telugujyothisham.com)',
-      panchangam: 'నిత్య పంచాంగం, రాశి చక్రం & దిన ఫలం | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/panchangam)',
+      home: 'తెలుగు పంచాంగం & రాశి ఫలితాలు | నిత్య పంచాంగం, తిథి, నక్షత్రం, దిన ఫలం — telugujyothisham.com',
+      panchangam: 'నేటి తెలుగు పంచాంగం & నవ గ్రహ దిన ఫలాలు | తిథి, నక్షత్రం, రాశి చక్రం (telugujyothisham.com/panchangam)',
       awards: 'పొందిన సత్కారాలు & పురస్కారాలు | శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (telugujyothisham.com/awards)',
       services: 'వైదిక పూజా సేవలు & హోమాలు | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/services)',
       about: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి గురించి | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/about)',
       contact: 'సంప్రదించండి | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/contact)',
     };
-    document.title = titles[activeTab] || titles.home;
+
+    const descriptions: Record<NavTab, string> = {
+      home: 'నేటి తెలుగు పంచాంగం, 12 రాశుల దిన ఫలాలు (రాశి ఫలితాలు), తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, రాహుకాలం మరియు శుభ ముహూర్తాలు. ప్రతిరోజూ తాజా పంచాంగం telugujyothisham.com లో చూడండి.',
+      panchangam: 'నేటి తెలుగు పంచాంగం, తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, రాహుకాలం, 12 రాశుల నవ గ్రహ గోచార దిన ఫలాలు మరియు దక్షిణ భారత రాశి చక్రం.',
+      awards: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు పొందిన జ్యోతిష సత్కారాలు, బిరుదులు మరియు పూజా పురస్కారాల వివరాలు.',
+      services: 'శ్రీ చండీ హోమం, లక్ష్మీ గణపతి హోమం, సుదర్శన హోమం, వివాహ, గృహప్రవేశ క్రతువులు శాస్త్రోక్తంగా నిర్వహించబడును.',
+      about: 'జ్యోతిష పండితులు, స్మార్త వేద విద్వాంసులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్యాత్మిక ప్రస్థానం మరియు అనుభవం.',
+      contact: 'జ్యోతిష సంప్రదింపులు, ముహూర్త నిర్ణయం మరియు పూజా బుకింగ్ కొరకు శ్రీ ధీరజ్ శర్మ గారిని సంప్రదించండి.',
+    };
+
+    const targetTitle = titles[activeTab] || titles.home;
+    const targetDesc = descriptions[activeTab] || descriptions.home;
+
+    document.title = targetTitle;
+
+    const ogTitleEl = document.querySelector('meta[property="og:title"]');
+    if (ogTitleEl) ogTitleEl.setAttribute('content', targetTitle);
+
+    const twitterTitleEl = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitleEl) twitterTitleEl.setAttribute('content', targetTitle);
+
+    const descEl = document.querySelector('meta[name="description"]');
+    if (descEl) descEl.setAttribute('content', targetDesc);
+
+    const ogDescEl = document.querySelector('meta[property="og:description"]');
+    if (ogDescEl) ogDescEl.setAttribute('content', targetDesc);
+
+    const twitterDescEl = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDescEl) twitterDescEl.setAttribute('content', targetDesc);
   }, [activeTab]);
 
   const currentDay = WEEK_DATA.find((d) => d.id === selectedDayId) ?? WEEK_DATA[0];

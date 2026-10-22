@@ -197,21 +197,21 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
       </div>
 
       {/* 12 Rashis Grid: Mobile 1-col, Tablet 2-col, Desktop 3-col */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+      {/* 12 Rashis Grid: Mobile 1-col, Tablet 2-col, Desktop 3-col */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {filteredCards.map((rashi) => {
           const isFav = rashi.status === 'favorable';
           const isCaution = rashi.status === 'caution';
-          const enFortune = ENGLISH_HOUSE_SUMMARIES[rashi.gocharaHouse] || ENGLISH_HOUSE_SUMMARIES[1];
 
           return (
             <div
               key={rashi.id}
-              className={`rounded-2xl border p-4 flex flex-col justify-between transition-all hover:shadow-md ${
+              className={`rounded-2xl border p-4 sm:p-5 flex flex-col justify-between transition-all hover:shadow-lg ${
                 isFav
-                  ? 'bg-gradient-to-br from-emerald-50/50 via-white to-amber-50/30 border-emerald-200/90'
+                  ? 'bg-gradient-to-br from-emerald-50/40 via-white to-amber-50/20 border-emerald-300/90'
                   : isCaution
-                  ? 'bg-gradient-to-br from-rose-50/60 via-white to-amber-50/30 border-rose-300'
-                  : 'bg-gradient-to-br from-amber-50/50 via-white to-amber-50/20 border-amber-200'
+                  ? 'bg-gradient-to-br from-rose-50/50 via-white to-amber-50/30 border-rose-300'
+                  : 'bg-gradient-to-br from-amber-50/40 via-white to-amber-50/20 border-amber-300'
               }`}
             >
               <div>
@@ -237,46 +237,116 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                       </p>
                       <p className="text-[11px] sm:text-xs text-slate-500 font-telugu">
                         {t('అధిపతి:', 'Lord:')}{' '}
-                        <strong className="text-amber-900">{tr(rashi.lord)}</strong> •{' '}
-                        {language === 'en' ? enFortune.houseLabel : rashi.houseLabel}
+                        <strong className="text-amber-900">{tr(rashi.lord)}</strong>
                       </p>
                     </div>
                   </div>
 
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-telugu font-bold shrink-0 border ${
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] sm:text-xs font-telugu font-bold shrink-0 border ${
                       isFav
-                        ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                        ? 'bg-emerald-100 text-emerald-950 border-emerald-300 shadow-2xs'
                         : isCaution
-                        ? 'bg-rose-100 text-rose-900 border-rose-300'
-                        : 'bg-amber-100 text-amber-900 border-amber-300'
+                        ? 'bg-rose-100 text-rose-950 border-rose-300 shadow-2xs'
+                        : 'bg-amber-100 text-amber-950 border-amber-300 shadow-2xs'
                     }`}
                   >
                     {isFav && <CheckCircle2 size={12} className="text-emerald-700 shrink-0" />}
                     {isCaution && <AlertTriangle size={12} className="text-rose-700 shrink-0" />}
                     {!isFav && !isCaution && <Info size={12} className="text-amber-700 shrink-0" />}
-                    <span>{language === 'en' ? enFortune.statusLabel : rashi.statusLabel}</span>
+                    <span>{language === 'en' ? tr(rashi.statusLabel) : rashi.statusLabel}</span>
                   </span>
                 </div>
 
-                {/* Daily Fortune Summary */}
-                <p className="text-xs sm:text-sm text-slate-800 font-telugu leading-relaxed mb-3">
-                  {language === 'en' ? enFortune.summary : rashi.summary}
-                </p>
+                {/* Specific Navagraha Transit Badge (e.g., చంద్రాష్టమం • ద్వితీయ రాహువు) */}
+                <div className="mb-3">
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-telugu font-bold border ${
+                      isCaution
+                        ? 'bg-rose-100/80 text-rose-900 border-rose-300'
+                        : isFav
+                        ? 'bg-emerald-100/80 text-emerald-900 border-emerald-300'
+                        : 'bg-amber-100/80 text-amber-900 border-amber-300'
+                    }`}
+                  >
+                    <span className="text-[10px] uppercase tracking-wider font-sans font-extrabold text-amber-800/80">
+                      🪐 {t('గోచారం:', 'Transit:')}
+                    </span>
+                    <span>
+                      {language === 'en'
+                        ? rashi.englishNavagrahaLabel
+                        : rashi.navagrahaTransitLabel}
+                    </span>
+                  </span>
+                </div>
+
+                {/* 4 to 5 Lines Comprehensive Prediction Breakdown */}
+                <div className="space-y-2 text-xs sm:text-[13px] text-slate-800 font-telugu leading-relaxed">
+                  {/* Line 1: Graha Sthiti */}
+                  <div className="bg-amber-50/60 p-2 rounded-lg border border-amber-200/70">
+                    <p className="font-medium text-amber-950">
+                      {language === 'en'
+                        ? rashi.englishFullSummary.split('\n')[0]
+                        : rashi.grahaSthitiLine}
+                    </p>
+                  </div>
+
+                  {/* Line 2: Career & Finance */}
+                  <div className="pl-1">
+                    <p className="text-slate-800">
+                      {language === 'en'
+                        ? rashi.englishFullSummary.split('\n')[1]
+                        : rashi.careerFinanceLine}
+                    </p>
+                  </div>
+
+                  {/* Line 3: Family & Health */}
+                  <div className="pl-1">
+                    <p className="text-slate-800">
+                      {language === 'en'
+                        ? rashi.englishFullSummary.split('\n')[2]
+                        : rashi.familyHealthLine}
+                    </p>
+                  </div>
+
+                  {/* Line 4: Courage & Positive Reassurance (ధైర్యం & మనోధైర్యం) */}
+                  <div
+                    className={`p-2.5 rounded-xl border ${
+                      isCaution
+                        ? 'bg-rose-50/90 border-rose-200 text-rose-950'
+                        : 'bg-emerald-50/90 border-emerald-200 text-emerald-950'
+                    }`}
+                  >
+                    <p className="font-semibold text-xs leading-relaxed flex items-start gap-1.5">
+                      <span className="shrink-0 text-sm">🛡️</span>
+                      <span>
+                        {language === 'en'
+                          ? rashi.englishDairyam
+                          : rashi.dairyamLine}
+                      </span>
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              {/* Footer Meta: Remedy & Lucky Indicators */}
-              <div className="pt-2.5 border-t border-amber-200/60 flex flex-wrap items-center justify-between gap-2 text-xs font-telugu text-slate-700">
-                <span className="flex items-center gap-1 text-amber-950 font-medium">
-                  <Star size={12} className="text-amber-600 shrink-0" />
-                  <span>
-                    {t('పరిహారం:', 'Remedy:')}{' '}
-                    <strong>{language === 'en' ? enFortune.remedy : rashi.remedy}</strong>
+              {/* Footer Meta: Authentic Vedic Remedy & Lucky Indicators */}
+              <div className="mt-4 pt-3 border-t border-amber-200 flex flex-col gap-2 text-xs font-telugu text-slate-700">
+                <div className="flex items-start gap-1.5 text-amber-950">
+                  <Star size={13} className="text-amber-600 shrink-0 mt-0.5" />
+                  <p>
+                    <span className="font-bold text-amber-900">{t('శాస్త్రోక్త పరిహారం:', 'Vedic Remedy:')}</span>{' '}
+                    <span>{tr(rashi.remedy)}</span>
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between pt-1 border-t border-amber-100 text-[11px]">
+                  <span className="text-slate-600">
+                    {t('శుభ రంగు:', 'Lucky Color:')} <strong className="text-amber-900">{tr(rashi.luckyColor)}</strong>
                   </span>
-                </span>
-                <span className="text-slate-700 bg-amber-50/90 px-2 py-0.5 rounded border border-amber-200/80 font-medium">
-                  {t('శుభ సంఖ్య:', 'Lucky No:')} <strong>{rashi.luckyNumber}</strong>
-                </span>
+                  <span className="bg-amber-100 text-amber-950 px-2 py-0.5 rounded font-mono font-bold border border-amber-300">
+                    {t('శుభ సంఖ్య:', 'Lucky No:')} {rashi.luckyNumber}
+                  </span>
+                </div>
               </div>
             </div>
           );
