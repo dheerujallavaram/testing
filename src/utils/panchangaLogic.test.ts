@@ -7,6 +7,8 @@ import {
   checkChandrashtamam,
   generateWhatsAppShareText,
   generateHoroscopeShareText,
+  calculateGocharaStrengths,
+  PANCHANGAM_PAGE_URL,
   RASHI_META_LIST,
   getTodayAndTomorrowIds,
 } from './panchangaLogic';
@@ -79,24 +81,23 @@ test('checkChandrashtamam correctly flags affected zodiac signs', () => {
 
 test('generateWhatsAppShareText creates Panchangam message with Mesham-Mithunam teaser, website CTA, and no phone number', () => {
   const oct22 = WEEK_DATA.find((d) => d.id === '2026-10-22')!;
-  const testUrl = 'https://sreelakshmi-ganapathi-astrology.com/';
-  const textWithUrl = generateWhatsAppShareText(oct22, testUrl);
+  const textWithDefaultUrl = generateWhatsAppShareText(oct22);
 
-  assert.ok(textWithUrl.includes('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం'));
-  assert.ok(textWithUrl.includes('22 అక్టోబర్ 2026'));
-  assert.ok(textWithUrl.includes('రాహు కాలం'));
+  assert.ok(textWithDefaultUrl.includes('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం'));
+  assert.ok(textWithDefaultUrl.includes('22 అక్టోబర్ 2026'));
+  assert.ok(textWithDefaultUrl.includes('రాహు కాలం'));
 
   // Should NOT include Guruji's phone number
-  assert.equal(textWithUrl.includes('8977986166'), false);
+  assert.equal(textWithDefaultUrl.includes('8977986166'), false);
 
   // Should include Mesha, Vrushabha, and Mithuna Rashi daily fortune teaser
-  assert.ok(textWithUrl.includes('మేష రాశి'));
-  assert.ok(textWithUrl.includes('వృషభ రాశి'));
-  assert.ok(textWithUrl.includes('మిథున రాశి'));
+  assert.ok(textWithDefaultUrl.includes('మేష రాశి'));
+  assert.ok(textWithDefaultUrl.includes('వృషభ రాశి'));
+  assert.ok(textWithDefaultUrl.includes('మిథున రాశి'));
 
-  // Should include the teaser CTA for remaining rashis and website link
-  assert.ok(textWithUrl.includes('మిగతా రాశి ఫలితాలు'));
-  assert.ok(textWithUrl.includes(testUrl));
+  // Should include the teaser CTA for remaining rashis and /panchangam link
+  assert.ok(textWithDefaultUrl.includes('మిగతా రాశి ఫలితాలు'));
+  assert.ok(textWithDefaultUrl.includes(PANCHANGAM_PAGE_URL));
 });
 
 test('getTodayAndTomorrowIds resolves 22 Oct as today and 23 Oct as tomorrow when date is Oct 22, 2026', () => {
@@ -138,12 +139,11 @@ test('translatePanchangamString keeps Telugu in te mode and translates Panchanga
 
 test('generateHoroscopeShareText generates custom 12-Rashi and single-Rashi summaries without phone number and with website URL', () => {
   const oct22 = WEEK_DATA.find((d) => d.id === '2026-10-22')!;
-  const siteUrl = 'https://telugujyothisham.com';
 
   // 1. All 12 Rashis mode
-  const allHoroscopeText = generateHoroscopeShareText(oct22, 'all', siteUrl);
+  const allHoroscopeText = generateHoroscopeShareText(oct22, 'all');
   assert.equal(allHoroscopeText.includes('8977986166'), false);
-  assert.ok(allHoroscopeText.includes(siteUrl));
+  assert.ok(allHoroscopeText.includes(PANCHANGAM_PAGE_URL));
   for (const rashi of RASHI_META_LIST) {
     assert.ok(
       allHoroscopeText.includes(rashi.teluguName),
@@ -152,10 +152,27 @@ test('generateHoroscopeShareText generates custom 12-Rashi and single-Rashi summ
   }
 
   // 2. Single Rashi mode (e.g., Simham)
-  const simhamText = generateHoroscopeShareText(oct22, 'simham', siteUrl);
+  const simhamText = generateHoroscopeShareText(oct22, 'simham');
   assert.equal(simhamText.includes('8977986166'), false);
   assert.ok(simhamText.includes('సింహం రాశి'));
-  assert.ok(simhamText.includes(siteUrl));
+  assert.ok(simhamText.includes(PANCHANGAM_PAGE_URL));
 });
+
+test('calculateGocharaStrengths computes valid 0-100 transit strength scores for all 12 Rashis', () => {
+  const oct22 = WEEK_DATA.find((d) => d.id === '2026-10-22')!;
+  const strengths = calculateGocharaStrengths(oct22);
+  assert.equal(strengths.length, 12);
+
+  for (const item of strengths) {
+    assert.ok(item.strength >= 30 && item.strength <= 100, `Strength ${item.strength} out of range for ${item.id}`);
+    assert.ok(item.gocharaHouse >= 1 && item.gocharaHouse <= 12);
+  }
+
+  // Chandrashtamam rashi should have caution status and lowest strength
+  const cautionRashi = strengths.find((s) => s.status === 'caution');
+  assert.ok(cautionRashi);
+  assert.ok(cautionRashi!.strength <= 50);
+});
+
 
 

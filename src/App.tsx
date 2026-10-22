@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { WEEK_DATA } from './data/panchangamData';
 import { PoojaService } from './types/panchangam';
 import { findActiveLagna, getTodayAndTomorrowIds } from './utils/panchangaLogic';
@@ -25,12 +25,96 @@ import { AwardsSection } from './components/AwardsSection';
 import { ContactSection } from './components/ContactSection';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 
+export const TAB_PATHS: Record<NavTab, string> = {
+  home: '/',
+  panchangam: '/panchangam',
+  awards: '/awards',
+  services: '/services',
+  about: '/about',
+  contact: '/contact',
+};
+
+export function resolveTabFromLocation(): NavTab {
+  if (typeof window === 'undefined') return 'home';
+
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  const hash = window.location.hash.toLowerCase();
+
+  if (
+    pathname === '/panchangam' ||
+    pathname.endsWith('/panchangam') ||
+    hash === '#panchangam' ||
+    hash === '#dina-phalam' ||
+    hash === '#rashi-chakram' ||
+    hash === '#muhurthalu' ||
+    hash === '#panchangam-faq'
+  ) {
+    return 'panchangam';
+  }
+  if (pathname === '/awards' || pathname.endsWith('/awards') || hash === '#awards') {
+    return 'awards';
+  }
+  if (pathname === '/services' || pathname.endsWith('/services') || hash === '#services') {
+    return 'services';
+  }
+  if (pathname === '/about' || pathname.endsWith('/about') || hash === '#about') {
+    return 'about';
+  }
+  if (pathname === '/contact' || pathname.endsWith('/contact') || hash === '#contact') {
+    return 'contact';
+  }
+  return 'home';
+}
+
 function AppContent() {
-  const [activeTab, setActiveTab] = useState<NavTab>('home');
+  const [activeTab, setActiveTab] = useState<NavTab>(() => resolveTabFromLocation());
   const [selectedDayId, setSelectedDayId] = useState<string>(() => getTodayAndTomorrowIds(WEEK_DATA).todayId);
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
   const [selectedPoojaForBooking, setSelectedPoojaForBooking] = useState<PoojaService | null>(null);
   const { t, tr } = useLanguage();
+
+  const handleSelectTab = useCallback((tab: NavTab) => {
+    setActiveTab(tab);
+    if (typeof window !== 'undefined') {
+      const targetPath = TAB_PATHS[tab] || '/';
+      try {
+        if (window.location.pathname !== targetPath) {
+          window.history.pushState({ tab }, '', targetPath);
+        }
+      } catch {
+        // Fallback if pushState is restricted by sandboxed environment
+      }
+    }
+  }, []);
+
+  // Listen to browser Back / Forward navigation (popstate)
+  useEffect(() => {
+    const onPopState = () => {
+      setActiveTab(resolveTabFromLocation());
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  // Sync document title & canonical link tag with current tab route
+  useEffect(() => {
+    const path = TAB_PATHS[activeTab] || '/';
+    const canonicalHref = `https://telugujyothisham.com${path === '/' ? '/' : path}`;
+    const canonicalEl = document.querySelector('link[rel="canonical"]');
+    if (canonicalEl) {
+      canonicalEl.setAttribute('href', canonicalHref);
+    }
+
+    const titles: Record<NavTab, string> = {
+      home: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం | శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ — తెలుగు పంచాంగం & రాశి ఫలితాలు (telugujyothisham.com)',
+      panchangam: 'నిత్య పంచాంగం, రాశి చక్రం & దిన ఫలం | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/panchangam)',
+      awards: 'పొందిన సత్కారాలు & పురస్కారాలు | శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (telugujyothisham.com/awards)',
+      services: 'వైదిక పూజా సేవలు & హోమాలు | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/services)',
+      about: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి గురించి | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/about)',
+      contact: 'సంప్రదించండి | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/contact)',
+    };
+    document.title = titles[activeTab] || titles.home;
+  }, [activeTab]);
 
   const currentDay = WEEK_DATA.find((d) => d.id === selectedDayId) ?? WEEK_DATA[0];
 
@@ -50,12 +134,12 @@ function AppContent() {
   };
 
   const handleNavigateToPanchangam = () => {
-    setActiveTab('panchangam');
+    handleSelectTab('panchangam');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNavigateToAwards = () => {
-    setActiveTab('awards');
+    handleSelectTab('awards');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -64,7 +148,7 @@ function AppContent() {
       {/* Top Navigation with language switcher, tabs, bell & booking CTA */}
       <Header
         activeTab={activeTab}
-        onSelectTab={(tab) => setActiveTab(tab)}
+        onSelectTab={handleSelectTab}
         onOpenBooking={() => handleOpenBooking()}
       />
 

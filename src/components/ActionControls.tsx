@@ -17,7 +17,7 @@ import {
   generateWhatsAppShareText,
   generateHoroscopeShareText,
   RASHI_META_LIST,
-  CANONICAL_DOMAIN_URL,
+  PANCHANGAM_PAGE_URL,
 } from '../utils/panchangaLogic';
 import { playTempleBell } from '../utils/audioChime';
 import { useLanguage } from '../context/LanguageContext';
@@ -36,16 +36,16 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
   const [showAutomationGuide, setShowAutomationGuide] = useState<boolean>(false);
   const { language, t } = useLanguage();
 
-  const shareText = generateWhatsAppShareText(day, CANONICAL_DOMAIN_URL);
+  const shareText = generateWhatsAppShareText(day, PANCHANGAM_PAGE_URL);
   const whatsAppUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
   const directToMyNumberUrl = `https://wa.me/918977986166?text=${encodeURIComponent(shareText)}`;
 
-  const horoscopeShareText = generateHoroscopeShareText(day, selectedRashiForShare, CANONICAL_DOMAIN_URL);
+  const horoscopeShareText = generateHoroscopeShareText(day, selectedRashiForShare, PANCHANGAM_PAGE_URL);
   const horoscopeWhatsAppUrl = `https://wa.me/?text=${encodeURIComponent(horoscopeShareText)}`;
 
   const handleCopy = async () => {
     try {
-      const text = generateWhatsAppShareText(day, CANONICAL_DOMAIN_URL);
+      const text = generateWhatsAppShareText(day, PANCHANGAM_PAGE_URL);
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
@@ -65,7 +65,7 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
   };
 
   const handleWhatsAppShare = (e: React.MouseEvent) => {
-    const textToShare = generateWhatsAppShareText(day, CANONICAL_DOMAIN_URL);
+    const textToShare = generateWhatsAppShareText(day, PANCHANGAM_PAGE_URL);
 
     if (navigator.share && /mobile|android|iphone|ipad/i.test(navigator.userAgent)) {
       e.preventDefault();
@@ -120,7 +120,7 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 mt-1">
               {t(
-                'వ్యక్తిగత ఫోన్ నంబర్ లేకుండా, 12 రాశుల పూర్తి దిన ఫలం లేదా ఏదైనా ఒక రాశి ఫలితాన్ని వెబ్‌సైట్ లింక్‌తో (telugujyothisham.com) షేర్ చేయండి.',
+                'వ్యక్తిగత ఫోన్ నంబర్ లేకుండా, 12 రాశుల పూర్తి దిన ఫలం లేదా ఏదైనా ఒక రాశి ఫలితాన్ని వెబ్‌సైట్ లింక్‌తో (telugujyothisham.com/panchangam) షేర్ చేయండి.',
                 'Generate and share a custom daily fortune summary for all 12 Rashis or any individual Rashi with the website URL (excluding personal contact details).'
               )}
             </p>
@@ -226,7 +226,7 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
                   {t('షేర్ అయ్యే మెసేజ్ ప్రివ్యూ (ఫోన్ నంబర్ లేకుండా):', 'Generated Message Preview (No Personal Contact Info):')}
                 </span>
                 <span className="text-[11px] font-mono text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
-                  {CANONICAL_DOMAIN_URL}
+                  {PANCHANGAM_PAGE_URL}
                 </span>
               </div>
               <pre className="text-xs sm:text-sm text-slate-800 font-telugu whitespace-pre-wrap leading-relaxed max-h-60 overflow-y-auto bg-white p-3.5 rounded-xl border border-amber-200">

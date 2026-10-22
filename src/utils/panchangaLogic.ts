@@ -309,14 +309,99 @@ export function getDailyRashiFortunes(day: DayData): RashiDailyFortune[] {
   });
 }
 
+export interface RashiGocharaStrength {
+  id: string;
+  teluguName: string;
+  englishName: string;
+  shortTelugu: string;
+  shortEnglish: string;
+  lord: string;
+  gocharaHouse: number;
+  houseLabel: string;
+  status: 'favorable' | 'mixed' | 'caution';
+  statusLabel: string;
+  strength: number; // 0 to 100 Gochara strength score
+  planets: string;
+  planetList: string[];
+  planetCount: number;
+}
+
+const HOUSE_BASE_STRENGTH: Record<number, number> = {
+  1: 78,  // Janma Chandra - Shubha
+  2: 66,  // Dhana Sthana - Mixed
+  3: 90,  // Trutiya - Parama Shubha
+  4: 58,  // Chaturtha - Mixed
+  5: 68,  // Panchama - Mixed-Good
+  6: 86,  // Shashtha - Shubha
+  7: 82,  // Saptama - Shubha
+  8: 38,  // Ashtama (Chandrashtamam) - Caution
+  9: 70,  // Navama - Mixed-Good
+  10: 91, // Dashama - Parama Shubha
+  11: 94, // Ekadasha - Parama Shubha
+  12: 54, // Dwadasha - Mixed
+};
+
+/**
+ * Calculates Gochara (current transit) strength (0-100) for all 12 Rashis
+ * based on lunar transit house (Chandra Gochara) and current planetary placements (Graha Stithi).
+ */
+export function calculateGocharaStrengths(day: DayData): RashiGocharaStrength[] {
+  const fortunes = getDailyRashiFortunes(day);
+
+  return fortunes.map((fortune, idx) => {
+    const rawPlanets = (day.grahaStithi?.[fortune.id] || '').trim();
+    const planetList = rawPlanets
+      ? rawPlanets.split(',').map((p) => p.trim()).filter(Boolean)
+      : [];
+
+    // Also check 7th house (Saptama Drishti / direct aspect) planets
+    const seventhRashiId = RASHI_META_LIST[(idx + 6) % 12].id;
+    const seventhPlanets = day.grahaStithi?.[seventhRashiId] || '';
+
+    let score = HOUSE_BASE_STRENGTH[fortune.gocharaHouse] ?? 70;
+
+    // Benefic / planetary presence modifiers in Rashi
+    if (rawPlanets.includes('గురుడు')) score += 5;
+    if (rawPlanets.includes('శుక్రుడు')) score += 4;
+    if (rawPlanets.includes('బుధుడు')) score += 3;
+    if (rawPlanets.includes('చంద్రుడు')) score += 4;
+    if (rawPlanets.includes('సూర్యుడు')) score += 2;
+
+    // Benefic 7th aspect (Saptama Drishti) bonus
+    if (seventhPlanets.includes('గురుడు')) score += 4;
+    if (seventhPlanets.includes('శుక్రుడు') || seventhPlanets.includes('బుధుడు')) score += 2;
+
+    // Clamp to [32, 98]
+    const clampedStrength = Math.max(32, Math.min(98, score));
+
+    return {
+      id: fortune.id,
+      teluguName: fortune.teluguName,
+      englishName: fortune.englishName,
+      shortTelugu: fortune.teluguName.slice(0, 3),
+      shortEnglish: fortune.englishName.slice(0, 3),
+      lord: fortune.lord,
+      gocharaHouse: fortune.gocharaHouse,
+      houseLabel: fortune.houseLabel,
+      status: fortune.status,
+      statusLabel: fortune.statusLabel,
+      strength: clampedStrength,
+      planets: rawPlanets,
+      planetList,
+      planetCount: planetList.length,
+    };
+  });
+}
+
 /**
  * Formats a clean WhatsApp share message with Panchangam + Mesha to Mithuna Rashi teaser and website link (no phone number)
  */
 export const CANONICAL_DOMAIN_URL = 'https://telugujyothisham.com';
+export const PANCHANGAM_PAGE_URL = 'https://telugujyothisham.com/panchangam';
 
 export function generateWhatsAppShareText(day: DayData, shareUrl?: string): string {
-  // Resolve canonical website URL (defaults to https://telugujyothisham.com)
-  const appLink = shareUrl || CANONICAL_DOMAIN_URL;
+  // Resolve canonical Panchangam URL (defaults to https://telugujyothisham.com/panchangam)
+  const appLink = shareUrl || PANCHANGAM_PAGE_URL;
 
   const fortunes = getDailyRashiFortunes(day);
   const mesham = fortunes[0];
@@ -369,7 +454,7 @@ export function generateHoroscopeShareText(
   selectedRashiId: string = 'all',
   shareUrl?: string
 ): string {
-  const appLink = shareUrl || CANONICAL_DOMAIN_URL;
+  const appLink = shareUrl || PANCHANGAM_PAGE_URL;
   const fortunes = getDailyRashiFortunes(day);
   const moonRashiIdx = findMoonRashiIndex(day);
   const moonRashiName = RASHI_META_LIST[moonRashiIdx]?.teluguName || 'మేషం';
