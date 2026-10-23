@@ -4898,6 +4898,20 @@ export const NAKSHATRAS: NakshatraInfo[] = [
 
 export const POOJA_SERVICES: PoojaService[] = [
   {
+    id: 'chandi-homam',
+    name: 'Sri Maha Chandi Homam',
+    teluguName: 'శ్రీ మహా చండీ హోమం',
+    description: 'సకల శత్రుపీడా నివారణకు, దీర్ఘకాలిక గ్రహ దోషాల శాంతికి మరియు కుటుంబ రక్షణకు నిర్వహించే అత్యంత శక్తివంతమైన వైదిక మహాయజ్ఞం.',
+    duration: 'సుమారు 3.5 - 4 గంటలు',
+    benefits: 'సకల విఘ్న వినాశనం, శత్రు భయ రాహిత్యం, సంపూర్ణ ఆయురారోగ్య ఐశ్వర్య సిద్ధి',
+    category: 'homam',
+    recommendedDays: 'అష్టమి, నవమి, చతుర్దశి, పౌర్ణమి లేదా మంగళ/శుక్రవారాలు',
+    englishDescription: 'The supreme Vedic fire ritual invoking Goddess Chandi for eradicating adverse planetary transits, court/enemy disputes, and providing all-round divine protection.',
+    englishDuration: 'Approx. 3.5 - 4 Hours',
+    englishBenefits: 'Total elimination of doshas, freedom from obstacles, victory, and prosperity',
+    englishRecommendedDays: 'Ashtami, Navami, Pournami, Tuesdays, Fridays, or any sacred tithi',
+  },
+  {
     id: 'ganapathi-homam',
     name: 'Maha Ganapathi Homam',
     teluguName: 'శ్రీ మహా గణపతి హోమం',
@@ -4906,6 +4920,10 @@ export const POOJA_SERVICES: PoojaService[] = [
     benefits: 'విఘ్న నాశనం, గృహ శాంతి, వ్యాపార లాభం',
     category: 'homam',
     recommendedDays: 'చతుర్థి, మంగళవారం, శుక్రవారం లేదా ఏ శుభదినమైనా',
+    englishDescription: 'Sacred fire ritual to Lord Ganesha invoking divine blessings to eradicate obstacles, inaugurate new ventures, and bestow wisdom and prosperity.',
+    englishDuration: 'Approx. 2 Hours',
+    englishBenefits: 'Obstacle removal, peace in household, success in business ventures',
+    englishRecommendedDays: 'Chaturthi, Tuesdays, Fridays, or any auspicious muhurtham day',
   },
   {
     id: 'rudrabhishekam',
@@ -4916,6 +4934,10 @@ export const POOJA_SERVICES: PoojaService[] = [
     benefits: 'ఆరోగ్యం, గ్రహ దోష నివారణ, శత్రు భయ నివారణ',
     category: 'abhishekam',
     recommendedDays: 'సోమవారం, ప్రదోష కాలం, మాస శివరాత్రి, ఆరుద్ర నక్షత్రం',
+    englishDescription: 'Venerable Panchamrita and Bilvapatra holy bath to Lord Shiva with sacred Vedic Namaka-Chamaka mantras and Mahanyasa purification.',
+    englishDuration: 'Approx. 1.5 - 2 Hours',
+    englishBenefits: 'Restoration of robust health, mitigation of Kalasarpa dosha, longevity',
+    englishRecommendedDays: 'Mondays, Pradosham, Masa Shivaratri, or Arudra Nakshatram',
   },
   {
     id: 'navagraha-shanthi',
@@ -4926,6 +4948,10 @@ export const POOJA_SERVICES: PoojaService[] = [
     benefits: 'గ్రహ ప్రీతి, మానసిక ప్రశాంతత, అరిష్ట నివారణ',
     category: 'homam',
     recommendedDays: 'జన్మ నక్షత్రం, శనివారం లేదా గురువారం',
+    englishDescription: 'Vedic fire ritual and sacred chanting addressing nine planetary afflictions, Sade Sati, Kuja (Manglik) dosha, and Rahu-Ketu nodes.',
+    englishDuration: 'Approx. 3 Hours',
+    englishBenefits: 'Planetary propitiation, mental peace, relief from unexpected setbacks',
+    englishRecommendedDays: 'Janma Nakshatra day, Saturdays, or Thursdays',
   },
   {
     id: 'satyanarayana-vratham',
@@ -4936,6 +4962,10 @@ export const POOJA_SERVICES: PoojaService[] = [
     benefits: 'దాంపత్య అనుకూలత, సర్వ కార్య జయం, ఐశ్వర్య వృద్ధి',
     category: 'vratham',
     recommendedDays: 'పౌర్ణమి, ఏకాదశి, శనివారం లేదా గృహప్రవేశ దినాలు',
+    englishDescription: 'Auspicious Vishnu worship and devotional katha recitation bestowing family harmony, marital bliss, children, and material prosperity.',
+    englishDuration: 'Approx. 2.5 Hours',
+    englishBenefits: 'Marital accord, overall success in undertakings, abundance',
+    englishRecommendedDays: 'Pournami (Full Moon), Ekadashi, Saturdays, or housewarming days',
   },
   {
     id: 'muhurtha-nirnayam',
@@ -4946,5 +4976,9 @@ export const POOJA_SERVICES: PoojaService[] = [
     benefits: 'నిర్దుష్ట ముహూర్త బలం, దోష రహిత కాల నిర్ణయం',
     category: 'muhurtham',
     recommendedDays: 'ముందస్తు అపాయింట్‌మెంట్ ద్వారా ఏ రోజైనా',
+    englishDescription: 'Personal consultation with Sri Dheeraj Sharma to calculate impeccable lagna timings for marriage, gruhapravesham, and major life ventures.',
+    englishDuration: '45 Minutes In-depth Vedic Consultation',
+    englishBenefits: 'Astrologically flawless lagna selection, avoidance of fatal doshas',
+    englishRecommendedDays: 'Any day by advance appointment or WhatsApp reservation',
   },
 ];

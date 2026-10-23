@@ -29,6 +29,7 @@ import { DailyNakshatraArticle } from './components/DailyNakshatraArticle';
 import { CitySEOData, findCityBySlug } from './data/citiesData';
 import { PanchangamQuickSummary } from './components/PanchangamQuickSummary';
 import { DailyAstrologyInsights } from './components/DailyAstrologyInsights';
+import { UpcomingRitualCountdown } from './components/UpcomingRitualCountdown';
 
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
@@ -100,7 +101,7 @@ function AppContent() {
   const [selectedDayId, setSelectedDayId] = useState<string>(() => getTodayAndTomorrowIds(WEEK_DATA).todayId);
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
   const [selectedPoojaForBooking, setSelectedPoojaForBooking] = useState<PoojaService | null>(null);
-  const { t, tr } = useLanguage();
+  const { t, tr, language } = useLanguage();
 
   const handleSelectTab = useCallback((tab: NavTab) => {
     setSelectedCity(null);
@@ -167,7 +168,7 @@ function AppContent() {
       twitterUrlEl.setAttribute('content', canonicalHref);
     }
 
-    const titles: Record<NavTab, string> = {
+    const titlesTelugu: Record<NavTab, string> = {
       home: 'పంచాంగం & రాశి ఫలితాలు | నేటి తెలుగు పంచాంగం, తిథి, నక్షత్రం, దిన ఫలం — telugujyothisham.com',
       panchangam: 'పంచాంగం | నేటి తెలుగు పంచాంగం, తిథి, నక్షత్రం, రాహుకాలం, దిన ఫలం — telugujyothisham.com/panchangam',
       awards: 'పొందిన సత్కారాలు & పురస్కారాలు | శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (telugujyothisham.com/awards)',
@@ -176,7 +177,16 @@ function AppContent() {
       contact: 'సంప్రదించండి | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/contact)',
     };
 
-    const descriptions: Record<NavTab, string> = {
+    const titlesEnglish: Record<NavTab, string> = {
+      home: 'Telugu Panchangam Today & Horoscope | Sri Lakshmi Ganapathi Astrology — telugujyothisham.com',
+      panchangam: 'Telugu Panchangam | Today Tithi, Nakshatram, Rahu Kalam, Muhurtham — telugujyothisham.com/panchangam',
+      awards: 'Vedic Honors & Awards | Sri Jallavaram Sai Dheeraj Sharma — telugujyothisham.com/awards',
+      services: 'Vedic Homams & Rituals | Sri Chandi Homam, Lakshmi Kubera Yagam — telugujyothisham.com/services',
+      about: 'About Sri Jallavaram Sai Dheeraj Sharma | Renowned Vedic Astrologer — telugujyothisham.com/about',
+      contact: 'Contact Vedic Astrologer & Purohit | Sri Lakshmi Ganapathi Astrology — telugujyothisham.com/contact',
+    };
+
+    const descriptionsTelugu: Record<NavTab, string> = {
       home: 'పంచాంగం (Panchangam) - నేటి తెలుగు పంచాంగం, 12 రాశుల దిన ఫలాలు, తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, రాహుకాలం మరియు శుభ ముహూర్తాలు. ప్రతిరోజూ తాజా పంచాంగం telugujyothisham.com లో చూడండి.',
       panchangam: 'పంచాంగం (Panchangam) - నేటి ఖచ్చితమైన తెలుగు పంచాంగం, తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, అమృత ఘడియలు, రాహుకాలం, 12 రాశుల దిన ఫలాలు మరియు దక్షిణ భారత రాశి చక్రం. శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం దృక్సిద్ధాంత ప్రామాణిక ఫలితాలు.',
       awards: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు పొందిన జ్యోతిష సత్కారాలు, బిరుదులు మరియు పూజా పురస్కారాల వివరాలు.',
@@ -185,10 +195,22 @@ function AppContent() {
       contact: 'జ్యోతిష సంప్రదింపులు, ముహూర్త నిర్ణయం మరియు పూజా బుకింగ్ కొరకు శ్రీ ధీరజ్ శర్మ గారిని సంప్రదించండి.',
     };
 
-    const targetTitle = titles[activeTab] || titles.home;
-    const targetDesc = descriptions[activeTab] || descriptions.home;
+    const descriptionsEnglish: Record<NavTab, string> = {
+      home: 'Daily Telugu Panchangam, today tithi, nakshatram, yoga, karana, rahu kalam, durmuhurtham, and daily rashi fortunes for all 12 zodiac signs by Sri Lakshmi Ganapathi Astrology.',
+      panchangam: 'Authentic Telugu Panchangam with today tithi, nakshatram, rahu kalam, amrutha gadiyalu, varjyam, and 12-rashi planetary transit analysis with South Indian Kundli.',
+      awards: 'Prestigious Vedic awards, golden kankanam citations, and state-level felicitations conferred upon Sri Jallavaram Sai Dheeraj Sharma.',
+      services: 'Authentic Vedic homams, Sri Chandi Sahitha Rudra Homam, Gruhapravesham, wedding muhurthams, and online sankalpam booking for global NRI devotees.',
+      about: 'Profile and spiritual journey of renowned Vedic scholar and astrologer Sri Jallavaram Sai Dheeraj Sharma.',
+      contact: 'Consult renowned Telugu astrologer and Smartha purohit Sri Dheeraj Sharma for horoscope consultation, muhurtham, and pooja bookings.',
+    };
+
+    const targetTitle = (language === 'en' ? titlesEnglish : titlesTelugu)[activeTab] || titlesTelugu.home;
+    const targetDesc = (language === 'en' ? descriptionsEnglish : descriptionsTelugu)[activeTab] || descriptionsTelugu.home;
 
     document.title = targetTitle;
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = language;
+    }
 
     const ogTitleEl = document.querySelector('meta[property="og:title"]');
     if (ogTitleEl) ogTitleEl.setAttribute('content', targetTitle);
@@ -204,7 +226,7 @@ function AppContent() {
 
     const twitterDescEl = document.querySelector('meta[name="twitter:description"]');
     if (twitterDescEl) twitterDescEl.setAttribute('content', targetDesc);
-  }, [activeTab]);
+  }, [activeTab, language]);
 
   const currentDay = WEEK_DATA.find((d) => d.id === selectedDayId) ?? WEEK_DATA[0];
 
@@ -373,23 +395,13 @@ function AppContent() {
           </div>
         )}
 
-        {/* TAB 3: POOJA SERVICES */}
+        {/* TAB 3: POOJA SERVICES & LIVE UPCOMING RITUAL COUNTDOWN */}
         {activeTab === 'services' && (
-          <div className="space-y-8">
-            <div className="text-center max-w-3xl mx-auto space-y-3">
-              <span className="text-xs font-bold text-amber-800 uppercase tracking-widest bg-amber-100 px-3 py-1 rounded-full">
-                Vedic Rituals & Homams
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-amber-950">
-                {t('వైదిక పూజా సేవలు & క్రతువులు', 'Vedic Pooja Services & Homams')}
-              </h2>
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                {t(
-                  'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి నేతృత్వంలో సమస్త పూజలు, వివాహ, గృహప్రవేశ క్రతువులు మరియు శాంతి హోమాలు శాస్త్రోక్తంగా స్వయంగా నిర్వహించబడును.',
-                  'All Vedic rituals, weddings, Gruhapravesham ceremonies, and Shanti Homams are personally conducted according to authentic Shastra traditions by Sri Jallavaram Sai Dheeraj Sharma Garu.'
-                )}
-              </p>
-            </div>
+          <div className="space-y-10">
+            {/* Live Upcoming Temple Event & Homam Countdown Section */}
+            <UpcomingRitualCountdown
+              onOpenBooking={(service) => handleOpenBooking(service)}
+            />
 
             <PoojaServicesSection
               onSelectService={(service) => handleOpenBooking(service)}

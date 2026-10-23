@@ -75,6 +75,10 @@ export interface PoojaService {
   benefits: string;
   category: 'homam' | 'abhishekam' | 'pooja' | 'muhurtham' | 'vratham';
   recommendedDays: string;
+  englishDescription?: string;
+  englishDuration?: string;
+  englishBenefits?: string;
+  englishRecommendedDays?: string;
 }
 
 export interface BookingSubmission {

@@ -1,12 +1,14 @@
 import React from 'react';
 import { Award, BookOpen, Flame, MapPin, Phone, MessageCircle, Mail, CheckCircle, ShieldCheck } from 'lucide-react';
 import { OmEmblem } from './OmEmblem';
+import { useLanguage } from '../context/LanguageContext';
 
 interface AboutGurujiSectionProps {
   onOpenBooking: () => void;
 }
 
 export const AboutGurujiSection: React.FC<AboutGurujiSectionProps> = ({ onOpenBooking }) => {
+  const { t, language } = useLanguage();
   const whatsappUrl = `https://wa.me/918977986166?text=${encodeURIComponent(
     'నమస్కారం శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు, మీ మార్గదర్శకత్వం కోసం సంప్రదిస్తున్నాను.'
   )}`;
@@ -26,19 +28,22 @@ export const AboutGurujiSection: React.FC<AboutGurujiSectionProps> = ({ onOpenBo
             </div>
           </div>
           <span className="inline-block mt-3 px-3 py-1 bg-amber-800 text-amber-200 text-xs rounded-full border border-amber-600 font-semibold">
-            వైదిక పండితులు & ప్రముఖ జ్యోతిష్యులు
+            {t('వైదిక పండితులు & ప్రముఖ జ్యోతిష్యులు', 'Vedic Scholar & Eminent Astrologer')}
           </span>
         </div>
 
         <div className="space-y-3.5 text-center md:text-left">
           <span className="text-amber-300 text-xs uppercase tracking-widest font-semibold block">
-            Vedic Scholar & Astrologer Profile
+            {t('వైదిక పండితులు & జ్యోతిష శిరోమణి', 'Vedic Scholar & Astrologer Profile')}
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-white">
-            శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు
+            {t('శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు', 'Sri Jallavaram Sai Dheeraj Sharma')}
           </h2>
           <p className="text-amber-200 font-medium text-sm sm:text-base leading-relaxed">
-            స్మార్త వైదిక ప్రవీణులు, ప్రముఖ జ్యోతిష నిపుణులు. ప్రాచీన గురుకుల వేద సంప్రదాయంలో శిక్షణ పొంది, వేద మంత్రోచ్ఛారణతో యజ్ఞ యాగాదులు, శుభ ముహూర్త నిర్ణయం మరియు జాతక పరిశీలనలో సుదీర్ఘ అనుభవం కలిగిన ప్రముఖులు.
+            {t(
+              'స్మార్త వైదిక ప్రవీణులు, ప్రముఖ జ్యోతిష నిపుణులు. ప్రాచీన గురుకుల వేద సంప్రదాయంలో శిక్షణ పొంది, వేద మంత్రోచ్ఛారణతో యజ్ఞ యాగాదులు, శుభ ముహూర్త నిర్ణయం మరియు జాతక పరిశీలనలో సుదీర్ఘ అనుభవం కలిగిన ప్రముఖులు.',
+              'Renowned Vedic scholar and astrologer trained in traditional Gurukula Smartha Vedic systems. Highly celebrated for presiding over grand Yagnas, flawless muhurtham calculations, and authentic horoscope guidance with flawless Vedic intonation.'
+            )}
           </p>
 
           <div className="pt-2 flex flex-wrap gap-3 justify-center md:justify-start text-xs sm:text-sm">
@@ -49,14 +54,14 @@ export const AboutGurujiSection: React.FC<AboutGurujiSectionProps> = ({ onOpenBo
               className="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold rounded-xl transition-transform hover:scale-105"
             >
               <MessageCircle size={16} />
-              <span>వాట్సాప్: 8977986166</span>
+              <span>{t('వాట్సాప్: 8977986166', 'WhatsApp: 8977986166')}</span>
             </a>
             <a
               href="tel:+918977986166"
               className="inline-flex items-center gap-2 px-4 py-2 bg-amber-800 hover:bg-amber-700 text-white font-semibold rounded-xl border border-amber-600 transition-colors"
             >
               <Phone size={15} />
-              <span>కాల్: 8977986166</span>
+              <span>{t('కాల్: 8977986166', 'Call: +91-8977986166')}</span>
             </a>
           </div>
         </div>
@@ -66,25 +71,40 @@ export const AboutGurujiSection: React.FC<AboutGurujiSectionProps> = ({ onOpenBo
       <div className="grid sm:grid-cols-3 gap-6">
         <div className="bg-white border border-amber-200 rounded-2xl p-6 shadow-md">
           <BookOpen size={28} className="text-amber-700 mb-3" />
-          <h3 className="text-lg font-bold text-amber-950 mb-2">వేద గురుపరంపర</h3>
+          <h3 className="text-lg font-bold text-amber-950 mb-2">
+            {t('వేద గురుపరంపర', 'Vedic Lineage (Parampara)')}
+          </h3>
           <p className="text-slate-600 text-sm leading-relaxed">
-            తరతరాల పూర్వీకుల వేద సంస్కృతిని పుణికిపుచ్చుకుని, ప్రామాణిక గ్రంథాల అధ్యయనంతో సమస్త క్రతువులను శాస్త్రోక్తంగా నిర్వహించే గురుపీఠం.
+            {t(
+              'తరతరాల పూర్వీకుల వేద సంస్కృతిని పుణికిపుచ్చుకుని, ప్రామాణిక గ్రంథాల అధ్యయనంతో సమస్త క్రతువులను శాస్త్రోక్తంగా నిర్వహించే గురుపీఠం.',
+              'Steeped in an unbroken ancestral lineage of Rigvedic & Smartha heritage, strictly adhering to classical Shastra treatises and authentic ritual conduct.'
+            )}
           </p>
         </div>
 
         <div className="bg-white border border-amber-200 rounded-2xl p-6 shadow-md">
           <Flame size={28} className="text-amber-700 mb-3" />
-          <h3 className="text-lg font-bold text-amber-950 mb-2">హోమ యజ్ఞ క్రతువులు</h3>
+          <h3 className="text-lg font-bold text-amber-950 mb-2">
+            {t('హోమ యజ్ఞ క్రతువులు', 'Maha Yagnas & Sacred Fires')}
+          </h3>
           <p className="text-slate-600 text-sm leading-relaxed">
-            శ్రీ చండీ సప్తశతి, లక్ష్మీ గణపతి, సుదర్శన, మృత్యుంజయ మహా హోమాలను నిర్దుష్టమైన వైదిక స్వర విన్యాసంతో జరిపించి సంపూర్ణ ఫలాన్ని చేకూర్చుతారు.
+            {t(
+              'శ్రీ చండీ సప్తశతి, లక్ష్మీ గణపతి, సుదర్శన, మృత్యుంజయ మహా హోమాలను నిర్దుష్టమైన వైదిక స్వర విన్యాసంతో జరిపించి సంపూర్ణ ఫలాన్ని చేకూర్చుతారు.',
+              'Conductor of sacred Sri Chandi Saptashati, Lakshmi Ganapathi, Sudarshana, and Mrityunjaya Homams with immaculate Vedic pitch and flawless metric chanting.'
+            )}
           </p>
         </div>
 
         <div className="bg-white border border-amber-200 rounded-2xl p-6 shadow-md">
           <Award size={28} className="text-amber-700 mb-3" />
-          <h3 className="text-lg font-bold text-amber-950 mb-2">నిష్కళంక జ్యోతిషం</h3>
+          <h3 className="text-lg font-bold text-amber-950 mb-2">
+            {t('నిష్కళంక జ్యోతిషం', 'Pure Vedic Astrology')}
+          </h3>
           <p className="text-slate-600 text-sm leading-relaxed">
-            మూఢనమ్మకాలు లేకుండా, దృక్సిద్ధాంత ఖగోళ గణితం ఆధారంగా జాతక పరిశీలన, వివాహ పొంతన మరియు పరిహారాలను మాత్రమే సూచిస్తారు.
+            {t(
+              'మూఢనమ్మకాలు లేకుండా, దృక్సిద్ధాంత ఖగోళ గణితం ఆధారంగా జాతక పరిశీలన, వివాహ పొంతన మరియు పరిహారాలను మాత్రమే సూచిస్తారు.',
+              'Free from superstitions — grounded entirely in Drik-Siddhanta astronomical mathematics, authentic chart synthesis, and Shastra-prescribed remedies.'
+            )}
           </p>
         </div>
       </div>
@@ -93,10 +113,13 @@ export const AboutGurujiSection: React.FC<AboutGurujiSectionProps> = ({ onOpenBo
       <div className="bg-amber-50 border border-amber-300 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-2 text-center md:text-left">
           <h4 className="text-xl font-bold text-amber-950">
-            మీ కుటుంబ శుభకార్యం కోసం ధీరజ్ శర్మ గారిని సంప్రదించండి
+            {t('మీ కుటుంబ శుభకార్యం కోసం ధీరజ్ శర్మ గారిని సంప్రదించండి', 'Consult Sri Dheeraj Sharma for Your Auspicious Family Ceremonies')}
           </h4>
           <p className="text-sm text-slate-700 max-w-xl leading-relaxed">
-            వివాహం, గృహప్రవేశం లేదా హోమ క్రతువుల కొరకు ముందస్తుగా తేదీలు నమోదు చేసుకోగలరు.
+            {t(
+              'వివాహం, గృహప్రవేశం లేదా హోమ క్రతువుల కొరకు ముందస్తుగా తేదీలు నమోదు చేసుకోగలరు.',
+              'Reserve your auspicious dates in advance for weddings, gruhapravesham rituals, or personal home/temple homam ceremonies.'
+            )}
           </p>
         </div>
         <button
@@ -104,7 +127,7 @@ export const AboutGurujiSection: React.FC<AboutGurujiSectionProps> = ({ onOpenBo
           onClick={onOpenBooking}
           className="px-6 py-3 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-xl shadow-md transition-transform hover:scale-105 cursor-pointer whitespace-nowrap"
         >
-          పూజ సంకల్ప బుకింగ్
+          {t('పూజ సంకల్ప బుకింగ్', 'Book Ritual / Consultation')}
         </button>
       </div>
     </div>

@@ -1,12 +1,15 @@
 import React from 'react';
 import { Sparkles, MapPin, Phone, Mail, Clock, ShieldCheck, Heart } from 'lucide-react';
 import { OmEmblem } from './OmEmblem';
+import { useLanguage } from '../context/LanguageContext';
 
 export interface FooterProps {
   onSelectCity?: (citySlug: string) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-amber-950 text-amber-100/90 pt-14 pb-8 border-t-4 border-amber-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,10 +18,13 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
           <div>
             <h4 className="text-xl font-bold font-telugu text-white flex items-center gap-2.5 mb-3">
               <OmEmblem className="w-8 h-8 shrink-0" size={32} />
-              <span>శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం</span>
+              <span>{t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం', 'Sreelakshmi Ganapathi Astrology Centre')}</span>
             </h4>
             <p className="text-sm font-telugu text-amber-200/80 leading-relaxed mb-3">
-              వేద పండితులు, జ్యోతిష నిపుణులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి నేతృత్వంలో ప్రాచీన వేద గణిత సిద్ధాంతాల ప్రకారం రోజువారీ పంచాంగం మరియు జ్యోతిష సేవలు అందించబడును.
+              {t(
+                'వేద పండితులు, జ్యోతిష నిపుణులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి నేతృత్వంలో ప్రాచీన వేద గణిత సిద్ధాంతాల ప్రకారం రోజువారీ పంచాంగం మరియు జ్యోతిష సేవలు అందించబడును.',
+                'Led by Vedic Scholar and Astrologer Sri Jallavaram Sai Dheeraj Sharma, offering daily authentic Vedic Panchangam and sacred ritual services calculated per traditional astronomical principles.'
+              )}
             </p>
             <a
               href="https://telugujyothisham.com"
@@ -35,16 +41,16 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
           <div>
             <h4 className="text-base font-bold font-telugu text-white mb-3 flex items-center gap-2">
               <Clock size={16} className="text-amber-400" />
-              <span>జ్యోతిషాలయ సమయాలు & సేవలు</span>
+              <span>{t('జ్యోతిషాలయ సమయాలు & సేవలు', 'Timings & Sacred Services')}</span>
             </h4>
             <ul className="text-sm font-telugu space-y-2 text-amber-200/80">
-              <li>ఉదయం: 06:30 AM నుండి 12:30 PM వరకు</li>
-              <li>సాయంత్రం: 04:30 PM నుండి 08:30 PM వరకు</li>
+              <li>{t('ఉదయం: 06:30 AM నుండి 12:30 PM వరకు', 'Morning: 06:30 AM to 12:30 PM')}</li>
+              <li>{t('సాయంత్రం: 04:30 PM నుండి 08:30 PM వరకు', 'Evening: 04:30 PM to 08:30 PM')}</li>
               <li className="pt-2 text-xs text-amber-300">
-                • జాతక పరిశీలన, వివాహ పొంతన, నవగ్రహ శాంతి, వాస్తు సలహాలు
+                • {t('జాతక పరిశీలన, వివాహ పొంతన, నవగ్రహ శాంతి, వాస్తు సలహాలు', 'Horoscope analysis, marriage matching, Navagraha Shanti & Vastu guidance')}
               </li>
               <li className="text-xs text-amber-300">
-                • సంపూర్ణ గృహప్రవేశ మరియు వైదిక హోమ క్రతువులు
+                • {t('సంపూర్ణ గృహప్రవేశ మరియు వైదిక హోమ క్రతువులు', 'Comprehensive Gruhapravesam & Vedic Homam rituals')}
               </li>
             </ul>
           </div>
@@ -53,7 +59,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
           <div>
             <h4 className="text-base font-bold font-telugu text-white mb-3 flex items-center gap-2">
               <Phone size={16} className="text-amber-400" />
-              <span>సంప్రదించవలసిన వివరాలు</span>
+              <span>{t('సంప్రదించవలసిన వివరాలు', 'Contact & Devotee Desk')}</span>
             </h4>
             <div className="text-sm font-telugu space-y-3 text-amber-200/90">
               <a
@@ -66,7 +72,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
                   💬
                 </div>
                 <div>
-                  <span className="text-xs text-emerald-300 block font-semibold">వాట్సాప్ సంప్రదింపులు</span>
+                  <span className="text-xs text-emerald-300 block font-semibold">{t('వాట్సాప్ సంప్రదింపులు', 'WhatsApp Desk')}</span>
                   <span className="font-mono text-base font-bold text-white tracking-wide">8977986166</span>
                 </div>
               </a>
@@ -76,12 +82,12 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
                 className="flex items-center gap-2 hover:text-white transition-colors"
               >
                 <Phone size={16} className="text-amber-400 shrink-0" />
-                <span>ఫోన్ కాల్: <strong className="font-mono text-amber-200 font-semibold tracking-wide">+91 8977986166</strong></span>
+                <span>{t('ఫోన్ కాల్: ', 'Direct Call: ')}<strong className="font-mono text-amber-200 font-semibold tracking-wide">+91 8977986166</strong></span>
               </a>
 
               <p className="flex items-start gap-2">
                 <MapPin size={16} className="text-amber-400 shrink-0 mt-0.5" />
-                <span>పసుమాముల, హయత్‌నగర్, హైదరాబాద్</span>
+                <span>{t('పసుమాముల, హయత్‌నగర్, హైదరాబాద్', 'Pasumamula, Hayathnagar, Hyderabad, Telangana')}</span>
               </p>
 
               <a
@@ -95,18 +101,19 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
           </div>
         </div>
 
-
-
         {/* Shloka and Dedication */}
         <div className="pt-8 text-center space-y-3 font-telugu">
           <p className="text-base sm:text-lg font-bold text-amber-300">
-            సర్వేజనా సుఖినోభవంతు · లోకాః సమస్తాః సుఖినోభవంతు
+            {t('సర్వేజనా సుఖినోభవంతు · లోకాః సమస్తాః సుఖినోభవంతు', 'Sarvejana Sukhinobhavantu · Lokah Samastah Sukhino Bhavantu')}
           </p>
           <p className="text-xs sm:text-sm text-amber-200/70">
-            సమర్పణ: <strong>జల్లవరం సాయి ధీరజ్ శర్మ</strong>
+            {t('సమర్పణ: ', 'Devotedly presented by: ')}<strong>{t('జల్లవరం సాయి ధీరజ్ శర్మ', 'Jallavaram Sai Dheeraj Sharma')}</strong>
           </p>
           <p className="text-[11px] text-amber-400/60 max-w-2xl mx-auto leading-normal">
-            గమనిక: ఈ సమయాలు ఆంధ్రప్రదేశ్ మరియు తెలంగాణ ప్రాంతాలకు సంబంధించిన ప్రామాణిక సూర్యోదయ గణనలు. ప్రాంతీయ అక్షాంశ, రేఖాంశాలను బట్టి కొన్ని నిమిషాల వ్యత్యాసం ఉండవచ్చు. శుభ కార్యాల కోసం శ్రీ ధీరజ్ శర్మ గారి సలహా తప్పనిసరి.
+            {t(
+              'గమనిక: ఈ సమయాలు ఆంధ్రప్రదేశ్ మరియు తెలంగాణ ప్రాంతాలకు సంబంధించిన ప్రామాణిక సూర్యోదయ గణనలు. ప్రాంతీయ అక్షాంశ, రేఖాంశాలను బట్టి కొన్ని నిమిషాల వ్యత్యాసం ఉండవచ్చు. శుభ కార్యాల కోసం శ్రీ ధీరజ్ శర్మ గారి సలహా తప్పనిసరి.',
+              'Note: Timings are computed based on standard astrological planetary calculations for AP, Telangana & worldwide coordinates. Exact planetary transit times may vary slightly by local longitude/latitude.'
+            )}
           </p>
         </div>
       </div>

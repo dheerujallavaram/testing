@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Award, Calendar, MapPin, ExternalLink, X, ZoomIn, Sparkles, CheckCircle2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export interface AwardItem {
   id: string;
@@ -138,6 +139,7 @@ export const AWARDS_DATA: AwardItem[] = [
 ];
 
 export const AwardsSection: React.FC = () => {
+  const { t, language } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<'all' | 'certificate' | 'felicitation' | 'yagnam'>('all');
   const [selectedAward, setSelectedAward] = useState<AwardItem | null>(null);
 
@@ -154,29 +156,35 @@ export const AwardsSection: React.FC = () => {
         <div className="relative z-10 max-w-4xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-800/80 border border-amber-500/60 text-amber-300 text-xs sm:text-sm font-semibold">
             <Award size={16} className="text-amber-400" />
-            <span>ప్రతిష్టాత్మక గౌరవాలు & బిరుదులు</span>
+            <span>{t('ప్రతిష్టాత్మక గౌరవాలు & బిరుదులు', 'Prestigious Honors & Vedic Citations')}</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-bold text-white tracking-tight leading-tight">
-            శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు పొందిన సత్కారాలు
+            {t(
+              'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు పొందిన సత్కారాలు',
+              'Vedic Honors & Awards Conferred upon Sri Jallavaram Sai Dheeraj Sharma'
+            )}
           </h1>
 
           <p className="text-amber-200/90 text-sm sm:text-base leading-relaxed max-w-3xl">
-            జ్యోతిష, వాస్తు, వైదిక శాస్త్రాలలో విశిష్ట పాండిత్యానికి గాను తిరుపతి తితిదే మహతి ఆడిటోరియం, విజయవాడ విశ్వజ్యోతి జ్యోతిష విజ్ఞాన పీఠం మరియు ప్రముఖ సభల నుండి లభించిన బిరుదులు, సువర్ణ కంకణాలు & ప్రశంసా పత్రాలు.
+            {t(
+              'జ్యోతిష, వాస్తు, వైదిక శాస్త్రాలలో విశిష్ట పాండిత్యానికి గాను తిరుపతి తితిదే మహతి ఆడిటోరియం, విజయవాడ విశ్వజ్యోతి జ్యోతిష విజ్ఞాన పీఠం మరియు ప్రముఖ సభల నుండి లభించిన బిరుదులు, సువర్ణ కంకణాలు & ప్రశంసా పత్రాలు.',
+              'Prestigious titles, gold bracelets (Suvarna Kankanam), and merit certificates bestowed by Tirupati TTD Mahati Auditorium, Vishwajyothi Vedic Peetham Vijayawada, and eminent astrological assemblies.'
+            )}
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2 text-xs sm:text-sm">
             <span className="bg-amber-900/90 border border-amber-600/70 px-3.5 py-1.5 rounded-xl text-amber-200 flex items-center gap-1.5">
               <CheckCircle2 size={15} className="text-emerald-400" />
-              <span>జ్యోతిష శిరోమణి (తిరుపతి TTD)</span>
+              <span>{t('జ్యోతిష శిరోమణి (తిరుపతి TTD)', 'Jyothisha Shiromani (Tirupati TTD)')}</span>
             </span>
             <span className="bg-amber-900/90 border border-amber-600/70 px-3.5 py-1.5 rounded-xl text-amber-200 flex items-center gap-1.5">
               <CheckCircle2 size={15} className="text-amber-400" />
-              <span>సువర్ణ కంకణ పురస్కారం (2025)</span>
+              <span>{t('సువర్ణ కంకణ పురస్కారం (2025)', 'Suvarna Kankana Puraskaram (2025)')}</span>
             </span>
             <span className="bg-amber-900/90 border border-amber-600/70 px-3.5 py-1.5 rounded-xl text-amber-200 flex items-center gap-1.5">
               <CheckCircle2 size={15} className="text-amber-400" />
-              <span>గ్లోబల్ ప్రెస్టీజియస్ అవార్డు</span>
+              <span>{t('గ్లోబల్ ప్రెస్టీజియస్ అవార్డు', 'Global Prestigious Award')}</span>
             </span>
           </div>
         </div>
@@ -194,7 +202,7 @@ export const AwardsSection: React.FC = () => {
                 : 'text-amber-900 hover:bg-amber-50'
             }`}
           >
-            అన్నీ ({AWARDS_DATA.length})
+            {t('అన్నీ', 'All')} ({AWARDS_DATA.length})
           </button>
           <button
             type="button"
@@ -205,7 +213,7 @@ export const AwardsSection: React.FC = () => {
                 : 'text-amber-900 hover:bg-amber-50'
             }`}
           >
-            బిరుదు & ప్రశంసా పత్రాలు ({AWARDS_DATA.filter((a) => a.category === 'certificate').length})
+            {t('బిరుదు & ప్రశంసా పత్రాలు', 'Citations & Certificates')} ({AWARDS_DATA.filter((a) => a.category === 'certificate').length})
           </button>
           <button
             type="button"
@@ -216,7 +224,7 @@ export const AwardsSection: React.FC = () => {
                 : 'text-amber-900 hover:bg-amber-50'
             }`}
           >
-            వేదిక సత్కారాలు & శాలువాలు ({AWARDS_DATA.filter((a) => a.category === 'felicitation').length})
+            {t('వేదిక సత్కారాలు & శాలువాలు', 'Stage Felicitations')} ({AWARDS_DATA.filter((a) => a.category === 'felicitation').length})
           </button>
           <button
             type="button"
@@ -227,12 +235,12 @@ export const AwardsSection: React.FC = () => {
                 : 'text-amber-900 hover:bg-amber-50'
             }`}
           >
-            ప్రత్యక్ష హోమ క్రతువులు ({AWARDS_DATA.filter((a) => a.category === 'yagnam').length})
+            {t('ప్రత్యక్ష హోమ క్రతువులు', 'Sacred Yagnas')} ({AWARDS_DATA.filter((a) => a.category === 'yagnam').length})
           </button>
         </div>
 
         <span className="text-xs text-slate-500 hidden md:block px-2">
-          చిత్రంపై క్లిక్ చేసి స్పష్టంగా వీక్షించవచ్చు
+          {t('చిత్రంపై క్లిక్ చేసి స్పష్టంగా వీక్షించవచ్చు', 'Click on any image to view high-resolution details')}
         </span>
       </div>
 
@@ -258,13 +266,17 @@ export const AwardsSection: React.FC = () => {
 
               {/* Category Pill */}
               <div className="absolute top-3 left-3 bg-amber-900/90 backdrop-blur-xs text-amber-200 text-[11px] font-bold px-3 py-1 rounded-full border border-amber-500/60 shadow-sm">
-                {item.category === 'certificate' ? 'ప్రామాణిక పత్రం' : item.category === 'yagnam' ? 'యజ్ఞ క్రతువు' : 'వేదిక సత్కారం'}
+                {item.category === 'certificate' 
+                  ? t('ప్రామాణిక పత్రం', 'Merit Citation') 
+                  : item.category === 'yagnam' 
+                  ? t('యజ్ఞ క్రతువు', 'Sacred Yagnam') 
+                  : t('వేదిక సత్కారం', 'Felicitation')}
               </div>
 
               {/* Zoom Trigger Button */}
               <div className="absolute bottom-3 right-3 bg-white/90 hover:bg-white text-slate-900 p-2 rounded-full shadow-lg transition-transform group-hover:scale-110 flex items-center gap-1 text-xs font-semibold px-3">
                 <ZoomIn size={14} className="text-amber-700" />
-                <span>జూమ్ చేయండి</span>
+                <span>{t('జూమ్ చేయండి', 'Zoom')}</span>
               </div>
             </div>
 
@@ -272,7 +284,7 @@ export const AwardsSection: React.FC = () => {
             <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
               <div className="space-y-2">
                 <h3 className="text-lg sm:text-xl font-bold text-amber-950 group-hover:text-amber-800 transition-colors leading-snug">
-                  {item.title}
+                  {language === 'en' ? item.englishTitle : item.title}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 line-clamp-3 leading-relaxed">
                   {item.description}
@@ -297,7 +309,7 @@ export const AwardsSection: React.FC = () => {
                 onClick={() => setSelectedAward(item)}
                 className="w-full mt-2 py-2.5 px-4 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
-                <span>పూర్తి వివరాలు & చిత్రం చూడండి</span>
+                <span>{t('పూర్తి వివరాలు & చిత్రం చూడండి', 'View Full Citation & Certificate')}</span>
                 <ExternalLink size={14} />
               </button>
             </div>

@@ -22,6 +22,7 @@ import {
 import { DayData, PoojaService } from '../types/panchangam';
 import { POOJA_SERVICES } from '../data/panchangamData';
 import { OmEmblem } from './OmEmblem';
+import { useLanguage } from '../context/LanguageContext';
 
 interface GuruProfileHomeProps {
   currentDay: DayData;
@@ -36,6 +37,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
   onNavigateToAwards,
   onOpenBooking,
 }) => {
+  const { t, tr, language } = useLanguage();
   const whatsappUrl = `https://wa.me/918977986166?text=${encodeURIComponent(
     'నమస్కారం శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు, నేను పూజా కార్యక్రమం / జాతక పరిశీలన ముహూర్తం కొరకు సంప్రదిస్తున్నాను.'
   )}`;
@@ -43,74 +45,95 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
   const achievements = [
     {
       icon: Award,
-      title: '15+ ఏళ్ల వేద సంప్రదాయం',
-      desc: 'స్మార్త వైదిక శాస్త్రాలలో నిష్ణాతులు & గురుపరంపర ప్రముఖ జ్యోతిష్యులు',
+      title: t('15+ ఏళ్ల వేద సంప్రదాయం', '15+ Years of Vedic Heritage'),
+      desc: t('స్మార్త వైదిక శాస్త్రాలలో నిష్ణాతులు & గురుపరంపర ప్రముఖ జ్యోతిష్యులు', 'Excellence in Smartha Vedic treatises and authentic Guru Parampara.'),
     },
     {
       icon: Users,
-      title: '5,000+ కుటుంబాల విశ్వాసం',
-      desc: 'తెలుగు రాష్ట్రాలు మరియు విదేశాలలో అసంఖ్యాక భక్తుల ఆదరణ',
+      title: t('5,000+ కుటుంబాల విశ్వాసం', '5,000+ Devotee Families'),
+      desc: t('తెలుగు రాష్ట్రాలు మరియు విదేశాలలో అసంఖ్యాక భక్తుల ఆదరణ', 'Trusted guidance across Andhra Pradesh, Telangana, and global NRI communities.'),
     },
     {
       icon: Flame,
-      title: 'మహా హోమ క్రతు ప్రవీణులు',
-      desc: 'చండీ, లక్ష్మీ గణపతి, సుదర్శన, రుద్ర హోమాలలో అఖండ ప్రతిభ',
+      title: t('మహా హోమ క్రతు ప్రవీణులు', 'Master of Sacred Homams'),
+      desc: t('చండీ, లక్ష్మీ గణపతి, సుదర్శన, రుద్ర హోమాలలో అఖండ ప్రతిభ', 'Accomplished practitioner of Chandi, Lakshmi Ganapathi, Sudarshana, and Rudra homams.'),
     },
     {
       icon: Compass,
-      title: 'దోషరహిత సిద్ధ ముహూర్తాలు',
-      desc: 'లగ్న శుద్ధితో వివాహం, గృహప్రవేశాలకు శుభప్రదమైన ఫలితాలు',
+      title: t('దోషరహిత సిద్ధ ముహూర్తాలు', 'Flawless Siddha Muhurthams'),
+      desc: t('లగ్న శుద్ధితో వివాహం, గృహప్రవేశాలకు శుభప్రదమైన ఫలితాలు', 'Astrological precision for marriage and housewarming with impeccable lagna purity.'),
     },
   ];
 
   const coreServices = [
     {
       id: 'vivaha-muhurtham',
-      title: 'వివాహ & గృహప్రవేశ ముహూర్త నిర్ణయం',
-      desc: 'దంపతుల జన్మ నక్షత్రాలు, లగ్న శుద్ధి మరియు గురు-శుక్ర బలాలను పరిశీలించి అన్యోన్య దాంపత్యం, గృహ శాంతిని ప్రసాదించే అమృత ముహూర్తాల నిర్ణయం.',
+      title: t('వివాహ & గృహప్రవేశ ముహూర్త నిర్ణయం', 'Marriage & Gruhapravesham Muhurtham'),
+      desc: t(
+        'దంపతుల జన్మ నక్షత్రాలు, లగ్న శుద్ధి మరియు గురు-శుక్ర బలాలను పరిశీలించి అన్యోన్య దాంపత్యం, గృహ శాంతిని ప్రసాదించే అమృత ముహూర్తాల నిర్ణయం.',
+        'Determining auspicious muhurtham by examining birth constellations, lagna purity, and planetary strengths for harmonious marriage and lasting household peace.'
+      ),
       icon: Home,
-      highlight: 'అత్యంత ప్రజాదరణ పొందిన సేవ',
+      highlight: t('అత్యంత ప్రజాదరణ పొందిన సేవ', 'Most Popular Service'),
     },
     {
       id: 'chandi-homam',
-      title: 'శ్రీ చండీ & లక్ష్మీ గణపతి మహా హోమం',
-      desc: 'శత్రు బాధలు, నరదృష్టి, ఆర్థిక సంక్షోభాలు తొలగి అఖండ విజయాలు, అష్టైశ్వర్యాలు సిద్ధించేలా శాస్త్రోక్తంగా స్వయంగా మంత్రోచ్ఛారణతో హోమ క్రతువు నిర్వహణ.',
+      title: t('శ్రీ చండీ & లక్ష్మీ గణపతి మహా హోమం', 'Sri Chandi & Lakshmi Ganapathi Maha Homam'),
+      desc: t(
+        'శత్రు బాధలు, నరదృష్టి, ఆర్థిక సంక్షోభాలు తొలగి అఖండ విజయాలు, అష్టైశ్వర్యాలు సిద్ధించేలా శాస్త్రోక్తంగా స్వయంగా మంత్రోచ్ఛారణతో హోమ క్రతువు నిర్వహణ.',
+        'Vedic fire rituals conducted with authentic mantra chanting to remove negative energies, financial obstacles, and bestow peace and prosperity.'
+      ),
       icon: Flame,
-      highlight: 'సర్వ సంకట నివారణ',
+      highlight: t('సర్వ సంకట నివారణ', 'All-Affliction Relief'),
     },
     {
       id: 'jathaka-parisheelana',
-      title: 'ఖచ్చితమైన జాతక విశ్లేషణ & దోష నివారణ',
-      desc: 'జన్మ కుండలి, రాశి చక్రం, దశ-అంతర్దశల సమగ్ర గణనతో ఉద్యోగం, విద్య, వివాహం, సంతాన ప్రాప్తి కోసం సరళమైన వేద పరిహారాల మార్గదర్శనం.',
+      title: t('ఖచ్చితమైన జాతక విశ్లేషణ & దోష నివారణ', 'Accurate Horoscope Analysis & Remedies'),
+      desc: t(
+        'జన్మ కుండలి, రాశి చక్రం, దశ-అంతర్దశల సమగ్ర గణనతో ఉద్యోగం, విద్య, వివాహం, సంతాన ప్రాప్తి కోసం సరళమైన వేద పరిహారాల మార్గదర్శనం.',
+        'Complete birth chart calculations, Dasha-Antardasha analysis, and Shastra-prescribed remedies for career, education, marriage, and progeny.'
+      ),
       icon: Star,
-      highlight: 'దృక్సిద్ధాంత ప్రామాణికం',
+      highlight: t('దృక్సిద్ధాంత ప్రామాణికం', 'Drik-Siddhanta Precision'),
     },
     {
       id: 'vastu-consultation',
-      title: 'గృహ & వ్యాపార వాస్తు సంప్రదింపులు',
-      desc: 'గృహ నిర్మాణం, ఫ్లాట్స్, విల్లాలు మరియు వ్యాపార సంస్థలలో శక్తి ప్రవాహాన్ని క్రమబద్ధీకరించి, సుఖ సంతోషాలు మరియు వ్యాపార లాభాలు చేకూరేలా వాస్తు సలహాలు.',
+      title: t('గృహ & వ్యాపార వాస్తు సంప్రదింపులు', 'Home & Commercial Vastu Consultation'),
+      desc: t(
+        'గృహ నిర్మాణం, ఫ్లాట్స్, విల్లాలు మరియు వ్యాపార సంస్థలలో శక్తి ప్రవాహాన్ని క్రమబద్ధీకరించి, సుఖ సంతోషాలు మరియు వ్యాపార లాభాలు చేకూరేలా వాస్తు సలహాలు.',
+        'Harmonizing spatial energy flow in residences, villas, apartments, and business establishments without unnecessary structural demolition.'
+      ),
       icon: Compass,
-      highlight: 'శాస్త్రోక్త మార్పులు',
+      highlight: t('శాస్త్రోక్త మార్పులు', 'Shastra Compliance'),
     },
   ];
 
   const testimonials = [
     {
-      name: 'రామకృష్ణ శాస్త్రి & కుటుంబం',
-      place: 'విజయవాడ',
-      text: 'జల్లవరం సాయి ధీరజ్ శర్మ గారి అమృత ముహూర్తంలో మా అమ్మాయి వివాహం జరిగింది. ధీరజ్ శర్మ గారి వాక్శుద్ధి, శాస్త్ర పరిజ్ఞానం అనితరసాధ్యం. వారి ఆశీస్సులతో నేడు మా కుటుంబం ఎంతో సంతోషంగా ఉంది.',
+      name: t('రామకృష్ణ శాస్త్రి & కుటుంబం', 'Ramakrishna Sastry & Family'),
+      place: t('విజయవాడ', 'Vijayawada'),
+      text: t(
+        'జల్లవరం సాయి ధీరజ్ శర్మ గారి అమృత ముహూర్తంలో మా అమ్మాయి వివాహం జరిగింది. ధీరజ్ శర్మ గారి వాక్శుద్ధి, శాస్త్ర పరిజ్ఞానం అనితరసాధ్యం. వారి ఆశీస్సులతో నేడు మా కుటుంబం ఎంతో సంతోషంగా ఉంది.',
+        'Our daughter’s wedding was conducted under the auspicious muhurtham fixed by Sri Dheeraj Sharma. His Vedic command and astrological expertise are truly exceptional.'
+      ),
       rating: 5,
     },
     {
-      name: 'శ్రీనివాసరావు (సాఫ్ట్‌వేర్ ఇంజనీర్)',
-      place: 'హైదరాబాద్',
-      text: 'మా నూతన గృహప్రవేశం మరియు లక్ష్మీ గణపతి హోమం ధీరజ్ శర్మ గారి ఆధ్వర్యంలో ఎంతో భక్తి శ్రద్ధలతో సంపూర్ణంగా జరిగింది. పూజా విధానం, మంత్రాల ఉచ్చారణ అద్భుతం.',
+      name: t('శ్రీనివాసరావు (సాఫ్ట్‌వేర్ ఇంజనీర్)', 'Srinivasa Rao (Software Architect)'),
+      place: t('హైదరాబాద్', 'Hyderabad'),
+      text: t(
+        'మా నూతన గృహప్రవేశం మరియు లక్ష్మీ గణపతి హోమం ధీరజ్ శర్మ గారి ఆధ్వర్యంలో ఎంతో భక్తి శ్రద్ధలతో సంపూర్ణంగా జరిగింది. పూజా విధానం, మంత్రాల ఉచ్చారణ అద్భుతం.',
+        'Our new housewarming and Lakshmi Ganapathi Homam were performed with profound devotion by Sri Dheeraj Sharma. His ritual precision and authentic mantras gave immense peace.'
+      ),
       rating: 5,
     },
     {
-      name: 'వెంకటేశ్వర్లు & లక్ష్మి',
-      place: 'తిరుపతి',
-      text: 'చాలా కాలంగా పెండింగ్‌లో ఉన్న ఉద్యోగ సమస్యకు ధీరజ్ శర్మ గారి జాతక పరిశీలన మరియు దోష పరిహార హోమం అద్భుత ఫలితాన్ని ఇచ్చింది. సాయి ధీరజ్ శర్మ గారికి మా హృదయపూర్వక ధన్యవాదాలు.',
+      name: t('వెంకటేశ్వర్లు & లక్ష్మి', 'Venkateswarlu & Lakshmi'),
+      place: t('తిరుపతి', 'Tirupati'),
+      text: t(
+        'చాలా కాలంగా పెండింగ్‌లో ఉన్న ఉద్యోగ సమస్యకు ధీరజ్ శర్మ గారి జాతక పరిశీలన మరియు దోష పరిహార హోమం అద్భుత ఫలితాన్ని ఇచ్చింది. సాయి ధీరజ్ శర్మ గారికి మా హృదయపూర్వక ధన్యవాదాలు.',
+        'Sri Dheeraj Sharma’s horoscope analysis and remedial homam cleared prolonged career hurdles swiftly. Our heartfelt gratitude to Guruji.'
+      ),
       rating: 5,
     },
   ];
@@ -150,33 +173,36 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
               </div>
               <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white text-xs font-bold px-3.5 py-1 rounded-full border border-amber-300 shadow-lg whitespace-nowrap flex items-center gap-1.5">
                 <Award size={13} className="text-amber-300" />
-                <span>జ్యోతిష శిరోమణి</span>
+                <span>{t('జ్యోతిష శిరోమణి', 'Jyothisha Shiromani')}</span>
               </div>
             </div>
 
             {/* Profile Intro & Title */}
             <div className="flex-1 space-y-4">
               <div className="inline-block px-3 py-1 bg-amber-800/80 border border-amber-600/40 rounded-lg text-amber-300 text-xs font-semibold">
-                స్మార్త వైదిక పండితులు & జ్యోతిష్యులు
+                {t('స్మార్త వైదిక పండితులు & జ్యోతిష్యులు', 'Smartha Vedic Scholar & Astrologer')}
               </div>
 
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight">
-                శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు
+                {t('శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు', 'Sri Jallavaram Sai Dheeraj Sharma')}
               </h1>
 
               <p className="text-base sm:text-lg text-amber-200/90 font-medium leading-relaxed max-w-2xl">
-                శాస్త్రోక్త పద్ధతిలో మీ కుటుంబ క్షేమం, వంశాభివృద్ధి, వివాహ, గృహప్రవేశ ముహూర్త నిర్ణయం మరియు సమస్త దోష నివారణ కోసం ప్రత్యక్ష వైదిక సేవలు.
+                {t(
+                  'శాస్త్రోక్త పద్ధతిలో మీ కుటుంబ క్షేమం, వంశాభివృద్ధి, వివాహ, గృహప్రవేశ ముహూర్త నిర్ణయం మరియు సమస్త దోష నివారణ కోసం ప్రత్యక్ష వైదిక సేవలు.',
+                  'Direct Vedic consultations, flawless wedding & housewarming muhurthams, and authentic homam ceremonies conducted strictly according to ancient Shastras.'
+                )}
               </p>
 
               {/* Contact direct badges */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2 text-xs sm:text-sm">
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-950/70 border border-amber-700/60 text-amber-200">
                   <MapPin size={15} className="text-amber-400" />
-                  <span>పసుమాముల, హయత్‌నగర్ (హైదరాబాద్)</span>
+                  <span>{t('పసుమాముల, హయత్‌నగర్ (హైదరాబాద్)', 'Hayathnagar, Hyderabad & Tirupati')}</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950/80 border border-emerald-600/60 text-emerald-200 font-telugu font-bold">
                   <MessageCircle size={15} className="text-emerald-400" />
-                  <span>వాట్సాప్: <strong className="font-mono tracking-wide text-white">8977986166</strong></span>
+                  <span>{t('వాట్సాప్:', 'WhatsApp:')} <strong className="font-mono tracking-wide text-white">8977986166</strong></span>
                 </div>
               </div>
 
@@ -189,7 +215,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                   className="flex items-center gap-2 px-5 py-3.5 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-amber-950 font-bold rounded-2xl shadow-xl transition-all transform hover:scale-105 active:scale-95 cursor-pointer text-sm sm:text-base"
                 >
                   <Calendar size={18} />
-                  <span>నిత్య పంచాంగం</span>
+                  <span>{t('నిత్య పంచాంగం', 'Daily Panchangam')}</span>
                   <ArrowRight size={16} />
                 </button>
 
@@ -201,7 +227,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                   className="flex items-center gap-2 px-4 py-3.5 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold rounded-2xl shadow-lg transition-all transform hover:scale-105 active:scale-95 text-sm sm:text-base"
                 >
                   <MessageCircle size={18} />
-                  <span>వాట్సాప్ (8977986166)</span>
+                  <span>{t('వాట్సాప్ (8977986166)', 'WhatsApp Chat')}</span>
                 </a>
 
                 {/* 3. Pooja Booking */}
@@ -211,7 +237,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                   className="flex items-center gap-2 px-4 py-3.5 bg-amber-900/90 hover:bg-amber-800 text-amber-100 border border-amber-500/60 font-semibold rounded-2xl shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer text-xs sm:text-sm"
                 >
                   <Flame size={16} className="text-amber-400" />
-                  <span>పూజ బుకింగ్</span>
+                  <span>{t('పూజ బుకింగ్', 'Book Pooja / Homam')}</span>
                 </button>
               </div>
             </div>
@@ -241,7 +267,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
               </div>
               <div className="mt-4 pt-3 border-t border-amber-100 flex items-center gap-1.5 text-xs text-amber-800 font-semibold">
                 <CheckCircle size={14} className="text-emerald-600" />
-                <span>ప్రామాణిక శాస్త్ర నిరూపితం</span>
+                <span>{t('ప్రామాణిక శాస్త్ర నిరూపితం', 'Authentic Shastric Guidance')}</span>
               </div>
             </div>
           );
@@ -254,13 +280,13 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 bg-amber-200/60 px-3 py-1 rounded-full mb-2">
               <Calendar size={14} />
-              <span>నేటి పంచాంగ సంక్షిప్త దర్శనం</span>
+              <span>{t('నేటి పంచాంగ సంక్షిప్త దర్శనం', "Today's Panchangam Glance")}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-amber-950">
-              {currentDay.teediVaram}
+              {tr(currentDay.teediVaram)}
             </h2>
             <p className="text-sm text-slate-600 mt-1">
-              {currentDay.panchanga.samvatsaram} · {currentDay.panchanga.masam}
+              {tr(currentDay.panchanga.samvatsaram)} · {tr(currentDay.panchanga.masam)}
             </p>
           </div>
 
@@ -269,7 +295,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             onClick={onNavigateToPanchangam}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-amber-800 hover:bg-amber-900 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg transition-transform hover:scale-105 cursor-pointer shrink-0"
           >
-            <span>సంపూర్ణ పంచాంగం & రాశి చక్రం తెరవండి</span>
+            <span>{t('సంపూర్ణ పంచాంగం & రాశి చక్రం తెరవండి', 'Open Full Panchangam & Rasi Chakra')}</span>
             <ArrowRight size={18} />
           </button>
         </div>
@@ -277,30 +303,30 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
         {/* Quick Highlights Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6">
           <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-2xs">
-            <span className="text-xs text-slate-500 block mb-1">తిథి</span>
+            <span className="text-xs text-slate-500 block mb-1">{t('తిథి', 'Tithi')}</span>
             <span className="text-sm sm:text-base font-bold text-amber-950 block">
-              {currentDay.panchanga.tithi.split('-')[0].trim()}
+              {tr(currentDay.panchanga.tithi.split('-')[0].trim())}
             </span>
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-2xs">
-            <span className="text-xs text-slate-500 block mb-1">నక్షత్రం</span>
+            <span className="text-xs text-slate-500 block mb-1">{t('నక్షత్రం', 'Nakshatram')}</span>
             <span className="text-sm sm:text-base font-bold text-amber-950 block">
-              {currentDay.panchanga.nakshatram.split('-')[0].trim()}
+              {tr(currentDay.panchanga.nakshatram.split('-')[0].trim())}
             </span>
           </div>
 
           <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-200 shadow-2xs">
-            <span className="text-xs text-emerald-800 font-semibold block mb-1">శుభ ముహూర్తం</span>
+            <span className="text-xs text-emerald-800 font-semibold block mb-1">{t('శుభ ముహూర్తం', 'Auspicious Muhurtham')}</span>
             <span className="text-xs sm:text-sm font-bold text-emerald-950 block">
-              {currentDay.shubha.abhijit}
+              {tr(currentDay.shubha.abhijit)}
             </span>
           </div>
 
           <div className="bg-rose-50 p-4 rounded-xl border border-rose-200 shadow-2xs">
-            <span className="text-xs text-rose-800 font-semibold block mb-1">రాహు కాలం</span>
+            <span className="text-xs text-rose-800 font-semibold block mb-1">{t('రాహు కాలం', 'Rahu Kalam')}</span>
             <span className="text-xs sm:text-sm font-bold text-rose-950 block">
-              {currentDay.ashubha.rahukalam}
+              {tr(currentDay.ashubha.rahukalam)}
             </span>
           </div>
         </div>
@@ -310,8 +336,8 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
           <div className="mt-5 p-4 rounded-xl bg-amber-100/70 border border-amber-300 text-xs sm:text-sm text-amber-950 leading-relaxed flex items-start gap-2.5">
             <Sparkles size={18} className="text-amber-700 shrink-0 mt-0.5" />
             <div>
-              <strong className="font-bold">నేటి ప్రామాణిక విశేషం: </strong>
-              <span>{currentDay.phalitham}</span>
+              <strong className="font-bold">{t('నేటి ప్రామాణిక విశేషం: ', "Today's Astrological Significance: ")}</strong>
+              <span>{tr(currentDay.phalitham)}</span>
             </div>
           </div>
         )}
@@ -322,13 +348,19 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             <BookOpen size={22} className="text-amber-400 shrink-0 mt-1" />
             <div>
               <span className="text-[11px] uppercase tracking-wider text-amber-300 font-bold block">
-                ప్రాచీన శాస్త్ర విశ్లేషణ • Classical Nakshatra Article
+                {t('ప్రాచీన శాస్త్ర విశ్లేషణ • Classical Nakshatra Article', 'Classical Shastric Analysis • Nakshatra Treatise')}
               </span>
               <h4 className="text-sm sm:text-base font-bold text-white">
-                నేటి నక్షత్ర ఫల విశ్లేషణ ({currentDay.panchanga.nakshatram.split(/[-–—]/)[0]?.trim()} నక్షత్రం)
+                {t(
+                  `నేటి నక్షత్ర ఫల విశ్లేషణ (${currentDay.panchanga.nakshatram.split(/[-–—]/)[0]?.trim()} నక్షత్రం)`,
+                  `Today's Nakshatra Phala Analysis (${tr(currentDay.panchanga.nakshatram.split(/[-–—]/)[0]?.trim())})`
+                )}
               </h4>
               <p className="text-xs text-amber-200/80 mt-0.5">
-                ఎన్.ఎన్. కృష్ణారావు గారి గ్రంథం ఆధారంగా పాద ఫలాలు, నేడు చేయదగిన శుభ కార్యాలు &amp; యవనాచార్యుల మతం.
+                {t(
+                  'ఎన్.ఎన్. కృష్ణారావు గారి గ్రంథం ఆధారంగా పాద ఫలాలు, నేడు చేయదగిన శుభ కార్యాలు & యవనాచార్యుల మతం.',
+                  'Pada predictions, auspicious deeds permitted today & Yavanacharya traditions based on N.N. Krishna Rau treatise.'
+                )}
               </p>
             </div>
           </div>
@@ -337,7 +369,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             onClick={onNavigateToPanchangam}
             className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs sm:text-sm shrink-0 transition-all cursor-pointer shadow-sm"
           >
-            <span>పూర్తి వ్యాసం చదవండి</span>
+            <span>{t('పూర్తి వ్యాసం చదవండి', 'Read Full Article')}</span>
             <ArrowRight size={14} />
           </button>
         </div>
@@ -350,10 +382,13 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             Vedic Services & Consultations
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-amber-950">
-            శ్రీ ధీరజ్ శర్మ గారి ముఖ్య వైదిక సేవలు
+            {t('శ్రీ ధీరజ్ శర్మ గారి ముఖ్య వైదిక సేవలు', 'Vedic Services by Sri Dheeraj Sharma Garu')}
           </h2>
           <p className="text-slate-600 text-sm sm:text-base">
-            సమస్త వైదిక కర్మలు, హోమాలు, ముహూర్త నిర్ణయాలు ప్రాచీన వేదోక్త శాస్త్రాల ప్రకారం స్వయంగా జల్లవరం సాయి ధీరజ్ శర్మ గారిచే నిర్వహించబడును.
+            {t(
+              'సమస్త వైదిక కర్మలు, హోమాలు, ముహూర్త నిర్ణయాలు ప్రాచీన వేదోక్త శాస్త్రాల ప్రకారం స్వయంగా జల్లవరం సాయి ధీరజ్ శర్మ గారిచే నిర్వహించబడును.',
+              'All Vedic rituals, sacred homams, and muhurtham determinations are personally conducted according to classical Shastras by Sri Jallavaram Sai Dheeraj Sharma.'
+            )}
           </p>
         </div>
 
@@ -393,7 +428,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                     className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-3.5 py-2 rounded-xl border border-emerald-300 transition-colors"
                   >
                     <MessageCircle size={15} />
-                    <span>వాట్సాప్‌లో అడగండి (8977986166)</span>
+                    <span>{t('వాట్సాప్‌లో అడగండి (8977986166)', 'Inquire on WhatsApp (8977986166)')}</span>
                   </a>
 
                   <button
@@ -406,7 +441,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                     }}
                     className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-900 hover:text-white hover:bg-amber-800 bg-amber-100 px-3.5 py-2 rounded-xl transition-all cursor-pointer"
                   >
-                    <span>పూజ బుకింగ్</span>
+                    <span>{t('పూజ బుకింగ్', 'Book Pooja / Homam')}</span>
                     <ArrowRight size={14} />
                   </button>
                 </div>
@@ -420,35 +455,38 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
       <section className="bg-amber-950 text-white rounded-3xl p-8 sm:p-12 shadow-xl border border-amber-600/40 space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-xs font-bold text-amber-300 uppercase tracking-widest bg-amber-900/80 px-3 py-1 rounded-full border border-amber-600/50">
-            Devotee Experiences
+            {t('భక్తుల అనుభవాలు', 'Devotee Experiences')}
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-white">
-            భక్తుల అనుభవాలు & కృతజ్ఞతలు
+            {t('భక్తుల అనుభవాలు & కృతజ్ఞతలు', 'Devotee Experiences & Gratitude')}
           </h2>
           <p className="text-amber-200/80 text-sm">
-            శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆశీస్సులతో శుభకార్యాలు జరుపుకున్న భక్తుల మాటలు.
+            {t(
+              'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆశీస్సులతో శుభకార్యాలు జరుపుకున్న భక్తుల మాటలు.',
+              'Heartfelt blessings and testimonials from devotees who performed sacred Vedic ceremonies with Sri Jallavaram Sai Dheeraj Sharma.'
+            )}
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map((t, idx) => (
+          {testimonials.map((tItem, idx) => (
             <div
               key={idx}
               className="bg-amber-900/60 border border-amber-700/60 rounded-2xl p-6 flex flex-col justify-between shadow-lg"
             >
               <div>
                 <div className="flex items-center gap-1 text-amber-400 mb-3">
-                  {[...Array(t.rating)].map((_, i) => (
+                  {[...Array(tItem.rating)].map((_, i) => (
                     <Star key={i} size={15} className="fill-amber-400" />
                   ))}
                 </div>
                 <p className="text-xs sm:text-sm text-amber-100/90 leading-relaxed italic mb-4">
-                  "{t.text}"
+                  "{tItem.text}"
                 </p>
               </div>
               <div className="pt-3 border-t border-amber-800/80 flex items-center justify-between text-xs">
-                <span className="font-bold text-amber-200">{t.name}</span>
-                <span className="text-amber-400/80">{t.place}</span>
+                <span className="font-bold text-amber-200">{tItem.name}</span>
+                <span className="text-amber-400/80">{tItem.place}</span>
               </div>
             </div>
           ))}
@@ -460,22 +498,25 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-4 text-center md:text-left">
             <span className="inline-block px-3 py-1 bg-amber-700/80 border border-amber-500/60 rounded-full text-xs font-semibold text-amber-200">
-              ప్రత్యక్ష & ఆన్‌లైన్ సంప్రదింపులు
+              {t('ప్రత్యక్ష & ఆన్‌లైన్ సంప్రదింపులు', 'In-Person & Online Consultations')}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-white">
-              ధీరజ్ శర్మ గారితో నేరుగా మాట్లాడండి
+              {t('ధీరజ్ శర్మ గారితో నేరుగా మాట్లాడండి', 'Speak Directly with Guruji Sri Dheeraj Sharma')}
             </h2>
             <p className="text-amber-100/90 text-sm sm:text-base leading-relaxed max-w-xl">
-              వివాహం, గృహప్రవేశం, చండీ హోమం, జాతక దోష నివారణ కొరకు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారిని నేరుగా ఫోన్ లేదా వాట్సాప్ ద్వారా సంప్రదించవచ్చు.
+              {t(
+                'వివాహం, గృహప్రవేశం, చండీ హోమం, జాతక దోష నివారణ కొరకు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారిని నేరుగా ఫోన్ లేదా వాట్సాప్ ద్వారా సంప్రదించవచ్చు.',
+                'For Vivaha, Gruhapravesam, Chandi Homam, and Jathaka Dosha remedies, consult Sri Jallavaram Sai Dheeraj Sharma directly via phone or WhatsApp.'
+              )}
             </p>
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2 text-sm text-amber-200">
               <span className="flex items-center gap-1.5">
                 <MapPin size={16} className="text-amber-400" />
-                <span>పసుమాముల, హయత్‌నగర్ (Pasumamula, Hayathnagar)</span>
+                <span>{t('పసుమాముల, హయత్‌నగర్', 'Pasumamula, Hayathnagar, Hyderabad')}</span>
               </span>
               <span className="flex items-center gap-1.5">
                 <Clock size={16} className="text-amber-400" />
-                <span>ఉదయం 06:30 AM – రాత్రి 08:30 PM</span>
+                <span>{t('ఉదయం 06:30 AM – రాత్రి 08:30 PM', '06:30 AM – 08:30 PM (Daily)')}</span>
               </span>
             </div>
           </div>
@@ -492,7 +533,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
               8977986166
             </a>
             <p className="text-xs text-slate-600">
-              శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు
+              {t('శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు', 'Sri Jallavaram Sai Dheeraj Sharma Garu')}
             </p>
 
             <a
@@ -502,7 +543,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
               className="w-full py-3.5 px-4 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-2xl font-bold text-base flex items-center justify-center gap-2 shadow-lg transition-transform hover:scale-105 active:scale-95"
             >
               <MessageCircle size={20} />
-              <span>వాట్సాప్ చాట్ ప్రారంభించండి</span>
+              <span>{t('వాట్సాప్ చాట్ ప్రారంభించండి', 'Start WhatsApp Chat')}</span>
             </a>
 
             <a
@@ -510,7 +551,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
               className="w-full py-2.5 px-4 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-colors"
             >
               <Phone size={16} />
-              <span>కాల్ చేయండి (+91 8977986166)</span>
+              <span>{t('కాల్ చేయండి (+91 8977986166)', 'Call Now (+91 8977986166)')}</span>
             </a>
           </div>
         </div>
@@ -518,3 +559,4 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
     </div>
   );
 };
+
