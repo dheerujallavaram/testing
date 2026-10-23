@@ -25,7 +25,10 @@ import { AwardsSection } from './components/AwardsSection';
 import { ContactSection } from './components/ContactSection';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { CityAstrologyPage } from './components/CityAstrologyPage';
+import { DailyNakshatraArticle } from './components/DailyNakshatraArticle';
 import { CitySEOData, findCityBySlug } from './data/citiesData';
+import { PanchangamQuickSummary } from './components/PanchangamQuickSummary';
+import { DailyAstrologyInsights } from './components/DailyAstrologyInsights';
 
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
@@ -165,8 +168,8 @@ function AppContent() {
     }
 
     const titles: Record<NavTab, string> = {
-      home: 'తెలుగు పంచాంగం & రాశి ఫలితాలు | నిత్య పంచాంగం, తిథి, నక్షత్రం, దిన ఫలం — telugujyothisham.com',
-      panchangam: 'నేటి తెలుగు పంచాంగం & నవ గ్రహ దిన ఫలాలు | తిథి, నక్షత్రం, రాశి చక్రం (telugujyothisham.com/panchangam)',
+      home: 'పంచాంగం & రాశి ఫలితాలు | నేటి తెలుగు పంచాంగం, తిథి, నక్షత్రం, దిన ఫలం — telugujyothisham.com',
+      panchangam: 'పంచాంగం | నేటి తెలుగు పంచాంగం, తిథి, నక్షత్రం, రాహుకాలం, దిన ఫలం — telugujyothisham.com/panchangam',
       awards: 'పొందిన సత్కారాలు & పురస్కారాలు | శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (telugujyothisham.com/awards)',
       services: 'వైదిక పూజా సేవలు & హోమాలు | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/services)',
       about: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి గురించి | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/about)',
@@ -174,8 +177,8 @@ function AppContent() {
     };
 
     const descriptions: Record<NavTab, string> = {
-      home: 'నేటి తెలుగు పంచాంగం, 12 రాశుల దిన ఫలాలు (రాశి ఫలితాలు), తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, రాహుకాలం మరియు శుభ ముహూర్తాలు. ప్రతిరోజూ తాజా పంచాంగం telugujyothisham.com లో చూడండి.',
-      panchangam: 'నేటి తెలుగు పంచాంగం, తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, రాహుకాలం, 12 రాశుల నవ గ్రహ గోచార దిన ఫలాలు మరియు దక్షిణ భారత రాశి చక్రం.',
+      home: 'పంచాంగం (Panchangam) - నేటి తెలుగు పంచాంగం, 12 రాశుల దిన ఫలాలు, తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, రాహుకాలం మరియు శుభ ముహూర్తాలు. ప్రతిరోజూ తాజా పంచాంగం telugujyothisham.com లో చూడండి.',
+      panchangam: 'పంచాంగం (Panchangam) - నేటి ఖచ్చితమైన తెలుగు పంచాంగం, తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, అమృత ఘడియలు, రాహుకాలం, 12 రాశుల దిన ఫలాలు మరియు దక్షిణ భారత రాశి చక్రం. శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం దృక్సిద్ధాంత ప్రామాణిక ఫలితాలు.',
       awards: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు పొందిన జ్యోతిష సత్కారాలు, బిరుదులు మరియు పూజా పురస్కారాల వివరాలు.',
       services: 'శ్రీ చండీ హోమం, లక్ష్మీ గణపతి హోమం, సుదర్శన హోమం, వివాహ, గృహప్రవేశ క్రతువులు శాస్త్రోక్తంగా నిర్వహించబడును.',
       about: 'జ్యోతిష పండితులు, స్మార్త వేద విద్వాంసులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్యాత్మిక ప్రస్థానం మరియు అనుభవం.',
@@ -302,14 +305,17 @@ function AppContent() {
                 <span className="text-xs font-semibold text-amber-800 uppercase tracking-widest font-display">
                   {t('ఎంచుకున్న రోజు వివరాలు • Selected Day Overview', 'Selected Day Overview')}
                 </span>
-                <h2 className="text-3xl sm:text-4xl font-bold text-amber-950 font-telugu mt-0.5">
+                <h1 className="text-3xl sm:text-4xl font-bold text-amber-950 font-telugu mt-0.5">
                   {tr(currentDay.label)} {t('పంచాంగం', 'Panchangam')}
-                </h2>
+                </h1>
               </div>
               <p className="text-base sm:text-lg text-amber-900 font-semibold font-telugu bg-amber-100/70 px-4 py-1.5 rounded-xl border border-amber-200">
                 {tr(currentDay.teediVaram)}
               </p>
             </div>
+
+            {/* Fast Facts & AI Generative Engine Optimization (Google Zero-Click Answer Card) */}
+            <PanchangamQuickSummary day={currentDay} />
 
             {/* Day Special Vishesham / Phalitham */}
             <DayVisheshamCard day={currentDay} />
@@ -344,6 +350,17 @@ function AppContent() {
 
             {/* Interactive Personal Zodiac & Nakshatra Checker */}
             <DevoteeCompatibilityChecker day={currentDay} />
+
+            {/* Daily In-Depth Nakshatra & Tithi Phala Article (Based on Krishna Rau's Classical Text) */}
+            <DailyNakshatraArticle
+              currentDay={currentDay}
+              onOpenBooking={() => handleOpenBooking()}
+            />
+
+            {/* Daily Astrology Guidance Insights & Simulated Live Planetary Movement Stream */}
+            <DailyAstrologyInsights
+              onOpenBooking={() => handleOpenBooking()}
+            />
 
             {/* Beginner-Friendly Panchangam FAQ Section (Tithi, Nakshatra, Muhurtham, etc.) */}
             <PanchangamFAQ />

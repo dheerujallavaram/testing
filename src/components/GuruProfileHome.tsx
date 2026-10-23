@@ -315,6 +315,32 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             </div>
           </div>
         )}
+
+        {/* Daily Classical Nakshatra & Tithi Article Teaser (Krishna Rau Treatise) */}
+        <div className="mt-5 p-4 rounded-2xl bg-gradient-to-r from-amber-900 to-amber-950 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-amber-600/60 shadow-md">
+          <div className="flex items-start gap-3">
+            <BookOpen size={22} className="text-amber-400 shrink-0 mt-1" />
+            <div>
+              <span className="text-[11px] uppercase tracking-wider text-amber-300 font-bold block">
+                ప్రాచీన శాస్త్ర విశ్లేషణ • Classical Nakshatra Article
+              </span>
+              <h4 className="text-sm sm:text-base font-bold text-white">
+                నేటి నక్షత్ర ఫల విశ్లేషణ ({currentDay.panchanga.nakshatram.split(/[-–—]/)[0]?.trim()} నక్షత్రం)
+              </h4>
+              <p className="text-xs text-amber-200/80 mt-0.5">
+                ఎన్.ఎన్. కృష్ణారావు గారి గ్రంథం ఆధారంగా పాద ఫలాలు, నేడు చేయదగిన శుభ కార్యాలు &amp; యవనాచార్యుల మతం.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onNavigateToPanchangam}
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs sm:text-sm shrink-0 transition-all cursor-pointer shadow-sm"
+          >
+            <span>పూర్తి వ్యాసం చదవండి</span>
+            <ArrowRight size={14} />
+          </button>
+        </div>
       </section>
 
       {/* 4. Core Specialization & Services by Sri Dheeraj Sharma Garu */}
