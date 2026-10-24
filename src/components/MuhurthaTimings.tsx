@@ -139,11 +139,11 @@ export const MuhurthaTimings: React.FC<MuhurthaTimingsProps> = ({ day }) => {
             <div className="border border-rose-200 bg-rose-50/60 p-3.5 sm:p-4 rounded-xl">
               <div className="flex items-center justify-between mb-0.5">
                 <p className="flex items-center gap-2 text-rose-900 font-bold text-sm sm:text-base font-telugu">
-                  <AlertTriangle size={16} className="text-rose-600" />
+                  <Ban size={16} className="text-rose-600" />
                   <span>{t('యమగండం', 'Yamagandam')}</span>
                 </p>
                 <span className="text-[10px] text-rose-800 font-medium font-telugu">
-                  {t('ఆటంకాలు', 'Potential Delays')}
+                  {t('ఆటంకాలు', 'Obstacles')}
                 </span>
               </div>
               <p className="text-sm sm:text-base font-bold text-slate-900 font-telugu">
@@ -159,7 +159,7 @@ export const MuhurthaTimings: React.FC<MuhurthaTimingsProps> = ({ day }) => {
                   <span>{t('దుర్ముహూర్తం', 'Durmuhurtham')}</span>
                 </p>
                 <span className="text-[10px] text-rose-800 font-medium font-telugu">
-                  {t('ప్రారంభాలు వద్దు', 'Avoid Initiations')}
+                  {t('నిషిద్ధం', 'Prohibited')}
                 </span>
               </div>
               <p className="text-sm sm:text-base font-bold text-slate-900 font-telugu">
@@ -171,11 +171,11 @@ export const MuhurthaTimings: React.FC<MuhurthaTimingsProps> = ({ day }) => {
             <div className="border border-rose-200 bg-rose-50/60 p-3.5 sm:p-4 rounded-xl">
               <div className="flex items-center justify-between mb-0.5">
                 <p className="flex items-center gap-2 text-rose-900 font-bold text-sm sm:text-base font-telugu">
-                  <Ban size={16} className="text-rose-600" />
-                  <span>{t('వర్జ్యం', 'Varjyam (Tyajya Kalam)')}</span>
+                  <AlertTriangle size={16} className="text-rose-600" />
+                  <span>{t('వర్జ్యం', 'Varjyam')}</span>
                 </p>
                 <span className="text-[10px] text-rose-800 font-medium font-telugu">
-                  {t('విష ఘడియలు', 'Inauspicious Ghadis')}
+                  {t('విష ఘడియలు', 'Dosha Time')}
                 </span>
               </div>
               <p className="text-sm sm:text-base font-bold text-slate-900 font-telugu">
@@ -187,8 +187,8 @@ export const MuhurthaTimings: React.FC<MuhurthaTimingsProps> = ({ day }) => {
 
         <p className="mt-6 text-xs text-rose-800 font-telugu bg-rose-100/50 p-2.5 rounded-lg border border-rose-200">
           {t(
-            'శాస్త్ర సలహా: ఈ సమయాలలో ముఖ్యమైన ఆర్థిక లావాదేవీలు, కొత్త పనులు మరియు ప్రయాణాలు ప్రారంభించకపోవడం మంచిది.',
-            'Vedic Advice: Avoid initiating new financial contracts, auspicious ceremonies, or long journeys during these periods.'
+            'గమనిక: అత్యవసర సమయాలలో అభిజిత్ ముహూర్తాన్ని ఎంచుకోవచ్చు.',
+            'Note: In urgent situations, Abhijit Muhurtham may be chosen.'
           )}
         </p>
       </div>
