@@ -10,6 +10,7 @@ import {
   Sparkles,
   ChevronDown,
   ChevronUp,
+  Download,
 } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import {
@@ -21,6 +22,7 @@ import {
 import { playTempleBell } from '../utils/audioChime';
 import { useLanguage } from '../context/LanguageContext';
 import { RashiGlyph } from './RashiGlyph';
+import { downloadDailyPanchangamCardImage } from '../utils/panchangamImageGenerator';
 
 interface ActionControlsProps {
   day: DayData;
@@ -274,6 +276,17 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
               ? t('పంచాంగం కాపీ అయింది!', 'Panchangam Copied!')
               : t('పంచాంగం కాపీ చేయండి', 'Copy Panchangam')}
           </span>
+        </button>
+
+        {/* Download WhatsApp Status Image Card */}
+        <button
+          type="button"
+          onClick={() => downloadDailyPanchangamCardImage(day)}
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white px-5 py-3.5 sm:py-3 rounded-2xl sm:rounded-full font-bold text-sm sm:text-base shadow-md transition-transform hover:scale-105 active:scale-95 font-telugu cursor-pointer"
+          title={t('వాట్సాప్ స్టేటస్ కోసం నేటి పంచాంగం ఫోటో డౌన్‌లోడ్ చేయండి', 'Download Daily Panchangam Status Image')}
+        >
+          <Download size={18} />
+          <span>{t('నేటి పంచాంగం ఫోటో డౌన్‌లోడ్ (Status Image)', 'Download Status Photo')}</span>
         </button>
 
         {/* Print / PDF */}

@@ -30,6 +30,7 @@ import { CitySEOData, findCityBySlug } from './data/citiesData';
 import { PanchangamQuickSummary } from './components/PanchangamQuickSummary';
 import { DailyAstrologyInsights } from './components/DailyAstrologyInsights';
 import { UpcomingRitualCountdown } from './components/UpcomingRitualCountdown';
+import { VedicAstrologyHub, HubSectionId } from './components/VedicAstrologyHub';
 
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
@@ -72,11 +73,18 @@ export function resolveTabFromLocation(): NavTab {
   if (
     pathname === '/panchangam' ||
     pathname.endsWith('/panchangam') ||
+    pathname === '/vivaha-pontana' ||
+    pathname === '/naama-nakshatra' ||
+    pathname === '/ugadi-rashi-phalalu' ||
+    pathname === '/shubha-muhurthalu' ||
+    pathname === '/festivals' ||
+    pathname === '/dosha-pariharalu' ||
     hash === '#panchangam' ||
     hash === '#dina-phalam' ||
     hash === '#rashi-chakram' ||
     hash === '#muhurthalu' ||
-    hash === '#panchangam-faq'
+    hash === '#panchangam-faq' ||
+    hash === '#vedic-astrology-hub'
   ) {
     return 'panchangam';
   }
@@ -95,8 +103,19 @@ export function resolveTabFromLocation(): NavTab {
   return 'home';
 }
 
+export function resolveHubSectionFromLocation(): HubSectionId {
+  if (typeof window === 'undefined') return 'pontana';
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  if (pathname === '/naama-nakshatra') return 'akshara';
+  if (pathname === '/ugadi-rashi-phalalu') return 'ugadi';
+  if (pathname === '/shubha-muhurthalu' || pathname === '/festivals') return 'muhurtham';
+  if (pathname === '/dosha-pariharalu') return 'dosha';
+  return 'pontana';
+}
+
 function AppContent() {
   const [activeTab, setActiveTab] = useState<NavTab>(() => resolveTabFromLocation());
+  const [hubSection, setHubSection] = useState<HubSectionId>(() => resolveHubSectionFromLocation());
   const [selectedCity, setSelectedCity] = useState<CitySEOData | null>(() => resolveCityFromLocation());
   const [selectedDayId, setSelectedDayId] = useState<string>(() => getTodayAndTomorrowIds(WEEK_DATA).todayId);
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
@@ -115,6 +134,25 @@ function AppContent() {
       } catch {
         // Fallback if pushState is restricted by sandboxed environment
       }
+    }
+  }, []);
+
+  const handleNavigateHubSection = useCallback((section: HubSectionId, path: string) => {
+    setSelectedCity(null);
+    setActiveTab('panchangam');
+    setHubSection(section);
+    if (typeof window !== 'undefined') {
+      try {
+        if (window.location.pathname !== path) {
+          window.history.pushState({ tab: 'panchangam', hubSection: section }, '', path);
+        }
+      } catch {}
+      setTimeout(() => {
+        const el = document.getElementById('vedic-astrology-hub');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     }
   }, []);
 
@@ -141,16 +179,28 @@ function AppContent() {
       setSelectedCity(matchedCity);
       if (!matchedCity) {
         setActiveTab(resolveTabFromLocation());
+        setHubSection(resolveHubSectionFromLocation());
       }
     };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  // Sync document title, canonical link, og:url, and meta tags dynamically with current tab route (when not in city page)
+  // Sync document title, canonical link, og:url, and meta tags dynamically with current tab or evergreen SEO route
   useEffect(() => {
     if (selectedCity) return; // CityAstrologyPage component manages its own programmatic metadata
-    const path = TAB_PATHS[activeTab] || '/';
+
+    const rawPath = typeof window !== 'undefined' ? window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/' : '/';
+    const isEvergreenHubRoute = [
+      '/vivaha-pontana',
+      '/naama-nakshatra',
+      '/ugadi-rashi-phalalu',
+      '/shubha-muhurthalu',
+      '/festivals',
+      '/dosha-pariharalu',
+    ].includes(rawPath);
+
+    const path = isEvergreenHubRoute && activeTab === 'panchangam' ? rawPath : TAB_PATHS[activeTab] || '/';
     const canonicalHref = `https://telugujyothisham.com${path === '/' ? '/' : path}`;
 
     const canonicalEl = document.querySelector('link[rel="canonical"]');
@@ -167,6 +217,45 @@ function AppContent() {
     if (twitterUrlEl) {
       twitterUrlEl.setAttribute('content', canonicalHref);
     }
+
+    const evergreenSeoMeta: Record<string, { titleTe: string; titleEn: string; descTe: string; descEn: string }> = {
+      '/vivaha-pontana': {
+        titleTe: 'వివాహ పొంతన & 36 గుణ మిళనం | అష్టకూట వధూవరుల రాశి పొంతన — telugujyothisham.com',
+        titleEn: '36-Point Marriage Compatibility (Vivaha Pontana) | Ashtakoota Guna Milan — telugujyothisham.com',
+        descTe: 'వధూవరుల రాశుల ఆధారంగా 36 గుణాల అష్టకూట వివాహ పొంతన (వర్ణ, వశ్య, తార, యోని, గ్రహ మైత్రి, గణ, భకూట, నాడి) ఉచితంగా లెక్కించండి. శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి జ్యోతిష విశ్లేషణ.',
+        descEn: 'Calculate authentic 36-point Vedic Ashtakoota Guna Milan marriage compatibility for bride and groom Rashis online at telugujyothisham.com.',
+      },
+      '/naama-nakshatra': {
+        titleTe: 'పేరు మొదటి అక్షరంతో రాశి & నక్షత్రం | 27 నక్షత్రాల నామ అక్షర పట్టిక — telugujyothisham.com',
+        titleEn: 'Find Rashi & Nakshatra by Name First Letter | Telugu Naama Nakshatra Finder — telugujyothisham.com',
+        descTe: 'పుట్టిన సమయం తెలియకపోయినా మీ పేరు మొదటి అక్షరం (చూ, చే, చో, లా మొదలైనవి) ద్వారా మీ జన్మ రాశి, నక్షత్రం, గణం, నాడి మరియు రజ్జు వివరాలను వెంటనే తెలుసుకోండి.',
+        descEn: 'Instantly find your Vedic Moon Sign (Rashi), Nakshatra, Gana, Nadi, and Rajju using the first syllable of your name across all 27 Nakshatras.',
+      },
+      '/ugadi-rashi-phalalu': {
+        titleTe: 'శ్రీ పరాభవ నామ సంవత్సర ఉగాది రాశి ఫలాలు 2026-2027 | ఆదాయం - వ్యయం — telugujyothisham.com',
+        titleEn: 'Sri Parabhava Nama Samvatsara Ugadi Rashi Phalalu 2026-2027 | Aadayam Vyayam — telugujyothisham.com',
+        descTe: '2026-2027 శ్రీ పరాభవ నామ సంవత్సర ద్వాదశ రాశుల ఉగాది పంచాంగం, ఆదాయం - వ్యయం, రాజపూజ్యం - అవమానం మరియు వార్షిక గ్రహ శాంతి పరిహారాలు.',
+        descEn: 'Complete 2026-2027 Sri Parabhava Nama Samvatsara Telugu Ugadi yearly horoscope, Aadayam-Vyayam, Rajapujyam-Avamanam, and remedies for all 12 Rashis.',
+      },
+      '/shubha-muhurthalu': {
+        titleTe: 'శుభ ముహూర్తాలు 2026-2027 | వివాహం, గృహప్రవేశం, అక్షరాభ్యాసం తేదీలు — telugujyothisham.com',
+        titleEn: 'Shubha Muhurtham Dates 2026-2027 | Marriage, Gruhapravesham & Pooja Timings — telugujyothisham.com',
+        descTe: 'వివాహం, గృహప్రవేశం, అక్షరాభ్యాసం, అన్నప్రాసన మరియు వాహన కొనుగోలుకు దృక్సిద్ధాంత ప్రామాణిక శుభ ముహూర్త తేదీలు, లగ్న సమయాలు మరియు ఏకాదశి, పౌర్ణమి తిథుల క్యాలెండర్.',
+        descEn: 'Verified auspicious Telugu Muhurtham dates for weddings, Gruhapravesham, Aksharabhyasam, Annaprasana, and Ekadashi/Pournami festival calendar.',
+      },
+      '/festivals': {
+        titleTe: 'తెలుగు పండుగలు & తిథుల క్యాలెండర్ | ఏకాదశి, పౌర్ణమి, అమావాస్య తేదీలు — telugujyothisham.com',
+        titleEn: 'Telugu Festivals & Tithi Calendar | Ekadashi, Pournami, Chaturthi Dates — telugujyothisham.com',
+        descTe: 'ఏకాదశి, పౌర్ణమి, అమావాస్య, సంకష్టహర చతుర్థి, సుబ్రహ్మణ్య షష్ఠి మరియు ప్రదోషం తిథుల తేదీలు, పండుగల విశేషాలు.',
+        descEn: 'Find upcoming Telugu festival dates, Ekadashi, Pournami, Amavasya, Sankashtahara Chaturthi, and Pradosham timings.',
+      },
+      '/dosha-pariharalu': {
+        titleTe: 'కుజ దోషం, కాలసర్ప దోషం & ఏలినాటి శని నివారణ పరిహారాలు — telugujyothisham.com',
+        titleEn: 'Kuja Dosha, Kalasarpa Dosha & Elinati Shani Remedies | Vedic Shanti Guide — telugujyothisham.com',
+        descTe: 'జాతకంలోని కుజ దోషం, కాలసర్ప దోషం, ఏలినాటి శని, అష్టమ శని మరియు గండమూల నక్షత్ర దోషాలకు శాస్త్రోక్త వైదిక శాంతి పరిహారాలు మరియు హోమ వివరాలు.',
+        descEn: 'Authentic Vedic astrology guide and Shanti remedies for Kuja Dosha (Manglik), Kalasarpa Dosha, Sade Sati (Elinati Shani), and Gandamoola Nakshatras.',
+      },
+    };
 
     const titlesTelugu: Record<NavTab, string> = {
       home: 'పంచాంగం & రాశి ఫలితాలు | నేటి తెలుగు పంచాంగం, తిథి, నక్షత్రం, దిన ఫలం — telugujyothisham.com',
@@ -204,8 +293,19 @@ function AppContent() {
       contact: 'Consult renowned Telugu astrologer and Smartha purohit Sri Dheeraj Sharma for horoscope consultation, muhurtham, and pooja bookings.',
     };
 
-    const targetTitle = (language === 'en' ? titlesEnglish : titlesTelugu)[activeTab] || titlesTelugu.home;
-    const targetDesc = (language === 'en' ? descriptionsEnglish : descriptionsTelugu)[activeTab] || descriptionsTelugu.home;
+    const matchedEvergreen = isEvergreenHubRoute && activeTab === 'panchangam' ? evergreenSeoMeta[rawPath] : undefined;
+
+    const targetTitle = matchedEvergreen
+      ? language === 'en'
+        ? matchedEvergreen.titleEn
+        : matchedEvergreen.titleTe
+      : (language === 'en' ? titlesEnglish : titlesTelugu)[activeTab] || titlesTelugu.home;
+
+    const targetDesc = matchedEvergreen
+      ? language === 'en'
+        ? matchedEvergreen.descEn
+        : matchedEvergreen.descTe
+      : (language === 'en' ? descriptionsEnglish : descriptionsTelugu)[activeTab] || descriptionsTelugu.home;
 
     document.title = targetTitle;
     if (typeof document !== 'undefined') {
@@ -226,7 +326,7 @@ function AppContent() {
 
     const twitterDescEl = document.querySelector('meta[name="twitter:description"]');
     if (twitterDescEl) twitterDescEl.setAttribute('content', targetDesc);
-  }, [activeTab, language]);
+  }, [activeTab, hubSection, language, selectedCity]);
 
   const currentDay = WEEK_DATA.find((d) => d.id === selectedDayId) ?? WEEK_DATA[0];
 
@@ -373,6 +473,12 @@ function AppContent() {
             {/* Interactive Personal Zodiac & Nakshatra Checker */}
             <DevoteeCompatibilityChecker day={currentDay} />
 
+            {/* Complete Vedic Astrology & Muhurtham SEO Hub (Marriage Compatibility, Name Syllable Star Finder, Ugadi Aadayam-Vyayam, Shubha Muhurthams & Dosha Remedies) */}
+            <VedicAstrologyHub
+              initialSection={hubSection}
+              onOpenBooking={() => handleOpenBooking()}
+            />
+
             {/* Daily In-Depth Nakshatra & Tithi Phala Article (Based on Krishna Rau's Classical Text) */}
             <DailyNakshatraArticle
               currentDay={currentDay}
@@ -430,7 +536,10 @@ function AppContent() {
       />
 
       {/* Footer */}
-      <Footer onSelectCity={handleSelectCity} />
+      <Footer
+        onSelectCity={handleSelectCity}
+        onNavigateHubSection={handleNavigateHubSection}
+      />
     </div>
   );
 }

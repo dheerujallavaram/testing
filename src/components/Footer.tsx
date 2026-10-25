@@ -1,14 +1,41 @@
 import React from 'react';
-import { Sparkles, MapPin, Phone, Mail, Clock, ShieldCheck, Heart } from 'lucide-react';
+import { Sparkles, MapPin, Phone, Mail, Clock, ShieldCheck, Heart, Compass } from 'lucide-react';
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
+import { HubSectionId } from './VedicAstrologyHub';
 
 export interface FooterProps {
   onSelectCity?: (citySlug: string) => void;
+  onNavigateHubSection?: (section: HubSectionId, path: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
-  const { t } = useLanguage();
+const SEO_HUB_LINKS: { section: HubSectionId; path: string; labelTe: string; labelEn: string }[] = [
+  { section: 'pontana', path: '/vivaha-pontana', labelTe: '36 గుణాల వివాహ పొంతన (Vivaha Pontana)', labelEn: '36-Point Marriage Compatibility' },
+  { section: 'akshara', path: '/naama-nakshatra', labelTe: 'పేరు మొదటి అక్షరంతో రాశి & నక్షత్రం', labelEn: 'Name First Letter Rashi Finder' },
+  { section: 'ugadi', path: '/ugadi-rashi-phalalu', labelTe: 'శ్రీ పరాభవ నామ సంవత్సర ఉగాది రాశి ఫలాలు', labelEn: 'Ugadi Yearly Horoscope 2026-2027' },
+  { section: 'muhurtham', path: '/shubha-muhurthalu', labelTe: 'శుభ ముహూర్తాలు & పండుగల క్యాలెండర్', labelEn: 'Auspicious Muhurthams & Festivals' },
+  { section: 'dosha', path: '/dosha-pariharalu', labelTe: 'కుజ, కాలసర్ప, ఏలినాటి శని దోష పరిహారాలు', labelEn: 'Kuja, Kalasarpa & Shani Dosha Remedies' },
+];
+
+const POPULAR_CITY_LINKS: { slug: string; nameTe: string; nameEn: string }[] = [
+  { slug: 'hyderabad', nameTe: 'హైదరాబాద్ జ్యోతిష్యులు', nameEn: 'Hyderabad' },
+  { slug: 'vijayawada', nameTe: 'విజయవాడ', nameEn: 'Vijayawada' },
+  { slug: 'visakhapatnam', nameTe: 'విశాఖపట్నం', nameEn: 'Visakhapatnam' },
+  { slug: 'tirupati', nameTe: 'తిరుపతి', nameEn: 'Tirupati' },
+  { slug: 'guntur', nameTe: 'గుంటూరు', nameEn: 'Guntur' },
+  { slug: 'warangal', nameTe: 'వరంగల్', nameEn: 'Warangal' },
+  { slug: 'rajahmundry', nameTe: 'రాజమండ్రి', nameEn: 'Rajahmundry' },
+  { slug: 'bengaluru', nameTe: 'బెంగళూరు', nameEn: 'Bengaluru' },
+  { slug: 'dallas', nameTe: 'డల్లాస్ (USA)', nameEn: 'Dallas TX' },
+  { slug: 'new-jersey', nameTe: 'న్యూ జెర్సీ (USA)', nameEn: 'New Jersey' },
+  { slug: 'san-jose', nameTe: 'బే ఏరియా (USA)', nameEn: 'San Jose CA' },
+  { slug: 'london', nameTe: 'లండన్ (UK)', nameEn: 'London UK' },
+  { slug: 'sydney', nameTe: 'సిడ్నీ (Australia)', nameEn: 'Sydney AU' },
+  { slug: 'toronto', nameTe: 'టొరంటో (Canada)', nameEn: 'Toronto CA' },
+];
+
+export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSection }) => {
+  const { t, language } = useLanguage();
 
   return (
     <footer className="bg-amber-950 text-amber-100/90 pt-14 pb-8 border-t-4 border-amber-600">
@@ -101,6 +128,57 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
           </div>
         </div>
 
+        {/* Crawlable SEO Internal Links for Vedic Tools & Global Telugu Cities */}
+        <div className="py-6 border-b border-amber-900/80 space-y-4 font-telugu">
+          <div>
+            <h5 className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2.5 flex items-center gap-1.5">
+              <Compass size={13} />
+              <span>{t('ముఖ్యమైన జ్యోతిష & పంచాంగ విభాగాలు (Quick Astrology Tools)', 'Vedic Astrology Calculators & Guides')}</span>
+            </h5>
+            <div className="flex flex-wrap gap-2">
+              {SEO_HUB_LINKS.map((item) => (
+                <a
+                  key={item.path}
+                  href={item.path}
+                  onClick={(e) => {
+                    if (onNavigateHubSection) {
+                      e.preventDefault();
+                      onNavigateHubSection(item.section, item.path);
+                    }
+                  }}
+                  className="text-xs bg-amber-900/60 hover:bg-amber-800 text-amber-100 border border-amber-700/60 px-3 py-1.5 rounded-xl transition-colors"
+                >
+                  {language === 'en' ? item.labelEn : item.labelTe}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h5 className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2 flex items-center gap-1.5">
+              <MapPin size={13} />
+              <span>{t('ప్రపంచవ్యాప్త తెలుగు జ్యోతిష సేవలు (India & NRI Cities)', 'Global Telugu Astrologer & Purohit Services')}</span>
+            </h5>
+            <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-amber-300/80">
+              {POPULAR_CITY_LINKS.map((city) => (
+                <a
+                  key={city.slug}
+                  href={`/telugu-astrologer-in-${city.slug}`}
+                  onClick={(e) => {
+                    if (onSelectCity) {
+                      e.preventDefault();
+                      onSelectCity(city.slug);
+                    }
+                  }}
+                  className="hover:text-white hover:underline underline-offset-2 transition-colors"
+                >
+                  {language === 'en' ? `Telugu Astrologer in ${city.nameEn}` : city.nameTe}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Shloka and Dedication */}
         <div className="pt-8 text-center space-y-3 font-telugu">
           <p className="text-base sm:text-lg font-bold text-amber-300">
@@ -120,3 +198,4 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity }) => {
     </footer>
   );
 };
+

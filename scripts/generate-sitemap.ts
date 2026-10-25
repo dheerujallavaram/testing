@@ -13,6 +13,12 @@ interface StaticRoute {
 const STATIC_ROUTES: StaticRoute[] = [
   { path: '/', priority: 1.0, changefreq: 'daily' },
   { path: '/panchangam', priority: 0.95, changefreq: 'daily' },
+  { path: '/vivaha-pontana', priority: 0.90, changefreq: 'weekly' },
+  { path: '/naama-nakshatra', priority: 0.90, changefreq: 'monthly' },
+  { path: '/ugadi-rashi-phalalu', priority: 0.90, changefreq: 'weekly' },
+  { path: '/shubha-muhurthalu', priority: 0.90, changefreq: 'weekly' },
+  { path: '/festivals', priority: 0.90, changefreq: 'weekly' },
+  { path: '/dosha-pariharalu', priority: 0.85, changefreq: 'monthly' },
   { path: '/services', priority: 0.85, changefreq: 'weekly' },
   { path: '/about', priority: 0.75, changefreq: 'monthly' },
   { path: '/awards', priority: 0.75, changefreq: 'monthly' },

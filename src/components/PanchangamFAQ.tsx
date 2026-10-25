@@ -149,6 +149,66 @@ const FAQ_ITEMS: FAQItem[] = [
     tipEn: 'On Chandrashtamam days, stay calm, avoid major arguments or high-risk decisions, and chant Shiva mantras.',
     icon: Compass,
   },
+  {
+    id: 'vivaha-pontana-36-gunalu',
+    termTe: 'వివాహ పొంతన (36 గుణాలు)',
+    termEn: 'Marriage Matching (36 Points)',
+    englishSubtitle: 'Ashtakoota Guna Milan',
+    questionTe: 'వివాహ పొంతనలో 36 గుణాలకు గాను కనీసం ఎన్ని పాయింట్లు రావాలి?',
+    questionEn: 'How many points out of 36 are required in Ashtakoota Guna Milan for marriage?',
+    answerTe:
+      'వేద జ్యోతిష్య శాస్త్రం ప్రకారం వివాహ పొంతనలో వర్ణ (1), వశ్య (2), తార (3), యోని (4), గ్రహ మైత్రి (5), గణ (6), భకూట (7), నాడి (8) అనే 8 కూటాలకు కలిపి మొత్తం 36 గుణాలు ఉంటాయి. శాస్త్ర ప్రకారం వివాహానికి కనీసం 18 గుణాలు మరియు అంతకంటే ఎక్కువ రావడం శుభప్రదం. ముఖ్యంగా నాడి కూటం (8 పాయింట్లు) మరియు రజ్జు పొంతన తప్పనిసరిగా చూడాలి.',
+    answerEn:
+      'In Vedic Ashtakoota Guna Milan, compatibility is evaluated across 8 Kootas totaling 36 points. A score of 18 or more points out of 36 is considered auspicious for marriage, with special emphasis on Nadi Koota (8 points), Bhakoota (7 points), and Rajju matching.',
+    tipTe: 'కేవలం గుణాల సంఖ్య మాత్రమే కాకుండా వధూవరుల వ్యక్తిగత జాతకంలో కుజ దోషం, సప్తమ స్థాన బలం మరియు దశా సంధిని కూడా గురువుగారి చేత పరిశీలింపజేయాలి.',
+    tipEn: 'Beyond the 36-point score, always verify Kuja Dosha, 7th house strength, and Dasha compatibility.',
+    icon: Sparkles,
+  },
+  {
+    id: 'naama-nakshatra-rashi',
+    termTe: 'నామ నక్షత్రం & రాశి',
+    termEn: 'Rashi by Name First Letter',
+    englishSubtitle: 'Naama Nakshatra Lookup',
+    questionTe: 'పుట్టిన సమయం తెలియకపోతే పేరు మొదటి అక్షరంతో రాశి, నక్షత్రం ఎలా తెలుసుకోవాలి?',
+    questionEn: 'How can I find my Rashi and Nakshatra using the first syllable of my name?',
+    answerTe:
+      'పుట్టిన తేదీ లేదా ఖచ్చితమైన సమయం తెలియని వారు తమ పిలిచే పేరులోని మొదటి అక్షరం (ఉదాహరణకు: చూ, చే, చో, లా — అశ్విని నక్షత్రం, మేష రాశి) ఆధారంగా "నామ నక్షత్రం" మరియు "నామ రాశి"ని తెలుసుకోవచ్చు. అశ్విని నుండి రేవతి వరకు గల 27 నక్షత్రాలలోని 108 పాదాలకు నిర్దిష్ట తెలుగు అక్షరాలు కేటాయించబడ్డాయి.',
+    answerEn:
+      'When exact birth time is unavailable, Vedic astrology uses Naama Nakshatra—matching the first phonetic syllable of your spoken name against the 108 Padas of the 27 Nakshatras to determine your functional Moon Sign (Rashi) and birth star.',
+    tipTe: 'దేవాలయ అర్చనలు, గోత్రనామాల సంకల్పం మరియు రోజువారీ రాశి ఫలితాలు చూసుకోవడానికి నామ నక్షత్రం, నామ రాశిని నిరభ్యంతరంగా ఉపయోగించవచ్చు.',
+    tipEn: 'Naama Rashi and Naama Nakshatra can be used for temple Archana sankalpam and checking daily transit fortunes.',
+    icon: Star,
+  },
+  {
+    id: 'ugadi-aadayam-vyayam',
+    termTe: 'ఉగాది ఆదాయం - వ్యయం',
+    termEn: 'Ugadi Aadayam & Vyayam',
+    englishSubtitle: 'Sri Parabhava Nama Samvatsara 2026–2027',
+    questionTe: 'ఉగాది పంచాంగంలో ఆదాయం - వ్యయం, రాజపూజ్యం - అవమానం అంటే ఏమిటి?',
+    questionEn: 'What do Aadayam, Vyayam, Rajapujyam, and Avamanam mean in the Ugadi Panchangam?',
+    answerTe:
+      'ప్రతి తెలుగు సంవత్సరాది (ఉగాది) నాడు నవగ్రహాల వార్షిక సంచారాన్ని బట్టి 12 రాశుల వారికి ఆదాయం (ధన ప్రాప్తి), వ్యయం (ఖర్చులు), రాజపూజ్యం (గౌరవ మర్యాదలు, పదవీ లాభం) మరియు అవమానం నిష్పత్తులను పంచాంగ శ్రవణంలో గణిస్తారు. శ్రీ పరాభవ నామ సంవత్సర (2026–2027) పూర్తి రాశి ఫలాలు మా పేజీలో అందుబాటులో ఉన్నాయి.',
+    answerEn:
+      'In the annual Telugu Ugadi Panchangam, Aadayam (financial inflow) vs. Vyayam (expenditure) and Rajapujyam (social honor & authority) vs. Avamanam indicate the yearly macro-fortune ratios for each of the 12 zodiac signs.',
+    tipTe: 'వ్యయం ఎక్కువగా ఉన్న రాశుల వారు ఆర్థిక ప్రణాళిక పాటిస్తూ, దానధర్మాలు మరియు శుభకార్యాల రూపంలో ఖర్చు చేస్తే అశుభ వ్యయం తగ్గుతుంది.',
+    tipEn: 'Channeling periods of higher Vyayam into spiritual charity, investments, and family ceremonies neutralizes unexpected expenses.',
+    icon: BookOpen,
+  },
+  {
+    id: 'dosha-pariharalu-guide',
+    termTe: 'దోష నివారణ పరిహారాలు',
+    termEn: 'Kuja, Kalasarpa & Shani Remedies',
+    englishSubtitle: 'Vedic Dosha Shanti',
+    questionTe: 'కుజ దోషం, కాలసర్ప దోషం మరియు ఏలినాటి శని నివారణకు శాస్త్రోక్త పరిహారాలు ఏమిటి?',
+    questionEn: 'What are the authentic Vedic remedies for Kuja Dosha, Kalasarpa Dosha, and Sade Sati?',
+    answerTe:
+      'జాతకంలో కుజ దోషం ఉన్నవారు మంగళవారం సుబ్రహ్మణ్య స్వామి ఆరాధన, కుజ గ్రహ జపం చేయించాలి. కాలసర్ప దోషం ఉన్నవారు రాహు-కేతు శాంతి హోమం, రుద్రాభిషేకం జరిపించాలి. ఏలినాటి శని లేదా అష్టమ శని నడుస్తున్న వారు శనివారం తైలాభిషేకం, నల్ల నువ్వుల దానం మరియు ఆంజనేయ స్వామి ఆరాధన చేయడం వల్ల దోష తీవ్రత తగ్గి శుభ ఫలితాలు కలుగుతాయి.',
+    answerEn:
+      'Kuja Dosha is pacified through Subrahmanya Abhishekam and Kuja Graha Japa; Kalasarpa Dosha through Rahu-Ketu Shanti Homam and Rudrabhishekam; and Elinati Shani (Sade Sati) through Shani Tailabhishekam, Hanuman archana, and sesame dana on Saturdays.',
+    tipTe: 'ఏ దోషానికైనా భయపడకుండా, వ్యక్తిగత జాతకంలోని గ్రహ దృష్టి మరియు దశా బలాన్ని బట్టి సరైన శాంతి పరిహారం ఆచరిస్తే సంపూర్ణ శుభం కలుగుతుంది.',
+    tipEn: 'Every planetary affliction has a classical Vedic remedial prescription—consult an experienced scholar for personalized sankalpam.',
+    icon: ShieldAlert,
+  },
 ];
 
 export const PanchangamFAQ: React.FC = () => {

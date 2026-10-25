@@ -1,5 +1,5 @@
-import React from 'react';
-import { Calendar, Clock, Sun, Moon, Sparkles, ShieldAlert, Award } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Calendar, Clock, Sun, Moon, Sparkles, ShieldAlert, Award, Volume2, Square } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -16,6 +16,79 @@ export interface PanchangamQuickSummaryProps {
  */
 export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ day }) => {
   const { t, tr } = useLanguage();
+  const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
+  const [speechSupported, setSpeechSupported] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      setSpeechSupported(true);
+      // Pre-warm voices list on browsers that load voices asynchronously
+      window.speechSynthesis.getVoices();
+    }
+    return () => {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  // Stop audio if user switches to a different day
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      setIsPlayingAudio(false);
+    }
+  }, [day.id]);
+
+  const handleTogglePlayAudio = useCallback(() => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+    if (isPlayingAudio) {
+      window.speechSynthesis.cancel();
+      setIsPlayingAudio(false);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const amruthaText = day.shubha.amrutha || 'ఉదయం 08:30 AM నుండి 10:15 AM వరకు';
+    const teluguScript = [
+      `ఓం శ్రీ మహాగణాధిపతయే నమః.`,
+      `శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం, బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ${day.label} పంచాంగ ముఖ్యాంశాలు.`,
+      `తేదీ మరియు వారము: ${day.teediVaram}.`,
+      `నేటి తిథి: ${day.panchanga.tithi}.`,
+      `నక్షత్రం: ${day.panchanga.nakshatram}.`,
+      `యోగం: ${day.panchanga.yogam}.`,
+      `కరణం: ${day.panchanga.karanam}.`,
+      `శుభ సమయం, అమృత ఘడియలు: ${amruthaText}.`,
+      `అశుభ సమయాలు — రాహుకాలం: ${day.ashubha.rahukalam}. యమగండం: ${day.ashubha.yamagandam}. వర్జ్యం: ${day.ashubha.varjyam}.`,
+      day.specialEvent ? `నేటి విశేషం: ${day.specialEvent}.` : '',
+      `దిన ఫలితం: ${day.phalitham}.`,
+      `సర్వేజనా సుఖినోభవంతు.`
+    ].filter(Boolean).join(' ');
+
+    const utterance = new SpeechSynthesisUtterance(teluguScript);
+    utterance.lang = 'te-IN';
+    utterance.rate = 0.92;
+    utterance.pitch = 1.0;
+
+    const voices = window.speechSynthesis.getVoices();
+    const teluguVoice =
+      voices.find((v) => v.lang.toLowerCase() === 'te-in') ||
+      voices.find((v) => v.lang.toLowerCase().startsWith('te')) ||
+      voices.find((v) => v.name.toLowerCase().includes('telugu'));
+
+    if (teluguVoice) {
+      utterance.voice = teluguVoice;
+    }
+
+    utterance.onstart = () => setIsPlayingAudio(true);
+    utterance.onend = () => setIsPlayingAudio(false);
+    utterance.onerror = () => setIsPlayingAudio(false);
+
+    setIsPlayingAudio(true);
+    window.speechSynthesis.speak(utterance);
+  }, [day, isPlayingAudio]);
 
   return (
     <section 
@@ -24,7 +97,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
     >
       <div className="absolute top-0 right-0 w-60 h-60 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Header with AI Zero-Click Anchor */}
+      {/* Header with AI Zero-Click Anchor & Play Audio Button */}
       <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 pb-5 border-b border-amber-800/80">
         <div>
           <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 bg-amber-500/20 border border-amber-400/40 px-3 py-1 rounded-full mb-1.5">
@@ -39,9 +112,37 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start md:self-auto bg-amber-900/80 border border-amber-600/50 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-amber-200">
-          <Award size={14} className="text-amber-400" />
-          <span>శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</span>
+        <div className="flex flex-wrap items-center gap-2.5 self-start md:self-auto">
+          {speechSupported && (
+            <button
+              type="button"
+              onClick={handleTogglePlayAudio}
+              aria-pressed={isPlayingAudio}
+              title={t('నేటి పంచాంగ ముఖ్యాంశాలను తెలుగు ఆడియోలో వినండి', 'Listen to Daily Panchangam Highlights in Telugu')}
+              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer shadow-sm ${
+                isPlayingAudio
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-300 animate-pulse'
+                  : 'bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-amber-950 border-amber-300'
+              }`}
+            >
+              {isPlayingAudio ? (
+                <>
+                  <Square size={14} className="fill-current" />
+                  <span>{t('ఆడియో ఆపండి (Stop Audio)', 'Stop Audio')}</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 size={16} />
+                  <span>{t('ఆడియో వినండి (Play Audio)', 'Play Audio')}</span>
+                </>
+              )}
+            </button>
+          )}
+
+          <div className="flex items-center gap-2 bg-amber-900/80 border border-amber-600/50 px-3.5 py-2 rounded-xl text-xs font-semibold text-amber-200">
+            <Award size={14} className="text-amber-400" />
+            <span>శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</span>
+          </div>
         </div>
       </div>
 
