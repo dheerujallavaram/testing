@@ -3,10 +3,12 @@ import { Sparkles, MapPin, Phone, Mail, Clock, ShieldCheck, Heart, Compass } fro
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
 import { HubSectionId } from './VedicAstrologyHub';
+import { LegalDocType } from './LegalComplianceModal';
 
 export interface FooterProps {
   onSelectCity?: (citySlug: string) => void;
   onNavigateHubSection?: (section: HubSectionId, path: string) => void;
+  onOpenLegal?: (doc: LegalDocType) => void;
 }
 
 const SEO_HUB_LINKS: { section: HubSectionId; path: string; labelTe: string; labelEn: string }[] = [
@@ -36,7 +38,7 @@ const POPULAR_CITY_LINKS: { slug: string; nameTe: string; nameEn: string }[] = [
   { slug: 'toronto', nameTe: 'టొరంటో (Canada)', nameEn: 'Toronto CA' },
 ];
 
-export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSection }) => {
+export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSection, onOpenLegal }) => {
   const { t, language } = useLanguage();
 
   return (
@@ -181,7 +183,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSecti
           </div>
         </div>
 
-        {/* Shloka and Dedication */}
+        {/* Shloka, Legal Policy Links (AdSense Compliance) and Dedication */}
         <div className="pt-8 text-center space-y-3 font-telugu">
           <p className="text-base sm:text-lg font-bold text-amber-300">
             {t('సర్వేజనా సుఖినోభవంతు · లోకాః సమస్తాః సుఖినోభవంతు', 'Sarvejana Sukhinobhavantu · Lokah Samastah Sukhino Bhavantu')}
@@ -189,6 +191,49 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSecti
           <p className="text-xs sm:text-sm text-amber-200/70">
             {t('సమర్పణ: ', 'Devotedly presented by: ')}<strong>{t('జల్లవరం సాయి ధీరజ్ శర్మ', 'Jallavaram Sai Dheeraj Sharma')}</strong>
           </p>
+
+          {/* Privacy Policy, Terms & Disclaimer Links */}
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs text-amber-300/90">
+            <a
+              href="/privacy-policy"
+              onClick={(e) => {
+                if (onOpenLegal) {
+                  e.preventDefault();
+                  onOpenLegal('privacy');
+                }
+              }}
+              className="hover:text-white underline underline-offset-4 transition-colors"
+            >
+              {t('గోప్యతా విధానం (Privacy Policy)', 'Privacy Policy')}
+            </a>
+            <span className="text-amber-700">•</span>
+            <a
+              href="/terms-and-conditions"
+              onClick={(e) => {
+                if (onOpenLegal) {
+                  e.preventDefault();
+                  onOpenLegal('terms');
+                }
+              }}
+              className="hover:text-white underline underline-offset-4 transition-colors"
+            >
+              {t('నిబంధనలు (Terms & Conditions)', 'Terms & Conditions')}
+            </a>
+            <span className="text-amber-700">•</span>
+            <a
+              href="/disclaimer"
+              onClick={(e) => {
+                if (onOpenLegal) {
+                  e.preventDefault();
+                  onOpenLegal('disclaimer');
+                }
+              }}
+              className="hover:text-white underline underline-offset-4 transition-colors"
+            >
+              {t('జ్యోతిష్య గమనిక (Disclaimer)', 'Disclaimer')}
+            </a>
+          </div>
+
           <p className="text-[11px] text-amber-400/60 max-w-2xl mx-auto leading-normal">
             {t(
               'గమనిక: ఈ సమయాలు ఆంధ్రప్రదేశ్ మరియు తెలంగాణ ప్రాంతాలకు సంబంధించిన ప్రామాణిక సూర్యోదయ గణనలు. ప్రాంతీయ అక్షాంశ, రేఖాంశాలను బట్టి కొన్ని నిమిషాల వ్యత్యాసం ఉండవచ్చు. శుభ కార్యాల కోసం శ్రీ ధీరజ్ శర్మ గారి సలహా తప్పనిసరి.',

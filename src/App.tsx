@@ -31,6 +31,7 @@ import { PanchangamQuickSummary } from './components/PanchangamQuickSummary';
 import { DailyAstrologyInsights } from './components/DailyAstrologyInsights';
 import { UpcomingRitualCountdown } from './components/UpcomingRitualCountdown';
 import { VedicAstrologyHub, HubSectionId } from './components/VedicAstrologyHub';
+import { LegalComplianceModal, LegalDocType } from './components/LegalComplianceModal';
 
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
@@ -116,9 +117,25 @@ export function resolveHubSectionFromLocation(): HubSectionId {
   return 'pontana';
 }
 
+export function resolveLegalDocFromLocation(): LegalDocType | null {
+  if (typeof window === 'undefined') return null;
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  if (pathname === '/privacy-policy') return 'privacy';
+  if (pathname === '/terms-and-conditions') return 'terms';
+  if (pathname === '/disclaimer') return 'disclaimer';
+  return null;
+}
+
+const LEGAL_DOC_PATHS: Record<LegalDocType, string> = {
+  privacy: '/privacy-policy',
+  terms: '/terms-and-conditions',
+  disclaimer: '/disclaimer',
+};
+
 function AppContent() {
   const [activeTab, setActiveTab] = useState<NavTab>(() => resolveTabFromLocation());
   const [hubSection, setHubSection] = useState<HubSectionId>(() => resolveHubSectionFromLocation());
+  const [activeLegalDoc, setActiveLegalDoc] = useState<LegalDocType | null>(() => resolveLegalDocFromLocation());
   const [selectedCity, setSelectedCity] = useState<CitySEOData | null>(() => resolveCityFromLocation());
   const [selectedDayId, setSelectedDayId] = useState<string>(() => getTodayAndTomorrowIds(WEEK_DATA).todayId);
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
@@ -179,11 +196,36 @@ function AppContent() {
     }
   }, []);
 
+  const handleOpenLegal = useCallback((doc: LegalDocType) => {
+    setActiveLegalDoc(doc);
+    if (typeof window !== 'undefined') {
+      try {
+        const targetPath = LEGAL_DOC_PATHS[doc];
+        if (targetPath && window.location.pathname !== targetPath) {
+          window.history.pushState({ legalDoc: doc }, '', targetPath);
+        }
+      } catch {}
+    }
+  }, []);
+
+  const handleCloseLegal = useCallback(() => {
+    setActiveLegalDoc(null);
+    if (typeof window !== 'undefined') {
+      try {
+        const fallbackPath = TAB_PATHS[activeTab] || '/';
+        if (['/privacy-policy', '/terms-and-conditions', '/disclaimer'].includes(window.location.pathname)) {
+          window.history.pushState({ tab: activeTab }, '', fallbackPath);
+        }
+      } catch {}
+    }
+  }, [activeTab]);
+
   // Listen to browser Back / Forward navigation (popstate)
   useEffect(() => {
     const onPopState = () => {
       const matchedCity = resolveCityFromLocation();
       setSelectedCity(matchedCity);
+      setActiveLegalDoc(resolveLegalDocFromLocation());
       if (!matchedCity) {
         setActiveTab(resolveTabFromLocation());
         setHubSection(resolveHubSectionFromLocation());
@@ -563,10 +605,18 @@ function AppContent() {
         onClose={handleCloseBooking}
       />
 
+      {/* Legal & AdSense Compliance Modal (Privacy Policy, Terms & Conditions, Disclaimer) */}
+      <LegalComplianceModal
+        activeDoc={activeLegalDoc}
+        onClose={handleCloseLegal}
+        onSelectDoc={handleOpenLegal}
+      />
+
       {/* Footer */}
       <Footer
         onSelectCity={handleSelectCity}
         onNavigateHubSection={handleNavigateHubSection}
+        onOpenLegal={handleOpenLegal}
       />
     </div>
   );

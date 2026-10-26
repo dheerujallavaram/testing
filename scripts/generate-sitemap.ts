@@ -26,6 +26,9 @@ const STATIC_ROUTES: StaticRoute[] = [
   { path: '/about', priority: 0.75, changefreq: 'monthly' },
   { path: '/awards', priority: 0.75, changefreq: 'monthly' },
   { path: '/contact', priority: 0.75, changefreq: 'monthly' },
+  { path: '/privacy-policy', priority: 0.60, changefreq: 'yearly' },
+  { path: '/terms-and-conditions', priority: 0.60, changefreq: 'yearly' },
+  { path: '/disclaimer', priority: 0.60, changefreq: 'yearly' },
 ];
 
 export function generateSitemapXML(cities: CitySEOData[] = ALL_CITIES): string {
