@@ -102,13 +102,13 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         <div>
           <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 bg-amber-500/20 border border-amber-400/40 px-3 py-1 rounded-full mb-1.5">
             <Sparkles size={13} className="text-amber-400" />
-            <span>నేటి సంక్షిప్త పంచాంగం • Fast Panchangam Facts</span>
+            <span>Neti Panchangam • Today Panchangam in Telugu • ఈ రోజు పంచాంగం</span>
           </div>
           <h2 className="text-xl sm:text-3xl font-black text-amber-100">
-            {tr(day.label)} పంచాంగ ముఖ్య వివరాలు ({day.teediVaram})
+            {tr(day.label)} పంచాంగం — Neti Panchangam ({day.teediVaram})
           </h2>
-          <p className="text-xs sm:text-sm text-amber-200/80 mt-0.5">
-            శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం దృక్సిద్ధాంత ప్రామాణిక పంచాంగం
+          <p className="text-xs sm:text-sm text-amber-200/85 mt-0.5">
+            Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం) — శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం
           </p>
         </div>
 
@@ -153,7 +153,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         <div className="bg-amber-950/80 border border-amber-700/60 rounded-2xl p-3.5 shadow-2xs">
           <dt className="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1 mb-1">
             <Moon size={12} className="text-amber-300" />
-            <span>తిథి (Tithi)</span>
+            <span>Tithi (తిథి)</span>
           </dt>
           <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
             {tr(day.panchanga.tithi)}
@@ -164,7 +164,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         <div className="bg-amber-950/80 border border-amber-700/60 rounded-2xl p-3.5 shadow-2xs">
           <dt className="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1 mb-1">
             <Sparkles size={12} className="text-amber-300" />
-            <span>నక్షత్రం (Star)</span>
+            <span>Nakshatram (నక్షత్రం)</span>
           </dt>
           <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
             {tr(day.panchanga.nakshatram)}
@@ -175,7 +175,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         <div className="bg-amber-950/80 border border-amber-700/60 rounded-2xl p-3.5 shadow-2xs">
           <dt className="text-red-300 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1 mb-1">
             <ShieldAlert size={12} className="text-red-400" />
-            <span>రాహుకాలం (Rahu Kalam)</span>
+            <span>Rahu Kalam (రాహుకాలం)</span>
           </dt>
           <dd className="font-bold text-red-200 text-xs sm:text-sm leading-tight">
             {tr(day.ashubha.rahukalam)}
@@ -186,7 +186,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         <div className="bg-amber-950/80 border border-amber-700/60 rounded-2xl p-3.5 shadow-2xs">
           <dt className="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1 mb-1">
             <Clock size={12} className="text-amber-300" />
-            <span>యమగండం (Yamagandam)</span>
+            <span>Yamagandam (యమగండం)</span>
           </dt>
           <dd className="font-bold text-amber-100 text-xs sm:text-sm leading-tight">
             {tr(day.ashubha.yamagandam)}
@@ -197,7 +197,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         <div className="bg-amber-950/80 border border-emerald-600/60 rounded-2xl p-3.5 shadow-2xs">
           <dt className="text-emerald-300 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1 mb-1">
             <Sun size={12} className="text-emerald-400" />
-            <span>అమృత ఘడియలు</span>
+            <span>Amrutha Gadiyalu (అమృత ఘడియలు)</span>
           </dt>
           <dd className="font-bold text-emerald-200 text-xs sm:text-sm leading-tight">
             {tr(day.shubha.amrutha) || 'ఉదయం 08:30 AM - 10:15 AM'}
@@ -207,7 +207,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         {/* Durmuhurtham */}
         <div className="bg-amber-950/80 border border-amber-700/60 rounded-2xl p-3.5 shadow-2xs">
           <dt className="text-amber-400 font-bold uppercase tracking-wider text-[11px] mb-1">
-            దుర్ముహూర్తం
+            Durmuhurtham (దుర్ముహూర్తం)
           </dt>
           <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
             {tr(day.ashubha.durmuhurtham)}
@@ -217,7 +217,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         {/* Varjyam */}
         <div className="bg-amber-950/80 border border-amber-700/60 rounded-2xl p-3.5 shadow-2xs">
           <dt className="text-amber-400 font-bold uppercase tracking-wider text-[11px] mb-1">
-            వర్జ్యం (Varjyam)
+            Varjyam (వర్జ్యం)
           </dt>
           <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
             {tr(day.ashubha.varjyam)}
@@ -227,7 +227,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         {/* Yogam */}
         <div className="bg-amber-950/80 border border-amber-700/60 rounded-2xl p-3.5 shadow-2xs">
           <dt className="text-amber-400 font-bold uppercase tracking-wider text-[11px] mb-1">
-            యోగం (Yogam)
+            Yogam (యోగం)
           </dt>
           <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
             {day.panchanga.yogam}
@@ -237,20 +237,20 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         {/* Karanam */}
         <div className="bg-amber-950/80 border border-amber-700/60 rounded-2xl p-3.5 shadow-2xs">
           <dt className="text-amber-400 font-bold uppercase tracking-wider text-[11px] mb-1">
-            కరణం (Karanam)
+            Karanam (కరణం)
           </dt>
           <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
             {day.panchanga.karanam}
           </dd>
         </div>
 
-        {/* Sunrise & Sunset */}
+        {/* Masam & Vaaram */}
         <div className="bg-amber-950/80 border border-amber-700/60 rounded-2xl p-3.5 shadow-2xs">
           <dt className="text-amber-400 font-bold uppercase tracking-wider text-[11px] mb-1">
-            సూర్యోదయం / సూర్యాస్తమయం
+            Masam (మాసం) &amp; Vaaram (వారం)
           </dt>
           <dd className="font-bold text-amber-200 text-xs sm:text-sm leading-tight">
-            06:12 AM / 05:54 PM
+            {tr(day.panchanga.masam)} · {tr(day.teediVaram.split('•')[1]?.trim() || day.label)}
           </dd>
         </div>
 
@@ -259,7 +259,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
       {/* AI Search Entity Verification Footnote */}
       <div className="mt-4 pt-3 border-t border-amber-800/60 text-[11px] text-amber-300/80 flex flex-wrap items-center justify-between gap-2">
         <span>
-          💡 <strong>తెలుగు పంచాంగం సూత్రం:</strong> తిథి, వారము, నక్షత్రము, యోగము, కరణము అనునవి పంచాంగం యొక్క 5 ముఖ్య అంగములు.
+          💡 <strong>Neti Panchangam (నేటి పంచాంగం) | Today Panchangam in Telugu (ఈ రోజు పంచాంగం):</strong> Tithi(తిథి), Vaaram(వారం), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Masam(మాసం).
         </span>
         <span className="font-mono text-amber-400">telugujyothisham.com/panchangam</span>
       </div>

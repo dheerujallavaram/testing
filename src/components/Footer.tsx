@@ -10,6 +10,8 @@ export interface FooterProps {
 }
 
 const SEO_HUB_LINKS: { section: HubSectionId; path: string; labelTe: string; labelEn: string }[] = [
+  { section: 'pontana', path: '/neti-panchangam', labelTe: 'నేటి పంచాంగం (Neti Panchangam)', labelEn: 'Neti Panchangam (Today Panchangam)' },
+  { section: 'pontana', path: '/today-panchangam-in-telugu', labelTe: 'ఈ రోజు పంచాంగం (Today Panchangam in Telugu)', labelEn: 'Today Panchangam in Telugu - ఈ రోజు పంచాంగం' },
   { section: 'pontana', path: '/vivaha-pontana', labelTe: '36 గుణాల వివాహ పొంతన (Vivaha Pontana)', labelEn: '36-Point Marriage Compatibility' },
   { section: 'akshara', path: '/naama-nakshatra', labelTe: 'పేరు మొదటి అక్షరంతో రాశి & నక్షత్రం', labelEn: 'Name First Letter Rashi Finder' },
   { section: 'ugadi', path: '/ugadi-rashi-phalalu', labelTe: 'శ్రీ పరాభవ నామ సంవత్సర ఉగాది రాశి ఫలాలు', labelEn: 'Ugadi Yearly Horoscope 2026-2027' },

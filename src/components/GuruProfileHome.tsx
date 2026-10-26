@@ -280,13 +280,13 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 bg-amber-200/60 px-3 py-1 rounded-full mb-2">
               <Calendar size={14} />
-              <span>{t('నేటి పంచాంగ సంక్షిప్త దర్శనం', "Today's Panchangam Glance")}</span>
+              <span>{t('నేటి పంచాంగం • Neti Panchangam • ఈ రోజు పంచాంగం', 'Neti Panchangam • Today Panchangam in Telugu')}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-amber-950">
-              {tr(currentDay.teediVaram)}
+              {t(`నేటి పంచాంగం (Neti Panchangam) — ${currentDay.teediVaram}`, `Today Panchangam in Telugu (ఈ రోజు పంచాంగం) — ${tr(currentDay.teediVaram)}`)}
             </h2>
             <p className="text-sm text-slate-600 mt-1">
-              {tr(currentDay.panchanga.samvatsaram)} · {tr(currentDay.panchanga.masam)}
+              {tr(currentDay.panchanga.samvatsaram)} · {tr(currentDay.panchanga.masam)} · Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం)
             </p>
           </div>
 

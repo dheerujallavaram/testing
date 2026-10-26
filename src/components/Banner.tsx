@@ -55,15 +55,22 @@ export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName }) =
             </span>
           </p>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-telugu text-white tracking-tight drop-shadow-sm mb-4">
-            {t('నేటి పంచాంగం & రాశి ఫలితాలు', 'Daily Vedic Panchangam & Horoscope')}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-telugu text-white tracking-tight drop-shadow-sm mb-3">
+            {t(
+              'నేటి పంచాంగం (Neti Panchangam) & రాశి ఫలితాలు',
+              'Today Panchangam in Telugu (ఈ రోజు పంచాంగం - Neti Panchangam)'
+            )}
           </h1>
+
+          <p className="text-xs sm:text-sm font-semibold text-amber-300/95 tracking-wide mb-2">
+            Today Panchangam in Telugu - ఈ రోజు పంచాంగం - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం)
+          </p>
 
           <p className="text-base sm:text-lg text-amber-100/90 font-telugu leading-relaxed mb-6 max-w-2xl mx-auto">
             {tr(currentDay.panchanga.samvatsaram)} · {tr(currentDay.panchanga.masam)} —{' '}
             {t(
-              'తిథి, నక్షత్రం, లగ్నాలు, రాశి చక్ర గోచారం మరియు శుభ/అశుభ ముహూర్తాల ప్రామాణిక వివరాలు.',
-              'Authentic Drik Siddhanta Tithi, Nakshatra, Lagnas, Planetary Rashi Chart & Auspicious Muhurtha Timings.'
+              'తిథి, నక్షత్రం, యోగం, కరణం, లగ్నాలు, రాహుకాలం, రాశి చక్ర గోచారం మరియు శుభ/అశుభ ముహూర్తాల ప్రామాణిక వివరాలు.',
+              'Authentic Drik Siddhanta Tithi, Nakshatra, Yogam, Karanam, Lagnas, Rahu Kalam, Planetary Rashi Chart & Auspicious Muhurtha Timings.'
             )}
           </p>
 

@@ -73,6 +73,9 @@ export function resolveTabFromLocation(): NavTab {
   if (
     pathname === '/panchangam' ||
     pathname.endsWith('/panchangam') ||
+    pathname === '/neti-panchangam' ||
+    pathname === '/today-panchangam-in-telugu' ||
+    pathname === '/ee-roju-panchangam' ||
     pathname === '/vivaha-pontana' ||
     pathname === '/naama-nakshatra' ||
     pathname === '/ugadi-rashi-phalalu' ||
@@ -148,6 +151,10 @@ function AppContent() {
         }
       } catch {}
       setTimeout(() => {
+        if (path === '/neti-panchangam' || path === '/today-panchangam-in-telugu' || path === '/ee-roju-panchangam') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
         const el = document.getElementById('vedic-astrology-hub');
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -192,6 +199,9 @@ function AppContent() {
 
     const rawPath = typeof window !== 'undefined' ? window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/' : '/';
     const isEvergreenHubRoute = [
+      '/neti-panchangam',
+      '/today-panchangam-in-telugu',
+      '/ee-roju-panchangam',
       '/vivaha-pontana',
       '/naama-nakshatra',
       '/ugadi-rashi-phalalu',
@@ -219,6 +229,24 @@ function AppContent() {
     }
 
     const evergreenSeoMeta: Record<string, { titleTe: string; titleEn: string; descTe: string; descEn: string }> = {
+      '/neti-panchangam': {
+        titleTe: 'Neti Panchangam | నేటి పంచాంగం - Today Panchangam in Telugu - ఈ రోజు పంచాంగం — telugujyothisham.com',
+        titleEn: 'Neti Panchangam | Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం — telugujyothisham.com',
+        descTe: 'Neti Panchangam (నేటి పంచాంగం) & Today Panchangam in Telugu (ఈ రోజు పంచాంగం) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Varjyam(వర్జ్యం), Amrutha Gadiyalu(అమృత ఘడియలు) & 12 Rashi Phalalu.',
+        descEn: 'Neti Panchangam (నేటి పంచాంగం) & Today Panchangam in Telugu (ఈ రోజు పంచాంగం) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం) & Daily Horoscope at telugujyothisham.com.',
+      },
+      '/today-panchangam-in-telugu': {
+        titleTe: 'Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం (Neti Panchangam) — telugujyothisham.com',
+        titleEn: 'Today Panchangam in Telugu - ఈ రోజు పంచాంగం - Neti Panchangam — telugujyothisham.com',
+        descTe: 'Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Yamagandam(యమగండం), Varjyam(వర్జ్యం), Amrutha Gadiyalu(అమృత ఘడియలు) — telugujyothisham.com.',
+        descEn: 'Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Durmuhurtham(దుర్ముహూర్తం) & 12 Rashi Phalithalu.',
+      },
+      '/ee-roju-panchangam': {
+        titleTe: 'ఈ రోజు పంచాంగం (Ee Roju Panchangam) | Today Panchangam in Telugu - నేటి పంచాంగం — telugujyothisham.com',
+        titleEn: 'Ee Roju Panchangam (ఈ రోజు పంచాంగం) | Today Panchangam in Telugu - Neti Panchangam — telugujyothisham.com',
+        descTe: 'ఈ రోజు పంచాంగం (Ee Roju Panchangam / Neti Panchangam) - Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం) & 12 రాశుల దిన ఫలాలు.',
+        descEn: 'Ee Roju Panchangam (ఈ రోజు పంచాంగం) - Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం) & Auspicious Timings.',
+      },
       '/vivaha-pontana': {
         titleTe: 'వివాహ పొంతన & 36 గుణ మిళనం | అష్టకూట వధూవరుల రాశి పొంతన — telugujyothisham.com',
         titleEn: '36-Point Marriage Compatibility (Vivaha Pontana) | Ashtakoota Guna Milan — telugujyothisham.com',
@@ -258,8 +286,8 @@ function AppContent() {
     };
 
     const titlesTelugu: Record<NavTab, string> = {
-      home: 'పంచాంగం & రాశి ఫలితాలు | నేటి తెలుగు పంచాంగం, తిథి, నక్షత్రం, దిన ఫలం — telugujyothisham.com',
-      panchangam: 'పంచాంగం | నేటి తెలుగు పంచాంగం, తిథి, నక్షత్రం, రాహుకాలం, దిన ఫలం — telugujyothisham.com/panchangam',
+      home: 'Neti Panchangam | Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం — telugujyothisham.com',
+      panchangam: 'Neti Panchangam | Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం — telugujyothisham.com/panchangam',
       awards: 'పొందిన సత్కారాలు & పురస్కారాలు | శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (telugujyothisham.com/awards)',
       services: 'వైదిక పూజా సేవలు & హోమాలు | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/services)',
       about: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి గురించి | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/about)',
@@ -267,8 +295,8 @@ function AppContent() {
     };
 
     const titlesEnglish: Record<NavTab, string> = {
-      home: 'Telugu Panchangam Today & Horoscope | Sri Lakshmi Ganapathi Astrology — telugujyothisham.com',
-      panchangam: 'Telugu Panchangam | Today Tithi, Nakshatram, Rahu Kalam, Muhurtham — telugujyothisham.com/panchangam',
+      home: 'Neti Panchangam | Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం — telugujyothisham.com',
+      panchangam: 'Today Panchangam in Telugu - ఈ రోజు పంచాంగం - Neti Panchangam — telugujyothisham.com/panchangam',
       awards: 'Vedic Honors & Awards | Sri Jallavaram Sai Dheeraj Sharma — telugujyothisham.com/awards',
       services: 'Vedic Homams & Rituals | Sri Chandi Homam, Lakshmi Kubera Yagam — telugujyothisham.com/services',
       about: 'About Sri Jallavaram Sai Dheeraj Sharma | Renowned Vedic Astrologer — telugujyothisham.com/about',
@@ -276,8 +304,8 @@ function AppContent() {
     };
 
     const descriptionsTelugu: Record<NavTab, string> = {
-      home: 'పంచాంగం (Panchangam) - నేటి తెలుగు పంచాంగం, 12 రాశుల దిన ఫలాలు, తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, రాహుకాలం మరియు శుభ ముహూర్తాలు. ప్రతిరోజూ తాజా పంచాంగం telugujyothisham.com లో చూడండి.',
-      panchangam: 'పంచాంగం (Panchangam) - నేటి ఖచ్చితమైన తెలుగు పంచాంగం, తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, అమృత ఘడియలు, రాహుకాలం, 12 రాశుల దిన ఫలాలు మరియు దక్షిణ భారత రాశి చక్రం. శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం దృక్సిద్ధాంత ప్రామాణిక ఫలితాలు.',
+      home: 'Neti Panchangam (నేటి పంచాంగం) & Today Panchangam in Telugu (ఈ రోజు పంచాంగం) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Varjyam(వర్జ్యం), Amrutha Gadiyalu(అమృత ఘడియలు) & 12 Rashi Phalalu at telugujyothisham.com.',
+      panchangam: 'Today Panchangam in Telugu (ఈ రోజు పంచాంగం - నేటి పంచాంగం - Neti Panchangam) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Durmuhurtham(దుర్ముహూర్తం), Varjyam(వర్జ్యం) & 12 రాశుల దిన ఫలాలు.',
       awards: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు పొందిన జ్యోతిష సత్కారాలు, బిరుదులు మరియు పూజా పురస్కారాల వివరాలు.',
       services: 'శ్రీ చండీ హోమం, లక్ష్మీ గణపతి హోమం, సుదర్శన హోమం, వివాహ, గృహప్రవేశ క్రతువులు శాస్త్రోక్తంగా నిర్వహించబడును.',
       about: 'జ్యోతిష పండితులు, స్మార్త వేద విద్వాంసులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్యాత్మిక ప్రస్థానం మరియు అనుభవం.',
@@ -285,8 +313,8 @@ function AppContent() {
     };
 
     const descriptionsEnglish: Record<NavTab, string> = {
-      home: 'Daily Telugu Panchangam, today tithi, nakshatram, yoga, karana, rahu kalam, durmuhurtham, and daily rashi fortunes for all 12 zodiac signs by Sri Lakshmi Ganapathi Astrology.',
-      panchangam: 'Authentic Telugu Panchangam with today tithi, nakshatram, rahu kalam, amrutha gadiyalu, varjyam, and 12-rashi planetary transit analysis with South Indian Kundli.',
+      home: 'Today Panchangam in Telugu (ఈ రోజు పంచాంగం / Neti Panchangam) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Amrutha Gadiyalu & Daily Horoscope.',
+      panchangam: 'Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Varjyam(వర్జ్యం), Durmuhurtham & 12 Rashi Phalalu by Sri Lakshmi Ganapathi Astrology.',
       awards: 'Prestigious Vedic awards, golden kankanam citations, and state-level felicitations conferred upon Sri Jallavaram Sai Dheeraj Sharma.',
       services: 'Authentic Vedic homams, Sri Chandi Sahitha Rudra Homam, Gruhapravesham, wedding muhurthams, and online sankalpam booking for global NRI devotees.',
       about: 'Profile and spiritual journey of renowned Vedic scholar and astrologer Sri Jallavaram Sai Dheeraj Sharma.',
