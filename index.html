@@ -16,25 +16,26 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#451a03" />
 
-    <!-- Canonical URL and Hreflang Tags for Bilingual Indexing -->
-    <link rel="canonical" id="canonical-url" href="https://telugujyothisham.com/" />
-    <link rel="alternate" hreflang="te" href="https://telugujyothisham.com/" />
-    <link rel="alternate" hreflang="en" href="https://telugujyothisham.com/" />
-    <link rel="alternate" hreflang="x-default" href="https://telugujyothisham.com/" />
+    <!-- Canonical URL and Hreflang Tags for Bilingual Indexing (Aligned with www.telugujyothisham.com) -->
+    <link rel="canonical" id="canonical-url" href="https://www.telugujyothisham.com/" />
+    <link rel="alternate" hreflang="te" href="https://www.telugujyothisham.com/" />
+    <link rel="alternate" hreflang="en" href="https://www.telugujyothisham.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.telugujyothisham.com/" />
 
-    <!-- Google Search Crawler & Multi-Resolution Ganapathi Favicons -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
-    <link rel="icon" type="image/svg+xml" href="/ganapathi-favicon.svg" />
+    <!-- Google Search Crawler (Google-Favicon) & Multi-Resolution Sri Lakshmi Ganapathi Favicons (Multiples of 48px) -->
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png?v=3" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=3" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png?v=3" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png?v=3" />
+    <link rel="icon" type="image/svg+xml" href="/ganapathi-favicon.svg?v=3" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="16x16 32x32 48x48 64x64 96x96" />
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3" />
     <link rel="manifest" href="/site.webmanifest" />
 
     <!-- OpenGraph Social Sharing Cards (WhatsApp, Facebook, Telegram, LinkedIn) -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" id="og-url" content="https://telugujyothisham.com/" />
+    <meta property="og:url" id="og-url" content="https://www.telugujyothisham.com/" />
     <meta property="og:site_name" content="Telugu Jyothisham - నేటి పంచాంగం (Neti Panchangam)" />
     <meta property="og:locale" content="te_IN" />
     <meta property="og:locale:alternate" content="en_IN" />
@@ -44,25 +45,28 @@
       id="og-description"
       content="Neti Panchangam (నేటి పంచాంగం) & Today Panchangam in Telugu (ఈ రోజు పంచాంగం) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం) & శుభ ముహూర్తాలు. telugujyothisham.com"
     />
-    <meta property="og:image" content="https://telugujyothisham.com/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg" />
+    <meta property="og:image" content="https://www.telugujyothisham.com/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg" />
 
     <!-- Twitter / X Large Summary Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" id="twitter-url" content="https://telugujyothisham.com/" />
+    <meta name="twitter:url" id="twitter-url" content="https://www.telugujyothisham.com/" />
     <meta name="twitter:title" id="twitter-title" content="Neti Panchangam | Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం" />
     <meta
       name="twitter:description"
       id="twitter-description"
       content="Neti Panchangam (నేటి పంచాంగం) & Today Panchangam in Telugu (ఈ రోజు పంచాంగం) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం). telugujyothisham.com"
     />
-    <meta name="twitter:image" content="https://telugujyothisham.com/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg" />
+    <meta name="twitter:image" content="https://www.telugujyothisham.com/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg" />
 
     <!-- Dynamic Canonical & Social Tag Resolution Script for Pre-Render / Indexing -->
     <script>
       (function() {
         try {
           var cleanPath = window.location.pathname.replace(/\/+$/, '') || '/';
-          var fullCanonical = 'https://telugujyothisham.com' + (cleanPath === '/' ? '/' : cleanPath);
+          var hostOrigin = window.location.hostname.indexOf('telugujyothisham.com') !== -1
+            ? 'https://www.telugujyothisham.com'
+            : 'https://www.telugujyothisham.com';
+          var fullCanonical = hostOrigin + (cleanPath === '/' ? '/' : cleanPath);
           var canonicalEl = document.getElementById('canonical-url');
           if (canonicalEl) canonicalEl.setAttribute('href', fullCanonical);
           var ogUrlEl = document.getElementById('og-url');
@@ -73,80 +77,123 @@
       })();
     </script>
 
-    <!-- Schema.org Structured Data (JSON-LD) for Google Rich Results on telugujyothisham.com -->
+    <!-- Schema.org Structured Data (JSON-LD) for Google Rich Results & Site Logo on www.telugujyothisham.com -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@graph": [
           {
             "@type": "WebSite",
-            "@id": "https://telugujyothisham.com/#website",
-            "url": "https://telugujyothisham.com/",
+            "@id": "https://www.telugujyothisham.com/#website",
+            "url": "https://www.telugujyothisham.com/",
             "name": "తెలుగు పంచాంగం & రాశి ఫలితాలు - Telugu Jyothisham",
-            "alternateName": ["Telugu Jyothisham", "telugujyothisham.com", "తెలుగు పంచాంగం", "Telugu Panchangam"],
+            "alternateName": ["Telugu Jyothisham", "telugujyothisham.com", "www.telugujyothisham.com", "తెలుగు పంచాంగం", "Neti Panchangam"],
             "inLanguage": ["te", "en"],
-            "description": "నేటి తెలుగు పంచాంగం, 12 రాశుల దిన ఫలాలు (రాశి ఫలితాలు), 36 గుణాల వివాహ పొంతన, నామ నక్షత్రం, ఉగాది ఆదాయం-వ్యయం, తిథి, నక్షత్రం, రాహుకాలం మరియు శుభ ముహూర్తాలు. telugujyothisham.com లో చూడండి.",
+            "description": "నేటి తెలుగు పంచాంగం, 12 రాశుల దిన ఫలాలు (రాశి ఫలితాలు), ఉచిత జన్మ కుండలి & దశ-అంతర్దశ, గౌరీ పంచాంగం, హోరా చక్రం, తారాబలం, 36 గుణాల వివాహ పొంతన, నామ నక్షత్రం మరియు శుభ ముహూర్తాలు.",
             "publisher": {
-              "@id": "https://telugujyothisham.com/#organization"
+              "@id": "https://www.telugujyothisham.com/#organization"
             }
           },
           {
+            "@type": ["Organization", "ProfessionalService"],
+            "@id": "https://www.telugujyothisham.com/#organization",
+            "name": "శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (Telugu Jyothisham)",
+            "alternateName": "telugujyothisham.com",
+            "url": "https://www.telugujyothisham.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "@id": "https://www.telugujyothisham.com/#logo",
+              "url": "https://www.telugujyothisham.com/favicon-512x512.png",
+              "contentUrl": "https://www.telugujyothisham.com/favicon-512x512.png",
+              "width": 512,
+              "height": 512,
+              "caption": "శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — telugujyothisham.com"
+            },
+            "image": "https://www.telugujyothisham.com/favicon-512x512.png",
+            "founder": {
+              "@type": "Person",
+              "name": "బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి (Sri Jallavaram Sai Dheeraj Sharma)",
+              "jobTitle": "Vedic Astrologer & Smartha Purohit"
+            },
+            "telephone": "+91-8977986166",
+            "email": "astrologer@telugujyothisham.com",
+            "areaServed": ["Andhra Pradesh", "Telangana", "India", "USA", "UK", "Australia", "Canada", "Worldwide"],
+            "knowsAbout": [
+              "Telugu Panchangam",
+              "Neti Panchangam",
+              "Janma Kundali & Vimshottari Mahadasha",
+              "Gowri Panchangam & Hora Chakram",
+              "Tarabalam & Chandrabalam Calculator",
+              "Nitya Pooja Sankalpam",
+              "36 Point Ashtakoota Guna Milan",
+              "Naama Nakshatra & Telugu Baby Names",
+              "Gruha Vastu Shastra",
+              "Ugadi Rashi Phalithalu"
+            ]
+          },
+          {
             "@type": "BreadcrumbList",
-            "@id": "https://telugujyothisham.com/#breadcrumbs",
+            "@id": "https://www.telugujyothisham.com/#breadcrumbs",
             "itemListElement": [
               {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home — శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం",
-                "item": "https://telugujyothisham.com/"
+                "item": "https://www.telugujyothisham.com/"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "నేటి తెలుగు పంచాంగం (Daily Telugu Panchangam)",
-                "item": "https://telugujyothisham.com/panchangam"
+                "item": "https://www.telugujyothisham.com/panchangam"
               },
               {
                 "@type": "ListItem",
                 "position": 3,
-                "name": "36 గుణాల వివాహ పొంతన (Marriage Compatibility)",
-                "item": "https://telugujyothisham.com/vivaha-pontana"
+                "name": "గౌరీ పంచాంగం & హోరా చక్రం (Gowri Panchangam & Hora)",
+                "item": "https://www.telugujyothisham.com/gowri-panchangam"
               },
               {
                 "@type": "ListItem",
                 "position": 4,
-                "name": "పేరు మొదటి అక్షరంతో రాశి & నక్షత్రం (Naama Nakshatra)",
-                "item": "https://telugujyothisham.com/naama-nakshatra"
+                "name": "తారాబలం & చంద్రబలం క్యాలిక్యులేటర్ (Tarabalam & Chandrabalam)",
+                "item": "https://www.telugujyothisham.com/tarabalam-chandrabalam"
               },
               {
                 "@type": "ListItem",
                 "position": 5,
-                "name": "ఉగాది రాశి ఫలాలు 2026-2027 (Ugadi Horoscope)",
-                "item": "https://telugujyothisham.com/ugadi-rashi-phalalu"
+                "name": "ఉచిత తెలుగు జన్మ కుండలి & మహాదశ (Free Janma Kundali)",
+                "item": "https://www.telugujyothisham.com/janma-kundali"
               },
               {
                 "@type": "ListItem",
                 "position": 6,
-                "name": "శుభ ముహూర్తాలు & పండుగలు (Shubha Muhurthams)",
-                "item": "https://telugujyothisham.com/shubha-muhurthalu"
+                "name": "36 గుణాల వివాహ పొంతన (Marriage Compatibility)",
+                "item": "https://www.telugujyothisham.com/vivaha-pontana"
               },
               {
                 "@type": "ListItem",
                 "position": 7,
-                "name": "జాతక దోష నివారణ పరిహారాలు (Dosha Remedies)",
-                "item": "https://telugujyothisham.com/dosha-pariharalu"
+                "name": "నక్షత్ర పాదాల వారీగా పిల్లల పేర్లు (Telugu Baby Names)",
+                "item": "https://www.telugujyothisham.com/telugu-baby-names"
+              },
+              {
+                "@type": "ListItem",
+                "position": 8,
+                "name": "గృహ వాస్తు చక్రం (Vastu Shastra Guide)",
+                "item": "https://www.telugujyothisham.com/vastu-shastra-telugu"
               }
             ]
           },
           {
             "@type": "WebApplication",
-            "@id": "https://telugujyothisham.com/#webapp",
-            "name": "తెలుగు పంచాంగం, వివాహ పొంతన & రాశి ఫలితాలు (Daily Telugu Panchangam & Guna Milan)",
-            "url": "https://telugujyothisham.com/",
+            "@id": "https://www.telugujyothisham.com/#webapp",
+            "name": "తెలుగు పంచాంగం, జన్మ కుండలి, గౌరీ పంచాంగం & వివాహ పొంతన",
+            "url": "https://www.telugujyothisham.com/",
             "applicationCategory": "LifestyleApplication",
             "operatingSystem": "All",
             "inLanguage": ["te", "en"],
-            "description": "నిత్య తెలుగు పంచాంగం, తిథి, నక్షత్రం, రాహుకాలం, 36 గుణాల వివాహ పొంతన, పేరు అక్షరంతో రాశి-నక్షత్రం మరియు ద్వాదశ రాశి ఫలితాలు.",
+            "description": "నిత్య తెలుగు పంచాంగం, తిథి, నక్షత్రం, రాహుకాలం, గౌరీ పంచాంగం, హోరా చక్రం, తారాబలం, జన్మ కుండలి, 36 గుణాల వివాహ పొంతన మరియు ద్వాదశ రాశి ఫలితాలు.",
             "offers": {
               "@type": "Offer",
               "price": "0",
@@ -154,35 +201,8 @@
             }
           },
           {
-            "@type": "ProfessionalService",
-            "@id": "https://telugujyothisham.com/#organization",
-            "name": "శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (Sreelakshmi Ganapathi Astrology)",
-            "founder": {
-              "@type": "Person",
-              "name": "శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (Sri Jallavaram Sai Dheeraj Sharma)",
-              "jobTitle": "Vedic Astrologer & Smartha Purohit"
-            },
-            "url": "https://telugujyothisham.com/",
-            "telephone": "+91-8977986166",
-            "email": "astrologer@telugujyothisham.com",
-            "image": "https://telugujyothisham.com/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg",
-            "areaServed": ["Andhra Pradesh", "Telangana", "India", "USA", "UK", "Australia", "Canada", "Worldwide"],
-            "knowsAbout": [
-              "Telugu Panchangam",
-              "Vedic Astrology",
-              "36 Point Ashtakoota Guna Milan",
-              "Naama Nakshatra by Name Syllable",
-              "Ugadi Rashi Phalithalu",
-              "Vivaha Muhurtham",
-              "Gruhapravesham Muhurtham",
-              "Kuja Dosha & Kalasarpa Dosha Shanti",
-              "Sri Chandi Homam",
-              "Lakshmi Ganapathi Homam"
-            ]
-          },
-          {
             "@type": "FAQPage",
-            "@id": "https://telugujyothisham.com/#faq",
+            "@id": "https://www.telugujyothisham.com/#faq",
             "mainEntity": [
               {
                 "@type": "Question",
@@ -194,10 +214,26 @@
               },
               {
                 "@type": "Question",
-                "name": "తిథి (Tithi) అంటే ఏమిటి?",
+                "name": "గౌరీ పంచాంగం మరియు హోరా చక్రం ఎందుకు చూస్తారు?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "ఆకాశంలో సూర్యుడు మరియు చంద్రుని మధ్య దూరం 12 డిగ్రీలు పెరగడానికి పట్టే కాలాన్ని ఒక తిథి అంటారు. పండుగలు, వ్రతాలు తిథి ఆధారంగా నిర్ణయించబడతాయి."
+                  "text": "రోజులో ఏ సమయంలో ఏ పని ప్రారంభిస్తే శుభం కలుగుతుందో తెలుసుకోవడానికి గౌరీ పంచాంగం (అమృతం, లాభం, శుభం, ధనం, చరం) మరియు సప్త గ్రహ హోరా చక్రాన్ని (గురు, శుక్ర, బుధ, చంద్ర హోరలు) చూస్తారు."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "పుట్టిన తేదీ, సమయంతో తెలుగులో ఉచిత జన్మ కుండలి (Janma Kundali) ఎలా తీసుకోవాలి?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "telugujyothisham.com/janma-kundali లో మీ పుట్టిన తేదీ, సమయం మరియు ప్రాంతాన్ని నమోదు చేసి దక్షిణ భారత రాశి చక్రం (Rashi Chart), జన్మ నక్షత్రం, పాదం, లగ్నం మరియు 120 ఏళ్ల వింశోత్తరి మహాదశ వివరాలను ఉచితంగా పొందవచ్చు."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "తారాబలం మరియు చంద్రబలం ఎలా లెక్కిస్తారు?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "మీ జన్మ నక్షత్రం నుండి ఆ రోజు నక్షత్రం వరకు లెక్కించి 9తో భాగించగా వచ్చే శేషాన్ని బట్టి నవతారలలో (సంపత్, క్షేమ, సాధక, మిత్ర, పరమ మిత్ర తారలు శుభం) తారాబలాన్ని, జన్మ రాశి నుండి చంద్ర సంచార రాశిని బట్టి (1, 3, 6, 7, 10, 11 స్థానాలు శుభం) చంద్రబలాన్ని నిర్ణయిస్తారు."
                 }
               },
               {
@@ -205,47 +241,7 @@
                 "name": "వివాహ పొంతనలో 36 గుణాలకు గాను కనీసం ఎన్ని పాయింట్లు రావాలి?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "వేద జ్యోతిష్య శాస్త్రం ప్రకారం అష్టకూట వివాహ పొంతనలో (వర్ణ, వశ్య, తార, యోని, గ్రహ మైత్రి, గణ, భకూట, నాడి) మొత్తం 36 గుణాలకు గాను కనీసం 18 లేదా అంతకంటే ఎక్కువ గుణాలు రావడం శుభప్రదం."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "పుట్టిన సమయం తెలియకపోతే పేరు మొదటి అక్షరంతో రాశి, నక్షత్రం ఎలా తెలుసుకోవాలి?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "పుట్టిన తేదీ లేదా సమయం తెలియని వారు తమ పిలిచే పేరులోని మొదటి అక్షరం (ఉదా: చూ, చే, చో, లా — అశ్విని నక్షత్రం, మేష రాశి) ఆధారంగా 27 నక్షత్రాల 108 పాదాల పట్టిక ద్వారా నామ నక్షత్రం మరియు నామ రాశిని telugujyothisham.com/naama-nakshatra లో వెంటనే తెలుసుకోవచ్చు."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "శ్రీ పరాభవ నామ సంవత్సర ఉగాది పంచాంగం (2026-2027) ఆదాయం - వ్యయం ఎక్కడ చూడాలి?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "మేషం నుండి మీనం వరకు 12 రాశుల వారికి శ్రీ పరాభవ నామ సంవత్సర ఆదాయం - వ్యయం, రాజపూజ్యం - అవమానం మరియు వార్షిక గ్రహ శాంతి పరిహారాలు telugujyothisham.com/ugadi-rashi-phalalu లో అందుబాటులో ఉన్నాయి."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "నేటి తెలుగు పంచాంగం (Today Telugu Panchangam) లో రాహుకాలం మరియు యమగండం ప్రాముఖ్యత ఏమిటి?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "రాహుకాలం మరియు యమగండం రోజులో అశుభ సమయాలుగా పరిగణించబడతాయి. telugujyothisham.com లో రోజూ ఖచ్చితమైన సూర్యోదయ, సూర్యాస్తమయ గణనల ఆధారంగా రాహుకాలం, యమగండం మరియు వర్జ్యం సమయాలు అందించబడతాయి."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "What are the five essential limbs of the Daily Telugu Panchangam?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "The five essential limbs of Telugu Panchangam are Tithi (Lunar day), Varam (Weekday), Nakshatram (Constellation), Yogam (Solar-Lunar angle period), and Karanam (Half-lunar day). Accurate daily timings for Rahu Kalam, Yamagandam, and Amrutha Gadiyalu are calculated on telugujyothisham.com."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "How can global NRIs and devotees participate in live Vedic homams conducted by Guruji?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Devotees from USA, Europe, and across India can register their Gotranamalu for upcoming temple rituals (such as Sri Maha Chandi Sahitha Atirudra Yagnam and Lakshmi Kubera Yagam) via telugujyothisham.com. Personalized sankalpam is recited by Sri Jallavaram Sai Dheeraj Sharma with live web stream and energized prasadam dispatched worldwide."
+                  "text": "వేద జ్యోతిష్య శాస్త్రం ప్రకారం అష్టకూట వివాహ పొంతనలో మొత్తం 36 గుణాలకు గాను కనీసం 18 లేదా అంతకంటే ఎక్కువ గుణాలు రావడం శుభప్రదం."
                 }
               }
             ]
@@ -257,9 +253,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Serif+Telugu:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="image"
+      href="/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg"
+      fetchpriority="high"
     />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Serif+Telugu:wght@400;600;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Serif+Telugu:wght@400;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
   </head>
   <body class="bg-amber-50/40 text-slate-900 selection:bg-amber-200 selection:text-amber-950 antialiased">
     <div id="root">
@@ -271,16 +281,23 @@
           Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం),
           Samvatsaram(సంవత్సరం), Rahu Kalam(రాహుకాలం), Yamagandam(యమగండం), Varjyam(వర్జ్యం),
           Durmuhurtham(దుర్ముహూర్తం), Amrutha Gadiyalu(అమృత ఘడియలు), Abhijit Muhurtham(అభిజిత్ ముహూర్తం),
-          Sunrise(సూర్యోదయం), Sunset(సూర్యాస్తమయం) మరియు 12 రాశుల దిన ఫలాలు (Daily Rashi Phalalu in Telugu).
+          Gowri Panchangam(గౌరీ పంచాంగం), Hora Chakram(హోరా చక్రం), Tarabalam(తారాబలం), Janma Kundali(జన్మ కుండలి)
+          మరియు 12 రాశుల దిన ఫలాలు (Daily Rashi Phalalu in Telugu).
         </p>
-        <h2>శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (telugujyothisham.com)</h2>
+        <h2>శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (www.telugujyothisham.com)</h2>
         <ul>
-          <li><a href="https://telugujyothisham.com/panchangam">Neti Panchangam - Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం</a></li>
-          <li><a href="https://telugujyothisham.com/vivaha-pontana">36 గుణాల వివాహ పొంతన (Vivaha Pontana &amp; Marriage Compatibility)</a></li>
-          <li><a href="https://telugujyothisham.com/naama-nakshatra">పేరు మొదటి అక్షరంతో రాశి &amp; నక్షత్రం (Naama Nakshatra Finder)</a></li>
-          <li><a href="https://telugujyothisham.com/ugadi-rashi-phalalu">శ్రీ పరాభవ నామ సంవత్సర ఉగాది రాశి ఫలాలు 2026-2027 (Ugadi Aadayam Vyayam)</a></li>
-          <li><a href="https://telugujyothisham.com/shubha-muhurthalu">శుభ ముహూర్తాలు 2026-2027 (Vivaha &amp; Gruhapravesham Muhurthams)</a></li>
-          <li><a href="https://telugujyothisham.com/dosha-pariharalu">కుజ దోషం, కాలసర్ప దోషం &amp; ఏలినాటి శని పరిహారాలు (Vedic Dosha Remedies)</a></li>
+          <li><a href="https://www.telugujyothisham.com/panchangam">Neti Panchangam - Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం</a></li>
+          <li><a href="https://www.telugujyothisham.com/gowri-panchangam">గౌరీ పంచాంగం &amp; హోరా చక్రం (Daily Gowri Panchangam &amp; Planetary Hora Timings)</a></li>
+          <li><a href="https://www.telugujyothisham.com/tarabalam-chandrabalam">తారాబలం &amp; చంద్రబలం క్యాలిక్యులేటర్ (Daily Tarabalam &amp; Chandrabalam Calculator)</a></li>
+          <li><a href="https://www.telugujyothisham.com/nitya-sankalpam">నేటి పూజా సంకల్పం &amp; నిత్య స్తోత్రం (Daily Telugu Pooja Sankalpam India &amp; USA NRI)</a></li>
+          <li><a href="https://www.telugujyothisham.com/janma-kundali">ఉచిత తెలుగు జన్మ కుండలి &amp; వింశోత్తరి మహాదశ (Free Telugu Janma Kundali &amp; Birth Chart)</a></li>
+          <li><a href="https://www.telugujyothisham.com/vivaha-pontana">36 గుణాల వివాహ పొంతన (Vivaha Pontana &amp; Marriage Compatibility)</a></li>
+          <li><a href="https://www.telugujyothisham.com/naama-nakshatra">పేరు మొదటి అక్షరంతో రాశి &amp; నక్షత్రం (Naama Nakshatra Finder)</a></li>
+          <li><a href="https://www.telugujyothisham.com/telugu-baby-names">నక్షత్ర పాదాల వారీగా తెలుగు పిల్లల పేర్లు (27 Nakshatra Telugu Baby Names)</a></li>
+          <li><a href="https://www.telugujyothisham.com/vastu-shastra-telugu">గృహ వాస్తు చక్రం &amp; అష్ట దిక్పాలక వాస్తు శాస్త్రం (Telugu Vastu Shastra Guide)</a></li>
+          <li><a href="https://www.telugujyothisham.com/ugadi-rashi-phalalu">శ్రీ పరాభవ నామ సంవత్సర ఉగాది రాశి ఫలాలు 2026-2027 (Ugadi Aadayam Vyayam)</a></li>
+          <li><a href="https://www.telugujyothisham.com/shubha-muhurthalu">శుభ ముహూర్తాలు 2026-2027 (Vivaha &amp; Gruhapravesham Muhurthams)</a></li>
+          <li><a href="https://www.telugujyothisham.com/dosha-pariharalu">కుజ దోషం, కాలసర్ప దోషం &amp; ఏలినాటి శని పరిహారాలు (Vedic Dosha Remedies)</a></li>
         </ul>
       </main>
     </div>

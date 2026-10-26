@@ -1,5 +1,15 @@
+User-agent: Google-Favicon
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
 User-agent: *
 Allow: /
 
+Sitemap: https://www.telugujyothisham.com/sitemap.xml
 Sitemap: https://telugujyothisham.com/sitemap.xml
-Host: https://telugujyothisham.com
+Host: https://www.telugujyothisham.com

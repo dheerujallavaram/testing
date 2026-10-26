@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { WEEK_DATA } from './data/panchangamData';
 import { PoojaService } from './types/panchangam';
 import { findActiveLagna, getTodayAndTomorrowIds } from './utils/panchangaLogic';
@@ -9,29 +9,93 @@ import { DaySelector } from './components/DaySelector';
 import { DayVisheshamCard } from './components/DayVisheshamCard';
 import { DailyHoroscope } from './components/DailyHoroscope';
 import { PanchangaCard } from './components/PanchangaCard';
-import { RashiChakra } from './components/RashiChakra';
 import { MuhurthaTimings } from './components/MuhurthaTimings';
-import { LagnaPramanalu } from './components/LagnaPramanalu';
-import { ChandraNavatara } from './components/ChandraNavatara';
-import { DevoteeCompatibilityChecker } from './components/DevoteeCompatibilityChecker';
-import { PanchangamFAQ } from './components/PanchangamFAQ';
 import { ActionControls } from './components/ActionControls';
-import { PoojaServicesSection } from './components/PoojaServicesSection';
-import { PoojaBookingModal } from './components/PoojaBookingModal';
 import { Footer } from './components/Footer';
 import { GuruProfileHome } from './components/GuruProfileHome';
-import { AboutGurujiSection } from './components/AboutGurujiSection';
-import { AwardsSection } from './components/AwardsSection';
-import { ContactSection } from './components/ContactSection';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-import { CityAstrologyPage } from './components/CityAstrologyPage';
-import { DailyNakshatraArticle } from './components/DailyNakshatraArticle';
 import { CitySEOData, findCityBySlug } from './data/citiesData';
 import { PanchangamQuickSummary } from './components/PanchangamQuickSummary';
-import { DailyAstrologyInsights } from './components/DailyAstrologyInsights';
-import { UpcomingRitualCountdown } from './components/UpcomingRitualCountdown';
-import { VedicAstrologyHub, HubSectionId } from './components/VedicAstrologyHub';
-import { LegalComplianceModal, LegalDocType } from './components/LegalComplianceModal';
+import { syncAutomatedDailySeoSchema } from './utils/dailySeoEngine';
+import { downloadDailyPanchangamCardImage } from './utils/panchangamImageGenerator';
+import type { HubSectionId } from './components/VedicAstrologyHub';
+import type { LegalDocType } from './components/LegalComplianceModal';
+
+export type PanchangamSubTab = 'main' | 'gowri-hora' | 'tarabalam' | 'sankalpam';
+
+// Lazy-loaded heavy interactive components, below-the-fold calculators, modals & secondary routes
+const RashiChakra = lazy(() =>
+  import('./components/RashiChakra').then((m) => ({ default: m.RashiChakra }))
+);
+const LagnaPramanalu = lazy(() =>
+  import('./components/LagnaPramanalu').then((m) => ({ default: m.LagnaPramanalu }))
+);
+const ChandraNavatara = lazy(() =>
+  import('./components/ChandraNavatara').then((m) => ({ default: m.ChandraNavatara }))
+);
+const DevoteeCompatibilityChecker = lazy(() =>
+  import('./components/DevoteeCompatibilityChecker').then((m) => ({
+    default: m.DevoteeCompatibilityChecker,
+  }))
+);
+const GowriHoraPanchangam = lazy(() =>
+  import('./components/GowriHoraPanchangam').then((m) => ({ default: m.GowriHoraPanchangam }))
+);
+const TarabalamCalculator = lazy(() =>
+  import('./components/TarabalamCalculator').then((m) => ({ default: m.TarabalamCalculator }))
+);
+const DailySankalpamStotra = lazy(() =>
+  import('./components/DailySankalpamStotra').then((m) => ({ default: m.DailySankalpamStotra }))
+);
+const VedicAstrologyHub = lazy(() =>
+  import('./components/VedicAstrologyHub').then((m) => ({ default: m.VedicAstrologyHub }))
+);
+const DailyNakshatraArticle = lazy(() =>
+  import('./components/DailyNakshatraArticle').then((m) => ({ default: m.DailyNakshatraArticle }))
+);
+const DailyAstrologyInsights = lazy(() =>
+  import('./components/DailyAstrologyInsights').then((m) => ({ default: m.DailyAstrologyInsights }))
+);
+const PanchangamFAQ = lazy(() =>
+  import('./components/PanchangamFAQ').then((m) => ({ default: m.PanchangamFAQ }))
+);
+const PoojaBookingModal = lazy(() =>
+  import('./components/PoojaBookingModal').then((m) => ({ default: m.PoojaBookingModal }))
+);
+const LegalComplianceModal = lazy(() =>
+  import('./components/LegalComplianceModal').then((m) => ({ default: m.LegalComplianceModal }))
+);
+const CityAstrologyPage = lazy(() =>
+  import('./components/CityAstrologyPage').then((m) => ({ default: m.CityAstrologyPage }))
+);
+const AwardsSection = lazy(() =>
+  import('./components/AwardsSection').then((m) => ({ default: m.AwardsSection }))
+);
+const UpcomingRitualCountdown = lazy(() =>
+  import('./components/UpcomingRitualCountdown').then((m) => ({
+    default: m.UpcomingRitualCountdown,
+  }))
+);
+const PoojaServicesSection = lazy(() =>
+  import('./components/PoojaServicesSection').then((m) => ({ default: m.PoojaServicesSection }))
+);
+const AboutGurujiSection = lazy(() =>
+  import('./components/AboutGurujiSection').then((m) => ({ default: m.AboutGurujiSection }))
+);
+const ContactSection = lazy(() =>
+  import('./components/ContactSection').then((m) => ({ default: m.ContactSection }))
+);
+
+const SectionLoader: React.FC<{ minHeight?: string }> = ({ minHeight = 'min-h-[280px]' }) => (
+  <div
+    className={`w-full ${minHeight} rounded-3xl bg-amber-100/40 border border-amber-200/70 animate-pulse flex items-center justify-center p-6`}
+    aria-hidden="true"
+  >
+    <span className="text-xs font-semibold text-amber-800/70 tracking-wide">
+      లోడ్ అవుతోంది... • Loading Vedic Data...
+    </span>
+  </div>
+);
 
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
@@ -40,6 +104,13 @@ export const TAB_PATHS: Record<NavTab, string> = {
   services: '/services',
   about: '/about',
   contact: '/contact',
+};
+
+export const PANCHANGAM_SUBTAB_PATHS: Record<PanchangamSubTab, string> = {
+  main: '/panchangam',
+  'gowri-hora': '/gowri-panchangam',
+  tarabalam: '/tarabalam-chandrabalam',
+  sankalpam: '/nitya-sankalpam',
 };
 
 export function resolveCityFromLocation(): CitySEOData | null {
@@ -77,6 +148,12 @@ export function resolveTabFromLocation(): NavTab {
     pathname === '/neti-panchangam' ||
     pathname === '/today-panchangam-in-telugu' ||
     pathname === '/ee-roju-panchangam' ||
+    pathname === '/gowri-panchangam' ||
+    pathname === '/tarabalam-chandrabalam' ||
+    pathname === '/nitya-sankalpam' ||
+    pathname === '/janma-kundali' ||
+    pathname === '/telugu-baby-names' ||
+    pathname === '/vastu-shastra-telugu' ||
     pathname === '/vivaha-pontana' ||
     pathname === '/naama-nakshatra' ||
     pathname === '/ugadi-rashi-phalalu' ||
@@ -107,12 +184,24 @@ export function resolveTabFromLocation(): NavTab {
   return 'home';
 }
 
+export function resolvePanchangamSubTabFromLocation(): PanchangamSubTab {
+  if (typeof window === 'undefined') return 'main';
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  if (pathname === '/gowri-panchangam') return 'gowri-hora';
+  if (pathname === '/tarabalam-chandrabalam') return 'tarabalam';
+  if (pathname === '/nitya-sankalpam') return 'sankalpam';
+  return 'main';
+}
+
 export function resolveHubSectionFromLocation(): HubSectionId {
   if (typeof window === 'undefined') return 'pontana';
   const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  if (pathname === '/janma-kundali') return 'kundali';
   if (pathname === '/naama-nakshatra') return 'akshara';
+  if (pathname === '/telugu-baby-names') return 'babynames';
   if (pathname === '/ugadi-rashi-phalalu') return 'ugadi';
   if (pathname === '/shubha-muhurthalu' || pathname === '/festivals') return 'muhurtham';
+  if (pathname === '/vastu-shastra-telugu') return 'vastu';
   if (pathname === '/dosha-pariharalu') return 'dosha';
   return 'pontana';
 }
@@ -134,6 +223,9 @@ const LEGAL_DOC_PATHS: Record<LegalDocType, string> = {
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<NavTab>(() => resolveTabFromLocation());
+  const [panchangamSubTab, setPanchangamSubTab] = useState<PanchangamSubTab>(() =>
+    resolvePanchangamSubTabFromLocation()
+  );
   const [hubSection, setHubSection] = useState<HubSectionId>(() => resolveHubSectionFromLocation());
   const [activeLegalDoc, setActiveLegalDoc] = useState<LegalDocType | null>(() => resolveLegalDocFromLocation());
   const [selectedCity, setSelectedCity] = useState<CitySEOData | null>(() => resolveCityFromLocation());
@@ -142,9 +234,14 @@ function AppContent() {
   const [selectedPoojaForBooking, setSelectedPoojaForBooking] = useState<PoojaService | null>(null);
   const { t, tr, language } = useLanguage();
 
+  const currentDay = WEEK_DATA.find((d) => d.id === selectedDayId) ?? WEEK_DATA[0];
+
   const handleSelectTab = useCallback((tab: NavTab) => {
     setSelectedCity(null);
     setActiveTab(tab);
+    if (tab === 'panchangam') {
+      setPanchangamSubTab('main');
+    }
     if (typeof window !== 'undefined') {
       const targetPath = TAB_PATHS[tab] || '/';
       try {
@@ -157,10 +254,34 @@ function AppContent() {
     }
   }, []);
 
+  const handleSelectPanchangamSubTab = useCallback((subTab: PanchangamSubTab) => {
+    setSelectedCity(null);
+    setActiveTab('panchangam');
+    setPanchangamSubTab(subTab);
+    if (typeof window !== 'undefined') {
+      const targetPath = PANCHANGAM_SUBTAB_PATHS[subTab] || '/panchangam';
+      try {
+        if (window.location.pathname !== targetPath) {
+          window.history.pushState({ tab: 'panchangam', panchangamSubTab: subTab }, '', targetPath);
+        }
+      } catch {}
+    }
+  }, []);
+
   const handleNavigateHubSection = useCallback((section: HubSectionId, path: string) => {
     setSelectedCity(null);
     setActiveTab('panchangam');
-    setHubSection(section);
+    if (path === '/gowri-panchangam') {
+      setPanchangamSubTab('gowri-hora');
+    } else if (path === '/tarabalam-chandrabalam') {
+      setPanchangamSubTab('tarabalam');
+    } else if (path === '/nitya-sankalpam') {
+      setPanchangamSubTab('sankalpam');
+    } else {
+      setPanchangamSubTab('main');
+      setHubSection(section);
+    }
+
     if (typeof window !== 'undefined') {
       try {
         if (window.location.pathname !== path) {
@@ -168,8 +289,20 @@ function AppContent() {
         }
       } catch {}
       setTimeout(() => {
-        if (path === '/neti-panchangam' || path === '/today-panchangam-in-telugu' || path === '/ee-roju-panchangam') {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (
+          path === '/neti-panchangam' ||
+          path === '/today-panchangam-in-telugu' ||
+          path === '/ee-roju-panchangam' ||
+          path === '/gowri-panchangam' ||
+          path === '/tarabalam-chandrabalam' ||
+          path === '/nitya-sankalpam'
+        ) {
+          const subNavEl = document.getElementById('panchangam-sub-tabs');
+          if (subNavEl && path !== '/neti-panchangam' && path !== '/today-panchangam-in-telugu' && path !== '/ee-roju-panchangam') {
+            subNavEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
           return;
         }
         const el = document.getElementById('vedic-astrology-hub');
@@ -228,6 +361,7 @@ function AppContent() {
       setActiveLegalDoc(resolveLegalDocFromLocation());
       if (!matchedCity) {
         setActiveTab(resolveTabFromLocation());
+        setPanchangamSubTab(resolvePanchangamSubTabFromLocation());
         setHubSection(resolveHubSectionFromLocation());
       }
     };
@@ -235,7 +369,7 @@ function AppContent() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  // Sync document title, canonical link, og:url, and meta tags dynamically with current tab or evergreen SEO route
+  // Sync document title, canonical link, og:url, meta tags, and Automated Daily JSON-LD Schema dynamically
   useEffect(() => {
     if (selectedCity) return; // CityAstrologyPage component manages its own programmatic metadata
 
@@ -244,6 +378,12 @@ function AppContent() {
       '/neti-panchangam',
       '/today-panchangam-in-telugu',
       '/ee-roju-panchangam',
+      '/gowri-panchangam',
+      '/tarabalam-chandrabalam',
+      '/nitya-sankalpam',
+      '/janma-kundali',
+      '/telugu-baby-names',
+      '/vastu-shastra-telugu',
       '/vivaha-pontana',
       '/naama-nakshatra',
       '/ugadi-rashi-phalalu',
@@ -252,8 +392,12 @@ function AppContent() {
       '/dosha-pariharalu',
     ].includes(rawPath);
 
-    const path = isEvergreenHubRoute && activeTab === 'panchangam' ? rawPath : TAB_PATHS[activeTab] || '/';
-    const canonicalHref = `https://telugujyothisham.com${path === '/' ? '/' : path}`;
+    const path = isEvergreenHubRoute && activeTab === 'panchangam'
+      ? rawPath
+      : activeTab === 'panchangam' && panchangamSubTab !== 'main'
+      ? PANCHANGAM_SUBTAB_PATHS[panchangamSubTab]
+      : TAB_PATHS[activeTab] || '/';
+    const canonicalHref = `https://www.telugujyothisham.com${path === '/' ? '/' : path}`;
 
     const canonicalEl = document.querySelector('link[rel="canonical"]');
     if (canonicalEl) {
@@ -270,24 +414,63 @@ function AppContent() {
       twitterUrlEl.setAttribute('content', canonicalHref);
     }
 
+    const cleanTithi = currentDay.panchanga.tithi.split('(')[0].trim();
+    const cleanNakshatra = currentDay.panchanga.nakshatram.split('(')[0].trim();
+
     const evergreenSeoMeta: Record<string, { titleTe: string; titleEn: string; descTe: string; descEn: string }> = {
       '/neti-panchangam': {
-        titleTe: 'Neti Panchangam | నేటి పంచాంగం - Today Panchangam in Telugu - ఈ రోజు పంచాంగం — telugujyothisham.com',
-        titleEn: 'Neti Panchangam | Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం — telugujyothisham.com',
-        descTe: 'Neti Panchangam (నేటి పంచాంగం) & Today Panchangam in Telugu (ఈ రోజు పంచాంగం) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Varjyam(వర్జ్యం), Amrutha Gadiyalu(అమృత ఘడియలు) & 12 Rashi Phalalu.',
-        descEn: 'Neti Panchangam (నేటి పంచాంగం) & Today Panchangam in Telugu (ఈ రోజు పంచాంగం) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం) & Daily Horoscope at telugujyothisham.com.',
+        titleTe: `Neti Panchangam (${currentDay.teediVaram}) | నేటి పంచాంగం - ${cleanTithi}, ${cleanNakshatra} — telugujyothisham.com`,
+        titleEn: `Neti Panchangam (${currentDay.teediVaram}) | Today Panchangam in Telugu - ${cleanTithi} — telugujyothisham.com`,
+        descTe: `${currentDay.teediVaram} నేటి పంచాంగం (Neti Panchangam) & Today Panchangam in Telugu: తిథి ${currentDay.panchanga.tithi}, నక్షత్రం ${currentDay.panchanga.nakshatram}, రాహుకాలం ${currentDay.ashubha.rahukalam}, అమృత ఘడియలు ${currentDay.shubha.amrutha} & 12 రాశుల దిన ఫలాలు.`,
+        descEn: `${currentDay.teediVaram} Neti Panchangam (నేటి పంచాంగం) & Today Panchangam in Telugu: Tithi ${currentDay.panchanga.tithi}, Nakshatram ${currentDay.panchanga.nakshatram}, Rahu Kalam ${currentDay.ashubha.rahukalam} & Daily Horoscope at telugujyothisham.com.`,
       },
       '/today-panchangam-in-telugu': {
-        titleTe: 'Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం (Neti Panchangam) — telugujyothisham.com',
-        titleEn: 'Today Panchangam in Telugu - ఈ రోజు పంచాంగం - Neti Panchangam — telugujyothisham.com',
-        descTe: 'Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Yamagandam(యమగండం), Varjyam(వర్జ్యం), Amrutha Gadiyalu(అమృత ఘడియలు) — telugujyothisham.com.',
-        descEn: 'Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Durmuhurtham(దుర్ముహూర్తం) & 12 Rashi Phalithalu.',
+        titleTe: `Today Panchangam in Telugu (${currentDay.teediVaram}) - ఈ రోజు పంచాంగం: ${cleanTithi}, ${cleanNakshatra} — telugujyothisham.com`,
+        titleEn: `Today Panchangam in Telugu (${currentDay.teediVaram}) - ఈ రోజు పంచాంగం - Neti Panchangam — telugujyothisham.com`,
+        descTe: `Today Panchangam in Telugu (${currentDay.teediVaram}) - తిథి: ${currentDay.panchanga.tithi}, నక్షత్రం: ${currentDay.panchanga.nakshatram}, యోగం: ${currentDay.panchanga.yogam}, రాహుకాలం: ${currentDay.ashubha.rahukalam}, అమృత ఘడియలు: ${currentDay.shubha.amrutha}.`,
+        descEn: `Today Panchangam in Telugu (${currentDay.teediVaram}) - Tithi: ${currentDay.panchanga.tithi}, Nakshatram: ${currentDay.panchanga.nakshatram}, Rahu Kalam: ${currentDay.ashubha.rahukalam}, Durmuhurtham & 12 Rashi Phalithalu.`,
       },
       '/ee-roju-panchangam': {
-        titleTe: 'ఈ రోజు పంచాంగం (Ee Roju Panchangam) | Today Panchangam in Telugu - నేటి పంచాంగం — telugujyothisham.com',
-        titleEn: 'Ee Roju Panchangam (ఈ రోజు పంచాంగం) | Today Panchangam in Telugu - Neti Panchangam — telugujyothisham.com',
-        descTe: 'ఈ రోజు పంచాంగం (Ee Roju Panchangam / Neti Panchangam) - Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం) & 12 రాశుల దిన ఫలాలు.',
-        descEn: 'Ee Roju Panchangam (ఈ రోజు పంచాంగం) - Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం) & Auspicious Timings.',
+        titleTe: `ఈ రోజు పంచాంగం (${currentDay.teediVaram}) | Ee Roju Panchangam - ${cleanTithi}, ${cleanNakshatra} — telugujyothisham.com`,
+        titleEn: `Ee Roju Panchangam (${currentDay.teediVaram}) | Today Panchangam in Telugu — telugujyothisham.com`,
+        descTe: `ఈ రోజు పంచాంగం (${currentDay.teediVaram}) - తిథి ${currentDay.panchanga.tithi}, నక్షత్రం ${currentDay.panchanga.nakshatram}, రాహుకాలం ${currentDay.ashubha.rahukalam}, వర్జ్యం ${currentDay.ashubha.varjyam} & 12 రాశుల దిన ఫలాలు.`,
+        descEn: `Ee Roju Panchangam (${currentDay.teediVaram}) - Today Panchangam in Telugu - Tithi ${currentDay.panchanga.tithi}, Nakshatram ${currentDay.panchanga.nakshatram} & Auspicious Timings.`,
+      },
+      '/gowri-panchangam': {
+        titleTe: `నేటి గౌరీ పంచాంగం & హోరా చక్రం (${currentDay.teediVaram}) | Gowri Panchangam Telugu — telugujyothisham.com`,
+        titleEn: `Today Gowri Panchangam & Planetary Hora Timings in Telugu (${currentDay.teediVaram}) — telugujyothisham.com`,
+        descTe: `${currentDay.teediVaram} పగలు & రాత్రి గౌరీ పంచాంగం (అమృత, శుభ, లాభ, ధన, ఉద్యోగ ఘడియలు) మరియు 24 గంటల నవగ్రహ హోరా చక్రం (గురు, శుక్ర, బుధ, చంద్ర హోరలు) సమయాలు.`,
+        descEn: `Live Day and Night Gowri Panchangam auspicious slots (Amrutha, Shubha, Labha, Dhana) and 24-hour Planetary Hora Chakram timings in Telugu for ${currentDay.teediVaram}.`,
+      },
+      '/tarabalam-chandrabalam': {
+        titleTe: `నేటి తారాబలం & చంద్రబలం క్యాలిక్యులేటర్ (${currentDay.teediVaram}) | 27 నక్షత్రాల నవతార చక్రం — telugujyothisham.com`,
+        titleEn: `Today Tarabalam & Chandrabalam Calculator in Telugu (${currentDay.teediVaram}) — telugujyothisham.com`,
+        descTe: `${currentDay.teediVaram} నక్షత్రం (${cleanNakshatra}) ఆధారంగా 27 నక్షత్రాల నేటి తారాబలం (పరమ మిత్ర, సంపత్, క్షేమ, సాధన తారలు) మరియు 12 రాశుల చంద్రబలం, చంద్రాష్టమ వివరాలు.`,
+        descEn: `Check your personal Nakshatra Tarabalam (Navatara 1-9) and Rashi Chandrabalam for today (${currentDay.teediVaram}, ${cleanNakshatra}) online in Telugu.`,
+      },
+      '/nitya-sankalpam': {
+        titleTe: `నేటి పూజా సంకల్పం మంత్రం (${currentDay.teediVaram}) | జంబూద్వీపే & NRI క్రౌంచద్వీపే సంకల్పం — telugujyothisham.com`,
+        titleEn: `Today Telugu Pooja Sankalpam Mantra (${currentDay.teediVaram}) | India & USA NRI Sankalpam — telugujyothisham.com`,
+        descTe: `${currentDay.teediVaram} (శ్రీ పరాభవ నామ సంవత్సరం, ${currentDay.panchanga.masam}, ${cleanTithi}, ${cleanNakshatra}) ఆటోమేటిక్ తెలుగు నిత్య పూజా సంకల్పం (భారతదేశం, అమెరికా, యూరప్, ఆస్ట్రేలియా) & నేటి స్తోత్ర పారాయణ.`,
+        descEn: `Automated daily Telugu Pooja Sankalpam text & audio for ${currentDay.teediVaram} with Jambudweepe (India) and Krounchadweepe (USA/Canada) options.`,
+      },
+      '/janma-kundali': {
+        titleTe: 'ఉచిత తెలుగు జన్మ కుండలి & వింశోత్తరి మహాదశ | Free Janam Kundli in Telugu — telugujyothisham.com',
+        titleEn: 'Free Janma Kundali in Telugu | South Indian Rashi Chart & 120-Year Mahadasha — telugujyothisham.com',
+        descTe: 'మీ పుట్టిన తేదీ, సమయం, స్థలం ఆధారంగా ఉచిత తెలుగు జన్మ కుండలి (దక్షిణ భారత రాశి చక్రం), జన్మ రాశి, నక్షత్రం, పాదం, లగ్నం మరియు 120 ఏళ్ల వింశోత్తరి మహాదశ ఫలితాలు.',
+        descEn: 'Generate your free Telugu Janma Kundali (South Indian Birth Chart), Janma Rashi, Nakshatra Pada, Lagna, and 120-year Vimshottari Mahadasha periods online.',
+      },
+      '/telugu-baby-names': {
+        titleTe: '27 నక్షత్రాల తెలుగు పిల్లల పేర్లు | జన్మ నక్షత్ర అక్షరాలతో బాబు & పాప పేర్లు — telugujyothisham.com',
+        titleEn: 'Telugu Baby Names by Nakshatra & Pada | All 27 Stars Boy & Girl Names — telugujyothisham.com',
+        descTe: 'అశ్విని నుండి రేవతి వరకు 27 నక్షత్రాల 4 పాదాల నామ అక్షరాలతో (చూ, చే, చో, లా మొదలైనవి) అర్థవంతమైన తెలుగు అబ్బాయిల మరియు అమ్మాయిల పేర్ల పట్టిక.',
+        descEn: 'Explore auspicious Telugu boy and girl baby names with meanings organized by all 27 Vedic Nakshatras and 4 Padas.',
+      },
+      '/vastu-shastra-telugu': {
+        titleTe: 'గృహ వాస్తు చక్రం & అష్ట దిక్పాలక వాస్తు నియమాలు | Telugu Vastu Guide — telugujyothisham.com',
+        titleEn: 'Telugu Gruha Vastu Shastra Guide | Interactive 8-Direction Vastu Compass — telugujyothisham.com',
+        descTe: 'తూర్పు, ఉత్తరం, ఈశాన్యం, ఆగ్నేయం, నైరుతి, వాయువ్యం — 8 దిక్కుల అష్ట దిక్పాలక గృహ వాస్తు చక్రం, పూజా గది, వంట గది, మాస్టర్ బెడ్ రూమ్ వాస్తు నియమాలు & దోష పరిహారాలు.',
+        descEn: 'Interactive 8-direction Ashta Dikpala Gruha Vastu Shastra guide in Telugu for main entrance, pooja room, kitchen, and bedroom placement.',
       },
       '/vivaha-pontana': {
         titleTe: 'వివాహ పొంతన & 36 గుణ మిళనం | అష్టకూట వధూవరుల రాశి పొంతన — telugujyothisham.com',
@@ -328,8 +511,8 @@ function AppContent() {
     };
 
     const titlesTelugu: Record<NavTab, string> = {
-      home: 'Neti Panchangam | Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం — telugujyothisham.com',
-      panchangam: 'Neti Panchangam | Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం — telugujyothisham.com/panchangam',
+      home: `Neti Panchangam (${currentDay.teediVaram}) | నేటి తెలుగు పంచాంగం, తిథి (${cleanTithi}), నక్షత్రం (${cleanNakshatra}), రాశి ఫలాలు — telugujyothisham.com`,
+      panchangam: `నేటి పంచాంగం (${currentDay.teediVaram}) | Today Panchangam in Telugu - తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra} — telugujyothisham.com`,
       awards: 'పొందిన సత్కారాలు & పురస్కారాలు | శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (telugujyothisham.com/awards)',
       services: 'వైదిక పూజా సేవలు & హోమాలు | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/services)',
       about: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి గురించి | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/about)',
@@ -337,8 +520,8 @@ function AppContent() {
     };
 
     const titlesEnglish: Record<NavTab, string> = {
-      home: 'Neti Panchangam | Today Panchangam in Telugu - ఈ రోజు పంచాంగం - నేటి పంచాంగం — telugujyothisham.com',
-      panchangam: 'Today Panchangam in Telugu - ఈ రోజు పంచాంగం - Neti Panchangam — telugujyothisham.com/panchangam',
+      home: `Neti Panchangam (${currentDay.teediVaram}) | Today Panchangam in Telugu - ${cleanTithi}, ${cleanNakshatra} — telugujyothisham.com`,
+      panchangam: `Today Panchangam in Telugu (${currentDay.teediVaram}) - ఈ రోజు పంచాంగం: ${cleanTithi}, ${cleanNakshatra} — telugujyothisham.com`,
       awards: 'Vedic Honors & Awards | Sri Jallavaram Sai Dheeraj Sharma — telugujyothisham.com/awards',
       services: 'Vedic Homams & Rituals | Sri Chandi Homam, Lakshmi Kubera Yagam — telugujyothisham.com/services',
       about: 'About Sri Jallavaram Sai Dheeraj Sharma | Renowned Vedic Astrologer — telugujyothisham.com/about',
@@ -346,8 +529,8 @@ function AppContent() {
     };
 
     const descriptionsTelugu: Record<NavTab, string> = {
-      home: 'Neti Panchangam (నేటి పంచాంగం) & Today Panchangam in Telugu (ఈ రోజు పంచాంగం) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Varjyam(వర్జ్యం), Amrutha Gadiyalu(అమృత ఘడియలు) & 12 Rashi Phalalu at telugujyothisham.com.',
-      panchangam: 'Today Panchangam in Telugu (ఈ రోజు పంచాంగం - నేటి పంచాంగం - Neti Panchangam) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Durmuhurtham(దుర్ముహూర్తం), Varjyam(వర్జ్యం) & 12 రాశుల దిన ఫలాలు.',
+      home: `${currentDay.teediVaram} నేటి పంచాంగం (Neti Panchangam / Today Panchangam in Telugu): తిథి ${currentDay.panchanga.tithi}, నక్షత్రం ${currentDay.panchanga.nakshatram}, రాహుకాలం ${currentDay.ashubha.rahukalam}, అమృత ఘడియలు ${currentDay.shubha.amrutha}, గౌరీ పంచాంగం, జన్మ కుండలి & 12 రాశుల దిన ఫలాలు.`,
+      panchangam: `${currentDay.teediVaram} ఈ రోజు తెలుగు పంచాంగం (Today Panchangam in Telugu): తిథి ${currentDay.panchanga.tithi}, నక్షత్రం ${currentDay.panchanga.nakshatram}, రాహుకాలం ${currentDay.ashubha.rahukalam}, గౌరీ పంచాంగం, హోరా చక్రం, తారాబలం, నిత్య సంకల్పం & 12 రాశుల దిన ఫలాలు.`,
       awards: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు పొందిన జ్యోతిష సత్కారాలు, బిరుదులు మరియు పూజా పురస్కారాల వివరాలు.',
       services: 'శ్రీ చండీ హోమం, లక్ష్మీ గణపతి హోమం, సుదర్శన హోమం, వివాహ, గృహప్రవేశ క్రతువులు శాస్త్రోక్తంగా నిర్వహించబడును.',
       about: 'జ్యోతిష పండితులు, స్మార్త వేద విద్వాంసులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్యాత్మిక ప్రస్థానం మరియు అనుభవం.',
@@ -355,15 +538,19 @@ function AppContent() {
     };
 
     const descriptionsEnglish: Record<NavTab, string> = {
-      home: 'Today Panchangam in Telugu (ఈ రోజు పంచాంగం / Neti Panchangam) - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Amrutha Gadiyalu & Daily Horoscope.',
-      panchangam: 'Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం), Rahu Kalam(రాహుకాలం), Varjyam(వర్జ్యం), Durmuhurtham & 12 Rashi Phalalu by Sri Lakshmi Ganapathi Astrology.',
+      home: `Today Panchangam in Telugu (${currentDay.teediVaram} / Neti Panchangam): Tithi ${currentDay.panchanga.tithi}, Nakshatram ${currentDay.panchanga.nakshatram}, Rahu Kalam ${currentDay.ashubha.rahukalam}, Amrutha Gadiyalu, Free Janma Kundali & Daily Horoscope.`,
+      panchangam: `Today Panchangam in Telugu (${currentDay.teediVaram}): Tithi ${currentDay.panchanga.tithi}, Nakshatram ${currentDay.panchanga.nakshatram}, Rahu Kalam ${currentDay.ashubha.rahukalam}, Gowri Panchangam, Hora Timings, Tarabalam & 12 Rashi Phalalu.`,
       awards: 'Prestigious Vedic awards, golden kankanam citations, and state-level felicitations conferred upon Sri Jallavaram Sai Dheeraj Sharma.',
       services: 'Authentic Vedic homams, Sri Chandi Sahitha Rudra Homam, Gruhapravesham, wedding muhurthams, and online sankalpam booking for global NRI devotees.',
       about: 'Profile and spiritual journey of renowned Vedic scholar and astrologer Sri Jallavaram Sai Dheeraj Sharma.',
       contact: 'Consult renowned Telugu astrologer and Smartha purohit Sri Dheeraj Sharma for horoscope consultation, muhurtham, and pooja bookings.',
     };
 
-    const matchedEvergreen = isEvergreenHubRoute && activeTab === 'panchangam' ? evergreenSeoMeta[rawPath] : undefined;
+    const matchedEvergreen = isEvergreenHubRoute && activeTab === 'panchangam'
+      ? evergreenSeoMeta[rawPath]
+      : activeTab === 'panchangam' && panchangamSubTab !== 'main'
+      ? evergreenSeoMeta[PANCHANGAM_SUBTAB_PATHS[panchangamSubTab]]
+      : undefined;
 
     const targetTitle = matchedEvergreen
       ? language === 'en'
@@ -396,9 +583,10 @@ function AppContent() {
 
     const twitterDescEl = document.querySelector('meta[name="twitter:description"]');
     if (twitterDescEl) twitterDescEl.setAttribute('content', targetDesc);
-  }, [activeTab, hubSection, language, selectedCity]);
 
-  const currentDay = WEEK_DATA.find((d) => d.id === selectedDayId) ?? WEEK_DATA[0];
+    // Inject/update automated daily JSON-LD schema for Google Search & AI Overviews
+    syncAutomatedDailySeoSchema(currentDay, path, panchangamSubTab);
+  }, [activeTab, panchangamSubTab, hubSection, language, selectedCity, currentDay]);
 
   // Calculate active lagna name for hero banner
   const now = new Date();
@@ -436,29 +624,31 @@ function AppContent() {
 
       {/* Main Content Router based on Active Tab or Programmatic City Page */}
       {selectedCity ? (
-        <CityAstrologyPage
-          city={selectedCity}
-          onOpenBooking={(service) =>
-            handleOpenBooking(
-              service
-                ? ({
-                    id: 'city-service',
-                    name: service,
-                    description: service,
-                    teluguName: service,
-                    costINR: 'సంప్రదించండి',
-                    costUSD: 'Contact',
-                    idealFor: 'భక్తుల విశేష సంకల్పం',
-                    samagriList: ['పసుపు', 'కుంకుమ', 'హారతి', 'నవధాన్యాలు'],
-                    duration: 'శాస్త్రోక్తంగా'
-                  } as unknown as PoojaService)
-                : undefined
-            )
-          }
-          onNavigateHome={() => handleSelectTab('home')}
-          onNavigatePanchangam={() => handleSelectTab('panchangam')}
-          onSelectCity={handleSelectCity}
-        />
+        <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
+          <CityAstrologyPage
+            city={selectedCity}
+            onOpenBooking={(service) =>
+              handleOpenBooking(
+                service
+                  ? ({
+                      id: 'city-service',
+                      name: service,
+                      description: service,
+                      teluguName: service,
+                      costINR: 'సంప్రదించండి',
+                      costUSD: 'Contact',
+                      idealFor: 'భక్తుల విశేష సంకల్పం',
+                      samagriList: ['పసుపు', 'కుంకుమ', 'హారతి', 'నవధాన్యాలు'],
+                      duration: 'శాస్త్రోక్తంగా'
+                    } as unknown as PoojaService)
+                  : undefined
+              )
+            }
+            onNavigateHome={() => handleSelectTab('home')}
+            onNavigatePanchangam={() => handleSelectTab('panchangam')}
+            onSelectCity={handleSelectCity}
+          />
+        </Suspense>
       ) : (
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* TAB 1: HOME (SRI DHEERAJ SHARMA GARU PROFILE) */}
@@ -472,11 +662,15 @@ function AppContent() {
         )}
 
         {/* TAB: HONORS & AWARDS (పొందిన సత్కారాలు) */}
-        {activeTab === 'awards' && <AwardsSection />}
+        {activeTab === 'awards' && (
+          <Suspense fallback={<SectionLoader minHeight="min-h-[500px]" />}>
+            <AwardsSection />
+          </Suspense>
+        )}
 
         {/* TAB 2: DEDICATED SUB-MENU FOR PANCHANGAM */}
         {activeTab === 'panchangam' && (
-          <div className="space-y-12">
+          <div className="space-y-10">
             {/* Sub-menu banner for Panchangam */}
             <Banner
               currentDay={currentDay}
@@ -491,8 +685,8 @@ function AppContent() {
               onSelectDay={(dayId) => setSelectedDayId(dayId)}
             />
 
-            {/* Selected Date Header */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-amber-200/80 pb-4">
+            {/* Selected Date Header + 1-Click WhatsApp Status Card Download */}
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-amber-200/80 pb-4">
               <div>
                 <span className="text-xs font-semibold text-amber-800 uppercase tracking-widest font-display">
                   {t('ఎంచుకున్న రోజు వివరాలు • Selected Day Overview', 'Selected Day Overview')}
@@ -501,67 +695,194 @@ function AppContent() {
                   {tr(currentDay.label)} {t('పంచాంగం', 'Panchangam')}
                 </h1>
               </div>
-              <p className="text-base sm:text-lg text-amber-900 font-semibold font-telugu bg-amber-100/70 px-4 py-1.5 rounded-xl border border-amber-200">
-                {tr(currentDay.teediVaram)}
-              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="text-base sm:text-lg text-amber-900 font-semibold font-telugu bg-amber-100/70 px-4 py-1.5 rounded-xl border border-amber-200">
+                  {tr(currentDay.teediVaram)}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => downloadDailyPanchangamCardImage(currentDay)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-600 hover:from-emerald-800 hover:to-emerald-700 text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer"
+                >
+                  <span>📲</span>
+                  <span>
+                    {t(
+                      'వాట్సాప్ స్టేటస్ పంచాంగం ఇమేజ్ డౌన్‌లోడ్',
+                      'Download WhatsApp Status Card'
+                    )}
+                  </span>
+                </button>
+              </div>
             </div>
 
-            {/* Fast Facts & AI Generative Engine Optimization (Google Zero-Click Answer Card) */}
-            <PanchangamQuickSummary day={currentDay} />
-
-            {/* Day Special Vishesham / Phalitham */}
-            <DayVisheshamCard day={currentDay} />
-
-            {/* Daily Horoscope (దిన ఫలం) for all 12 Rashis */}
-            <DailyHoroscope day={currentDay} />
-
-            {/* Core 2-Column: Panchanga Limbs & South Indian Rashi Kundli */}
-            <section id="panchangam" className="scroll-mt-24">
-              <div className="grid lg:grid-cols-2 gap-8 items-stretch">
-                <PanchangaCard day={currentDay} />
-                <div id="rashi-chakram" className="scroll-mt-24 h-full">
-                  <RashiChakra day={currentDay} />
-                </div>
+            {/* LEVEL-2 PANCHANGAM SUB-TABS (2-Level Clean Navigation Architecture) */}
+            <nav
+              id="panchangam-sub-tabs"
+              aria-label="Daily Panchangam Sub-Sections"
+              className="bg-gradient-to-r from-amber-950 via-[#3b1506] to-amber-950 p-2 sm:p-3 rounded-2xl border-2 border-amber-500/50 shadow-md scroll-mt-24"
+            >
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                {(
+                  [
+                    {
+                      id: 'main' as PanchangamSubTab,
+                      href: '/panchangam',
+                      badge: '1. పంచాంగం & రాశి ఫలాలు',
+                      titleTe: '📅 ప్రధాన పంచాంగం & దిన ఫలం',
+                      titleEn: '📅 Main Panchangam & Horoscope',
+                    },
+                    {
+                      id: 'gowri-hora' as PanchangamSubTab,
+                      href: '/gowri-panchangam',
+                      badge: '2. తక్షణ శుభ సమయం',
+                      titleTe: '⏳ గౌరీ పంచాంగం & హోరా చక్రం',
+                      titleEn: '⏳ Gowri Panchangam & Hora',
+                    },
+                    {
+                      id: 'tarabalam' as PanchangamSubTab,
+                      href: '/tarabalam-chandrabalam',
+                      badge: '3. వ్యక్తిగత బలం',
+                      titleTe: '🌟 తారాబలం & చంద్రబలం',
+                      titleEn: '🌟 Tarabalam & Chandrabalam',
+                    },
+                    {
+                      id: 'sankalpam' as PanchangamSubTab,
+                      href: '/nitya-sankalpam',
+                      badge: '4. నిత్య పూజ & NRI సంకల్పం',
+                      titleTe: '🙏 నేటి సంకల్పం & నిత్య స్తోత్రం',
+                      titleEn: '🙏 Daily Sankalpam & Stotra',
+                    },
+                  ] as const
+                ).map((tab) => {
+                  const isActive = panchangamSubTab === tab.id;
+                  return (
+                    <a
+                      key={tab.id}
+                      href={tab.href}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleSelectPanchangamSubTab(tab.id);
+                      }}
+                      className={`flex flex-col items-start justify-center px-3.5 py-2.5 rounded-xl border text-left transition-all ${
+                        isActive
+                          ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 border-amber-200 shadow-md font-bold'
+                          : 'bg-amber-900/50 hover:bg-amber-900/80 text-amber-100 border-amber-700/60'
+                      }`}
+                    >
+                      <span
+                        className={`text-[10px] uppercase tracking-wider font-bold ${
+                          isActive ? 'text-amber-950/80' : 'text-amber-300/90'
+                        }`}
+                      >
+                        {tab.badge}
+                      </span>
+                      <span className="text-xs sm:text-sm font-bold mt-0.5 leading-snug">
+                        {language === 'en' ? tab.titleEn : tab.titleTe}
+                      </span>
+                    </a>
+                  );
+                })}
               </div>
-            </section>
+            </nav>
 
-            {/* Muhurthas: Auspicious vs Inauspicious Times */}
-            <section id="muhurthalu" className="scroll-mt-24">
-              <MuhurthaTimings day={currentDay} />
-            </section>
+            {/* SUB-TAB 2: GOWRI PANCHANGAM & HORA CHAKRAM */}
+            {panchangamSubTab === 'gowri-hora' && (
+              <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
+                <GowriHoraPanchangam day={currentDay} />
+              </Suspense>
+            )}
 
-            {/* 12 Lagnas with Active Time Indicator */}
-            <section id="lagnalu" className="scroll-mt-24">
-              <LagnaPramanalu day={currentDay} />
-            </section>
+            {/* SUB-TAB 3: TARABALAM & CHANDRABALAM CALCULATOR */}
+            {panchangamSubTab === 'tarabalam' && (
+              <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
+                <TarabalamCalculator day={currentDay} />
+              </Suspense>
+            )}
 
-            {/* Chandra Sancharam, Chandrashtamam, Navatara Balam */}
-            <section>
-              <ChandraNavatara day={currentDay} />
-            </section>
+            {/* SUB-TAB 4: DAILY POOJA SANKALPAM & STOTRA */}
+            {panchangamSubTab === 'sankalpam' && (
+              <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
+                <DailySankalpamStotra day={currentDay} />
+              </Suspense>
+            )}
 
-            {/* Interactive Personal Zodiac & Nakshatra Checker */}
-            <DevoteeCompatibilityChecker day={currentDay} />
+            {/* SUB-TAB 1 (DEFAULT): MAIN PANCHANGAM OVERVIEW */}
+            {panchangamSubTab === 'main' && (
+              <>
+                {/* Fast Facts & AI Generative Engine Optimization (Google Zero-Click Answer Card) */}
+                <PanchangamQuickSummary day={currentDay} />
 
-            {/* Complete Vedic Astrology & Muhurtham SEO Hub (Marriage Compatibility, Name Syllable Star Finder, Ugadi Aadayam-Vyayam, Shubha Muhurthams & Dosha Remedies) */}
-            <VedicAstrologyHub
-              initialSection={hubSection}
-              onOpenBooking={() => handleOpenBooking()}
-            />
+                {/* Day Special Vishesham / Phalitham */}
+                <DayVisheshamCard day={currentDay} />
+
+                {/* Daily Horoscope (దిన ఫలం) for all 12 Rashis */}
+                <DailyHoroscope day={currentDay} />
+
+                {/* Core 2-Column: Panchanga Limbs & South Indian Rashi Kundli */}
+                <section id="panchangam" className="scroll-mt-24">
+                  <div className="grid lg:grid-cols-2 gap-8 items-stretch">
+                    <PanchangaCard day={currentDay} />
+                    <div id="rashi-chakram" className="scroll-mt-24 h-full">
+                      <Suspense fallback={<SectionLoader minHeight="min-h-[480px]" />}>
+                        <RashiChakra day={currentDay} />
+                      </Suspense>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Muhurthas: Auspicious vs Inauspicious Times */}
+                <section id="muhurthalu" className="scroll-mt-24">
+                  <MuhurthaTimings day={currentDay} />
+                </section>
+
+                {/* 12 Lagnas with Active Time Indicator */}
+                <section id="lagnalu" className="scroll-mt-24">
+                  <Suspense fallback={<SectionLoader minHeight="min-h-[320px]" />}>
+                    <LagnaPramanalu day={currentDay} />
+                  </Suspense>
+                </section>
+
+                {/* Chandra Sancharam, Chandrashtamam, Navatara Balam */}
+                <section>
+                  <Suspense fallback={<SectionLoader minHeight="min-h-[320px]" />}>
+                    <ChandraNavatara day={currentDay} />
+                  </Suspense>
+                </section>
+
+                {/* Interactive Personal Zodiac & Nakshatra Checker */}
+                <Suspense fallback={<SectionLoader minHeight="min-h-[360px]" />}>
+                  <DevoteeCompatibilityChecker day={currentDay} />
+                </Suspense>
+              </>
+            )}
+
+            {/* Complete Vedic Astrology & Muhurtham SEO Hub (Free Janma Kundali, Marriage Compatibility, Name Syllable Star Finder, Baby Names, Ugadi Aadayam-Vyayam, Shubha Muhurthams, Gruha Vastu & Dosha Remedies) */}
+            <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
+              <VedicAstrologyHub
+                initialSection={hubSection}
+                onOpenBooking={() => handleOpenBooking()}
+              />
+            </Suspense>
 
             {/* Daily In-Depth Nakshatra & Tithi Phala Article (Based on Krishna Rau's Classical Text) */}
-            <DailyNakshatraArticle
-              currentDay={currentDay}
-              onOpenBooking={() => handleOpenBooking()}
-            />
+            <Suspense fallback={<SectionLoader minHeight="min-h-[360px]" />}>
+              <DailyNakshatraArticle
+                currentDay={currentDay}
+                onOpenBooking={() => handleOpenBooking()}
+              />
+            </Suspense>
 
             {/* Daily Astrology Guidance Insights & Simulated Live Planetary Movement Stream */}
-            <DailyAstrologyInsights
-              onOpenBooking={() => handleOpenBooking()}
-            />
+            <Suspense fallback={<SectionLoader minHeight="min-h-[320px]" />}>
+              <DailyAstrologyInsights
+                onOpenBooking={() => handleOpenBooking()}
+              />
+            </Suspense>
 
             {/* Beginner-Friendly Panchangam FAQ Section (Tithi, Nakshatra, Muhurtham, etc.) */}
-            <PanchangamFAQ />
+            <Suspense fallback={<SectionLoader minHeight="min-h-[320px]" />}>
+              <PanchangamFAQ />
+            </Suspense>
 
             {/* Sharing & Quick Action Controls */}
             <ActionControls
@@ -573,44 +894,60 @@ function AppContent() {
 
         {/* TAB 3: POOJA SERVICES & LIVE UPCOMING RITUAL COUNTDOWN */}
         {activeTab === 'services' && (
-          <div className="space-y-10">
-            {/* Live Upcoming Temple Event & Homam Countdown Section */}
-            <UpcomingRitualCountdown
-              onOpenBooking={(service) => handleOpenBooking(service)}
-            />
+          <Suspense fallback={<SectionLoader minHeight="min-h-[520px]" />}>
+            <div className="space-y-10">
+              {/* Live Upcoming Temple Event & Homam Countdown Section */}
+              <UpcomingRitualCountdown
+                onOpenBooking={(service) => handleOpenBooking(service)}
+              />
 
-            <PoojaServicesSection
-              onSelectService={(service) => handleOpenBooking(service)}
-            />
-          </div>
+              <PoojaServicesSection
+                onSelectService={(service) => handleOpenBooking(service)}
+              />
+            </div>
+          </Suspense>
         )}
 
         {/* TAB 4: ABOUT GURUJI */}
         {activeTab === 'about' && (
-          <AboutGurujiSection onOpenBooking={() => handleOpenBooking()} />
+          <Suspense fallback={<SectionLoader minHeight="min-h-[480px]" />}>
+            <AboutGurujiSection onOpenBooking={() => handleOpenBooking()} />
+          </Suspense>
         )}
 
         {/* TAB 5: CONTACT */}
-        {activeTab === 'contact' && <ContactSection />}
+        {activeTab === 'contact' && (
+          <Suspense fallback={<SectionLoader minHeight="min-h-[480px]" />}>
+            <ContactSection />
+          </Suspense>
+        )}
       </main>
       )}
 
       {/* Floating WhatsApp Action Widget (8977986166) */}
       <FloatingWhatsApp />
 
-      {/* Booking Modal */}
-      <PoojaBookingModal
-        isOpen={isBookingOpen}
-        selectedService={selectedPoojaForBooking}
-        onClose={handleCloseBooking}
-      />
+      {/* Booking Modal — Lazy loaded only when opened */}
+      {isBookingOpen && (
+        <Suspense fallback={null}>
+          <PoojaBookingModal
+            isOpen={isBookingOpen}
+            selectedService={selectedPoojaForBooking}
+            onClose={handleCloseBooking}
+          />
+        </Suspense>
+      )}
 
-      {/* Legal & AdSense Compliance Modal (Privacy Policy, Terms & Conditions, Disclaimer) */}
-      <LegalComplianceModal
-        activeDoc={activeLegalDoc}
-        onClose={handleCloseLegal}
-        onSelectDoc={handleOpenLegal}
-      />
+      {/* Legal & AdSense Compliance Modal — Lazy loaded only when opened */}
+      {activeLegalDoc && (
+        <Suspense fallback={null}>
+          <LegalComplianceModal
+            activeDoc={activeLegalDoc}
+            onClose={handleCloseLegal}
+            onSelectDoc={handleOpenLegal}
+          />
+        </Suspense>
+      )}
 
       {/* Footer */}
       <Footer

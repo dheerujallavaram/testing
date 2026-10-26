@@ -14,10 +14,16 @@ export interface FooterProps {
 const SEO_HUB_LINKS: { section: HubSectionId; path: string; labelTe: string; labelEn: string }[] = [
   { section: 'pontana', path: '/neti-panchangam', labelTe: 'నేటి పంచాంగం (Neti Panchangam)', labelEn: 'Neti Panchangam (Today Panchangam)' },
   { section: 'pontana', path: '/today-panchangam-in-telugu', labelTe: 'ఈ రోజు పంచాంగం (Today Panchangam in Telugu)', labelEn: 'Today Panchangam in Telugu - ఈ రోజు పంచాంగం' },
+  { section: 'kundali', path: '/janma-kundali', labelTe: 'ఉచిత తెలుగు జన్మ కుండలి & మహాదశ (Free Janam Kundli)', labelEn: 'Free Telugu Janma Kundali & Mahadasha' },
+  { section: 'pontana', path: '/gowri-panchangam', labelTe: 'గౌరీ పంచాంగం & హోరా చక్రం (Gowri Panchangam)', labelEn: 'Today Gowri Panchangam & Hora Timings' },
+  { section: 'pontana', path: '/tarabalam-chandrabalam', labelTe: 'తారాబలం & చంద్రబలం క్యాలిక్యులేటర్', labelEn: 'Tarabalam & Chandrabalam Calculator' },
+  { section: 'pontana', path: '/nitya-sankalpam', labelTe: 'నేటి పూజా సంకల్పం మంత్రం (India & USA NRI)', labelEn: 'Today Telugu Pooja Sankalpam' },
   { section: 'pontana', path: '/vivaha-pontana', labelTe: '36 గుణాల వివాహ పొంతన (Vivaha Pontana)', labelEn: '36-Point Marriage Compatibility' },
   { section: 'akshara', path: '/naama-nakshatra', labelTe: 'పేరు మొదటి అక్షరంతో రాశి & నక్షత్రం', labelEn: 'Name First Letter Rashi Finder' },
+  { section: 'babynames', path: '/telugu-baby-names', labelTe: '27 నక్షత్రాల తెలుగు పిల్లల పేర్లు', labelEn: 'Telugu Baby Names by Nakshatra' },
   { section: 'ugadi', path: '/ugadi-rashi-phalalu', labelTe: 'శ్రీ పరాభవ నామ సంవత్సర ఉగాది రాశి ఫలాలు', labelEn: 'Ugadi Yearly Horoscope 2026-2027' },
   { section: 'muhurtham', path: '/shubha-muhurthalu', labelTe: 'శుభ ముహూర్తాలు & పండుగల క్యాలెండర్', labelEn: 'Auspicious Muhurthams & Festivals' },
+  { section: 'vastu', path: '/vastu-shastra-telugu', labelTe: 'గృహ వాస్తు చక్రం & దిక్పాలక నియమాలు', labelEn: 'Telugu Gruha Vastu Shastra Guide' },
   { section: 'dosha', path: '/dosha-pariharalu', labelTe: 'కుజ, కాలసర్ప, ఏలినాటి శని దోష పరిహారాలు', labelEn: 'Kuja, Kalasarpa & Shani Dosha Remedies' },
 ];
 

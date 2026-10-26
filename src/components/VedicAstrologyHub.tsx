@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense, lazy } from 'react';
 import {
   Heart,
   Search,
@@ -11,13 +11,34 @@ import {
   Star,
   CheckCircle2,
   Flame,
+  Compass,
+  Baby,
+  ScrollText,
 } from 'lucide-react';
 import { RashiCompatibilityTool } from './RashiCompatibilityTool';
 import { WEEK_DATA } from '../data/panchangamData';
 import { useLanguage } from '../context/LanguageContext';
 import { RashiGlyph } from './RashiGlyph';
 
-export type HubSectionId = 'pontana' | 'akshara' | 'ugadi' | 'muhurtham' | 'dosha';
+const JanmaKundaliGenerator = lazy(() =>
+  import('./JanmaKundaliGenerator').then((m) => ({ default: m.JanmaKundaliGenerator }))
+);
+const NakshatraBabyNames = lazy(() =>
+  import('./NakshatraBabyNames').then((m) => ({ default: m.NakshatraBabyNames }))
+);
+const VastuChakraGuide = lazy(() =>
+  import('./VastuChakraGuide').then((m) => ({ default: m.VastuChakraGuide }))
+);
+
+export type HubSectionId =
+  | 'pontana'
+  | 'kundali'
+  | 'akshara'
+  | 'babynames'
+  | 'vastu'
+  | 'ugadi'
+  | 'muhurtham'
+  | 'dosha';
 
 interface VedicAstrologyHubProps {
   initialSection?: HubSectionId;
@@ -167,7 +188,10 @@ const DOSHA_REMEDIES_LIST = [
 
 export const HUB_SECTION_PATHS: Record<HubSectionId, string> = {
   pontana: '/vivaha-pontana',
+  kundali: '/janma-kundali',
   akshara: '/naama-nakshatra',
+  babynames: '/telugu-baby-names',
+  vastu: '/vastu-shastra-telugu',
   ugadi: '/ugadi-rashi-phalalu',
   muhurtham: '/shubha-muhurthalu',
   dosha: '/dosha-pariharalu',
@@ -226,11 +250,14 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
   }, [tithiSearch]);
 
   const navButtons: { id: HubSectionId; labelTe: string; labelEn: string; icon: React.ComponentType<{ size?: number; className?: string }> }[] = [
+    { id: 'kundali', labelTe: 'ఉచిత జన్మ కుండలి & మహాదశ', labelEn: 'Free Janma Kundali & Dasha', icon: ScrollText },
     { id: 'pontana', labelTe: 'వివాహ రాశి పొంతన (36 గుణాలు)', labelEn: 'Marriage Guna Milan (36 Pts)', icon: Heart },
     { id: 'akshara', labelTe: 'పేరు మొదటి అక్షరంతో రాశి-నక్షత్రం', labelEn: 'Name First Letter Rashi Finder', icon: Search },
-    { id: 'ugadi', labelTe: 'ఉగాది వార్షిక రాశి ఫలాలు (ఆదాయ-వ్యయాలు)', labelEn: 'Ugadi Yearly Rashi Phalalu', icon: Sparkles },
-    { id: 'muhurtham', labelTe: 'శుభ ముహూర్తాలు & తిథి క్యాలిక్యులేటర్', labelEn: 'Shubha Muhurthams & Tithi Finder', icon: Calendar },
-    { id: 'dosha', labelTe: 'జాతక దోషాలు & శాంతి పరిహారాలు', labelEn: 'Dosha Remedies & Shanti Guide', icon: ShieldAlert },
+    { id: 'babynames', labelTe: '27 నక్షత్రాల పిల్లల పేర్లు', labelEn: '27 Nakshatra Baby Names', icon: Baby },
+    { id: 'vastu', labelTe: 'గృహ వాస్తు చక్రం', labelEn: 'Gruha Vastu Compass', icon: Compass },
+    { id: 'ugadi', labelTe: 'ఉగాది వార్షిక రాశి ఫలాలు', labelEn: 'Ugadi Yearly Horoscope', icon: Sparkles },
+    { id: 'muhurtham', labelTe: 'శుభ ముహూర్తాలు & తిథులు', labelEn: 'Shubha Muhurthams & Tithis', icon: Calendar },
+    { id: 'dosha', labelTe: 'జాతక దోషాలు & శాంతి పరిహారాలు', labelEn: 'Dosha Remedies & Shanti', icon: ShieldAlert },
   ];
 
   return (
@@ -281,6 +308,15 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
         })}
       </div>
 
+      {/* SECTION 0: FREE JANMA KUNDALI & VIMSHOTTARI MAHADASA */}
+      {activeSection === 'kundali' && (
+        <div className="animate-fadeIn">
+          <Suspense fallback={<div className="py-12 text-center text-sm text-amber-900">జన్మ కుండలి లోడ్ అవుతోంది...</div>}>
+            <JanmaKundaliGenerator onOpenBooking={onOpenBooking} />
+          </Suspense>
+        </div>
+      )}
+
       {/* SECTION 1: 36-POINT MARRIAGE COMPATIBILITY (VIVAHA PONTANA) */}
       {activeSection === 'pontana' && (
         <div className="animate-fadeIn">
@@ -290,6 +326,24 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
               window.open(`https://wa.me/918977986166?text=${encodeURIComponent(msg)}`, '_blank');
             }}
           />
+        </div>
+      )}
+
+      {/* SECTION: 27 NAKSHATRA BABY NAMES */}
+      {activeSection === 'babynames' && (
+        <div className="animate-fadeIn">
+          <Suspense fallback={<div className="py-12 text-center text-sm text-amber-900">నక్షత్ర పిల్లల పేర్లు లోడ్ అవుతున్నాయి...</div>}>
+            <NakshatraBabyNames />
+          </Suspense>
+        </div>
+      )}
+
+      {/* SECTION: GRUHA VASTU CHAKRA GUIDE */}
+      {activeSection === 'vastu' && (
+        <div className="animate-fadeIn">
+          <Suspense fallback={<div className="py-12 text-center text-sm text-amber-900">వాస్తు చక్రం లోడ్ అవుతోంది...</div>}>
+            <VastuChakraGuide />
+          </Suspense>
         </div>
       )}
 

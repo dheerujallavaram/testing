@@ -167,6 +167,10 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                   <img
                     src="/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg"
                     alt="శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు"
+                    width={208}
+                    height={208}
+                    fetchPriority="high"
+                    decoding="async"
                     className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
