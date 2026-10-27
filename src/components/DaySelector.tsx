@@ -104,17 +104,24 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ days, selectedDayId, o
             <ChevronLeft size={18} />
           </button>
 
-          {/* Dropdown Select for all days */}
-          <div className="relative flex-1 md:w-80 lg:w-96">
+          {/* Dropdown Select for curated days */}
+          <div className="relative flex-1 md:w-72 lg:w-80">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-amber-700">
               <Calendar size={16} />
             </div>
             <select
-              value={selectedDayId}
-              onChange={(e) => onSelectDay(e.target.value)}
+              value={currentIndex >= 0 ? selectedDayId : ''}
+              onChange={(e) => {
+                if (e.target.value) onSelectDay(e.target.value);
+              }}
               className="w-full bg-white text-amber-950 font-semibold text-xs sm:text-sm pl-9 pr-8 py-2.5 rounded-xl border-2 border-amber-400/80 focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 shadow-xs cursor-pointer appearance-none transition-colors"
               aria-label={t('తేదీని ఎంచుకోండి', 'Select Date')}
             >
+              {currentIndex < 0 && (
+                <option value="">
+                  {selectedDayId} • {t('దృక్సిద్ధాంత గణన', 'Live Drik Siddhanta')}
+                </option>
+              )}
               {days.map((d) => (
                 <option key={d.id} value={d.id}>
                   {tr(d.teediVaram)} {d.specialEvent ? `• ${tr(d.specialEvent)}` : ''}
@@ -125,6 +132,20 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ days, selectedDayId, o
               <span className="text-[10px] font-bold">▼</span>
             </div>
           </div>
+
+          {/* Unlimited Year Calendar Date Picker (1900 - 2100 via astronomy-engine) */}
+          <input
+            type="date"
+            min="1900-01-01"
+            max="2100-12-31"
+            value={selectedDayId}
+            onChange={(e) => {
+              if (e.target.value) onSelectDay(e.target.value);
+            }}
+            className="bg-amber-100/80 hover:bg-amber-200/70 text-amber-950 font-mono font-bold text-xs px-2.5 py-2.5 rounded-xl border border-amber-400 cursor-pointer shrink-0"
+            title={t('ఏ సంవత్సరం తేదీనైనా ఎంచుకోండి (1900–2100)', 'Pick any date across any year (1900–2100)')}
+            aria-label={t('ఏ తేదీనైనా ఎంచుకోండి', 'Pick any calendar date')}
+          />
 
           {/* Next day button */}
           <button

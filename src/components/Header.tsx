@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Bell, Calendar, MessageCircle, Menu, X, Sparkles, Home, User, Phone, Award, Globe } from 'lucide-react';
+import { Bell, Calendar, MessageCircle, Menu, X, Sparkles, Home, User, Phone, Award, Globe, Compass } from 'lucide-react';
 import { playTempleBell } from '../utils/audioChime';
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
 
-export type NavTab = 'home' | 'panchangam' | 'awards' | 'services' | 'about' | 'contact';
+export type NavTab = 'home' | 'panchangam' | 'jathakam' | 'awards' | 'services' | 'about' | 'contact';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -20,13 +20,21 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
     playTempleBell();
   };
 
-  const navItems: { id: NavTab; label: string; icon: React.ComponentType<{ size?: number; className?: string }>; badge?: string }[] = [
-    { id: 'home', label: t('హోమ్ పేజీ', 'Home'), icon: Home },
-    { id: 'panchangam', label: t('పంచాంగం', 'Panchangam'), icon: Calendar },
-    { id: 'awards', label: t('పొందిన సత్కారాలు', 'Honors & Awards'), icon: Award },
-    { id: 'services', label: t('పూజా సేవలు', 'Pooja Services'), icon: Sparkles },
-    { id: 'about', label: t('ధీరజ్ శర్మ గారి గురించి', 'About Guruji'), icon: User },
-    { id: 'contact', label: t('సంప్రదించండి', 'Contact'), icon: Phone },
+  const navItems: { id: NavTab; label: string; shortLabelTe: string; shortLabelEn: string; icon: React.ComponentType<{ size?: number; className?: string }>; badge?: string }[] = [
+    { id: 'home', label: t('హోమ్ పేజీ', 'Home'), shortLabelTe: 'హోమ్', shortLabelEn: 'Home', icon: Home },
+    { id: 'panchangam', label: t('పంచాంగం', 'Panchangam'), shortLabelTe: 'పంచాంగం', shortLabelEn: 'Panchangam', icon: Calendar },
+    {
+      id: 'jathakam',
+      label: t('మీ జాతకం తెలుసుకోండి', 'Know Your Horoscope'),
+      shortLabelTe: 'మీ జాతకం తెలుసుకోండి',
+      shortLabelEn: 'Your Horoscope',
+      icon: Compass,
+      badge: t('100 పేజీలు', '100 Pages'),
+    },
+    { id: 'awards', label: t('పొందిన సత్కారాలు', 'Honors & Awards'), shortLabelTe: 'సత్కారాలు', shortLabelEn: 'Honors', icon: Award },
+    { id: 'services', label: t('పూజా సేవలు', 'Pooja Services'), shortLabelTe: 'పూజా సేవలు', shortLabelEn: 'Pooja Services', icon: Sparkles },
+    { id: 'about', label: t('ధీరజ్ శర్మ గారి గురించి', 'About Guruji'), shortLabelTe: 'గురువు గారు', shortLabelEn: 'About Guruji', icon: User },
+    { id: 'contact', label: t('సంప్రదించండి', 'Contact'), shortLabelTe: 'సంప్రదించండి', shortLabelEn: 'Contact', icon: Phone },
   ];
 
   const handleTabClick = (tab: NavTab) => {
@@ -41,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
 
   return (
     <header className="sticky top-0 z-40 bg-amber-950 text-white shadow-xl border-b border-amber-800/90 backdrop-blur-md bg-opacity-95 font-telugu">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-2.5">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2">
         {/* Zone 1: Brand wordmark & Sri Dheeraj Sharma Garu subtext */}
         <button
           type="button"
@@ -52,18 +60,18 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
             'Sreelakshmi Ganapathi Astrology - Sri Jallavaram Sai Dheeraj Sharma'
           )}
         >
-          <OmEmblem className="w-10 h-10 sm:w-11 sm:h-11 group-hover:scale-105 transition-transform shrink-0 drop-shadow-md" size={44} />
+          <OmEmblem className="w-9 h-9 sm:w-11 sm:h-11 group-hover:scale-105 transition-transform shrink-0 drop-shadow-md" size={44} />
           <div>
-            <span className="text-base sm:text-lg md:text-xl font-bold tracking-tight text-white block group-hover:text-amber-200 transition-colors leading-tight">
+            <span className="text-sm sm:text-lg md:text-xl font-bold tracking-tight text-white block group-hover:text-amber-200 transition-colors leading-tight">
               {t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం', 'Sreelakshmi Ganapathi Astrology')}
             </span>
-            <span className="text-[11px] text-amber-300 font-semibold block">
+            <span className="text-[10px] sm:text-[11px] text-amber-300 font-semibold block">
               {t('శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు', 'Sri Jallavaram Sai Dheeraj Sharma Garu')}
             </span>
           </div>
         </button>
 
-        {/* Zone 2: Unified Action, Language Switcher & Navigation Buttons */}
+        {/* Zone 2: Unified Action, Language Switcher & Desktop Navigation Buttons */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* State-Based Language Switcher (Telugu / English) */}
           <div
@@ -71,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
             aria-label="Language Switcher"
             className="inline-flex items-center bg-amber-900/95 border border-amber-600/80 rounded-xl p-0.5 shadow-inner shrink-0"
           >
-            <Globe size={13} className="text-amber-300 ml-1.5 mr-1 hidden xs:inline sm:inline shrink-0" />
+            <Globe size={13} className="text-amber-300 ml-1.5 mr-1 hidden sm:inline shrink-0" />
             <button
               type="button"
               onClick={() => setLanguage('te')}
@@ -96,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
               title="View in English (Switch to English)"
               aria-pressed={language === 'en'}
             >
-              English
+              EN
             </button>
           </div>
 
@@ -111,11 +119,11 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
             <Bell size={15} className="text-amber-300" />
           </button>
 
-          {/* 2. Home Page Button (Hidden on extra small mobile, visible on sm+) */}
+          {/* 2. Home Page Button (Desktop lg+) */}
           <button
             type="button"
             onClick={() => handleTabClick('home')}
-            className={`hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all transform active:scale-95 cursor-pointer border ${
+            className={`hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all transform active:scale-95 cursor-pointer border ${
               activeTab === 'home'
                 ? 'bg-amber-800 text-amber-100 border-amber-400 shadow-inner ring-1 ring-amber-400/50'
                 : 'bg-amber-900/80 hover:bg-amber-800 text-amber-100 hover:text-white border-amber-700/60'
@@ -126,37 +134,51 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
             <span>{t('హోమ్ పేజీ', 'Home')}</span>
           </button>
 
-          {/* 3. Panchangam Button (Always available on all viewports) */}
+          {/* 3. Panchangam Button (Desktop md+) */}
           <button
             type="button"
             onClick={() => handleTabClick('panchangam')}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all transform active:scale-95 cursor-pointer border ${
+            className={`hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all transform active:scale-95 cursor-pointer border ${
               activeTab === 'panchangam'
-                ? 'bg-amber-800 text-amber-100 border-amber-400 shadow-inner ring-1 ring-amber-400/50'
-                : 'bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white border-amber-500/50 shadow-sm'
+                ? 'bg-amber-400 text-amber-950 border-amber-200 font-bold shadow-sm'
+                : 'bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-700 hover:to-amber-600 text-white border-amber-600/60 shadow-sm'
             }`}
             title={t('నిత్య పంచాంగం తెరవండి', 'Open Daily Panchangam')}
           >
-            <Calendar size={14} className="text-amber-300 shrink-0" />
+            <Calendar size={14} className={activeTab === 'panchangam' ? 'text-amber-950 shrink-0' : 'text-amber-300 shrink-0'} />
             <span>{t('పంచాంగం', 'Panchangam')}</span>
           </button>
 
-          {/* 4. Satkaralu (Awards) Button (Hidden on extra small mobile, visible on md+) */}
+          {/* 4. NEW: Mee Jatakam Telusukondi Button (Desktop md+) */}
+          <button
+            type="button"
+            onClick={() => handleTabClick('jathakam')}
+            className={`hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all transform active:scale-95 cursor-pointer border ${
+              activeTab === 'jathakam'
+                ? 'bg-gradient-to-r from-amber-300 via-amber-400 to-amber-300 text-amber-950 border-white shadow-md ring-2 ring-amber-300/60'
+                : 'bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-400 text-amber-950 border-amber-300 shadow-sm'
+            }`}
+            title={t('మీ జాతకం తెలుసుకోండి (100-పేజీల బృహత్ జాతక గ్రంథం)', 'Know Your Horoscope (100-Page Report)')}
+          >
+            <Compass size={15} className="text-amber-950 shrink-0" />
+            <span>{t('మీ జాతకం తెలుసుకోండి', 'Know Your Horoscope')}</span>
+          </button>
+
+          {/* 5. Satkaralu (Awards) Button (Desktop xl+) */}
           <button
             type="button"
             onClick={() => handleTabClick('awards')}
-            className={`hidden md:flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all transform active:scale-95 cursor-pointer border ${
+            className={`hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all transform active:scale-95 cursor-pointer border ${
               activeTab === 'awards'
                 ? 'bg-amber-800 text-amber-100 border-amber-400 shadow-inner ring-1 ring-amber-400/50'
-                : 'bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-700 hover:to-amber-600 text-amber-100 border-amber-600/70 shadow-sm'
+                : 'bg-amber-900/70 hover:bg-amber-800 text-amber-100 border-amber-700/60'
             }`}
-            title={t('పొందిన సత్కారాలు & పురస్కారాలు', 'Honors & Awards')}
           >
             <Award size={14} className="text-amber-300 shrink-0" />
-            <span>{t('పొందిన సత్కారాలు', 'Honors')}</span>
+            <span>{t('సత్కారాలు', 'Honors')}</span>
           </button>
 
-          {/* Additional Desktop Links (Services, About, Contact) */}
+          {/* Additional Desktop Links (Services, Contact) */}
           <button
             type="button"
             onClick={() => handleTabClick('services')}
@@ -171,20 +193,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
 
           <button
             type="button"
-            onClick={() => handleTabClick('about')}
-            className={`hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${
-              activeTab === 'about'
-                ? 'bg-amber-800 text-amber-100 border-amber-400 shadow-inner'
-                : 'bg-amber-900/60 hover:bg-amber-800 text-amber-200 hover:text-white border-amber-800'
-            }`}
-          >
-            <span>{t('ధీరజ్ శర్మ గారి గురించి', 'About Guruji')}</span>
-          </button>
-
-          <button
-            type="button"
             onClick={() => handleTabClick('contact')}
-            className={`hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${
+            className={`hidden 2xl:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${
               activeTab === 'contact'
                 ? 'bg-amber-800 text-amber-100 border-amber-400 shadow-inner'
                 : 'bg-amber-900/60 hover:bg-amber-800 text-amber-200 hover:text-white border-amber-800'
@@ -193,11 +203,11 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
             <span>{t('సంప్రదించండి', 'Contact')}</span>
           </button>
 
-          {/* Primary Pooja Booking CTA - Shown on tablet & desktop (sm+) */}
+          {/* Primary Pooja Booking CTA - Shown on lg+ */}
           <button
             type="button"
             onClick={onOpenBooking}
-            className="hidden sm:flex items-center gap-1.5 px-3 sm:px-3.5 py-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md transition-all transform active:scale-95 cursor-pointer shrink-0"
+            className="hidden lg:flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all transform active:scale-95 cursor-pointer shrink-0 border border-emerald-400/50"
           >
             <Sparkles size={14} className="shrink-0" />
             <span>{t('పూజ బుకింగ్', 'Book Pooja')}</span>
@@ -215,6 +225,35 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
         </div>
       </div>
 
+      {/* STYLISH MOBILE & TABLET QUICK NAVIGATION RIBBON (Visible on < md screens) */}
+      <div className="md:hidden bg-[#2b0f04] border-t border-amber-800/80 px-2.5 py-2 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-1.5 min-w-max">
+          {navItems.slice(0, 5).map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            const isJathakam = item.id === 'jathakam';
+
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => handleTabClick(item.id)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 border ${
+                  isActive
+                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 border-amber-200 shadow-sm'
+                    : isJathakam
+                    ? 'bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white border-amber-400/80 shadow-2xs'
+                    : 'bg-amber-900/70 text-amber-100 border-amber-800/80 hover:bg-amber-800'
+                }`}
+              >
+                <Icon size={13} className={isActive ? 'text-amber-950 shrink-0' : 'text-amber-300 shrink-0'} />
+                <span>{language === 'en' ? item.shortLabelEn : item.shortLabelTe}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="xl:hidden bg-amber-950 border-t border-amber-800 p-4 space-y-2 animate-fadeIn">
@@ -228,16 +267,20 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
                 onClick={() => handleTabClick(item.id)}
                 className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-amber-800 text-white border border-amber-600'
+                    ? 'bg-amber-400 text-amber-950 font-bold border border-amber-200'
+                    : item.id === 'jathakam'
+                    ? 'bg-amber-900/90 text-amber-100 border border-amber-500/70'
                     : 'text-amber-200 hover:bg-amber-900'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon size={18} className="text-amber-400" />
+                  <Icon size={18} className={isActive ? 'text-amber-950' : 'text-amber-400'} />
                   <span>{item.label}</span>
                 </div>
                 {item.badge && (
-                  <span className="text-[10px] px-2 py-0.5 bg-amber-500 text-amber-950 font-bold rounded-full">
+                  <span className={`text-[10px] px-2 py-0.5 font-bold rounded-md ${
+                    isActive ? 'bg-amber-950 text-amber-200' : 'bg-amber-400 text-amber-950'
+                  }`}>
                     {item.badge}
                   </span>
                 )}

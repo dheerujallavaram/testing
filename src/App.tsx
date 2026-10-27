@@ -18,6 +18,7 @@ import { CitySEOData, findCityBySlug } from './data/citiesData';
 import { PanchangamQuickSummary } from './components/PanchangamQuickSummary';
 import { syncAutomatedDailySeoSchema } from './utils/dailySeoEngine';
 import { downloadDailyPanchangamCardImage } from './utils/panchangamImageGenerator';
+import { getOrGenerateDayData } from './utils/astronomyPanchangam';
 import type { HubSectionId } from './components/VedicAstrologyHub';
 import type { LegalDocType } from './components/LegalComplianceModal';
 
@@ -49,6 +50,9 @@ const DailySankalpamStotra = lazy(() =>
 );
 const VedicAstrologyHub = lazy(() =>
   import('./components/VedicAstrologyHub').then((m) => ({ default: m.VedicAstrologyHub }))
+);
+const JanmaKundaliGenerator = lazy(() =>
+  import('./components/JanmaKundaliGenerator').then((m) => ({ default: m.JanmaKundaliGenerator }))
 );
 const DailyNakshatraArticle = lazy(() =>
   import('./components/DailyNakshatraArticle').then((m) => ({ default: m.DailyNakshatraArticle }))
@@ -100,6 +104,7 @@ const SectionLoader: React.FC<{ minHeight?: string }> = ({ minHeight = 'min-h-[2
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
   panchangam: '/panchangam',
+  jathakam: '/mee-jatakam',
   awards: '/awards',
   services: '/services',
   about: '/about',
@@ -143,6 +148,15 @@ export function resolveTabFromLocation(): NavTab {
   const hash = window.location.hash.toLowerCase();
 
   if (
+    pathname === '/mee-jatakam' ||
+    pathname.endsWith('/mee-jatakam') ||
+    pathname === '/janma-kundali' ||
+    hash === '#jathakam' ||
+    hash === '#mee-jatakam'
+  ) {
+    return 'jathakam';
+  }
+  if (
     pathname === '/panchangam' ||
     pathname.endsWith('/panchangam') ||
     pathname === '/neti-panchangam' ||
@@ -151,7 +165,6 @@ export function resolveTabFromLocation(): NavTab {
     pathname === '/gowri-panchangam' ||
     pathname === '/tarabalam-chandrabalam' ||
     pathname === '/nitya-sankalpam' ||
-    pathname === '/janma-kundali' ||
     pathname === '/telugu-baby-names' ||
     pathname === '/vastu-shastra-telugu' ||
     pathname === '/vivaha-pontana' ||
@@ -234,7 +247,7 @@ function AppContent() {
   const [selectedPoojaForBooking, setSelectedPoojaForBooking] = useState<PoojaService | null>(null);
   const { t, tr, language } = useLanguage();
 
-  const currentDay = WEEK_DATA.find((d) => d.id === selectedDayId) ?? WEEK_DATA[0];
+  const currentDay = getOrGenerateDayData(selectedDayId, WEEK_DATA);
 
   const handleSelectTab = useCallback((tab: NavTab) => {
     setSelectedCity(null);
@@ -270,6 +283,16 @@ function AppContent() {
 
   const handleNavigateHubSection = useCallback((section: HubSectionId, path: string) => {
     setSelectedCity(null);
+    if (section === 'kundali' || path === '/janma-kundali' || path === '/mee-jatakam') {
+      setActiveTab('jathakam');
+      if (typeof window !== 'undefined') {
+        try {
+          window.history.pushState({ tab: 'jathakam' }, '', '/mee-jatakam');
+        } catch {}
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
     setActiveTab('panchangam');
     if (path === '/gowri-panchangam') {
       setPanchangamSubTab('gowri-hora');
@@ -513,6 +536,7 @@ function AppContent() {
     const titlesTelugu: Record<NavTab, string> = {
       home: `Neti Panchangam (${currentDay.teediVaram}) | నేటి తెలుగు పంచాంగం, తిథి (${cleanTithi}), నక్షత్రం (${cleanNakshatra}), రాశి ఫలాలు — telugujyothisham.com`,
       panchangam: `నేటి పంచాంగం (${currentDay.teediVaram}) | Today Panchangam in Telugu - తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra} — telugujyothisham.com`,
+      jathakam: 'మీ జాతకం తెలుసుకోండి | ఉచిత తెలుగు జన్మ కుండలి & సంపూర్ణ బృహత్ జాతక ఫలితాల గ్రంథం — telugujyothisham.com',
       awards: 'పొందిన సత్కారాలు & పురస్కారాలు | శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (telugujyothisham.com/awards)',
       services: 'వైదిక పూజా సేవలు & హోమాలు | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/services)',
       about: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి గురించి | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com/about)',
@@ -522,6 +546,7 @@ function AppContent() {
     const titlesEnglish: Record<NavTab, string> = {
       home: `Neti Panchangam (${currentDay.teediVaram}) | Today Panchangam in Telugu - ${cleanTithi}, ${cleanNakshatra} — telugujyothisham.com`,
       panchangam: `Today Panchangam in Telugu (${currentDay.teediVaram}) - ఈ రోజు పంచాంగం: ${cleanTithi}, ${cleanNakshatra} — telugujyothisham.com`,
+      jathakam: 'Know Your Horoscope | Free Telugu Janma Kundali & Brihat Jathaka Grantham — telugujyothisham.com',
       awards: 'Vedic Honors & Awards | Sri Jallavaram Sai Dheeraj Sharma — telugujyothisham.com/awards',
       services: 'Vedic Homams & Rituals | Sri Chandi Homam, Lakshmi Kubera Yagam — telugujyothisham.com/services',
       about: 'About Sri Jallavaram Sai Dheeraj Sharma | Renowned Vedic Astrologer — telugujyothisham.com/about',
@@ -531,6 +556,7 @@ function AppContent() {
     const descriptionsTelugu: Record<NavTab, string> = {
       home: `${currentDay.teediVaram} నేటి పంచాంగం (Neti Panchangam / Today Panchangam in Telugu): తిథి ${currentDay.panchanga.tithi}, నక్షత్రం ${currentDay.panchanga.nakshatram}, రాహుకాలం ${currentDay.ashubha.rahukalam}, అమృత ఘడియలు ${currentDay.shubha.amrutha}, గౌరీ పంచాంగం, జన్మ కుండలి & 12 రాశుల దిన ఫలాలు.`,
       panchangam: `${currentDay.teediVaram} ఈ రోజు తెలుగు పంచాంగం (Today Panchangam in Telugu): తిథి ${currentDay.panchanga.tithi}, నక్షత్రం ${currentDay.panchanga.nakshatram}, రాహుకాలం ${currentDay.ashubha.rahukalam}, గౌరీ పంచాంగం, హోరా చక్రం, తారాబలం, నిత్య సంకల్పం & 12 రాశుల దిన ఫలాలు.`,
+      jathakam: 'మీ పుట్టిన తేదీ, సమయం, ప్రాంతం ఆధారంగా ఉచిత తెలుగు జన్మ కుండలి (D1 రాశి చక్రం, D9 నవాంశ చక్రం), ద్వాదశ స్థానాల ఫలితాలు, 120 ఏళ్ల వింశోత్తరి మహాదశ మరియు సంపూర్ణ బృహత్ జాతక మహాగ్రంథం.',
       awards: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు పొందిన జ్యోతిష సత్కారాలు, బిరుదులు మరియు పూజా పురస్కారాల వివరాలు.',
       services: 'శ్రీ చండీ హోమం, లక్ష్మీ గణపతి హోమం, సుదర్శన హోమం, వివాహ, గృహప్రవేశ క్రతువులు శాస్త్రోక్తంగా నిర్వహించబడును.',
       about: 'జ్యోతిష పండితులు, స్మార్త వేద విద్వాంసులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్యాత్మిక ప్రస్థానం మరియు అనుభవం.',
@@ -540,6 +566,7 @@ function AppContent() {
     const descriptionsEnglish: Record<NavTab, string> = {
       home: `Today Panchangam in Telugu (${currentDay.teediVaram} / Neti Panchangam): Tithi ${currentDay.panchanga.tithi}, Nakshatram ${currentDay.panchanga.nakshatram}, Rahu Kalam ${currentDay.ashubha.rahukalam}, Amrutha Gadiyalu, Free Janma Kundali & Daily Horoscope.`,
       panchangam: `Today Panchangam in Telugu (${currentDay.teediVaram}): Tithi ${currentDay.panchanga.tithi}, Nakshatram ${currentDay.panchanga.nakshatram}, Rahu Kalam ${currentDay.ashubha.rahukalam}, Gowri Panchangam, Hora Timings, Tarabalam & 12 Rashi Phalalu.`,
+      jathakam: 'Generate your free Telugu Janma Kundali (D1 Rashi, D9 Navamsha), 12-house predictions, 96-year Bhrigu Chakra progression, Lucky Gemstones, and comprehensive horoscope report.',
       awards: 'Prestigious Vedic awards, golden kankanam citations, and state-level felicitations conferred upon Sri Jallavaram Sai Dheeraj Sharma.',
       services: 'Authentic Vedic homams, Sri Chandi Sahitha Rudra Homam, Gruhapravesham, wedding muhurthams, and online sankalpam booking for global NRI devotees.',
       about: 'Profile and spiritual journey of renowned Vedic scholar and astrologer Sri Jallavaram Sai Dheeraj Sharma.',
@@ -666,6 +693,45 @@ function AppContent() {
           <Suspense fallback={<SectionLoader minHeight="min-h-[500px]" />}>
             <AwardsSection />
           </Suspense>
+        )}
+
+        {/* TAB: MEE JATAKAM TELUSUKONDI (మీ జాతకం తెలుసుకోండి — సంపూర్ణ బృహత్ జాతక మహాగ్రంథం) */}
+        {activeTab === 'jathakam' && (
+          <div className="space-y-10">
+            <div className="bg-gradient-to-r from-amber-950 via-[#3b1506] to-amber-950 text-white rounded-3xl p-5 sm:p-8 border-2 border-amber-500/60 shadow-lg no-print">
+              <div className="max-w-4xl space-y-2">
+                <span className="text-xs font-bold uppercase tracking-widest text-amber-300 block">
+                  {t(
+                    'శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు',
+                    'Sri Lakshmi Ganapathi Jyothishalayam · Brahmasri Jallavaram Sai Dheeraj Sharma'
+                  )}
+                </span>
+                <h1 className="text-2xl sm:text-4xl font-bold text-white leading-tight">
+                  {t(
+                    'మీ జాతకం తెలుసుకోండి — ఉచిత జన్మ కుండలి & సంపూర్ణ బృహత్ జాతక మహాగ్రంథం',
+                    'Know Your Horoscope — Free Janma Kundali & Comprehensive Vedic Predictions'
+                  )}
+                </h1>
+                <p className="text-xs sm:text-base text-amber-100/90 leading-relaxed">
+                  {t(
+                    'మీ పుట్టిన తేదీ, సమయం, ప్రాంతం ఆధారంగా దృక్సిద్ధాంత రాశి చక్రం (D1), నవాంశ చక్రం (D9), సూర్య-చంద్ర ఆత్మ-మనస్సు విశ్లేషణ, పంచభూత గ్రహ బలం, 1 నుండి 12 స్థానాల సంపూర్ణ ఫలితాలు, 96 ఏళ్ల భృగు చక్ర కాలగమనం, వింశోత్తరి మహాదశ మరియు అదృష్ట రత్న/రుద్రాక్ష పరిహారాలు.',
+                    'Enter your birth details below to generate your D1 Rashi Chart, D9 Navamsha, 8-Chapter Brihat Jathaka Grantham, all 12 House predictions, 96-year Bhrigu progression, and Vedic remedies.'
+                  )}
+                </p>
+              </div>
+            </div>
+
+            <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
+              <JanmaKundaliGenerator onOpenBooking={() => handleOpenBooking()} />
+            </Suspense>
+
+            <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
+              <VedicAstrologyHub
+                initialSection="pontana"
+                onOpenBooking={() => handleOpenBooking()}
+              />
+            </Suspense>
+          </div>
         )}
 
         {/* TAB 2: DEDICATED SUB-MENU FOR PANCHANGAM */}
