@@ -57,13 +57,13 @@ export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName }) =
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-telugu text-white tracking-tight drop-shadow-sm mb-3">
             {t(
-              'నేటి పంచాంగం (Neti Panchangam) & రాశి ఫలితాలు',
-              'Today Panchangam in Telugu (ఈ రోజు పంచాంగం - Neti Panchangam)'
+              'తెలుగు జ్యోతిషం (Telugu Jyothisham) — నేటి పంచాంగం & రాశి ఫలితాలు',
+              'Telugu Jyothisham | Today Panchangam in Telugu (ఈ రోజు పంచాంగం - Neti Panchangam)'
             )}
           </h1>
 
           <p className="text-xs sm:text-sm font-semibold text-amber-300/95 tracking-wide mb-2">
-            Today Panchangam in Telugu - ఈ రోజు పంచాంగం - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం)
+            Telugu Jyothisham (తెలుగు జ్యోతిషం) · Neti Panchangam · Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం)
           </p>
 
           <p className="text-base sm:text-lg text-amber-100/90 font-telugu leading-relaxed mb-6 max-w-2xl mx-auto">

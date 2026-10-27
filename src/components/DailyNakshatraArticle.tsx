@@ -75,6 +75,11 @@ export const DailyNakshatraArticle: React.FC<DailyNakshatraArticleProps> = ({
       document.head.appendChild(scriptTag);
     }
 
+    const grahasthitiPairs = Object.entries(currentDay.grahaStithi || {})
+      .filter(([, p]) => Boolean(p && p.trim()))
+      .map(([rashi, p]) => `${rashi}: ${p.replace(/\n+/g, ', ')}`)
+      .join('; ');
+
     const articleSchema = {
       "@context": "https://schema.org",
       "@type": "Article",
@@ -82,8 +87,8 @@ export const DailyNakshatraArticle: React.FC<DailyNakshatraArticleProps> = ({
         "@type": "WebPage",
         "@id": `https://telugujyothisham.com/panchangam#nakshatra-${activeNakshatra.slug}`
       },
-      "headline": `నేటి నక్షత్ర ఫల విశ్లేషణ: ${activeNakshatra.nameTe} నక్షత్రం - ప్రాచీన జ్యోతిష శాస్త్ర రహస్యాలు (${currentDay.teediVaram})`,
-      "description": `${activeNakshatra.nameTe} నక్షత్ర విశేషాలు, 4 పాదాల ఫలాలు, నేడు చేయదగిన శుభకార్యాలు, ప్రయాణ దిశలు, విష నాడి సమయాలు మరియు రోగ శాంతి వివరాలు.`,
+      "headline": `నేటి నక్షత్ర ఫల విశ్లేషణ: ${activeNakshatra.nameTe} నక్షత్రం - యవనాచార్యుల మతం, ముహూర్త చింతామణి & నక్షత్ర చూడామణి (${currentDay.teediVaram})`,
+      "description": `${currentDay.teediVaram} (${currentDay.isoDate}) నాటి ${activeNakshatra.nameTe} నక్షత్ర విశేషాలు (అధిపతి: ${activeNakshatra.lordTe}, దేవత: ${activeNakshatra.deityTe}), 4 పాదాల ఫలాలు, ముహూర్త చింతామణి శుభకార్యాలు (${activeNakshatra.forEverybody.auspiciousFor.slice(0, 4).join(', ')}), యవనాచార్యుల మతం, నక్షత్ర చూడామణి మరియు నేటి గ్రహస్థితి (${grahasthitiPairs}).`,
       "image": "https://telugujyothisham.com/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg",
       "author": {
         "@type": "Person",
@@ -104,9 +109,12 @@ export const DailyNakshatraArticle: React.FC<DailyNakshatraArticleProps> = ({
       "keywords": [
         `${activeNakshatra.nameTe} నక్షత్ర ఫలాలు`,
         `${activeNakshatra.nameEn} Nakshatra Phala Telugu`,
+        "యవనాచార్యుల మతం",
+        "ముహూర్త చింతామణి",
+        "నక్షత్ర చూడామణి",
         "Today Telugu Panchangam",
         "Tithi Nakshatra Phalam",
-        "Krishna Rau Jyotish",
+        "Telugu Jyothisham",
         "శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం"
       ]
     };
@@ -138,7 +146,7 @@ export const DailyNakshatraArticle: React.FC<DailyNakshatraArticleProps> = ({
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <span className="inline-flex items-center gap-1.5 bg-amber-500/20 text-amber-300 border border-amber-400/30 px-3 py-1 rounded-full text-xs font-semibold">
               <BookOpen size={13} />
-              <span>ప్రాచీన జ్యోతిష శాస్త్ర విశ్లేషణ • Classical Nakshatra &amp; Tithi Phala</span>
+              <span>యవనాచార్యుల మతం · ముహూర్త చింతామణి · నక్షత్ర చూడామణి</span>
             </span>
             <span className="inline-flex items-center gap-1 bg-amber-800/80 text-amber-100 px-2.5 py-1 rounded-full text-xs">
               <Calendar size={12} />
@@ -151,7 +159,7 @@ export const DailyNakshatraArticle: React.FC<DailyNakshatraArticleProps> = ({
             {activeNakshatra.nameTe} నక్షత్ర విశేష ఫల విశ్లేషణ
           </h2>
           <p className="text-amber-200/90 text-sm sm:text-base leading-relaxed max-w-3xl">
-            ప్రముఖ జ్యోతిష విద్వాంసులు <strong>ఎన్.ఎన్. కృష్ణారావు (N.N. Krishna Rau)</strong> గారి ప్రామాణిక గ్రంథం ఆధారంగా నేటి నక్షత్ర స్వభావం, పాద ఫలాలు, అందరికీ చేయదగిన శుభ కార్యాలు, ప్రయాణ సూచనలు మరియు యవనాచార్యుల మతం.
+            <strong>యవనాచార్యుల మతం, ముహూర్త చింతామణి మరియు నక్షత్ర చూడామణి</strong> మహర్షి ప్రమాణాల ప్రకారం నేటి నక్షత్ర స్వభావం, 4 పాదాల ఫలాలు, అందరికీ చేయదగిన శుభ కార్యాలు, ప్రయాణ సూచనలు మరియు విశేష ఫలితాలు.
           </p>
 
           {/* Author Byline */}
@@ -310,7 +318,7 @@ export const DailyNakshatraArticle: React.FC<DailyNakshatraArticleProps> = ({
 
           <div>
             <span className="text-xs font-bold text-emerald-900 uppercase tracking-wider block mb-2">
-              ఈ నక్షత్రంలో ప్రారంభించదగిన కార్యములు:
+              ముహూర్త చింతామణి &amp; నక్షత్ర చూడామణి ప్రకారం ఈ నక్షత్రంలో ప్రారంభించదగిన కార్యములు:
             </span>
             <div className="flex flex-wrap gap-2">
               {activeNakshatra.forEverybody.auspiciousFor.map((act, i) => (
@@ -388,7 +396,7 @@ export const DailyNakshatraArticle: React.FC<DailyNakshatraArticleProps> = ({
           </div>
         </div>
 
-        {/* 9. Sage Yavanacharya Classical Verdict */}
+        {/* 9. Yavanacharya Maharshi Verdict */}
         <section className="bg-amber-900 text-white p-6 sm:p-8 rounded-3xl relative overflow-hidden">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-800/80 flex items-center justify-center text-amber-300 shrink-0 mt-1">
@@ -396,10 +404,10 @@ export const DailyNakshatraArticle: React.FC<DailyNakshatraArticleProps> = ({
             </div>
             <div>
               <span className="text-xs uppercase tracking-widest text-amber-300 font-bold block mb-1">
-                ప్రాచీన ఋషి వచనం • Sage Yavanacharya Classic Verse
+                యవనాచార్యుల మతం • Yavanacharya Maharshi Siddhantam
               </span>
               <h4 className="text-lg sm:text-xl font-bold text-amber-100 mb-2">
-                శ్రీ యవనాచార్యుల మతం ప్రకారం {activeNakshatra.nameTe} నక్షత్ర ఫలం:
+                యవనాచార్యుల మతం ప్రకారం {activeNakshatra.nameTe} నక్షత్ర స్త్రీ జాతక &amp; కుటుంబ సౌభాగ్య ఫలం:
               </h4>
               <p className="text-amber-100/90 text-sm sm:text-base leading-relaxed italic font-serif">
                 "{activeNakshatra.yavanacharyaTe}"

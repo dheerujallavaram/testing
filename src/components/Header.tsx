@@ -29,7 +29,6 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
       shortLabelTe: 'మీ జాతకం తెలుసుకోండి',
       shortLabelEn: 'Your Horoscope',
       icon: Compass,
-      badge: t('100 పేజీలు', '100 Pages'),
     },
     { id: 'awards', label: t('పొందిన సత్కారాలు', 'Honors & Awards'), shortLabelTe: 'సత్కారాలు', shortLabelEn: 'Honors', icon: Award },
     { id: 'services', label: t('పూజా సేవలు', 'Pooja Services'), shortLabelTe: 'పూజా సేవలు', shortLabelEn: 'Pooja Services', icon: Sparkles },
@@ -56,17 +55,17 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
           onClick={() => handleTabClick('home')}
           className="flex items-center gap-2.5 text-left group cursor-pointer"
           title={t(
-            'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం - శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ',
-            'Sreelakshmi Ganapathi Astrology - Sri Jallavaram Sai Dheeraj Sharma'
+            'Telugu Jyothisham (తెలుగు జ్యోతిషం) — శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం - శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ',
+            'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Sreelakshmi Ganapathi Astrology - Sri Jallavaram Sai Dheeraj Sharma'
           )}
         >
           <OmEmblem className="w-9 h-9 sm:w-11 sm:h-11 group-hover:scale-105 transition-transform shrink-0 drop-shadow-md" size={44} />
           <div>
             <span className="text-sm sm:text-lg md:text-xl font-bold tracking-tight text-white block group-hover:text-amber-200 transition-colors leading-tight">
-              {t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం', 'Sreelakshmi Ganapathi Astrology')}
+              {t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం', 'Telugu Jyothisham · Sreelakshmi Ganapathi')}
             </span>
             <span className="text-[10px] sm:text-[11px] text-amber-300 font-semibold block">
-              {t('శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు', 'Sri Jallavaram Sai Dheeraj Sharma Garu')}
+              {t('తెలుగు జ్యోతిషం (Telugu Jyothisham) · శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు', 'Telugu Jyothisham · Sri Jallavaram Sai Dheeraj Sharma Garu')}
             </span>
           </div>
         </button>
@@ -158,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
                 ? 'bg-gradient-to-r from-amber-300 via-amber-400 to-amber-300 text-amber-950 border-white shadow-md ring-2 ring-amber-300/60'
                 : 'bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-400 text-amber-950 border-amber-300 shadow-sm'
             }`}
-            title={t('మీ జాతకం తెలుసుకోండి (100-పేజీల బృహత్ జాతక గ్రంథం)', 'Know Your Horoscope (100-Page Report)')}
+            title={t('మీ జాతకం తెలుసుకోండి (ఉచిత జన్మ కుండలి & సంపూర్ణ జాతక ఫలితాలు)', 'Know Your Horoscope (Free Janma Kundali & Report)')}
           >
             <Compass size={15} className="text-amber-950 shrink-0" />
             <span>{t('మీ జాతకం తెలుసుకోండి', 'Know Your Horoscope')}</span>

@@ -290,7 +290,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
 <html lang="te">
 <head>
   <meta charset="UTF-8" />
-  <title>${name} - సంపూర్ణ బృహత్ జాతక మహాగ్రంథం | శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం</title>
+  <title>${name} - సంపూర్ణ జాతక ఫలితాల నివేదిక | శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; }
@@ -382,7 +382,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
 <body>
   <div class="doc-container">
     <div class="no-print-bar" style="background:#451a03;color:#fff;padding:12px 18px;border-radius:10px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;">
-      <span style="font-weight:bold;">🖨️ ${name} గారి సంపూర్ణ బృహత్ జాతక మహాగ్రంథం (Print Ready)</span>
+      <span style="font-weight:bold;">🖨️ ${name} గారి సంపూర్ణ జాతక ఫలితాల నివేదిక (Print Ready)</span>
       <button onclick="window.print()" style="background:#f59e0b;color:#451a03;border:none;padding:8px 16px;border-radius:8px;font-weight:bold;cursor:pointer;font-size:14px;">
         🖨️ ఇప్పుడే ప్రింట్ / PDF సేవ్ చేయండి (Print)
       </button>
@@ -390,7 +390,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
 
     <div class="header-box">
       <div style="font-size:13px;font-weight:bold;color:#065f46;">శ్రీ గణాధిపతయే నమః · శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · దృక్సిద్ధాంత గణితం</div>
-      <h1>${name} గారి సంపూర్ణ బృహత్ జాతక మహాగ్రంథం</h1>
+      <h1>${name} గారి సంపూర్ణ జాతక ఫలితాల నివేదిక</h1>
       <h2>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (వైదిక జ్యోతిష్య & స్మార్త పురోహితులు · +91 89779 86166)</h2>
     </div>
 
@@ -481,7 +481,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
       )
       .join('')}
 
-    <div class="section-title">అధ్యాయం 4: భృగు చక్ర పద్ధతి, నాడీ జ్యోతిష్య సూత్రాలు & రాజయోగాలు</div>
+    <div class="section-title">అధ్యాయం 4: కాలచక్ర గమన సూత్రాలు, విశేష జ్యోతిష్య నియమాలు & రాజయోగాలు</div>
     ${predictions.specialSutras
       .map(
         (sutra) => `<div class="card">
@@ -515,7 +515,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
       )
       .join('')}
 
-    <div class="section-title">అధ్యాయం 7: భృగు చక్ర కాలగమనం (1 నుండి 96 ఏళ్ల వయస్సు వరకు దశాబ్ద ఫలితాలు)</div>
+    <div class="section-title">అధ్యాయం 7: ద్వాదశ వర్ష కాలచక్ర గమనం (1 నుండి 96 ఏళ్ల వయస్సు వరకు దశాబ్ద ఫలితాలు)</div>
     ${predictions.bhriguCycles
       .map(
         (c) => `<div class="card">
@@ -607,7 +607,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
     const link = document.createElement('a');
     const safeName = name.trim().replace(/\s+/g, '_') || 'Janma_Kundali';
     link.href = url;
-    link.download = `${safeName}_Brihat_Jathaka_Grantham.html`;
+    link.download = `${safeName}_Sampoorna_Jathaka_Phalithalu.html`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -796,8 +796,8 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
             </span>
             <h3 className="text-xl sm:text-2xl font-bold text-amber-950">
               {t(
-                'మీ జాతకం తెలుసుకోండి — ఉచిత జన్మ కుండలి & సంపూర్ణ బృహత్ జాతక మహాగ్రంథం',
-                'Know Your Horoscope — Free Janma Kundali & Comprehensive Brihat Jathaka Grantham'
+                'మీ జాతకం తెలుసుకోండి — ఉచిత జన్మ కుండలి & సంపూర్ణ జాతక ఫలితాలు',
+                'Know Your Horoscope — Free Janma Kundali & Comprehensive Horoscope Predictions'
               )}
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 mt-1">
@@ -1132,24 +1132,24 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
               <BookOpen size={14} className="text-amber-800 shrink-0" />
               <span>
                 {t(
-                  'శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · సంపూర్ణ బృహత్ జాతక మహాగ్రంథం',
-                  'Sri Lakshmi Ganapathi Jyothishalayam · Brihat Jathaka Grantham'
+                  'శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · సంపూర్ణ బృహత్ జాతక గ్రంథం',
+                  'Sri Lakshmi Ganapathi Jyothishalayam · Complete Brihat Jataka Grantham'
                 )}
               </span>
               <span aria-hidden="true">·</span>
               <span className="text-emerald-800">
-                {t('8 సమగ్ర అధ్యాయాలు · ద్వాదశ స్థానాలు · 96 ఏళ్ల కాలచక్రం', '8 Comprehensive Chapters · All 12 Houses · 96-Year Lifecycle')}
+                {t('8 సమగ్ర విభాగాలు · ద్వాదశ స్థానాలు · 96 ఏళ్ల భృగు చక్ర పద్ధతి', '8 Comprehensive Sections · All 12 Houses · 96-Year Bhrigu Chakra Paddhati')}
               </span>
             </div>
             <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-amber-950 leading-snug">
               {t(
-                `${name} గారి సంపూర్ణ బృహత్ జాతక ఫలితాల మహాగ్రంథం`,
-                `Complete Vedic Horoscope Grantham for ${name}`
+                `${name} గారి సంపూర్ణ బృహత్ జాతక గ్రంథం (జాతక ఫలితాల నివేదిక)`,
+                `Complete Brihat Jataka Horoscope Report for ${name}`
               )}
             </h4>
             <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
               {t(
-                `మీ జన్మ లగ్నం (${chartData.lagna.te}), సూర్య రాశి (${predictions.sunMoon144.sunRashiTe}), జన్మ రాశి (${chartData.rashi.te}), జన్మ నక్షత్రం (${chartData.nakshatraName} - ${chartData.pada}వ పాదం) మరియు ద్వాదశ స్థాన గ్రహ స్థితి ఆధారంగా రూపొందించబడిన శాస్త్రోక్త జాతక గ్రంథం:`,
+                `మీ జన్మ లగ్నం (${chartData.lagna.te}), సూర్య రాశి (${predictions.sunMoon144.sunRashiTe}), జన్మ రాశి (${chartData.rashi.te}), జన్మ నక్షత్రం (${chartData.nakshatraName} - ${chartData.pada}వ పాదం) మరియు ద్వాదశ స్థాన గ్రహ స్థితి ఆధారంగా రూపొందించబడిన శాస్త్రోక్త జాతక విశ్లేషణ:`,
                 `Prepared from your Ascendant (${chartData.lagna.en}), Sun Sign (${predictions.sunMoon144.sunRashiEn}), Moon Sign (${chartData.rashi.en}), Nakshatra (${chartData.nakshatraName} Pada ${chartData.pada}), and all 12 House placements:`
               )}
             </p>
@@ -1168,8 +1168,8 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
               <Layers size={15} />
               <span>
                 {showFullGrantham
-                  ? t('📖 పూర్తి గ్రంథ వీక్షణ (Active)', '📖 Full Report View (Active)')
-                  : t('📖 పూర్తి జాతక గ్రంథం తెరవండి', '📖 View Full Horoscope Report')}
+                  ? t('📖 పూర్తి బృహత్ జాతక గ్రంథం వీక్షణ (Active)', '📖 Full Report View (Active)')
+                  : t('📖 పూర్తి బృహత్ జాతక గ్రంథం తెరవండి', '📖 View Full Horoscope Report')}
               </span>
             </button>
 
@@ -1236,7 +1236,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
           >
             <Scale size={15} className="shrink-0" />
             <span className="leading-snug tracking-wide">
-              {t('3. భృగు చక్రం & రాజయోగాలు', '3. Bhrigu Chakra & Raja Yogas')}
+              {t('3. భృగు చక్ర పద్ధతి & రాజయోగాలు', '3. Bhrigu Chakra & Raja Yogas')}
             </span>
           </button>
 
@@ -1251,7 +1251,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
           >
             <CompassIcon size={15} className="shrink-0" />
             <span className="leading-snug tracking-wide">
-              {t('4. ద్వాదశ స్థానాల & పరిహార గ్రంథం', '4. 12 Houses & Vedic Remedies')}
+              {t('4. ద్వాదశ స్థానాలు & పరిహారాలు', '4. 12 Houses & Vedic Remedies')}
             </span>
           </button>
         </div>
@@ -1445,12 +1445,12 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
           <div id="grantham-section-sutras" className="space-y-4 pt-4 border-t border-amber-200 scroll-mt-24">
             <div className="bg-amber-50/80 rounded-2xl p-4 sm:p-5 border border-amber-200">
               <div className="text-xs font-bold text-amber-800 mb-1">
-                {t('అధ్యాయం 4 · భృగు చక్ర పద్ధతి, నాడీ జ్యోతిష్య సూత్రాలు & రాజయోగాలు', 'Chapter 4 · Bhrigu Chakra, Nadi Sutras & Raja Yogas')}
+                {t('అధ్యాయం 4 · భృగు చక్ర పద్ధతి, విశేష జ్యోతిష్య నియమాలు & రాజయోగాలు', 'Chapter 4 · Bhrigu Chakra Paddhati, Special Sutras & Raja Yogas')}
               </div>
               <h5 className="text-lg sm:text-xl font-bold text-amber-950">
                 {t(
-                  'భృగు చక్ర పద్ధతి, గజకేసరి/బుధాదిత్య/ధర్మ-కర్మాధిపతి యోగాలు & నాడీ రహస్య విశ్లేషణ',
-                  'Bhrigu Chakra Paddhati, Raja Yogas & Classical Nadi Predictive Rules'
+                  'భృగు చక్ర పద్ధతి జన్మ మాస కేంద్ర స్థానం, గజకేసరి/బుధాదిత్య/ధర్మ-కర్మాధిపతి యోగాలు & విశేష ఫల సూత్రాలు',
+                  'Bhrigu Chakra Paddhati Birth Month Focus House, Raja Yogas & Special Predictive Rules'
                 )}
               </h5>
               <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
@@ -1610,16 +1610,16 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
               </div>
             </div>
 
-            {/* CHAPTER 7: Bhrigu Chakra 1 to 96 Years Life Progression */}
+            {/* CHAPTER 7: 1 to 96 Years Life Progression */}
             <div className="space-y-4 pt-4 border-t border-amber-200">
               <div className="bg-amber-50/80 rounded-2xl p-4 sm:p-5 border border-amber-200">
                 <div className="text-xs font-bold text-amber-800 mb-1">
-                  {t('అధ్యాయం 7 · భృగు చక్ర కాలగమనం (1 నుండి 96 ఏళ్ల వయస్సు వరకు దశాబ్ద ఫలితాలు)', 'Chapter 7 · Bhrigu Chakra 1-to-96 Years Life Progression')}
+                  {t('అధ్యాయం 7 · భృగు చక్ర పద్ధతి — ద్వాదశ వర్ష కాలచక్ర గమనం (1 నుండి 96 ఏళ్ల వయస్సు వరకు దశాబ్ద ఫలితాలు)', 'Chapter 7 · Bhrigu Chakra Paddhati — 12-Year Life Progression Cycles (Ages 1 to 96)')}
                 </div>
                 <h5 className="text-lg sm:text-xl font-bold text-amber-950">
                   {t(
-                    '1 నుండి 96 ఏళ్ల వయస్సు వరకు ప్రతి 12 ఏళ్ల కాలచక్రం & జీవిత కీలక మలుపు సంవత్సరాలు',
-                    '12-Year Bhrigu Chakra Life Cycles & Exact Milestone Years (Ages 1 to 96)'
+                    'భృగు చక్ర పద్ధతి ప్రకారం 1 నుండి 96 ఏళ్ల వయస్సు వరకు ప్రతి 12 ఏళ్ల కాలచక్రం & జీవిత కీలక మలుపు సంవత్సరాలు',
+                    'Bhrigu Chakra Paddhati 12-Year Life Progression Cycles & Exact Milestone Years (Ages 1 to 96)'
                   )}
                 </h5>
               </div>
@@ -1724,13 +1724,13 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
                   <div className="bg-emerald-900/80 rounded-2xl p-4 border border-emerald-600/80 space-y-1.5 flex flex-col justify-between">
                     <div>
                       <span className="text-xs text-emerald-300 font-bold block">
-                        🕉️ {t('పీఠాధిపతి ఆశీర్వచనం', 'Siddhanti Blessings')}
+                        🕉️ {t('శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం', 'Sri Lakshmi Ganapathi Jyothishalayam')}
                       </span>
                       <strong className="text-sm text-white block mt-0.5">
                         {t('బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు', 'Brahmasri Jallavaram Sai Dheeraj Sharma')}
                       </strong>
                       <p className="text-xs text-emerald-100 mt-1">
-                        {t('శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం', 'Sri Lakshmi Ganapathi Jyothishalayam')}
+                        {t('తెలుగు జ్యోతిషం (Telugu Jyothisham)', 'Telugu Jyothisham · Vedic Astrology')}
                       </p>
                     </div>
                   </div>
@@ -1821,10 +1821,10 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
             <div className="flex items-start justify-between gap-3 border-b border-amber-200 pb-4">
               <div>
                 <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider block">
-                  {t('శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · జాతక గ్రంథం ప్రింట్ & సేవ్', 'Print & Download Horoscope Grantham')}
+                  {t('శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · జాతక నివేదిక ప్రింట్ & సేవ్', 'Print & Download Horoscope Report')}
                 </span>
                 <h4 className="text-lg sm:text-2xl font-bold text-amber-950 mt-0.5">
-                  {t(`${name} గారి సంపూర్ణ బృహత్ జాతక మహాగ్రంథం సిద్ధంగా ఉంది`, `${name}'s Complete Horoscope Report is Ready`)}
+                  {t(`${name} గారి సంపూర్ణ జాతక ఫలితాల నివేదిక సిద్ధంగా ఉంది`, `${name}'s Complete Horoscope Report is Ready`)}
                 </h4>
               </div>
               <button
@@ -1839,7 +1839,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
 
             <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
               {t(
-                'మీ మొబైల్ లేదా కంప్యూటర్‌లో జాతక గ్రంథాన్ని నేరుగా ప్రింట్ చేయడానికి లేదా పూర్తి జాతక ఫైల్‌ను / కుండలి చార్ట్ ఇమేజ్‌ను మీ ఫోన్‌లో సేవ్ చేసుకోవడానికి క్రింది బటన్లను ఉపయోగించండి:',
+                'మీ మొబైల్ లేదా కంప్యూటర్‌లో జాతక ఫలితాలను నేరుగా ప్రింట్ చేయడానికి లేదా పూర్తి జాతక ఫైల్‌ను / కుండలి చార్ట్ ఇమేజ్‌ను మీ ఫోన్‌లో సేవ్ చేసుకోవడానికి క్రింది బటన్లను ఉపయోగించండి:',
                 'Use the options below to print directly, download the complete printable horoscope document, or save the high-resolution Janma Kundali chart image to your phone/computer:'
               )}
             </p>
@@ -1852,12 +1852,12 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
               >
                 <div className="flex items-center gap-2 font-bold text-sm sm:text-base text-amber-200">
                   <Download size={18} />
-                  <span>{t('1. పూర్తి జాతక గ్రంథం డౌన్‌లోడ్', '1. Download Full Horoscope File')}</span>
+                  <span>{t('1. పూర్తి జాతక ఫైల్ డౌన్‌లోడ్', '1. Download Full Horoscope File')}</span>
                 </div>
                 <span className="text-xs text-amber-100/90 leading-relaxed">
                   {t(
                     '8 అధ్యాయాలు, D1/D9 చక్రాలు, 12 స్థానాల ఫలితాలతో కూడిన ప్రింట్ ఫైల్ (.html) మీ ఫోన్/కంప్యూటర్‌లోకి డౌన్‌లోడ్ అవుతుంది.',
-                    'Downloads the complete 8-chapter printable horoscope book to your device.'
+                    'Downloads the complete 8-chapter printable horoscope report to your device.'
                   )}
                 </span>
               </button>
@@ -1885,7 +1885,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
                 <strong>{t('నేరుగా ప్రింటర్ ద్వారా ప్రింట్ చేయాలంటే:', 'Direct Browser Print Dialog:')}</strong>
                 <p className="text-slate-600 mt-0.5">
                   {t(
-                    'ప్రింట్ డైలాగ్ తెరుచుకోకపోతే పైన ఉన్న "పూర్తి జాతక గ్రంథం డౌన్‌లోడ్" బటన్ నొక్కి ఆ ఫైల్ ఓపెన్ చేసి ప్రింట్ తీసుకోవచ్చు.',
+                    'ప్రింట్ డైలాగ్ తెరుచుకోకపోతే పైన ఉన్న "పూర్తి జాతక ఫైల్ డౌన్‌లోడ్" బటన్ నొక్కి ఆ ఫైల్ ఓపెన్ చేసి ప్రింట్ తీసుకోవచ్చు.',
                     'If your browser blocks popups, download the file above and open it to print.'
                   )}
                 </p>

@@ -22,7 +22,11 @@ export const AboutGurujiSection: React.FC<AboutGurujiSectionProps> = ({ onOpenBo
             <div className="w-full h-full rounded-full overflow-hidden border border-amber-300 bg-amber-950">
               <img
                 src="/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg"
-                alt="శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు"
+                alt="Telugu Jyothisham (తెలుగు జ్యోతిషం) & Telugu Panchangam (తెలుగు పంచాంగం) — శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం)"
+                width={192}
+                height={192}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover object-top"
               />
             </div>
@@ -76,7 +80,7 @@ export const AboutGurujiSection: React.FC<AboutGurujiSectionProps> = ({ onOpenBo
           </h3>
           <p className="text-slate-600 text-sm leading-relaxed">
             {t(
-              'తరతరాల పూర్వీకుల వేద సంస్కృతిని పుణికిపుచ్చుకుని, ప్రామాణిక గ్రంథాల అధ్యయనంతో సమస్త క్రతువులను శాస్త్రోక్తంగా నిర్వహించే గురుపీఠం.',
+              'తరతరాల పూర్వీకుల వేద సంస్కృతిని పుణికిపుచ్చుకుని, ప్రామాణిక గ్రంథాల అధ్యయనంతో సమస్త క్రతువులను శాస్త్రోక్తంగా నిర్వహించే సనాతన వైదిక సంప్రదాయం.',
               'Steeped in an unbroken ancestral lineage of Rigvedic & Smartha heritage, strictly adhering to classical Shastra treatises and authentic ritual conduct.'
             )}
           </p>

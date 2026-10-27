@@ -1,7 +1,7 @@
 {
-  "name": "తెలుగు పంచాంగం & రాశి ఫలితాలు - telugujyothisham.com",
-  "short_name": "తెలుగు పంచాంగం",
-  "description": "నిత్య తెలుగు పంచాంగం, తిథి, నక్షత్రం, యోగం, కరణం, వర్జ్యం, రాహుకాలం, 12 రాశుల నవ గ్రహ గోచార దిన ఫలాలు మరియు శుభ ముహూర్తాలు.",
+  "name": "Telugu Jyothisham (తెలుగు జ్యోతిషం) - పంచాంగం & జన్మ కుండలి",
+  "short_name": "Telugu Jyothisham",
+  "description": "తెలుగు జ్యోతిషం (Telugu Jyothisham) — నిత్య తెలుగు పంచాంగం, తిథి, నక్షత్రం, రాహుకాలం, 12 రాశుల దిన ఫలాలు మరియు ఉచిత జన్మ కుండలి.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#451a03",

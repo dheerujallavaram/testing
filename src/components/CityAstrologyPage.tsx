@@ -5,27 +5,34 @@ import {
   Clock, Flame, Star, Compass
 } from 'lucide-react';
 import { CitySEOData } from '../data/citiesData';
+import { DayData } from '../types/panchangam';
 import { useLanguage } from '../context/LanguageContext';
+import { SEOContentManager, LocalizedPageIntent } from './SEOContentManager';
 
 export interface CityAstrologyPageProps {
   city: CitySEOData;
+  currentDay?: DayData;
+  intent?: LocalizedPageIntent;
   onOpenBooking?: (serviceName?: string) => void;
   onNavigateHome?: () => void;
   onNavigatePanchangam?: () => void;
-  onSelectCity?: (citySlug: string) => void;
+  onSelectCity?: (citySlug: string, routePath?: string) => void;
 }
 
 export const CityAstrologyPage: React.FC<CityAstrologyPageProps> = ({
   city,
+  currentDay,
+  intent = 'astrologer-purohit',
   onOpenBooking,
   onNavigateHome,
   onNavigatePanchangam,
+  onSelectCity,
 }) => {
   const { t } = useLanguage();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const isUSA = city.regionType === 'USA';
-  const canonicalUrl = `https://telugujyothisham.com/telugu-astrologer-in-${city.slug}`;
+  const canonicalUrl = `https://www.telugujyothisham.com/telugu-astrologer-in-${city.slug}`;
 
   // WhatsApp Pre-filled message tailored to the city
   const whatsappText = encodeURIComponent(
@@ -549,7 +556,17 @@ export const CityAstrologyPage: React.FC<CityAstrologyPageProps> = ({
           </div>
         </section>
 
-        {/* 6. Discreet Spiritual Consultation Note */}
+        {/* 6. SEOContentManager: Temple Proximity, Local Coordinates & 500+ Localized City Routes */}
+        <SEOContentManager
+          city={city}
+          currentDay={currentDay}
+          intent={intent}
+          onSelectCityRoute={(slug, routePath) => onSelectCity && onSelectCity(slug, routePath)}
+          onNavigatePanchangam={onNavigatePanchangam}
+          onOpenBooking={onOpenBooking}
+        />
+
+        {/* 7. Discreet Spiritual Consultation Note */}
         <section className="mt-14 pt-8 border-t border-amber-200 text-center">
           <p className="text-sm font-semibold text-amber-900 mb-1">
             {city.name} ({city.teluguName}) మరియు పరిసర ప్రాంతాల భక్తులకు నిరంతర ఆధ్యాత్మిక తోడ్పాటు

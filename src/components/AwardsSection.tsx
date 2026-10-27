@@ -17,6 +17,18 @@ export interface AwardItem {
 
 export const AWARDS_DATA: AwardItem[] = [
   {
+    id: 'jyotish-shiromani-tirupati-certificate',
+    title: 'జ్యోతిష శిరోమణి పురస్కార ప్రశంసా పత్రం (తిరుపతి మహతి ఆడిటోరియం)',
+    englishTitle: 'Jyotish Shiromani Official Citation — Tirupati Mahati Auditorium',
+    category: 'certificate',
+    image: '/assets/aistudio/photo_6303093205754826521_y_89d76f49.jpg',
+    date: '11 డిసెంబర్ 2024',
+    venue: 'మహతి ఆడిటోరియం, తిరుమల తిరుపతి దేవస్థానములు, తిరుపతి',
+    presentedBy: 'NSLive Astro & CVL Akshara Foundation (ISO 9001:2015)',
+    description: 'జ్యోతిష శాస్త్రంలో విశేష అనుభవం మరియు పాండిత్యానికి గుర్తింపుగా తిరుపతి మహతి ఆడిటోరియంలో జరిగిన అవార్డు ప్రదానోత్సవ వేడుకలో బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారికి ప్రతిష్టాత్మక "జ్యోతిష శిరోమణి (Jyotish Shiromani)" బిరుదు ప్రదానం చేయబడింది.',
+    highlights: ['జ్యోతిష శిరోమణి అధికారిక బిరుదు', 'తిరుపతి మహతి ఆడిటోరియం వేడుక', 'ISO 9001:2015 గుర్తింపు సంస్థ'],
+  },
+  {
     id: 'suvarna-kankanam-stage-presentation',
     title: 'సువర్ణ కంకణ పురస్కార వేదిక సత్కారం (విజయవాడ)',
     englishTitle: 'Suvarna Kankanam Stage Presentation at Vijayawada',
@@ -123,6 +135,18 @@ export const AWARDS_DATA: AwardItem[] = [
     presentedBy: 'పురస్కార సమితి',
     description: 'స్వర్ణ జ్ఞాపిక మరియు శాలువా ధరించి పురస్కార స్వీకరణానంతరం శ్రీ ధీరజ్ శర్మ గారి శుభప్రదమైన చిత్రం.',
     highlights: ['స్వర్ణ ట్రోఫీ స్వీకరణ'],
+  },
+  {
+    id: 'sacred-agnihotra-divine-flame',
+    title: 'సనాతన వైదిక అగ్నిహోత్ర & హోమ సంప్రదాయం (శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం)',
+    englishTitle: 'Sacred Vedic Agnihotra & Homam Tradition',
+    category: 'yagnam',
+    image: '/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg',
+    date: 'నిరంతర వైదిక అగ్ని ఆరాధన',
+    venue: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం యాగశాల',
+    presentedBy: 'వైదిక గురుపరంపర',
+    description: 'పవిత్ర అగ్నిహోత్ర ఆరాధన మరియు వేద మంత్రోచ్ఛారణతో సమస్త గ్రహ దోష నివారణ, ఆయురారోగ్య ఐశ్వర్య సిద్ధి కొరకు నిర్వహించే వైదిక హోమ సంప్రదాయం.',
+    highlights: ['వైదిక అగ్నిహోత్ర ఆరాధన', 'గ్రహ దోష నివారణ హోమం', 'సనాతన గురుకుల సంప్రదాయం'],
   },
   {
     id: 'sacred-yagnam-homam',
@@ -258,9 +282,10 @@ export const AwardsSection: React.FC = () => {
             >
               <img
                 src={item.image}
-                alt={item.title}
+                alt={`${item.title} — Telugu Jyothisham (తెలుగు జ్యోతిషం) & Telugu Panchangam (తెలుగు పంచాంగం) - శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ`}
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
 
@@ -348,8 +373,10 @@ export const AwardsSection: React.FC = () => {
               <div className="relative rounded-2xl overflow-hidden bg-slate-950 flex items-center justify-center max-h-[60vh] border border-slate-800">
                 <img
                   src={selectedAward.image}
-                  alt={selectedAward.title}
+                  alt={`${selectedAward.title} — Telugu Jyothisham (తెలుగు జ్యోతిషం) & Panchangam - శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం`}
                   className="w-full h-auto max-h-[60vh] object-contain"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
 

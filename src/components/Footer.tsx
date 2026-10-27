@@ -55,22 +55,22 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSecti
           <div>
             <h4 className="text-xl font-bold font-telugu text-white flex items-center gap-2.5 mb-3">
               <OmEmblem className="w-8 h-8 shrink-0" size={32} />
-              <span>{t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం', 'Sreelakshmi Ganapathi Astrology Centre')}</span>
+              <span>{t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (Telugu Jyothisham)', 'Telugu Jyothisham · Sreelakshmi Ganapathi Astrology')}</span>
             </h4>
             <p className="text-sm font-telugu text-amber-200/80 leading-relaxed mb-3">
               {t(
-                'వేద పండితులు, జ్యోతిష నిపుణులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి నేతృత్వంలో ప్రాచీన వేద గణిత సిద్ధాంతాల ప్రకారం రోజువారీ పంచాంగం మరియు జ్యోతిష సేవలు అందించబడును.',
-                'Led by Vedic Scholar and Astrologer Sri Jallavaram Sai Dheeraj Sharma, offering daily authentic Vedic Panchangam and sacred ritual services calculated per traditional astronomical principles.'
+                'తెలుగు జ్యోతిషం (Telugu Jyothisham) అనేది వేద జ్యోతిషశాస్త్రం ఆధారంగా పంచాంగం, రాశి ఫలాలు మరియు జన్మ కుండలి వివరాలను అందించే విధానం. వేద పండితులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి నేతృత్వంలో దృక్సిద్ధాంత పంచాంగం మరియు జ్యోతిష సేవలు అందించబడును.',
+                'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Led by Vedic Scholar and Astrologer Sri Jallavaram Sai Dheeraj Sharma, offering daily authentic Vedic Panchangam, Rashi Phalalu, Free Janma Kundali, and sacred ritual services.'
               )}
             </p>
             <a
-              href="https://telugujyothisham.com"
+              href="https://www.telugujyothisham.com"
               className="inline-block text-xs font-mono font-bold text-amber-300 hover:text-white underline underline-offset-4 mb-2"
             >
-              www.telugujyothisham.com
+              Telugu Jyothisham — www.telugujyothisham.com
             </a>
             <p className="text-xs font-display tracking-widest uppercase text-amber-400">
-              Vedic Almanac &amp; Astrological Research
+              Telugu Jyothisham · Vedic Almanac &amp; Astrological Research
             </p>
           </div>
 

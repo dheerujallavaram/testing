@@ -166,7 +166,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                 <div className="w-full h-full rounded-full bg-amber-950 overflow-hidden border-2 border-amber-300/80 relative shadow-inner">
                   <img
                     src="/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg"
-                    alt="శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు"
+                    alt="Telugu Jyothisham (తెలుగు జ్యోతిషం) & Telugu Panchangam (తెలుగు పంచాంగం) — శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం)"
                     width={208}
                     height={208}
                     fetchPriority="high"
@@ -184,7 +184,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             {/* Profile Intro & Title */}
             <div className="flex-1 space-y-4">
               <div className="inline-block px-3 py-1 bg-amber-800/80 border border-amber-600/40 rounded-lg text-amber-300 text-xs font-semibold">
-                {t('స్మార్త వైదిక పండితులు & జ్యోతిష్యులు', 'Smartha Vedic Scholar & Astrologer')}
+                {t('తెలుగు జ్యోతిషం (Telugu Jyothisham) · Telugu Astrology · Telugu Panchangam · Telugu Jathakam', 'Telugu Jyothisham · Telugu Astrology, Horoscope & Panchangam')}
               </div>
 
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight">
@@ -193,8 +193,8 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
 
               <p className="text-base sm:text-lg text-amber-200/90 font-medium leading-relaxed max-w-2xl">
                 {t(
-                  'శాస్త్రోక్త పద్ధతిలో మీ కుటుంబ క్షేమం, వంశాభివృద్ధి, వివాహ, గృహప్రవేశ ముహూర్త నిర్ణయం మరియు సమస్త దోష నివారణ కోసం ప్రత్యక్ష వైదిక సేవలు.',
-                  'Direct Vedic consultations, flawless wedding & housewarming muhurthams, and authentic homam ceremonies conducted strictly according to ancient Shastras.'
+                  'తెలుగు జ్యోతిషం (Telugu Jyothisham) — శాస్త్రోక్త వేద జ్యోతిషశాస్త్రం (Telugu Astrology) ఆధారంగా రోజువారీ తెలుగు పంచాంగం (Telugu Panchangam), ద్వాదశ రాశి ఫలాలు (Telugu Horoscope), ఉచిత జన్మ కుండలి (Telugu Jathakam), వివాహ పొంతన, గృహప్రవేశ ముహూర్త నిర్ణయం మరియు సమస్త దోష నివారణ కోసం ప్రత్యక్ష వైదిక సేవలు.',
+                  'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Direct Vedic Telugu Astrology consultations, daily Telugu Panchangam, Telugu Horoscope, Free Telugu Jathakam (Janma Kundali), wedding & housewarming muhurthams, and authentic homam ceremonies.'
                 )}
               </p>
 
@@ -346,13 +346,13 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
           </div>
         )}
 
-        {/* Daily Classical Nakshatra & Tithi Article Teaser (Krishna Rau Treatise) */}
+        {/* Daily Nakshatra & Tithi Article Teaser */}
         <div className="mt-5 p-4 rounded-2xl bg-gradient-to-r from-amber-900 to-amber-950 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-amber-600/60 shadow-md">
           <div className="flex items-start gap-3">
             <BookOpen size={22} className="text-amber-400 shrink-0 mt-1" />
             <div>
               <span className="text-[11px] uppercase tracking-wider text-amber-300 font-bold block">
-                {t('ప్రాచీన శాస్త్ర విశ్లేషణ • Classical Nakshatra Article', 'Classical Shastric Analysis • Nakshatra Treatise')}
+                {t('శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం • నక్షత్ర విశ్లేషణ', 'Sri Lakshmi Ganapathi Jyothishyalayam • Nakshatra Analysis')}
               </span>
               <h4 className="text-sm sm:text-base font-bold text-white">
                 {t(
@@ -362,8 +362,8 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
               </h4>
               <p className="text-xs text-amber-200/80 mt-0.5">
                 {t(
-                  'ఎన్.ఎన్. కృష్ణారావు గారి గ్రంథం ఆధారంగా పాద ఫలాలు, నేడు చేయదగిన శుభ కార్యాలు & యవనాచార్యుల మతం.',
-                  'Pada predictions, auspicious deeds permitted today & Yavanacharya traditions based on N.N. Krishna Rau treatise.'
+                  'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి విశ్లేషణ ప్రకారం 4 పాదాల ఫలాలు, నేడు చేయదగిన శుభ కార్యాలు & తిథి విశేషాలు.',
+                  '4 Pada predictions, auspicious deeds permitted today & Tithi significance by Sri Lakshmi Ganapathi Jyothishyalayam.'
                 )}
               </p>
             </div>
@@ -452,6 +452,91 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
               </div>
             );
           })}
+        </div>
+
+        {/* Sacred Agnihotra Homam & Jyotish Shiromani Visual Showcase */}
+        <div className="grid md:grid-cols-2 gap-6 pt-4">
+          <div className="bg-gradient-to-br from-amber-950 via-[#2b0f04] to-amber-950 text-white rounded-3xl overflow-hidden border-2 border-amber-500/50 shadow-xl flex flex-col sm:flex-row items-center">
+            <div className="w-full sm:w-48 h-56 sm:h-full shrink-0 overflow-hidden bg-black">
+              <img
+                src="/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg"
+                alt="Telugu Jyothisham (తెలుగు జ్యోతిషం) & Telugu Panchangam (తెలుగు పంచాంగం) — సనాతన వైదిక అగ్నిహోత్ర మహా హోమ క్రతువు (శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం)"
+                width={240}
+                height={300}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+            <div className="p-6 space-y-3">
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-300 bg-amber-900/80 px-3 py-1 rounded-full border border-amber-600/50">
+                <Flame size={13} className="text-amber-400" />
+                <span>{t('సనాతన అగ్నిహోత్ర సంప్రదాయం', 'Sacred Agnihotra Tradition')}</span>
+              </span>
+              <h3 className="text-xl font-bold text-white leading-snug">
+                {t(
+                  'వేదోక్త అగ్నిహోత్రం & మహా హోమ క్రతువులు',
+                  'Authentic Vedic Agnihotra & Maha Homam Ceremonies'
+                )}
+              </h3>
+              <p className="text-xs sm:text-sm text-amber-100/90 leading-relaxed">
+                {t(
+                  'తెలుగు జ్యోతిషం (Telugu Jyothisham) & తెలుగు పంచాంగం (Telugu Panchangam) ప్రకారం నవగ్రహ శాంతి, చండీ హోమం, లక్ష్మీ గణపతి హోమం మరియు సర్వ దోష నివారణ పూజలు.',
+                  'Navagraha Shanti, Sri Chandi Homam, and Lakshmi Ganapathi Homam performed strictly per Telugu Jyothisham and Panchangam Shastras.'
+                )}
+              </p>
+              <button
+                type="button"
+                onClick={() => onOpenBooking()}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs sm:text-sm transition-all cursor-pointer"
+              >
+                <span>{t('హోమ సంకల్పం బుక్ చేయండి', 'Book Homam Sankalpam')}</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-amber-50 via-white to-amber-50 rounded-3xl overflow-hidden border-2 border-amber-300 shadow-xl flex flex-col sm:flex-row items-center">
+            <div className="w-full sm:w-48 h-56 sm:h-full shrink-0 overflow-hidden bg-amber-950/10 p-2">
+              <img
+                src="/assets/aistudio/photo_6303093205754826521_y_89d76f49.jpg"
+                alt="Telugu Jyothisham (తెలుగు జ్యోతిషం) & Panchangam — జ్యోతిష శిరోమణి పురస్కార పత్రం (తిరుపతి మహతి ఆడిటోరియం) - శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ"
+                width={240}
+                height={300}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-contain rounded-2xl"
+              />
+            </div>
+            <div className="p-6 space-y-3">
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-900 bg-amber-200/80 px-3 py-1 rounded-full">
+                <Award size={13} className="text-amber-700" />
+                <span>{t('తిరుపతి మహతి ఆడిటోరియం పురస్కారం', 'Tirupati Mahati Auditorium Citation')}</span>
+              </span>
+              <h3 className="text-xl font-bold text-amber-950 leading-snug">
+                {t(
+                  '"జ్యోతిష శిరోమణి" అధికారిక బిరుదు ప్రదానం',
+                  'Conferred with "Jyotish Shiromani" Title'
+                )}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                {t(
+                  'తెలుగు జ్యోతిషం (Telugu Astrology & Telugu Horoscope), తెలుగు జాతకం (Telugu Jathakam) మరియు వాస్తు శాస్త్రాలలో విశిష్ట సేవలకు గాను లభించిన రాష్ట్ర స్థాయి గౌరవం.',
+                  'Honored at Tirupati TTD Mahati Auditorium for excellence in Telugu Astrology, Telugu Horoscope, and Vedic Panchangam.'
+                )}
+              </p>
+              {onNavigateToAwards && (
+                <button
+                  type="button"
+                  onClick={onNavigateToAwards}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs sm:text-sm transition-all cursor-pointer"
+                >
+                  <span>{t('అన్ని సత్కారాలు & సర్టిఫికెట్లు చూడండి', 'View All Awards & Citations')}</span>
+                  <ArrowRight size={14} />
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 

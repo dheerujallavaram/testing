@@ -909,23 +909,23 @@ export function evaluateMehtaSpecialSutras(
 
   results.push({
     id: 'bcp-focus-house',
-    titleTe: `జన్మ మాస కేంద్ర స్థాన సూత్రం & భృగు చక్ర పద్ధతి (${focusHouseNum}వ స్థానం)`,
-    titleEn: `Birth Month Focus House & Bhrigu Chakra Paddhati (${focusHouseNum}th House)`,
+    titleTe: `భృగు చక్ర పద్ధతి — జన్మ మాస కేంద్ర స్థాన సూత్రం (${focusHouseNum}వ స్థానం)`,
+    titleEn: `Bhrigu Chakra Paddhati — Birth Month Focus House & 12-Year Life Progression (${focusHouseNum}th House)`,
     badgeTe: `జీవిత కీలక మలుపు వయస్సులు: ${bcpAges.slice(1, 5).join(', ')}`,
     badgeEn: `Key Milestone Ages: ${bcpAges.slice(1, 5).join(', ')}`,
     isTriggered: true,
-    descriptionTe: `మీరు సంవత్సరంలోని ${birthMonth}వ నెలలో జన్మించినందున, భృగు నంది నాడీ సంప్రదాయ సూత్రం ప్రకారం మీ లగ్నం నుండి ${focusBhava.te} మీ జీవితంలో అత్యంత ప్రధాన పాత్ర పోషిస్తుంది (${focusBhava.signifTe}). ఈ స్థానాధిపతి అయిన ${focusLordPlanet.nameTe} ${focusLordHouse}వ స్థానంలో ఉన్నాడు.${
+    descriptionTe: `మీరు సంవత్సరంలోని ${birthMonth}వ నెలలో జన్మించినందున, భృగు చక్ర పద్ధతి ప్రకారం మీ లగ్నం నుండి ${focusBhava.te} మీ జీవితంలో అత్యంత ప్రధాన పాత్ర పోషిస్తుంది (${focusBhava.signifTe}). ఈ స్థానాధిపతి అయిన ${focusLordPlanet.nameTe} ${focusLordHouse}వ స్థానంలో ఉన్నాడు.${
       planetsInFocusHouse.length > 0
         ? ` ఈ కేంద్ర స్థానంలో ${planetsInFocusHouse.map((p) => p.nameTe).join(', ')} స్థితి పొంది ఉండటం విశేషం.`
         : ''
     }`,
-    descriptionEn: `Born in month #${birthMonth}, the ${focusBhava.en} becomes your dominant Focus House (${focusBhava.signifEn}). Its lord ${focusLordPlanet.nameEn} is placed in House #${focusLordHouse}.${
+    descriptionEn: `Born in month #${birthMonth}, Bhrigu Chakra Paddhati designates the ${focusBhava.en} as your dominant Focus House (${focusBhava.signifEn}). Its lord ${focusLordPlanet.nameEn} is placed in House #${focusLordHouse}.${
       planetsInFocusHouse.length > 0
         ? ` Planets occupying this focus house: ${planetsInFocusHouse.map((p) => p.nameEn).join(', ')}.`
         : ''
     }`,
     remedyOrAdviceTe: `భృగు చక్ర పద్ధతి ప్రకారం మీ జీవితంలో ముఖ్యమైన మార్పులు/పురోగతి జరిగే వయస్సులు: ${bcpYearsStr}.`,
-    remedyOrAdviceEn: `According to Bhrigu Chakra Paddhati, major life turning-point years occur at: ${bcpYearsEn}.`,
+    remedyOrAdviceEn: `According to Bhrigu Chakra Paddhati, major turning-point years occur at: ${bcpYearsEn}.`,
   });
 
   // 2. Saturn's 2nd-House Signification Rule
@@ -1516,8 +1516,8 @@ export function generateBhriguLifeProgression(
       activatedHouse: activeHouseNum,
       themeTe: c.themeTe,
       themeEn: c.themeEn,
-      predictionTe: `ఈ 12 ఏళ్ల కాలచక్రంలో భృగు చక్ర గమనం ప్రకారం మీ కుండలిలోని ${bhava.te} (${rashiMeta.te} రాశి) మరియు దాని అధిపతి అయిన ${rashiMeta.lordTe} (${lordHouse}వ స్థానంలో స్థితి) ప్రధానంగా క్రియాశీలమవుతాయి. ముఖ్యంగా ${milestoneAge}వ ఏట (${milestoneYear} సంవత్సరంలో) "${bhava.signifTe}" విషయాలలో కీలకమైన శుభ పరిణామాలు మరియు జీవిత మలుపులు ఏర్పడతాయి.`,
-      predictionEn: `During this 12-year cycle, Bhrigu Chakra progression activates your ${bhava.en} (${rashiMeta.en}) and its ruler ${rashiMeta.lordEn} in House #${lordHouse}. Especially around Age ${milestoneAge} (Year ${milestoneYear}), significant milestones unfold in ${bhava.signifEn.toLowerCase()}.`,
+      predictionTe: `భృగు చక్ర పద్ధతి ప్రకారం ఈ 12 ఏళ్ల కాలచక్ర గమనంలో మీ కుండలిలోని ${bhava.te} (${rashiMeta.te} రాశి) మరియు దాని అధిపతి అయిన ${rashiMeta.lordTe} (${lordHouse}వ స్థానంలో స్థితి) ప్రధానంగా క్రియాశీలమవుతాయి. ముఖ్యంగా ${milestoneAge}వ ఏట (${milestoneYear} సంవత్సరంలో) "${bhava.signifTe}" విషయాలలో కీలకమైన శుభ పరిణామాలు మరియు జీవిత మలుపులు ఏర్పడతాయి.`,
+      predictionEn: `According to Bhrigu Chakra Paddhati, during this 12-year life cycle your ${bhava.en} (${rashiMeta.en}) and its ruler ${rashiMeta.lordEn} in House #${lordHouse} become highly active. Especially around Age ${milestoneAge} (Year ${milestoneYear}), significant milestones unfold in ${bhava.signifEn.toLowerCase()}.`,
     };
   });
 }

@@ -30,6 +30,21 @@ interface FAQItem {
 
 const FAQ_ITEMS: FAQItem[] = [
   {
+    id: 'telugu-jyothisham-overview',
+    termTe: 'తెలుగు జ్యోతిషం (Telugu Jyothisham)',
+    termEn: 'Telugu Jyothisham',
+    englishSubtitle: 'Telugu Jyothisham (Vedic Astrology & Almanac)',
+    questionTe: 'తెలుగు జ్యోతిషం (Telugu Jyothisham) అంటే ఏమిటి? ప్రధాన సేవలు మరియు వివరాలు ఏవి?',
+    questionEn: 'What is Telugu Jyothisham and what Vedic astrology services are provided?',
+    answerTe:
+      'తెలుగు జ్యోతిషం (Telugu Jyothisham) అనేది వేద జ్యోతిషశాస్త్రం ఆధారంగా రోజువారీ పంచాంగం (తిథి, నక్షత్రం, యోగం, కరణం, రాహుకాలం, దుర్ముహూర్తం మరియు అభిజిత్ ముహూర్తాల సమాచారం), ద్వాదశ రాశి ఫలాలు మరియు ఉచిత జన్మ కుండలి వివరాలను అందించే ప్రామాణిక విధానం. శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం (www.telugujyothisham.com) ద్వారా బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్వర్యంలో దృక్సిద్ధాంత పంచాంగం, సంపూర్ణ జాతక ఫలితాలు, 36 గుణాల వివాహ పొంతన మరియు వైదిక హోమ సేవలు అందించబడుతున్నాయి.',
+    answerEn:
+      'Telugu Jyothisham is the authentic Vedic astrology system providing daily Telugu Panchangam (Tithi, Nakshatra, Yoga, Karana, Rahu Kalam, Durmuhurtham, and Abhijit Muhurtham), 12 Rashi Phalalu, and free Janma Kundali birth chart calculations at www.telugujyothisham.com.',
+    tipTe: 'ప్రతిరోజూ తెలుగు జ్యోతిషం (Telugu Jyothisham) పంచాంగం మరియు మీ జన్మ కుండలి గ్రహ స్థితిని పరిశీలించుకోవడం ద్వారా శుభ ముహూర్తాలలో కార్యాలు ప్రారంభించి సంపూర్ణ విజయం పొందవచ్చు.',
+    tipEn: 'Consult Telugu Jyothisham daily for accurate Drik Siddhanta timings, Janma Kundali analysis, and auspicious muhurthams.',
+    icon: Sparkles,
+  },
+  {
     id: 'panchangam-basics',
     termTe: 'పంచాంగం',
     termEn: 'Panchangam',
