@@ -23,10 +23,12 @@ import { DayData, PoojaService } from '../types/panchangam';
 import { POOJA_SERVICES } from '../data/panchangamData';
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
+import { getFeaturedDailyRashiSnippet } from '../utils/dailySeoEngine';
 
 interface GuruProfileHomeProps {
   currentDay: DayData;
   onNavigateToPanchangam: () => void;
+  onNavigateToJathakam?: () => void;
   onNavigateToAwards?: () => void;
   onOpenBooking: (service?: PoojaService) => void;
 }
@@ -34,12 +36,17 @@ interface GuruProfileHomeProps {
 export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
   currentDay,
   onNavigateToPanchangam,
+  onNavigateToJathakam,
   onNavigateToAwards,
   onOpenBooking,
 }) => {
-  const { t, tr, language } = useLanguage();
+  const { t, tr } = useLanguage();
+  const cleanTithi = currentDay.panchanga.tithi.split('-')[0]?.trim() || currentDay.panchanga.tithi;
+  const cleanNakshatra = currentDay.panchanga.nakshatram.split('-')[0]?.trim() || currentDay.panchanga.nakshatram;
+  const featuredRashi = getFeaturedDailyRashiSnippet(currentDay);
+
   const whatsappUrl = `https://wa.me/918977986166?text=${encodeURIComponent(
-    'నమస్కారం శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు, నేను పూజా కార్యక్రమం / జాతక పరిశీలన ముహూర్తం కొరకు సంప్రదిస్తున్నాను.'
+    'నమస్కారం శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు, నేను పూజా కార్యక్రమం / 100 పేజీల జన్మ కుండలి PDF / ముహూర్తం కొరకు సంప్రదిస్తున్నాను.'
   )}`;
 
   const achievements = [
@@ -191,15 +198,39 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                 {t('శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు', 'Sri Jallavaram Sai Dheeraj Sharma')}
               </h1>
 
-              <p className="text-base sm:text-lg text-amber-200/90 font-medium leading-relaxed max-w-2xl">
+              <p className="text-base sm:text-lg text-amber-200/95 font-medium leading-relaxed max-w-2xl">
                 {t(
-                  'తెలుగు జ్యోతిషం (Telugu Jyothisham) — శాస్త్రోక్త వేద జ్యోతిషశాస్త్రం (Telugu Astrology) ఆధారంగా రోజువారీ తెలుగు పంచాంగం (Telugu Panchangam), ద్వాదశ రాశి ఫలాలు (Telugu Horoscope), ఉచిత జన్మ కుండలి (Telugu Jathakam), వివాహ పొంతన, గృహప్రవేశ ముహూర్త నిర్ణయం మరియు సమస్త దోష నివారణ కోసం ప్రత్యక్ష వైదిక సేవలు.',
-                  'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Direct Vedic Telugu Astrology consultations, daily Telugu Panchangam, Telugu Horoscope, Free Telugu Jathakam (Janma Kundali), wedding & housewarming muhurthams, and authentic homam ceremonies.'
+                  `తెలుగు జ్యోతిషం (Telugu Jyothisham) — ఈ రోజు నక్షత్రం: ${cleanNakshatra} (${currentDay.teediVaram}, తిథి: ${cleanTithi}, శుభ సమయం: ${currentDay.shubha.amrutha}) | మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలితం: ${featuredRashi.predictionTe} | మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ పొందండి.`,
+                  `Telugu Jyothisham (తెలుగు జ్యోతిషం) — Today Nakshatram: ${tr(cleanNakshatra)} (${tr(currentDay.teediVaram)}, Tithi: ${tr(cleanTithi)}, Shubha Samayam: ${tr(currentDay.shubha.amrutha)}) | Today ${featuredRashi.rashiNameEn} Horoscope: ${featuredRashi.predictionEn} | Get your 100-page Janma Kundali PDF report.`
                 )}
               </p>
 
+              {/* Live Daily Nakshatram, Rasi Phalitham & 100-Page Janma Kundali PDF Highlight Box */}
+              <div className="bg-amber-950/85 border border-amber-500/60 rounded-2xl p-3.5 sm:p-4 text-left space-y-2 shadow-inner">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-amber-300">
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-200">
+                    🌟 {t(`ఈ రోజు నక్షత్రం: ${cleanNakshatra}`, `Today Star: ${tr(cleanNakshatra)}`)}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-200">
+                    ⏰ {t(`శుభ సమయం: ${currentDay.shubha.amrutha}`, `Shubha Samayam: ${tr(currentDay.shubha.amrutha)}`)}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 font-extrabold">
+                    📜 {t('మీ జన్మ కుండలి 100 పేజీల PDF పొందండి', 'Get 100-Page Janma Kundali PDF')}
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-amber-100 leading-relaxed">
+                  <strong className="text-amber-300">
+                    {t(
+                      `మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలితం: `,
+                      `Today's Featured ${featuredRashi.rashiNameEn} Prediction: `
+                    )}
+                  </strong>
+                  <span>{t(featuredRashi.predictionTe, featuredRashi.predictionEn)}</span>
+                </p>
+              </div>
+
               {/* Contact direct badges */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2 text-xs sm:text-sm">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1 text-xs sm:text-sm" data-nosnippet>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-950/70 border border-amber-700/60 text-amber-200">
                   <MapPin size={15} className="text-amber-400" />
                   <span>{t('పసుమాముల, హయత్‌నగర్ (హైదరాబాద్)', 'Hayathnagar, Hyderabad & Tirupati')}</span>
@@ -211,7 +242,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-4">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-3">
                 {/* 1. Go to Panchangam sub-menu */}
                 <button
                   type="button"
@@ -219,11 +250,27 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                   className="flex items-center gap-2 px-5 py-3.5 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-amber-950 font-bold rounded-2xl shadow-xl transition-all transform hover:scale-105 active:scale-95 cursor-pointer text-sm sm:text-base"
                 >
                   <Calendar size={18} />
-                  <span>{t('నిత్య పంచాంగం', 'Daily Panchangam')}</span>
+                  <span>{t('నేటి పంచాంగం & రాశి ఫలాలు', 'Neti Panchangam & Horoscope')}</span>
                   <ArrowRight size={16} />
                 </button>
 
-                {/* 2. WhatsApp Direct */}
+                {/* 2. 100-Page Janma Kundali PDF CTA */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onNavigateToJathakam) {
+                      onNavigateToJathakam();
+                    } else {
+                      onNavigateToPanchangam();
+                    }
+                  }}
+                  className="flex items-center gap-2 px-4 py-3.5 bg-amber-800 hover:bg-amber-700 text-amber-100 border border-amber-400/70 font-bold rounded-2xl shadow-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer text-xs sm:text-sm"
+                >
+                  <BookOpen size={17} className="text-amber-300" />
+                  <span>{t('మీ జన్మ కుండలి 100 పేజీల PDF పొందండి', 'Get 100-Page Janma Kundali PDF')}</span>
+                </button>
+
+                {/* 3. WhatsApp Direct */}
                 <a
                   href={whatsappUrl}
                   target="_blank"
@@ -234,7 +281,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                   <span>{t('వాట్సాప్ (8977986166)', 'WhatsApp Chat')}</span>
                 </a>
 
-                {/* 3. Pooja Booking */}
+                {/* 4. Pooja Booking */}
                 <button
                   type="button"
                   onClick={() => onOpenBooking()}
@@ -598,7 +645,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
                 'For Vivaha, Gruhapravesam, Chandi Homam, and Jathaka Dosha remedies, consult Sri Jallavaram Sai Dheeraj Sharma directly via phone or WhatsApp.'
               )}
             </p>
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2 text-sm text-amber-200">
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2 text-sm text-amber-200" data-nosnippet>
               <span className="flex items-center gap-1.5">
                 <MapPin size={16} className="text-amber-400" />
                 <span>{t('పసుమాముల, హయత్‌నగర్', 'Pasumamula, Hayathnagar, Hyderabad')}</span>

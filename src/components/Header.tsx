@@ -47,7 +47,10 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onSelectTab, onOpenBo
   )}`;
 
   return (
-    <header className="sticky top-0 z-40 bg-amber-950 text-white shadow-xl border-b border-amber-800/90 backdrop-blur-md bg-opacity-95 font-telugu">
+    <header
+      data-nosnippet
+      className="sticky top-0 z-40 bg-amber-950 text-white shadow-xl border-b border-amber-800/90 backdrop-blur-md bg-opacity-95 font-telugu"
+    >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2">
         {/* Zone 1: Brand wordmark & Sri Dheeraj Sharma Garu subtext */}
         <button

@@ -1,5 +1,6 @@
 import { DayData } from '../types/panchangam';
 import { findNakshatraClassicData } from '../data/krishnaRauNakshatraData';
+import { getDailyRashiFortunes } from './panchangaLogic';
 
 export type PanchangamSubTab = 'main' | 'gowri-hora' | 'tarabalam' | 'sankalpam';
 
@@ -8,6 +9,16 @@ export interface HeadMetaPayload {
   description: string;
   canonicalUrl: string;
   lang?: string;
+}
+
+export interface FeaturedDailyRashiSnippet {
+  rashiId: string;
+  rashiNameTe: string;
+  rashiNameEn: string;
+  statusLabelTe: string;
+  predictionTe: string;
+  predictionEn: string;
+  remedyTe: string;
 }
 
 const RASHI_TE_LABELS: Record<string, string> = {
@@ -24,6 +35,82 @@ const RASHI_TE_LABELS: Record<string, string> = {
   kumbham: 'కుంభం',
   meenam: 'మీనం',
 };
+
+/**
+ * Selects a featured/random Rashi Phalitham for the given day (seeded by the date so all 12 Rashis
+ * rotate naturally across days, prioritizing auspicious/favorable transits for engaging search snippets).
+ */
+export function getFeaturedDailyRashiSnippet(day: DayData): FeaturedDailyRashiSnippet {
+  const fortunes = getDailyRashiFortunes(day);
+  const favorableList = fortunes.filter((f) => f.status === 'favorable');
+  const pool = favorableList.length > 0 ? favorableList : fortunes;
+
+  const dateSeed = (day.isoDate || '2026-10-27')
+    .split('')
+    .reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  const picked = pool[dateSeed % pool.length] || fortunes[0];
+
+  const cleanPredictionTe = (picked?.careerFinanceLine || picked?.summary || day.phalitham)
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return {
+    rashiId: picked?.id || 'mesham',
+    rashiNameTe: `${picked?.teluguName || 'మేష'} రాశి`,
+    rashiNameEn: `${picked?.englishName || 'Aries'} (${picked?.teluguName || 'మేషం'})`,
+    statusLabelTe: picked?.statusLabel || 'శుభం',
+    predictionTe: cleanPredictionTe,
+    predictionEn:
+      picked?.englishFullSummary ||
+      'Auspicious planetary transit brings career growth, financial gains, and family harmony today.',
+    remedyTe: picked?.remedy || 'శ్రీ లక్ష్మీ గణపతి ఆరాధన శుభప్రదం',
+  };
+}
+
+/**
+ * Builds the front-loaded Google Search snippet for "Telugu Jyothisham" (Brand / Home / Jathakam queries).
+ * Leads directly with:
+ * 1. ఈ రోజు నక్షత్రం (Today's Nakshatram & Tithi)
+ * 2. మీ రాశి ప్రకారం నేటి రాశి ఫలితం (Featured Daily Rasi Phalitham)
+ * 3. మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి (100-Page Janma Kundali PDF CTA)
+ */
+export function buildTeluguJyothishamBrandSnippet(
+  day: DayData,
+  lang: 'te' | 'en' = 'te'
+): string {
+  const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
+  const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.trim() || day.panchanga.nakshatram;
+  const featuredRashi = getFeaturedDailyRashiSnippet(day);
+
+  if (lang === 'en') {
+    return `Today Nakshatram: ${cleanNakshatra} (${day.teediVaram}, Tithi: ${cleanTithi}) | Today ${featuredRashi.rashiNameEn} Horoscope: ${featuredRashi.predictionTe} | మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి (Get 100-Page Janma Kundali PDF) — Telugu Jyothisham (తెలుగు జ్యోతిషం).`;
+  }
+
+  return `ఈ రోజు నక్షత్రం: ${cleanNakshatra} (${day.teediVaram}, తిథి: ${cleanTithi}) | మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలితం: ${featuredRashi.predictionTe} | మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి — తెలుగు జ్యోతిషం (Telugu Jyothisham) & నేటి శుభ సమయం: ${day.shubha.amrutha}.`;
+}
+
+/**
+ * Builds the front-loaded Google Search snippet for "Neti Panchangam" / "ఈ రోజు పంచాంగం" queries.
+ * Leads directly with:
+ * 1. ఈ రోజు పంచాంగం తిథి & నక్షత్రం (Today's Tithi & Nakshatram)
+ * 2. శుభ సమయం (Amrutha Gadiyalu & Abhijit Muhurtham)
+ * 3. నేటి రాశి ఫలం (Featured Daily Rasi Phalam)
+ * 4. మీ జన్మ కుండలి 100 పేజీల PDF పొందండి
+ */
+export function buildNetiPanchangamSearchSnippet(
+  day: DayData,
+  lang: 'te' | 'en' = 'te'
+): string {
+  const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
+  const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.trim() || day.panchanga.nakshatram;
+  const featuredRashi = getFeaturedDailyRashiSnippet(day);
+
+  if (lang === 'en') {
+    return `Neti Panchangam (${day.teediVaram} - ఈ రోజు పంచాంగం): Tithi ${cleanTithi}, Nakshatram ${cleanNakshatra}, Shubha Samayam (అమృత ఘడియలు): ${day.shubha.amrutha}, Abhijit: ${day.shubha.abhijit} | నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe} | Get 100-Page Janma Kundali PDF.`;
+  }
+
+  return `ఈ రోజు పంచాంగం (Neti Panchangam - ${day.teediVaram}): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం (అమృత ఘడియలు): ${day.shubha.amrutha}, అభిజిత్: ${day.shubha.abhijit} | నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe} | మీ జన్మ కుండలి 100 పేజీల PDF పొందండి (రాహుకాలం: ${day.ashubha.rahukalam}).`;
+}
 
 /**
  * Formats the current day's Grahasthiti (Navagraha Rashi positions) into a concise,
@@ -100,9 +187,10 @@ export function buildStandardizedWebApplicationSchema(
   const baseUrl = 'https://www.telugujyothisham.com';
   const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
   const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.trim() || day.panchanga.nakshatram;
+  const featuredRashi = getFeaturedDailyRashiSnippet(day);
 
   const subTabNames: Record<PanchangamSubTab, string> = {
-    main: `Neti Panchangam (నేటి పంచాంగం - ${day.teediVaram}) | Telugu Jyothisham (తెలుగు జ్యోతిషం) & ಜన్మ కుండలి`,
+    main: `Neti Panchangam (ఈ రోజు పంచాంగం - ${day.teediVaram}): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra} | Telugu Jyothisham (తెలుగు జ్యోతిషం) — 100 పేజీల జన్మ కుండలి PDF`,
     'gowri-hora': `Neti Panchangam — నేటి గౌరీ పంచాంగం & హోరా చక్రం (${day.teediVaram}) | Telugu Jyothisham`,
     tarabalam: `Neti Panchangam — నేటి తారాబలం & చంద్రబలం క్యాలిక్యులేటర్ (${day.teediVaram}) | Telugu Jyothisham`,
     sankalpam: `Neti Panchangam — నేటి పూజా సంకల్పం మంత్రం (${day.teediVaram}) | Telugu Jyothisham`,
@@ -135,14 +223,14 @@ export function buildStandardizedWebApplicationSchema(
     dateModified: `${day.isoDate}T06:00:00+05:30`,
     description: uniqueDailyDescription,
     featureList: [
-      `Neti Panchangam (నేటి పంచాంగం - ${day.teediVaram}): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}`,
-      `నేటి రాహుకాలం (${day.ashubha.rahukalam}) & అమృత ఘడియలు (${day.shubha.amrutha})`,
+      `ఈ రోజు పంచాంగం (Neti Panchangam - ${day.teediVaram}): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం: ${day.shubha.amrutha}`,
+      `మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe}`,
+      'మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ పొందండి (100-Page Janma Kundali PDF)',
+      `నేటి రాహుకాలం (${day.ashubha.rahukalam}) & అభిజిత్ ముహూర్తం (${day.shubha.abhijit})`,
       '12 రాశుల దిన ఫలాలు (Today Rasi Phalalu in Telugu)',
-      'ఉచిత తెలుగు జన్మ కుండలి & బృహత్ జాతక గ్రంథ ఫలితాలు (Free Janma Kundali)',
       '36 గుణాల అష్టకూట వివాహ పొంతన (Marriage Compatibility)',
       'పగలు & రాత్రి గౌరీ పంచాంగం మరియు 24 గంటల నవగ్రహ హోరా చక్రం',
       '27 నక్షత్రాల నవతార తారాబలం & 12 రాశుల చంద్రబలం గణన',
-      'భారతదేశం (జంబూద్వీపే) & అమెరికా NRI (క్రౌంచద్వీపే) నిత్య పూజా సంకల్పం',
     ],
     screenshot: `${baseUrl}/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg`,
     author: {
@@ -155,7 +243,7 @@ export function buildStandardizedWebApplicationSchema(
     },
     offers: {
       '@type': 'Offer',
-      name: 'Free Daily Telugu Panchangam (Neti Panchangam) & Janma Kundali',
+      name: 'Free Daily Telugu Panchangam (Neti Panchangam) & 100-Page Janma Kundali PDF Report',
       price: '0',
       priceCurrency: 'INR',
       availability: 'https://schema.org/InStock',
@@ -185,7 +273,9 @@ export function buildStandardizedDailyFaqSchema(
   nakshatraAuspicious: string,
   grahasthitiSummary: string
 ): Record<string, unknown> {
+  const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
   const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.trim() || day.panchanga.nakshatram;
+  const featuredRashi = getFeaturedDailyRashiSnippet(day);
 
   return {
     '@type': 'FAQPage',
@@ -195,10 +285,18 @@ export function buildStandardizedDailyFaqSchema(
     mainEntity: [
       {
         '@type': 'Question',
-        name: `నేటి పంచాంగం (Neti Panchangam - ${day.teediVaram}) తిథి, నక్షత్రం మరియు రాహుకాలం వివరాలు ఏమిటి?`,
+        name: `నేటి పంచాంగం (Neti Panchangam - ${day.teediVaram}) లో ఈ రోజు తిథి, నక్షత్రం, శుభ సమయం మరియు రాశి ఫలం ఏమిటి?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `${day.teediVaram} (${day.isoDate}) నాటి నేటి పంచాంగం (Neti Panchangam / Today Panchangam in Telugu) ప్రకారం — సంవత్సరం: ${day.panchanga.samvatsaram}, మాసం: ${day.panchanga.masam}, తిథి: ${day.panchanga.tithi}, నక్షత్రం: ${day.panchanga.nakshatram} (అధిపతి: ${nakshatraLord}, అధిష్ఠాన దేవత: ${nakshatraDeity}), యోగం: ${day.panchanga.yogam}, కరణం: ${day.panchanga.karanam}, రాహుకాలం: ${day.ashubha.rahukalam}, అమృత ఘడియలు: ${day.shubha.amrutha}, అభిజిత్ ముహూర్తం: ${day.shubha.abhijit}.`,
+          text: `ఈ రోజు పంచాంగం (${day.teediVaram}): నేటి తిథి ${cleanTithi}, ఈ రోజు నక్షత్రం ${cleanNakshatra} (అధిపతి: ${nakshatraLord}, దేవత: ${nakshatraDeity}), శుభ సమయం (అమృత ఘడియలు): ${day.shubha.amrutha}, అభిజిత్ ముహూర్తం: ${day.shubha.abhijit} | మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe} | రాహుకాలం: ${day.ashubha.rahukalam}. మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ పొందండి.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `తెలుగు జ్యోతిషం (Telugu Jyothisham) లో ఈ రోజు నక్షత్రం ప్రకారం రాశి ఫలితం మరియు 100 పేజీల జన్మ కుండలి PDF ఎలా పొందాలి?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `ఈ రోజు నక్షత్రం ${cleanNakshatra} (${day.teediVaram}). మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలితం: ${featuredRashi.predictionTe}. www.telugujyothisham.com లో మీ పుట్టిన తేదీ, సమయం, ప్రాంతం వివరాలతో మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ (D1 రాశి చక్రం, D9 నవాంశ, 12 భావాల ఫలితాలు, వింశోత్తరి మహాదశ & భృగు చక్ర ఫలితాలు) వెంటనే పొందవచ్చు.`,
         },
       },
       {
@@ -211,18 +309,10 @@ export function buildStandardizedDailyFaqSchema(
       },
       {
         '@type': 'Question',
-        name: `నేటి పంచాంగం ప్రకారం ఈ రోజు రాహుకాలం, యమగండం మరియు వర్జ్యం సమయాలు ఏవి? (${day.teediVaram} Rahu Kalam Today)`,
+        name: `ఈ రోజు శుభ సమయం, అమృత ఘడియలు మరియు అభిజిత్ ముహూర్తం ఎప్పుడు? (${day.teediVaram} Shubha Samayam)`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `${day.teediVaram} నాడు అశుభ సమయాలు — రాహుకాలం (Rahu Kalam): ${day.ashubha.rahukalam}, యమగండం (Yamagandam): ${day.ashubha.yamagandam}, వర్జ్యం (Varjyam): ${day.ashubha.varjyam}, దుర్ముహూర్తం (Durmuhurtham): ${day.ashubha.durmuhurtham}.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `ఈ రోజు అమృత ఘడియలు మరియు అభిజిత్ ముహూర్తం ఎప్పుడు? (${day.teediVaram} Shubha Muhurtham Timings)`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${day.teediVaram} నాడు శుభ సమయాలు — అమృత ఘడియలు (Amrutha Gadiyalu): ${day.shubha.amrutha}, అభిజిత్ ముహూర్తం (Abhijit Muhurtham): ${day.shubha.abhijit}. ఈ సమయాలు నూతన శుభకార్య ప్రారంభాలకు అత్యంత శ్రేష్ఠమైనవి.`,
+          text: `${day.teediVaram} నాడు శుభ సమయాలు — అమృత ఘడియలు (Amrutha Gadiyalu): ${day.shubha.amrutha}, అభిజిత్ ముహూర్తం (Abhijit Muhurtham): ${day.shubha.abhijit}. రాహుకాలం: ${day.ashubha.rahukalam}, యమగండం: ${day.ashubha.yamagandam}, వర్జ్యం: ${day.ashubha.varjyam}.`,
         },
       },
       {
@@ -233,14 +323,6 @@ export function buildStandardizedDailyFaqSchema(
           text: `${day.teediVaram} నాటి నవగ్రహ గోచార గ్రహస్థితి: [${grahasthitiSummary}]. ${day.chandra.sancharam} ${day.chandra.chandrashtamam} ${day.chandra.navataraBalam}`,
         },
       },
-      {
-        '@type': 'Question',
-        name: `తెలుగు జ్యోతిషం (Telugu Jyothisham) లో నేటి పంచాంగం మరియు ఉచిత జన్మ కుండలి ఎలా చూసుకోవాలి?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `www.telugujyothisham.com లో ప్రతిరోజూ దృక్సిద్ధాంత గణనలతో కూడిన నేటి పంచాంగం (Neti Panchangam), గౌరీ పంచాంగం, హోరా చక్రం, తారాబలం మరియు బృహత్ జాతక గ్రంథం & భృగు చక్ర పద్ధతి ఆధారంగా ఉచిత తెలుగు జన్మ కుండలి (Free Janma Kundali), 36 గుణాల వివాహ పొంతన వివరాలను వెంటనే చూసుకోవచ్చు.`,
-        },
-      },
     ],
   };
 }
@@ -249,8 +331,8 @@ export function buildStandardizedDailyFaqSchema(
  * Automated Daily Panchangam & Jyothisham SEO Engine
  * Dynamically generates fresh, unique article meta-descriptions and injects standardized
  * Schema.org JSON-LD structured data (WebApplication, FAQPage, NewsArticle, Dataset, Event)
- * based on the current day's Nakshatra and Grahasthiti data to maximize rich snippet eligibility
- * for 'Neti Panchangam' and Telugu astrology search queries.
+ * based on the current day's Nakshatra, Featured Rashi Phalam, Shubha Samayam, 100-Page Janma Kundali PDF CTA,
+ * and Grahasthiti data to maximize rich snippet eligibility for 'Telugu Jyothisham' and 'Neti Panchangam'.
  */
 export function syncAutomatedDailySeoSchema(
   day: DayData,
@@ -265,6 +347,7 @@ export function syncAutomatedDailySeoSchema(
 
   const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
   const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.trim() || day.panchanga.nakshatram;
+  const featuredRashi = getFeaturedDailyRashiSnippet(day);
 
   // Lookup deep Nakshatra profile (Deity, Ruling Planet, Muhurtha Chintamani & Yavanacharya Phala)
   const nakshatraProfile = findNakshatraClassicData(cleanNakshatra);
@@ -277,8 +360,14 @@ export function syncAutomatedDailySeoSchema(
   // Build unique daily Grahasthiti summary from current day's planetary Rashi placements
   const grahasthitiSummary = buildDailyGrahasthitiSnippet(day.grahaStithi || {});
 
-  // Unique daily Article Meta-Description combining Nakshatra + Grahasthiti + Panchanga limbs
-  const uniqueDailyArticleMetaDescription = `Neti Panchangam (నేటి పంచాంగం - ${day.teediVaram}, ${day.isoDate}) | తెలుగు జ్యోతిషం (Telugu Jyothisham): తిథి ${day.panchanga.tithi}, ${cleanNakshatra} నక్షత్రం (అధిపతి: ${nakshatraLord}, దేవత: ${nakshatraDeity}; శుభకార్యాలు: ${nakshatraAuspicious}), నేటి గ్రహస్థితి: [${grahasthitiSummary}], రాహుకాలం: ${day.ashubha.rahukalam}, అమృత ఘడియలు: ${day.shubha.amrutha} — యవనాచార్యుల మతం, ముహూర్త చింతామణి, నక్షత్ర చూడామణి & బృహత్ జాతక గ్రంథ ప్రమాణాలతో.`;
+  const brandSnippet = buildTeluguJyothishamBrandSnippet(day, 'te');
+  const netiPanchangamSnippet = buildNetiPanchangamSearchSnippet(day, 'te');
+
+  // Unique daily Article Meta-Description combining Today's Tithi, Nakshatram, Shubha Samayam, Featured Rashi Phalam, 100-page PDF & Grahasthiti
+  const uniqueDailyArticleMetaDescription =
+    cleanPath === '/' || cleanPath === '/mee-jatakam' || cleanPath === '/janma-kundali'
+      ? `${brandSnippet} నేటి గ్రహస్థితి: [${grahasthitiSummary}] — యవనాచార్యుల మతం, ముహూర్త చింతామణి & బృహత్ జాతక గ్రంథ ప్రమాణాలతో.`
+      : `${netiPanchangamSnippet} నేటి గ్రహస్థితి: [${grahasthitiSummary}] — యవనాచార్యుల మతం, ముహూర్త చింతామణి, నక్షత్ర చూడామణి & బృహత్ జాతక గ్రంథ ప్రమాణాలతో.`;
 
   // Sync <meta name="article:description"> and daily Panchangam/Home meta description tags
   let articleMetaEl = document.querySelector('meta[name="article:description"]') as HTMLMetaElement | null;
@@ -289,22 +378,24 @@ export function syncAutomatedDailySeoSchema(
   }
   articleMetaEl.setAttribute('content', uniqueDailyArticleMetaDescription);
 
-  const isDailyPanchangamRoute =
-    cleanPath === '/' ||
+  const isBrandHomeRoute =
+    cleanPath === '/' || cleanPath === '/mee-jatakam' || cleanPath === '/janma-kundali';
+  const isNetiPanchangamRoute =
     cleanPath === '/panchangam' ||
     cleanPath === '/neti-panchangam' ||
     cleanPath === '/today-panchangam-in-telugu' ||
     cleanPath === '/ee-roju-panchangam';
 
-  if (isDailyPanchangamRoute && panchangamSubTab === 'main') {
+  if ((isBrandHomeRoute || isNetiPanchangamRoute) && panchangamSubTab === 'main') {
+    const snippetToInject = isBrandHomeRoute ? brandSnippet : netiPanchangamSnippet;
     const descEl = document.querySelector('meta[name="description"]');
-    if (descEl) descEl.setAttribute('content', uniqueDailyArticleMetaDescription);
+    if (descEl) descEl.setAttribute('content', snippetToInject);
 
     const ogDescEl = document.querySelector('meta[property="og:description"]');
-    if (ogDescEl) ogDescEl.setAttribute('content', uniqueDailyArticleMetaDescription);
+    if (ogDescEl) ogDescEl.setAttribute('content', snippetToInject);
 
     const twitterDescEl = document.querySelector('meta[name="twitter:description"]');
-    if (twitterDescEl) twitterDescEl.setAttribute('content', uniqueDailyArticleMetaDescription);
+    if (twitterDescEl) twitterDescEl.setAttribute('content', snippetToInject);
   }
 
   // Backend popular daily Telugu astrology search keywords (kept hidden from visible UI)
@@ -337,6 +428,8 @@ export function syncAutomatedDailySeoSchema(
     'Gruha Vastu Shastra in Telugu',
     `${cleanNakshatra} నక్షత్ర ఫలాలు`,
     `${cleanTithi} తిథి ఫలితం`,
+    `${featuredRashi.rashiNameTe} నేటి ఫలితం`,
+    'మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి',
     'యవనాచార్యుల మతం',
     'భృగు చక్ర పద్ధతి',
     'బృహత్ జాతక గ్రంథం',
@@ -344,7 +437,7 @@ export function syncAutomatedDailySeoSchema(
     'నక్షత్ర చూడామణి',
   ];
 
-  const articleHeadline = `Neti Panchangam (నేటి పంచాంగం - ${day.teediVaram}) | Telugu Jyothisham (తెలుగు జ్యోతిషం) — తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra}, గ్రహస్థితి & రాహుకాలం: ${day.ashubha.rahukalam}`;
+  const articleHeadline = `ఈ రోజు పంచాంగం (Neti Panchangam - ${day.teediVaram}) | తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra}, శుభ సమయం: ${day.shubha.amrutha} | నేటి ${featuredRashi.rashiNameTe} ఫలితం & 100 పేజీల జన్మ కుండలి PDF — Telugu Jyothisham`;
 
   // Standardized WebApplication & FAQPage nodes for Rich Snippet eligibility
   const webAppNode = buildStandardizedWebApplicationSchema(

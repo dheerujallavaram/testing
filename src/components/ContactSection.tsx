@@ -110,7 +110,7 @@ export const ContactSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-start gap-3 pt-2 border-t border-amber-100">
+            <div className="flex items-start gap-3 pt-2 border-t border-amber-100" data-nosnippet>
               <Clock size={20} className="text-amber-700 shrink-0 mt-0.5" />
               <div>
                 <strong className="text-amber-950 text-sm block">

@@ -16,7 +16,13 @@ import { GuruProfileHome } from './components/GuruProfileHome';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { CitySEOData, findCityBySlug } from './data/citiesData';
 import { PanchangamQuickSummary } from './components/PanchangamQuickSummary';
-import { syncAutomatedDailySeoSchema, syncHeadMetaTags } from './utils/dailySeoEngine';
+import {
+  syncAutomatedDailySeoSchema,
+  syncHeadMetaTags,
+  buildTeluguJyothishamBrandSnippet,
+  buildNetiPanchangamSearchSnippet,
+  getFeaturedDailyRashiSnippet,
+} from './utils/dailySeoEngine';
 import { resolveLocalizedCityRoute, LocalizedPageIntent } from './components/SEOContentManager';
 import { downloadDailyPanchangamCardImage } from './utils/panchangamImageGenerator';
 import { getOrGenerateDayData } from './utils/astronomyPanchangam';
@@ -489,25 +495,30 @@ function AppContent() {
 
     const cleanTithi = currentDay.panchanga.tithi.split('(')[0].trim();
     const cleanNakshatra = currentDay.panchanga.nakshatram.split('(')[0].trim();
+    const featuredRashi = getFeaturedDailyRashiSnippet(currentDay);
+    const brandDescTe = buildTeluguJyothishamBrandSnippet(currentDay, 'te');
+    const brandDescEn = buildTeluguJyothishamBrandSnippet(currentDay, 'en');
+    const netiPanchangamDescTe = buildNetiPanchangamSearchSnippet(currentDay, 'te');
+    const netiPanchangamDescEn = buildNetiPanchangamSearchSnippet(currentDay, 'en');
 
     const evergreenSeoMeta: Record<string, { titleTe: string; titleEn: string; descTe: string; descEn: string }> = {
       '/neti-panchangam': {
-        titleTe: `Neti Panchangam (${currentDay.teediVaram}) | నేటి పంచాంగం - ${cleanTithi}, ${cleanNakshatra} — telugujyothisham.com`,
-        titleEn: `Neti Panchangam (${currentDay.teediVaram}) | Today Panchangam in Telugu - ${cleanTithi} — telugujyothisham.com`,
-        descTe: `${currentDay.teediVaram} నేటి పంచాంగం (Neti Panchangam) & Today Panchangam in Telugu: తిథి ${currentDay.panchanga.tithi}, నక్షత్రం ${currentDay.panchanga.nakshatram}, రాహుకాలం ${currentDay.ashubha.rahukalam}, అమృత ఘడియలు ${currentDay.shubha.amrutha} & 12 రాశుల దిన ఫలాలు.`,
-        descEn: `${currentDay.teediVaram} Neti Panchangam (నేటి పంచాంగం) & Today Panchangam in Telugu: Tithi ${currentDay.panchanga.tithi}, Nakshatram ${currentDay.panchanga.nakshatram}, Rahu Kalam ${currentDay.ashubha.rahukalam} & Daily Horoscope at telugujyothisham.com.`,
+        titleTe: `Neti Panchangam (${currentDay.teediVaram}) | ఈ రోజు పంచాంగం: తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం & ${featuredRashi.rashiNameTe} ఫలం — telugujyothisham.com`,
+        titleEn: `Neti Panchangam (${currentDay.teediVaram}) | ఈ రోజు పంచాంగం - Tithi ${cleanTithi}, Nakshatram ${cleanNakshatra} & Shubha Samayam — telugujyothisham.com`,
+        descTe: netiPanchangamDescTe,
+        descEn: netiPanchangamDescEn,
       },
       '/today-panchangam-in-telugu': {
-        titleTe: `Today Panchangam in Telugu (${currentDay.teediVaram}) - ఈ రోజు పంచాంగం: ${cleanTithi}, ${cleanNakshatra} — telugujyothisham.com`,
+        titleTe: `Today Panchangam in Telugu (${currentDay.teediVaram}) - ఈ రోజు పంచాంగం: తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం & రాశి ఫలం — telugujyothisham.com`,
         titleEn: `Today Panchangam in Telugu (${currentDay.teediVaram}) - ఈ రోజు పంచాంగం - Neti Panchangam — telugujyothisham.com`,
-        descTe: `Today Panchangam in Telugu (${currentDay.teediVaram}) - తిథి: ${currentDay.panchanga.tithi}, నక్షత్రం: ${currentDay.panchanga.nakshatram}, యోగం: ${currentDay.panchanga.yogam}, రాహుకాలం: ${currentDay.ashubha.rahukalam}, అమృత ఘడియలు: ${currentDay.shubha.amrutha}.`,
-        descEn: `Today Panchangam in Telugu (${currentDay.teediVaram}) - Tithi: ${currentDay.panchanga.tithi}, Nakshatram: ${currentDay.panchanga.nakshatram}, Rahu Kalam: ${currentDay.ashubha.rahukalam}, Durmuhurtham & 12 Rashi Phalithalu.`,
+        descTe: netiPanchangamDescTe,
+        descEn: netiPanchangamDescEn,
       },
       '/ee-roju-panchangam': {
-        titleTe: `ఈ రోజు పంచాంగం (${currentDay.teediVaram}) | Ee Roju Panchangam - ${cleanTithi}, ${cleanNakshatra} — telugujyothisham.com`,
+        titleTe: `ఈ రోజు పంచాంగం (${currentDay.teediVaram}) | తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం & నేటి ${featuredRashi.rashiNameTe} ఫలం — telugujyothisham.com`,
         titleEn: `Ee Roju Panchangam (${currentDay.teediVaram}) | Today Panchangam in Telugu — telugujyothisham.com`,
-        descTe: `ఈ రోజు పంచాంగం (${currentDay.teediVaram}) - తిథి ${currentDay.panchanga.tithi}, నక్షత్రం ${currentDay.panchanga.nakshatram}, రాహుకాలం ${currentDay.ashubha.rahukalam}, వర్జ్యం ${currentDay.ashubha.varjyam} & 12 రాశుల దిన ఫలాలు.`,
-        descEn: `Ee Roju Panchangam (${currentDay.teediVaram}) - Today Panchangam in Telugu - Tithi ${currentDay.panchanga.tithi}, Nakshatram ${currentDay.panchanga.nakshatram} & Auspicious Timings.`,
+        descTe: netiPanchangamDescTe,
+        descEn: netiPanchangamDescEn,
       },
       '/gowri-panchangam': {
         titleTe: `నేటి గౌరీ పంచాంగం & హోరా చక్రం (${currentDay.teediVaram}) | Gowri Panchangam Telugu — telugujyothisham.com`,
@@ -528,10 +539,10 @@ function AppContent() {
         descEn: `Automated daily Telugu Pooja Sankalpam text & audio for ${currentDay.teediVaram} with Jambudweepe (India) and Krounchadweepe (USA/Canada) options.`,
       },
       '/janma-kundali': {
-        titleTe: 'ఉచిత తెలుగు జన్మ కుండలి & వింశోత్తరి మహాదశ | Free Janam Kundli in Telugu — telugujyothisham.com',
-        titleEn: 'Free Janma Kundali in Telugu | South Indian Rashi Chart & 120-Year Mahadasha — telugujyothisham.com',
-        descTe: 'మీ పుట్టిన తేదీ, సమయం, స్థలం ఆధారంగా ఉచిత తెలుగు జన్మ కుండలి (దక్షిణ భారత రాశి చక్రం), జన్మ రాశి, నక్షత్రం, పాదం, లగ్నం మరియు 120 ఏళ్ల వింశోత్తరి మహాదశ ఫలితాలు.',
-        descEn: 'Generate your free Telugu Janma Kundali (South Indian Birth Chart), Janma Rashi, Nakshatra Pada, Lagna, and 120-year Vimshottari Mahadasha periods online.',
+        titleTe: 'మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి | ఉచిత తెలుగు జన్మ కుండలి & మహాదశ — telugujyothisham.com',
+        titleEn: 'Get Your 100-Page Janma Kundali PDF | Free Janma Kundali in Telugu — telugujyothisham.com',
+        descTe: brandDescTe,
+        descEn: brandDescEn,
       },
       '/telugu-baby-names': {
         titleTe: '27 నక్షత్రాల తెలుగు పిల్లల పేర్లు | జన్మ నక్షత్ర అక్షరాలతో బాబు & పాప పేర్లు — telugujyothisham.com',
@@ -584,9 +595,9 @@ function AppContent() {
     };
 
     const titlesTelugu: Record<NavTab, string> = {
-      home: `Telugu Jyothisham (తెలుగు జ్యోతిషం) | Neti Panchangam (${currentDay.teediVaram}) - నేటి పంచాంగం, రాశి ఫలాలు & జన్మ కుండలి — telugujyothisham.com`,
-      panchangam: `నేటి పంచాంగం (${currentDay.teediVaram}) | Telugu Jyothisham (తెలుగు జ్యోతిషం) - Today Panchangam in Telugu - తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra}`,
-      jathakam: 'మీ జాతకం తెలుసుకోండి | Telugu Jyothisham (తెలుగు జ్యోతిషం) - ఉచిత జన్మ కుండలి & సంపూర్ణ జాతక ఫలితాలు — telugujyothisham.com',
+      home: `Telugu Jyothisham (తెలుగు జ్యోతిషం) | ఈ రోజు నక్షత్రం: ${cleanNakshatra}, నేటి ${featuredRashi.rashiNameTe} ఫలితం & మీ జన్మ కుండలి 100 పేజీల PDF పొందండి`,
+      panchangam: `నేటి పంచాంగం (Neti Panchangam - ${currentDay.teediVaram}) | ఈ రోజు తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra}, శుభ సమయం & రాశి ఫలం`,
+      jathakam: 'మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి | మీ జాతకం తెలుసుకోండి — Telugu Jyothisham (తెలుగు జ్యోతిషం)',
       awards: 'పొందిన సత్కారాలు & పురస్కారాలు | Telugu Jyothisham (తెలుగు జ్యోతిషం) - శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ',
       services: 'వైదిక పూజా సేవలు & హోమాలు | Telugu Jyothisham (తెలుగు జ్యోతిషం) - శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం',
       about: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి గురించి | Telugu Jyothisham (తెలుగు జ్యోతిషం) - శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం',
@@ -594,9 +605,9 @@ function AppContent() {
     };
 
     const titlesEnglish: Record<NavTab, string> = {
-      home: `Telugu Jyothisham (తెలుగు జ్యోతిషం) | Neti Panchangam (${currentDay.teediVaram}) - Today Panchangam in Telugu — telugujyothisham.com`,
-      panchangam: `Today Panchangam in Telugu (${currentDay.teediVaram}) | Telugu Jyothisham (తెలుగు జ్యోతిషం) - ఈ రోజు పంచాంగం: ${cleanTithi}, ${cleanNakshatra}`,
-      jathakam: 'Know Your Horoscope | Telugu Jyothisham (తెలుగు జ్యోతిషం) - Free Janma Kundali & Horoscope Report — telugujyothisham.com',
+      home: `Telugu Jyothisham (తెలుగు జ్యోతిషం) | ఈ రోజు నక్షత్రం: ${cleanNakshatra} • నేటి ${featuredRashi.rashiNameTe} ఫలితం • 100 పేజీల జన్మ కుండలి PDF`,
+      panchangam: `Neti Panchangam (${currentDay.teediVaram}) | ఈ రోజు పంచాంగం: తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం & రాశి ఫలం`,
+      jathakam: 'Get Your 100-Page Janma Kundali PDF (మీ జన్మ కుండలి 100 పేజీల PDF పొందండి) | Telugu Jyothisham',
       awards: 'Vedic Honors & Awards | Telugu Jyothisham - Sri Jallavaram Sai Dheeraj Sharma — telugujyothisham.com',
       services: 'Vedic Homams & Rituals | Telugu Jyothisham - Sri Chandi Homam, Lakshmi Kubera Yagam — telugujyothisham.com',
       about: 'About Sri Jallavaram Sai Dheeraj Sharma | Telugu Jyothisham (తెలుగు జ్యోతిషం) — telugujyothisham.com',
@@ -604,23 +615,23 @@ function AppContent() {
     };
 
     const descriptionsTelugu: Record<NavTab, string> = {
-      home: `తెలుగు జ్యోతిషం (Telugu Jyothisham) అనేది వేద జ్యోతిషశాస్త్రం ఆధారంగా ${currentDay.teediVaram} నేటి పంచాంగం (Neti Panchangam), తిథి ${currentDay.panchanga.tithi}, నక్షత్రం ${currentDay.panchanga.nakshatram}, రాహుకాలం ${currentDay.ashubha.rahukalam}, 12 రాశి ఫలాలు మరియు ఉచిత జన్మ కుండలి వివరాలను అందించే విధానం.`,
-      panchangam: `తెలుగు జ్యోతిషం (Telugu Jyothisham) — ${currentDay.teediVaram} ఈ రోజు తెలుగు పంచాంగం (Today Panchangam in Telugu): తిథి ${currentDay.panchanga.tithi}, నక్షత్రం ${currentDay.panchanga.nakshatram}, రాహుకాలం ${currentDay.ashubha.rahukalam}, గౌరీ పంచాంగం, హోరా చక్రం, తారాబలం, నిత్య సంకల్పం & 12 రాశుల దిన ఫలాలు.`,
-      jathakam: 'తెలుగు జ్యోతిషం (Telugu Jyothisham) — మీ పుట్టిన తేదీ, సమయం, ప్రాంతం ఆధారంగా ఉచిత తెలుగు జన్మ కుండలి (D1 రాశి చక్రం, D9 నవాంశ చక్రం), ద్వాదశ స్థానాల ఫలితాలు, 120 ఏళ్ల వింశోత్తరి మహాదశ మరియు సంపూర్ణ జాతక ఫలితాల నివేదిక.',
+      home: brandDescTe,
+      panchangam: netiPanchangamDescTe,
+      jathakam: brandDescTe,
       awards: 'తెలుగు జ్యోతిషం (Telugu Jyothisham) — శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు పొందిన జ్యోతిష సత్కారాలు, బిరుదులు మరియు పూజా పురస్కారాల వివరాలు.',
       services: 'తెలుగు జ్యోతిషం (Telugu Jyothisham) — శ్రీ చండీ హోమం, లక్ష్మీ గణపతి హోమం, సుదర్శన హోమం, వివాహ, గృహప్రవేశ క్రతువులు శాస్త్రోక్తంగా నిర్వహించబడును.',
       about: 'తెలుగు జ్యోతిషం (Telugu Jyothisham) — జ్యోతిష పండితులు, స్మార్త వేద విద్వాంసులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్యాత్మిక ప్రస్థానం మరియు అనుభవం.',
-      contact: 'తెలుగు జ్యోతిషం (Telugu Jyothisham) — జ్యోతిష సంప్రదింపులు, ముహూర్త నిర్ణయం మరియు పూజా బుకింగ్ కొరకు శ్రీ ధీరజ్ శర్మ గారిని సంప్రదించండి.',
+      contact: 'తెలుగు జ్యోతిషం (Telugu Jyothisham) — జ్యోతిష సంప్రదింపులు, 100 పేజీల జన్మ కుండలి PDF, ముహూర్త నిర్ణయం మరియు పూజా బుకింగ్ కొరకు శ్రీ ధీరజ్ శర్మ గారిని సంప్రదించండి.',
     };
 
     const descriptionsEnglish: Record<NavTab, string> = {
-      home: `Telugu Jyothisham (తెలుగు జ్యోతిషం) — Today Panchangam in Telugu (${currentDay.teediVaram} / Neti Panchangam): Tithi ${currentDay.panchanga.tithi}, Nakshatram ${currentDay.panchanga.nakshatram}, Rahu Kalam ${currentDay.ashubha.rahukalam}, Free Janma Kundali & 12 Rashi Phalalu.`,
-      panchangam: `Telugu Jyothisham (తెలుగు జ్యోతిషం) — Today Panchangam in Telugu (${currentDay.teediVaram}): Tithi ${currentDay.panchanga.tithi}, Nakshatram ${currentDay.panchanga.nakshatram}, Rahu Kalam ${currentDay.ashubha.rahukalam}, Gowri Panchangam, Hora Timings, Tarabalam & 12 Rashi Phalalu.`,
-      jathakam: 'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Generate your free Telugu Janma Kundali (D1 Rashi, D9 Navamsha), 12-house predictions, 96-year life progression, Lucky Gemstones, and comprehensive horoscope report.',
+      home: brandDescEn,
+      panchangam: netiPanchangamDescEn,
+      jathakam: brandDescEn,
       awards: 'Telugu Jyothisham — Prestigious Vedic awards, golden kankanam citations, and state-level felicitations conferred upon Sri Jallavaram Sai Dheeraj Sharma.',
       services: 'Telugu Jyothisham — Authentic Vedic homams, Sri Chandi Sahitha Rudra Homam, Gruhapravesham, wedding muhurthams, and online sankalpam booking.',
       about: 'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Profile and spiritual journey of renowned Vedic scholar and astrologer Sri Jallavaram Sai Dheeraj Sharma.',
-      contact: 'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Consult renowned Telugu astrologer and Smartha purohit Sri Dheeraj Sharma for horoscope consultation, muhurtham, and pooja bookings.',
+      contact: 'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Consult renowned Telugu astrologer and Smartha purohit Sri Dheeraj Sharma for 100-page Janma Kundali PDF, muhurtham, and pooja bookings.',
     };
 
     const matchedEvergreen = isEvergreenHubRoute && activeTab === 'panchangam'
@@ -722,6 +733,10 @@ function AppContent() {
           <GuruProfileHome
             currentDay={currentDay}
             onNavigateToPanchangam={handleNavigateToPanchangam}
+            onNavigateToJathakam={() => {
+              handleSelectTab('jathakam');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             onNavigateToAwards={handleNavigateToAwards}
             onOpenBooking={(service) => handleOpenBooking(service)}
           />

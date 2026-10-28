@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Calendar, Clock, Sun, Moon, Sparkles, ShieldAlert, Award, Volume2, Square } from 'lucide-react';
+import { Clock, Sun, Moon, Sparkles, ShieldAlert, Award, Volume2, Square } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import { useLanguage } from '../context/LanguageContext';
+import { getFeaturedDailyRashiSnippet } from '../utils/dailySeoEngine';
 
 export interface PanchangamQuickSummaryProps {
   day: DayData;
@@ -18,6 +19,9 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
   const { t, tr } = useLanguage();
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
   const [speechSupported, setSpeechSupported] = useState<boolean>(false);
+  const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
+  const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.trim() || day.panchanga.nakshatram;
+  const featuredRashi = getFeaturedDailyRashiSnippet(day);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -62,6 +66,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
       `కరణం: ${day.panchanga.karanam}.`,
       `శుభ సమయం, అమృత ఘడియలు: ${amruthaText}.`,
       `అశుభ సమయాలు — రాహుకాలం: ${day.ashubha.rahukalam}. యమగండం: ${day.ashubha.yamagandam}. వర్జ్యం: ${day.ashubha.varjyam}.`,
+      `నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe}.`,
       day.specialEvent ? `నేటి విశేషం: ${day.specialEvent}.` : '',
       `దిన ఫలితం: ${day.phalitham}.`,
       `సర్వేజనా సుఖినోభవంతు.`
@@ -88,7 +93,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
 
     setIsPlayingAudio(true);
     window.speechSynthesis.speak(utterance);
-  }, [day, isPlayingAudio]);
+  }, [day, isPlayingAudio, featuredRashi]);
 
   return (
     <section 
@@ -102,13 +107,13 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
         <div>
           <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 bg-amber-500/20 border border-amber-400/40 px-3 py-1 rounded-full mb-1.5">
             <Sparkles size={13} className="text-amber-400" />
-            <span>Neti Panchangam • Today Panchangam in Telugu • ఈ రోజు పంచాంగం</span>
+            <span>Neti Panchangam • ఈ రోజు పంచాంగం • Today Panchangam in Telugu</span>
           </div>
           <h2 className="text-xl sm:text-3xl font-black text-amber-100">
-            {tr(day.label)} పంచాంగం — Neti Panchangam ({day.teediVaram})
+            ఈ రోజు పంచాంగం (Neti Panchangam - {day.teediVaram}) — తిథి: {cleanTithi}, నక్షత్రం: {cleanNakshatra}
           </h2>
-          <p className="text-xs sm:text-sm text-amber-200/85 mt-0.5">
-            Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం) — శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం
+          <p className="text-xs sm:text-sm text-amber-200/95 mt-1 leading-relaxed">
+            <strong>శుభ సమయం (అమృత ఘడియలు):</strong> {tr(day.shubha.amrutha)} | <strong>అభిజిత్ ముహూర్తం:</strong> {tr(day.shubha.abhijit)} | <strong>నేటి {featuredRashi.rashiNameTe} ఫలం:</strong> {featuredRashi.predictionTe} | <strong>మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి.</strong>
           </p>
         </div>
 

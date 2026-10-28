@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageCircle } from 'lucide-react';
 
 export const FloatingWhatsApp: React.FC = () => {
+  const [hasEntered, setHasEntered] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setHasEntered(true);
+    }, 180);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   const whatsappUrl = `https://wa.me/918977986166?text=${encodeURIComponent(
     'నమస్కారం శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు, నాకు పూజ / జాతక పరిశీలన ముహూర్త సమాచారం కావాలి.'
   )}`;
 
   return (
-    <aside aria-label="WhatsApp Quick Contact" className="fixed bottom-6 right-6 z-40 flex items-center gap-3">
+    <aside
+      aria-label="WhatsApp Quick Contact"
+      data-nosnippet
+      className={`fixed bottom-6 right-6 z-40 flex items-center gap-3 transition-all duration-700 ease-out transform ${
+        hasEntered
+          ? 'translate-y-0 opacity-100'
+          : 'translate-y-12 opacity-0 pointer-events-none'
+      }`}
+    >
       {/* Tooltip badge on hover/desktop */}
       <a
         href={whatsappUrl}
@@ -34,3 +51,4 @@ export const FloatingWhatsApp: React.FC = () => {
     </aside>
   );
 };
+

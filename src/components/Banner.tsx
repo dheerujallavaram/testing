@@ -2,6 +2,7 @@ import React from 'react';
 import { Sparkles, Compass, Sunrise, Moon } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import { useLanguage } from '../context/LanguageContext';
+import { getFeaturedDailyRashiSnippet } from '../utils/dailySeoEngine';
 
 interface BannerProps {
   currentDay: DayData;
@@ -11,6 +12,9 @@ interface BannerProps {
 
 export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName }) => {
   const { t, tr } = useLanguage();
+  const cleanTithi = currentDay.panchanga.tithi.split('-')[0]?.trim() || currentDay.panchanga.tithi;
+  const cleanNakshatra = currentDay.panchanga.nakshatram.split('-')[0]?.trim() || currentDay.panchanga.nakshatram;
+  const featuredRashi = getFeaturedDailyRashiSnippet(currentDay);
 
   const moonRashiDisplay = (() => {
     const moonEntry = Object.entries(currentDay.grahaStithi).find(([, val]) => val?.includes('చంద్రుడు'));
@@ -46,7 +50,7 @@ export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName }) =
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
           {/* Sanskrit invocation */}
-          <p className="text-amber-300 text-sm sm:text-base font-semibold font-telugu mb-2 flex items-center justify-center gap-2 drop-shadow-xs">
+          <p className="text-amber-300 text-sm sm:text-base font-semibold font-telugu mb-2 flex items-center justify-center gap-2 drop-shadow-xs" data-nosnippet>
             <span>
               {t(
                 'శుక్లాంబరధరం విష్ణుం శశివర్ణం చతుర్భుజమ్ · ప్రసన్నవదనం ధ్యాయేత్ సర్వవిఘ్నోపశాంతయే',
@@ -57,20 +61,22 @@ export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName }) =
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-telugu text-white tracking-tight drop-shadow-sm mb-3">
             {t(
-              'తెలుగు జ్యోతిషం (Telugu Jyothisham) — నేటి పంచాంగం & రాశి ఫలితాలు',
-              'Telugu Jyothisham | Today Panchangam in Telugu (ఈ రోజు పంచాంగం - Neti Panchangam)'
+              `ఈ రోజు పంచాంగం (Neti Panchangam) — తిథి: ${cleanTithi} • నక్షత్రం: ${cleanNakshatra}`,
+              `Neti Panchangam | Today Panchangam in Telugu (${tr(cleanTithi)}, ${tr(cleanNakshatra)})`
             )}
           </h1>
 
           <p className="text-xs sm:text-sm font-semibold text-amber-300/95 tracking-wide mb-2">
-            Telugu Jyothisham (తెలుగు జ్యోతిషం) · Neti Panchangam · Today Panchangam in Telugu - Tithi(తిథి), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Vaaram(వారం), Masam(మాసం)
+            {t(
+              `నేటి పంచాంగం (${currentDay.teediVaram}): తిథి ${cleanTithi} • నక్షత్రం ${cleanNakshatra} • శుభ సమయం (అమృత ఘడియలు): ${currentDay.shubha.amrutha} • అభిజిత్: ${currentDay.shubha.abhijit}`,
+              `Today Panchangam in Telugu (${tr(currentDay.teediVaram)}): Tithi ${tr(cleanTithi)} • Nakshatram ${tr(cleanNakshatra)} • Shubha Samayam: ${tr(currentDay.shubha.amrutha)}`
+            )}
           </p>
 
-          <p className="text-base sm:text-lg text-amber-100/90 font-telugu leading-relaxed mb-6 max-w-2xl mx-auto">
-            {tr(currentDay.panchanga.samvatsaram)} · {tr(currentDay.panchanga.masam)} —{' '}
+          <p className="text-base sm:text-lg text-amber-100/95 font-telugu leading-relaxed mb-6 max-w-3xl mx-auto">
             {t(
-              'తిథి, నక్షత్రం, యోగం, కరణం, లగ్నాలు, రాహుకాలం, రాశి చక్ర గోచారం మరియు శుభ/అశుభ ముహూర్తాల ప్రామాణిక వివరాలు.',
-              'Authentic Drik Siddhanta Tithi, Nakshatra, Yogam, Karanam, Lagnas, Rahu Kalam, Planetary Rashi Chart & Auspicious Muhurtha Timings.'
+              `మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe} | మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ పొందండి — రాహుకాలం: ${currentDay.ashubha.rahukalam} (${currentDay.panchanga.samvatsaram} · ${currentDay.panchanga.masam}).`,
+              `Today's Featured ${featuredRashi.rashiNameEn} Horoscope: ${featuredRashi.predictionEn} | Get your 100-Page Janma Kundali PDF Report — Rahu Kalam: ${tr(currentDay.ashubha.rahukalam)}.`
             )}
           </p>
 

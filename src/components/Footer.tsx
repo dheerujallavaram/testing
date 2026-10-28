@@ -50,7 +50,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSecti
   return (
     <footer className="bg-amber-950 text-amber-100/90 pt-14 pb-8 border-t-4 border-amber-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-3 gap-8 pb-10 border-b border-amber-900/80">
+        <div className="grid md:grid-cols-3 gap-8 pb-10 border-b border-amber-900/80" data-nosnippet>
           {/* Col 1: Temple info */}
           <div>
             <h4 className="text-xl font-bold font-telugu text-white flex items-center gap-2.5 mb-3">
@@ -59,8 +59,8 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSecti
             </h4>
             <p className="text-sm font-telugu text-amber-200/80 leading-relaxed mb-3">
               {t(
-                'తెలుగు జ్యోతిషం (Telugu Jyothisham) అనేది వేద జ్యోతిషశాస్త్రం ఆధారంగా పంచాంగం, రాశి ఫలాలు మరియు జన్మ కుండలి వివరాలను అందించే విధానం. వేద పండితులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి నేతృత్వంలో దృక్సిద్ధాంత పంచాంగం మరియు జ్యోతిష సేవలు అందించబడును.',
-                'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Led by Vedic Scholar and Astrologer Sri Jallavaram Sai Dheeraj Sharma, offering daily authentic Vedic Panchangam, Rashi Phalalu, Free Janma Kundali, and sacred ritual services.'
+                'తెలుగు జ్యోతిషం (Telugu Jyothisham) — ఈ రోజు నక్షత్రం, తిథి, శుభ సమయం, మీ రాశి ప్రకారం నేటి ద్వాదశ రాశి ఫలితాలు మరియు మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ పొందండి. బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి దృక్సిద్ధాంత పంచాంగం.',
+                'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Check Today Nakshatram, Tithi, Shubha Samayam, Daily Rashi Phalalu according to your sign, and get your 100-page Janma Kundali PDF report.'
               )}
             </p>
             <a
@@ -69,13 +69,13 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSecti
             >
               Telugu Jyothisham — www.telugujyothisham.com
             </a>
-            <p className="text-xs font-display tracking-widest uppercase text-amber-400">
-              Telugu Jyothisham · Vedic Almanac &amp; Astrological Research
+            <p className="text-xs font-telugu font-semibold text-amber-400">
+              {t('మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి • నేటి పంచాంగం & రాశి ఫలాలు', 'Get Your 100-Page Janma Kundali PDF • Today Panchangam & Horoscope')}
             </p>
           </div>
 
           {/* Col 2: Services & Timings */}
-          <div>
+          <div data-nosnippet>
             <h4 className="text-base font-bold font-telugu text-white mb-3 flex items-center gap-2">
               <Clock size={16} className="text-amber-400" />
               <span>{t('జ్యోతిషాలయ సమయాలు & సేవలు', 'Timings & Sacred Services')}</span>
@@ -84,7 +84,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSecti
               <li>{t('ఉదయం: 06:30 AM నుండి 12:30 PM వరకు', 'Morning: 06:30 AM to 12:30 PM')}</li>
               <li>{t('సాయంత్రం: 04:30 PM నుండి 08:30 PM వరకు', 'Evening: 04:30 PM to 08:30 PM')}</li>
               <li className="pt-2 text-xs text-amber-300">
-                • {t('జాతక పరిశీలన, వివాహ పొంతన, నవగ్రహ శాంతి, వాస్తు సలహాలు', 'Horoscope analysis, marriage matching, Navagraha Shanti & Vastu guidance')}
+                • {t('జాతక పరిశీలన, 100 పేజీల జన్మ కుండలి PDF, వివాహ పొంతన, వాస్తు సలహాలు', 'Horoscope analysis, 100-page Janma Kundali PDF, marriage matching & Vastu guidance')}
               </li>
               <li className="text-xs text-amber-300">
                 • {t('సంపూర్ణ గృహప్రవేశ మరియు వైదిక హోమ క్రతువులు', 'Comprehensive Gruhapravesam & Vedic Homam rituals')}
@@ -93,7 +93,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSecti
           </div>
 
           {/* Col 3: Contact & Devotee Desk */}
-          <div>
+          <div data-nosnippet>
             <h4 className="text-base font-bold font-telugu text-white mb-3 flex items-center gap-2">
               <Phone size={16} className="text-amber-400" />
               <span>{t('సంప్రదించవలసిన వివరాలు', 'Contact & Devotee Desk')}</span>
