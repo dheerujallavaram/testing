@@ -9,6 +9,7 @@ export interface FooterProps {
   onSelectCity?: (citySlug: string) => void;
   onNavigateHubSection?: (section: HubSectionId, path: string) => void;
   onOpenLegal?: (doc: LegalDocType) => void;
+  onOpenAdmin?: () => void;
 }
 
 const SEO_HUB_LINKS: { section: HubSectionId; path: string; labelTe: string; labelEn: string }[] = [
@@ -44,7 +45,12 @@ const POPULAR_CITY_LINKS: { slug: string; nameTe: string; nameEn: string }[] = [
   { slug: 'toronto', nameTe: 'టొరంటో (Canada)', nameEn: 'Toronto CA' },
 ];
 
-export const Footer: React.FC<FooterProps> = ({ onSelectCity, onNavigateHubSection, onOpenLegal }) => {
+export const Footer: React.FC<FooterProps> = ({
+  onSelectCity,
+  onNavigateHubSection,
+  onOpenLegal,
+  onOpenAdmin,
+}) => {
   const { t, language } = useLanguage();
 
   return (

@@ -855,7 +855,7 @@ export function evaluateMehtaElementalStrengths(
         tier,
         tierLabelTe: tierLabels[tier].te,
         tierLabelEn: tierLabels[tier].en,
-        isRetrograde: p.isRetrograde,
+        isRetrograde: !!p.isRetrograde,
         analysisTe,
         analysisEn,
         remedyTe: rule.remedyTe,

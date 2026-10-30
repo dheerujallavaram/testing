@@ -1,0 +1,380 @@
+{
+  "entities": {
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Authorized administrator record for Sri Lakshmi Ganapathi Jyothishalayam Admin Portal.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the administrator",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Verified Google account email address",
+          "minLength": 5,
+          "maxLength": 160
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of the astrologer/admin",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of admin creation"
+        }
+      },
+      "required": ["uid", "email", "displayName", "createdAt"]
+    },
+    "SiteAnnouncement": {
+      "title": "SiteAnnouncement",
+      "description": "Live astrological bulletin, daily special rashi message, festival notice, or consultation hours banner managed from the Admin Panel.",
+      "type": "object",
+      "properties": {
+        "titleTe": {
+          "type": "string",
+          "description": "Telugu headline for the announcement or daily special astrology update",
+          "minLength": 2,
+          "maxLength": 240
+        },
+        "titleEn": {
+          "type": "string",
+          "description": "English headline for the announcement",
+          "minLength": 2,
+          "maxLength": 240
+        },
+        "messageTe": {
+          "type": "string",
+          "description": "Detailed Telugu message, special rashi phalitham, or festival muhurtham note",
+          "minLength": 2,
+          "maxLength": 1500
+        },
+        "messageEn": {
+          "type": "string",
+          "description": "Detailed English message or special daily forecast",
+          "minLength": 2,
+          "maxLength": 1500
+        },
+        "badgeTe": {
+          "type": "string",
+          "description": "Short Telugu badge text (e.g., నేటి విశేష సూచన, గ్రహణ నియమాలు, 100 పేజీల కుండలి ఆఫర్)",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "ctaLabelTe": {
+          "type": "string",
+          "description": "Call-to-action button text in Telugu",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "ctaTarget": {
+          "type": "string",
+          "description": "Target action when CTA is clicked",
+          "enum": ["jathakam", "panchangam", "booking", "whatsapp"]
+        },
+        "consultationHoursTe": {
+          "type": "string",
+          "description": "Updated consultation hours string in Telugu",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Whether this bulletin is currently visible on the public website"
+        },
+        "authorId": {
+          "type": "string",
+          "description": "UID of the admin who published this announcement",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp"
+        }
+      },
+      "required": [
+        "titleTe",
+        "titleEn",
+        "messageTe",
+        "messageEn",
+        "badgeTe",
+        "ctaLabelTe",
+        "ctaTarget",
+        "consultationHoursTe",
+        "isActive",
+        "authorId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "BookingInquiry": {
+      "title": "BookingInquiry",
+      "description": "Pooja sankalpam booking or 100-page Janma Kundali PDF consultation lead managed in the Admin Panel.",
+      "type": "object",
+      "properties": {
+        "referenceCode": {
+          "type": "string",
+          "description": "Human-readable booking reference (e.g., SLG-482910)",
+          "minLength": 4,
+          "maxLength": 40
+        },
+        "inquiryType": {
+          "type": "string",
+          "description": "Type of service requested",
+          "enum": ["pooja", "kundali_pdf", "muhurtham", "consultation"]
+        },
+        "serviceName": {
+          "type": "string",
+          "description": "Name of the Pooja, Homam, or 100-Page Janma Kundali PDF service",
+          "minLength": 2,
+          "maxLength": 180
+        },
+        "devoteeName": {
+          "type": "string",
+          "description": "Full name of the devotee or client",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "phone": {
+          "type": "string",
+          "description": "Client mobile or WhatsApp number",
+          "minLength": 7,
+          "maxLength": 24
+        },
+        "gotram": {
+          "type": "string",
+          "description": "Vedic Gotram of the devotee",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "rashi": {
+          "type": "string",
+          "description": "Janma Rashi of the devotee",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "nakshatram": {
+          "type": "string",
+          "description": "Janma Nakshatram of the devotee",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "preferredDate": {
+          "type": "string",
+          "description": "Preferred date for pooja or birth date for kundali",
+          "minLength": 4,
+          "maxLength": 40
+        },
+        "birthTime": {
+          "type": "string",
+          "description": "Birth time (HH:mm) if Kundali PDF inquiry",
+          "minLength": 0,
+          "maxLength": 30
+        },
+        "birthPlace": {
+          "type": "string",
+          "description": "Birth place or Pooja location mode",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "notes": {
+          "type": "string",
+          "description": "Special sankalpam intention or admin remarks",
+          "minLength": 0,
+          "maxLength": 1000
+        },
+        "status": {
+          "type": "string",
+          "description": "Workflow state of the booking",
+          "enum": ["pending", "confirmed", "completed", "cancelled"]
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "Firebase Auth UID of creator (user or admin)",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp"
+        }
+      },
+      "required": [
+        "referenceCode",
+        "inquiryType",
+        "serviceName",
+        "devoteeName",
+        "phone",
+        "gotram",
+        "rashi",
+        "nakshatram",
+        "preferredDate",
+        "birthTime",
+        "birthPlace",
+        "notes",
+        "status",
+        "ownerId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "KundaliRecord": {
+      "title": "KundaliRecord",
+      "description": "Saved client Janma Kundali record with birth coordinates, computed Rashi/Nakshatra/Lagna, and Guruji's custom remedial guidance.",
+      "type": "object",
+      "properties": {
+        "clientName": {
+          "type": "string",
+          "description": "Name of the native",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "phone": {
+          "type": "string",
+          "description": "Client WhatsApp number for sending the 100-page PDF",
+          "minLength": 0,
+          "maxLength": 24
+        },
+        "gotram": {
+          "type": "string",
+          "description": "Client Gotram",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "birthDate": {
+          "type": "string",
+          "description": "Birth date in YYYY-MM-DD",
+          "minLength": 8,
+          "maxLength": 20
+        },
+        "birthTime": {
+          "type": "string",
+          "description": "Birth time in HH:mm",
+          "minLength": 4,
+          "maxLength": 20
+        },
+        "birthCityId": {
+          "type": "string",
+          "description": "City identifier from BIRTH_CITIES",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "birthCityLabel": {
+          "type": "string",
+          "description": "Readable Telugu/English city label",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "rashiTe": {
+          "type": "string",
+          "description": "Computed Moon Rashi in Telugu",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "nakshatraTe": {
+          "type": "string",
+          "description": "Computed Janma Nakshatra & Pada in Telugu",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "lagnaTe": {
+          "type": "string",
+          "description": "Computed D1 Janma Lagna in Telugu",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "activeDashaTe": {
+          "type": "string",
+          "description": "Current Vimshottari Mahadasha in Telugu",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "guruNotes": {
+          "type": "string",
+          "description": "Custom astrological prediction or parihara notes written by Sri Sai Dheeraj Sharma",
+          "minLength": 0,
+          "maxLength": 2000
+        },
+        "pdfDelivered": {
+          "type": "boolean",
+          "description": "Whether the 100-page PDF report has been delivered to the client"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the creator",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp"
+        }
+      },
+      "required": [
+        "clientName",
+        "phone",
+        "gotram",
+        "birthDate",
+        "birthTime",
+        "birthCityId",
+        "birthCityLabel",
+        "rashiTe",
+        "nakshatraTe",
+        "lagnaTe",
+        "activeDashaTe",
+        "guruNotes",
+        "pdfDelivered",
+        "ownerId",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminUser" },
+      "description": "Registry of verified administrators."
+    },
+    "/siteAnnouncements/{announcementId}": {
+      "schema": { "$ref": "#/entities/SiteAnnouncement" },
+      "description": "Public astrological announcements, daily special messages, and consultation banners."
+    },
+    "/bookings/{bookingId}": {
+      "schema": { "$ref": "#/entities/BookingInquiry" },
+      "description": "Pooja bookings and 100-page Janma Kundali PDF inquiries containing client PII."
+    },
+    "/kundaliRecords/{recordId}": {
+      "schema": { "$ref": "#/entities/KundaliRecord" },
+      "description": "Saved client Janma Kundali profiles and Guruji remedial notes."
+    }
+  }
+}

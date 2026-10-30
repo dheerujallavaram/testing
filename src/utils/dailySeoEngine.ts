@@ -83,19 +83,14 @@ export function buildTeluguJyothishamBrandSnippet(
   const featuredRashi = getFeaturedDailyRashiSnippet(day);
 
   if (lang === 'en') {
-    return `Today Nakshatram: ${cleanNakshatra} (${day.teediVaram}, Tithi: ${cleanTithi}) | Today ${featuredRashi.rashiNameEn} Horoscope: ${featuredRashi.predictionTe} | మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి (Get 100-Page Janma Kundali PDF) — Telugu Jyothisham (తెలుగు జ్యోతిషం).`;
+    return `Telugu Astrology & Telugu Jyothisham — Today Nakshatram: ${cleanNakshatra} (${day.teediVaram}, Tithi: ${cleanTithi}) | Telugu Horoscope: ${featuredRashi.rashiNameEn} (${featuredRashi.predictionTe}) | Daily Telugu Panchangam & 100-Page Janma Kundali PDF — telugujyothisham.com.`;
   }
 
-  return `ఈ రోజు నక్షత్రం: ${cleanNakshatra} (${day.teediVaram}, తిథి: ${cleanTithi}) | మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలితం: ${featuredRashi.predictionTe} | మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి — తెలుగు జ్యోతిషం (Telugu Jyothisham) & నేటి శుభ సమయం: ${day.shubha.amrutha}.`;
+  return `Telugu Astrology & Telugu Jyothisham (తెలుగు జ్యోతిషం) — Daily Telugu Panchangam: ఈ రోజు నక్షత్రం ${cleanNakshatra} (${day.teediVaram}, తిథి: ${cleanTithi}) | Telugu Horoscope (నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe}) | 100 పేజీల జన్మ కుండలి PDF & శుభ సమయం: ${day.shubha.amrutha}.`;
 }
 
 /**
- * Builds the front-loaded Google Search snippet for "Neti Panchangam" / "ఈ రోజు పంచాంగం" queries.
- * Leads directly with:
- * 1. ఈ రోజు పంచాంగం తిథి & నక్షత్రం (Today's Tithi & Nakshatram)
- * 2. శుభ సమయం (Amrutha Gadiyalu & Abhijit Muhurtham)
- * 3. నేటి రాశి ఫలం (Featured Daily Rasi Phalam)
- * 4. మీ జన్మ కుండలి 100 పేజీల PDF పొందండి
+ * Builds the front-loaded Google Search snippet for "Neti Panchangam" / "Telugu Panchangam" queries.
  */
 export function buildNetiPanchangamSearchSnippet(
   day: DayData,
@@ -106,10 +101,10 @@ export function buildNetiPanchangamSearchSnippet(
   const featuredRashi = getFeaturedDailyRashiSnippet(day);
 
   if (lang === 'en') {
-    return `Neti Panchangam (${day.teediVaram} - ఈ రోజు పంచాంగం): Tithi ${cleanTithi}, Nakshatram ${cleanNakshatra}, Shubha Samayam (అమృత ఘడియలు): ${day.shubha.amrutha}, Abhijit: ${day.shubha.abhijit} | నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe} | Get 100-Page Janma Kundali PDF.`;
+    return `Telugu Panchangam & Telugu Astrology (${day.teediVaram}): Tithi ${cleanTithi}, Nakshatram ${cleanNakshatra}, Shubha Samayam: ${day.shubha.amrutha}, Abhijit: ${day.shubha.abhijit} | Telugu Horoscope (${featuredRashi.rashiNameEn}): ${featuredRashi.predictionTe} | 100-Page Janma Kundali PDF.`;
   }
 
-  return `ఈ రోజు పంచాంగం (Neti Panchangam - ${day.teediVaram}): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం (అమృత ఘడియలు): ${day.shubha.amrutha}, అభిజిత్: ${day.shubha.abhijit} | నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe} | మీ జన్మ కుండలి 100 పేజీల PDF పొందండి (రాహుకాలం: ${day.ashubha.rahukalam}).`;
+  return `Daily Telugu Panchangam & Telugu Astrology — ఈ రోజు పంచాంగం (${day.teediVaram}): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం (అమృత ఘడియలు): ${day.shubha.amrutha} | Telugu Horoscope (నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe}) | 100 పేజీల జన్మ కుండలి PDF (రాహుకాలం: ${day.ashubha.rahukalam}).`;
 }
 
 /**

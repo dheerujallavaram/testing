@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Sparkles,
   Calendar,
@@ -37,6 +37,13 @@ import {
 
 interface JanmaKundaliGeneratorProps {
   onOpenBooking?: () => void;
+  prefillClient?: {
+    name: string;
+    birthDate: string;
+    birthTime: string;
+    cityId: string;
+    autoOpenPrint?: boolean;
+  } | null;
 }
 
 interface DashaLordConfig {
@@ -124,16 +131,26 @@ const SOUTH_INDIAN_CELLS: { row: number; col: number; rashiIdx: number }[] = [
   { row: 1, col: 0, rashiIdx: 10 }, // కుంభం
 ];
 
-export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () => {
+export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ prefillClient }) => {
   const { t, language } = useLanguage();
-  const [name, setName] = useState<string>('శ్రీనివాస రావు');
-  const [birthDate, setBirthDate] = useState<string>('1994-08-15');
-  const [birthTime, setBirthTime] = useState<string>('09:30');
-  const [selectedCityId, setSelectedCityId] = useState<string>('hyderabad');
+  const [name, setName] = useState<string>(prefillClient?.name || 'శ్రీనివాస రావు');
+  const [birthDate, setBirthDate] = useState<string>(prefillClient?.birthDate || '1994-08-15');
+  const [birthTime, setBirthTime] = useState<string>(prefillClient?.birthTime || '09:30');
+  const [selectedCityId, setSelectedCityId] = useState<string>(prefillClient?.cityId || 'hyderabad');
   const [chartMode, setChartMode] = useState<'D1' | 'D9'>('D1');
   const [predictionTab, setPredictionTab] = useState<'sunmoon' | 'elements' | 'sutras' | 'bhavas'>('sunmoon');
   const [showFullGrantham, setShowFullGrantham] = useState<boolean>(true);
-  const [isPrintModalOpen, setIsPrintModalOpen] = useState<boolean>(false);
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState<boolean>(Boolean(prefillClient?.autoOpenPrint));
+
+  useEffect(() => {
+    if (prefillClient) {
+      if (prefillClient.name) setName(prefillClient.name);
+      if (prefillClient.birthDate) setBirthDate(prefillClient.birthDate);
+      if (prefillClient.birthTime) setBirthTime(prefillClient.birthTime);
+      if (prefillClient.cityId) setSelectedCityId(prefillClient.cityId);
+      if (prefillClient.autoOpenPrint) setIsPrintModalOpen(true);
+    }
+  }, [prefillClient]);
 
   const selectedCity = useMemo(
     () => BIRTH_CITIES.find((c) => c.id === selectedCityId) || BIRTH_CITIES[0],
@@ -232,7 +249,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
   const buildPrintableHtmlDocument = (): string => {
     const renderChartTableHtml = (
       title: string,
-      planetsMap: Record<number, { nameTe: string; isRetro: boolean }[]>,
+      planetsMap: Record<number, { nameTe: string; isRetro?: boolean }[]>,
       lagnaRashiId: string
     ) => {
       const cellHtml = (rIdx: number) => {
@@ -675,7 +692,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = () =>
       startY: number,
       size: number,
       title: string,
-      planetsMap: Record<number, { nameTe: string; isRetro: boolean }[]>,
+      planetsMap: Record<number, { nameTe: string; isRetro?: boolean }[]>,
       lagnaId: string
     ) => {
       const cellS = size / 4;

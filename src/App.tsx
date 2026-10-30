@@ -28,6 +28,8 @@ import { downloadDailyPanchangamCardImage } from './utils/panchangamImageGenerat
 import { getOrGenerateDayData } from './utils/astronomyPanchangam';
 import type { HubSectionId } from './components/VedicAstrologyHub';
 import type { LegalDocType } from './components/LegalComplianceModal';
+import type { ClientKundaliPrefill } from './components/AdminDashboard';
+import { LiveSiteAnnouncementBanner } from './components/LiveSiteAnnouncementBanner';
 
 export type PanchangamSubTab = 'main' | 'gowri-hora' | 'tarabalam' | 'sankalpam';
 
@@ -95,6 +97,9 @@ const AboutGurujiSection = lazy(() =>
 );
 const ContactSection = lazy(() =>
   import('./components/ContactSection').then((m) => ({ default: m.ContactSection }))
+);
+const AdminDashboard = lazy(() =>
+  import('./components/AdminDashboard').then((m) => ({ default: m.AdminDashboard }))
 );
 
 const SectionLoader: React.FC<{ minHeight?: string }> = ({ minHeight = 'min-h-[280px]' }) => (
@@ -278,6 +283,13 @@ export function resolveLegalDocFromLocation(): LegalDocType | null {
   return null;
 }
 
+export function resolveAdminFromLocation(): boolean {
+  if (typeof window === 'undefined') return false;
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  const hash = window.location.hash.toLowerCase();
+  return pathname === '/admin' || pathname.endsWith('/admin') || hash === '#admin';
+}
+
 const LEGAL_DOC_PATHS: Record<LegalDocType, string> = {
   privacy: '/privacy-policy',
   terms: '/terms-and-conditions',
@@ -286,6 +298,8 @@ const LEGAL_DOC_PATHS: Record<LegalDocType, string> = {
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<NavTab>(() => resolveTabFromLocation());
+  const [isAdminView, setIsAdminView] = useState<boolean>(() => resolveAdminFromLocation());
+  const [prefillClient, setPrefillClient] = useState<ClientKundaliPrefill | null>(null);
   const [panchangamSubTab, setPanchangamSubTab] = useState<PanchangamSubTab>(() =>
     resolvePanchangamSubTabFromLocation()
   );
@@ -302,8 +316,22 @@ function AppContent() {
 
   const currentDay = getOrGenerateDayData(selectedDayId, WEEK_DATA);
 
+  const handleOpenAdmin = useCallback(() => {
+    setSelectedCity(null);
+    setIsAdminView(true);
+    if (typeof window !== 'undefined') {
+      try {
+        if (window.location.pathname !== '/admin') {
+          window.history.pushState({ admin: true }, '', '/admin');
+        }
+      } catch {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+
   const handleSelectTab = useCallback((tab: NavTab) => {
     setSelectedCity(null);
+    setIsAdminView(false);
     setActiveTab(tab);
     if (tab === 'panchangam') {
       setPanchangamSubTab('main');
@@ -438,6 +466,7 @@ function AppContent() {
       setSelectedCity(matchedCity);
       setSelectedCityIntent(resolveCityIntentFromLocation());
       setActiveLegalDoc(resolveLegalDocFromLocation());
+      setIsAdminView(resolveAdminFromLocation());
       if (!matchedCity) {
         setActiveTab(resolveTabFromLocation());
         setPanchangamSubTab(resolvePanchangamSubTabFromLocation());
@@ -595,8 +624,8 @@ function AppContent() {
     };
 
     const titlesTelugu: Record<NavTab, string> = {
-      home: `Telugu Jyothisham (తెలుగు జ్యోతిషం) | ఈ రోజు నక్షత్రం: ${cleanNakshatra}, నేటి ${featuredRashi.rashiNameTe} ఫలితం & మీ జన్మ కుండలి 100 పేజీల PDF పొందండి`,
-      panchangam: `నేటి పంచాంగం (Neti Panchangam - ${currentDay.teediVaram}) | ఈ రోజు తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra}, శుభ సమయం & రాశి ఫలం`,
+      home: `Telugu Astrology & Telugu Jyothisham (తెలుగు జ్యోతిషం) | Daily Telugu Panchangam & Telugu Horoscope — telugujyothisham.com`,
+      panchangam: `Daily Telugu Panchangam & Telugu Astrology (Neti Panchangam - ${currentDay.teediVaram}) | తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra} & Telugu Horoscope`,
       jathakam: 'మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి | మీ జాతకం తెలుసుకోండి — Telugu Jyothisham (తెలుగు జ్యోతిషం)',
       awards: 'పొందిన సత్కారాలు & పురస్కారాలు | Telugu Jyothisham (తెలుగు జ్యోతిషం) - శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ',
       services: 'వైదిక పూజా సేవలు & హోమాలు | Telugu Jyothisham (తెలుగు జ్యోతిషం) - శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం',
@@ -605,8 +634,8 @@ function AppContent() {
     };
 
     const titlesEnglish: Record<NavTab, string> = {
-      home: `Telugu Jyothisham (తెలుగు జ్యోతిషం) | ఈ రోజు నక్షత్రం: ${cleanNakshatra} • నేటి ${featuredRashi.rashiNameTe} ఫలితం • 100 పేజీల జన్మ కుండలి PDF`,
-      panchangam: `Neti Panchangam (${currentDay.teediVaram}) | ఈ రోజు పంచాంగం: తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం & రాశి ఫలం`,
+      home: `Telugu Astrology & Telugu Jyothisham (తెలుగు జ్యోతిషం) | Daily Telugu Panchangam & Telugu Horoscope — telugujyothisham.com`,
+      panchangam: `Daily Telugu Panchangam & Telugu Astrology (${currentDay.teediVaram}) | Neti Panchangam & Telugu Horoscope — telugujyothisham.com`,
       jathakam: 'Get Your 100-Page Janma Kundali PDF (మీ జన్మ కుండలి 100 పేజీల PDF పొందండి) | Telugu Jyothisham',
       awards: 'Vedic Honors & Awards | Telugu Jyothisham - Sri Jallavaram Sai Dheeraj Sharma — telugujyothisham.com',
       services: 'Vedic Homams & Rituals | Telugu Jyothisham - Sri Chandi Homam, Lakshmi Kubera Yagam — telugujyothisham.com',
@@ -697,8 +726,40 @@ function AppContent() {
         onOpenBooking={() => handleOpenBooking()}
       />
 
-      {/* Main Content Router based on Active Tab or Programmatic City Page */}
-      {selectedCity ? (
+      {/* Live Website Bulletin & Daily Special Message controlled from Admin Panel */}
+      {!isAdminView && (
+        <LiveSiteAnnouncementBanner
+          onNavigateJathakam={() => {
+            handleSelectTab('jathakam');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onNavigatePanchangam={handleNavigateToPanchangam}
+          onOpenBooking={() => handleOpenBooking()}
+        />
+      )}
+
+      {/* Main Content Router based on Admin View, Active Tab or Programmatic City Page */}
+      {isAdminView ? (
+        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+          <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
+            <AdminDashboard
+              currentDay={currentDay}
+              onBackToSite={() => handleSelectTab('home')}
+              onOpenClientKundali={(client) => {
+                setPrefillClient(client);
+                setIsAdminView(false);
+                setActiveTab('jathakam');
+                if (typeof window !== 'undefined') {
+                  try {
+                    window.history.pushState({ tab: 'jathakam' }, '', '/mee-jatakam');
+                  } catch {}
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+            />
+          </Suspense>
+        </main>
+      ) : selectedCity ? (
         <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
           <CityAstrologyPage
             city={selectedCity}
@@ -739,6 +800,7 @@ function AppContent() {
             }}
             onNavigateToAwards={handleNavigateToAwards}
             onOpenBooking={(service) => handleOpenBooking(service)}
+            onSelectCity={handleSelectCity}
           />
         )}
 
@@ -776,7 +838,10 @@ function AppContent() {
             </div>
 
             <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
-              <JanmaKundaliGenerator onOpenBooking={() => handleOpenBooking()} />
+              <JanmaKundaliGenerator
+                onOpenBooking={() => handleOpenBooking()}
+                prefillClient={prefillClient}
+              />
             </Suspense>
 
             <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
@@ -932,6 +997,19 @@ function AppContent() {
                 {/* Fast Facts & AI Generative Engine Optimization (Google Zero-Click Answer Card) */}
                 <PanchangamQuickSummary day={currentDay} />
 
+                {/* Automated Visual Countdown for Next Upcoming Temple Ritual / Festival */}
+                <Suspense fallback={<SectionLoader minHeight="min-h-[140px]" />}>
+                  <UpcomingRitualCountdown
+                    variant="compact"
+                    days={WEEK_DATA}
+                    onOpenBooking={(service) => handleOpenBooking(service)}
+                    onSelectDate={(isoDate) => {
+                      setSelectedDayId(isoDate);
+                      window.scrollTo({ top: 380, behavior: 'smooth' });
+                    }}
+                  />
+                </Suspense>
+
                 {/* Day Special Vishesham / Phalitham */}
                 <DayVisheshamCard day={currentDay} />
 
@@ -1018,7 +1096,14 @@ function AppContent() {
             <div className="space-y-10">
               {/* Live Upcoming Temple Event & Homam Countdown Section */}
               <UpcomingRitualCountdown
+                variant="full"
+                days={WEEK_DATA}
                 onOpenBooking={(service) => handleOpenBooking(service)}
+                onSelectDate={(isoDate) => {
+                  handleSelectTab('panchangam');
+                  setSelectedDayId(isoDate);
+                  window.scrollTo({ top: 380, behavior: 'smooth' });
+                }}
               />
 
               <PoojaServicesSection
@@ -1084,6 +1169,7 @@ function AppContent() {
         onSelectCity={handleSelectCity}
         onNavigateHubSection={handleNavigateHubSection}
         onOpenLegal={handleOpenLegal}
+        onOpenAdmin={handleOpenAdmin}
       />
     </div>
   );

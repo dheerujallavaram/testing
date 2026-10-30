@@ -59,10 +59,16 @@ export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName }) =
             </span>
           </p>
 
+          {/* Primary Query Pill for Telugu Astrology & Jyothisham */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-200 text-xs sm:text-sm font-medium mb-3">
+            <Sparkles size={14} className="text-amber-300 shrink-0" />
+            <span>Telugu Astrology &amp; Telugu Jyothisham · Daily Telugu Panchangam &amp; Telugu Horoscope</span>
+          </div>
+
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-telugu text-white tracking-tight drop-shadow-sm mb-3">
             {t(
-              `ఈ రోజు పంచాంగం (Neti Panchangam) — తిథి: ${cleanTithi} • నక్షత్రం: ${cleanNakshatra}`,
-              `Neti Panchangam | Today Panchangam in Telugu (${tr(cleanTithi)}, ${tr(cleanNakshatra)})`
+              `ఈ రోజు పంచాంగం (Telugu Panchangam) & జ్యోతిషం — తిథి: ${cleanTithi} • నక్షత్రం: ${cleanNakshatra}`,
+              `Telugu Astrology & Daily Telugu Panchangam (${tr(cleanTithi)}, ${tr(cleanNakshatra)})`
             )}
           </h1>
 

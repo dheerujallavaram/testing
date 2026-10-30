@@ -1,0 +1,337 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net (Default-Deny Catch-All)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Hardened Global Primitives
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    // Bootstrapped owner check (Zero DB reads — safe for list queries)
+    function isSuperAdmin() {
+      return isVerifiedUser() && request.auth.token.email == 'dheerujallavaram@gmail.com';
+    }
+
+    // Full Admin check for single-document operations
+    function isAdmin() {
+      return isSuperAdmin() || (isVerifiedUser() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+
+    // 3. Entity Validation Blueprints (Anti-Update-Gap)
+    function isValidAdminUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'displayName', 'createdAt']) &&
+        data.keys().hasOnly(['uid', 'email', 'displayName', 'createdAt']) &&
+        data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$') &&
+        data.email is string && data.email.size() >= 5 && data.email.size() <= 160 &&
+        data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 120 &&
+        data.createdAt is timestamp;
+    }
+
+    function isValidSiteAnnouncement(data) {
+      return data.keys().hasAll([
+          'titleTe',
+          'titleEn',
+          'messageTe',
+          'messageEn',
+          'badgeTe',
+          'ctaLabelTe',
+          'ctaTarget',
+          'consultationHoursTe',
+          'isActive',
+          'authorId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'titleTe',
+          'titleEn',
+          'messageTe',
+          'messageEn',
+          'badgeTe',
+          'ctaLabelTe',
+          'ctaTarget',
+          'consultationHoursTe',
+          'isActive',
+          'authorId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.titleTe is string && data.titleTe.size() >= 2 && data.titleTe.size() <= 240 &&
+        data.titleEn is string && data.titleEn.size() >= 2 && data.titleEn.size() <= 240 &&
+        data.messageTe is string && data.messageTe.size() >= 2 && data.messageTe.size() <= 1500 &&
+        data.messageEn is string && data.messageEn.size() >= 2 && data.messageEn.size() <= 1500 &&
+        data.badgeTe is string && data.badgeTe.size() >= 2 && data.badgeTe.size() <= 80 &&
+        data.ctaLabelTe is string && data.ctaLabelTe.size() >= 2 && data.ctaLabelTe.size() <= 100 &&
+        data.ctaTarget is string && data.ctaTarget in ['jathakam', 'panchangam', 'booking', 'whatsapp'] &&
+        data.consultationHoursTe is string && data.consultationHoursTe.size() >= 2 && data.consultationHoursTe.size() <= 160 &&
+        data.isActive is bool &&
+        data.authorId is string && data.authorId.size() >= 1 && data.authorId.size() <= 128 && data.authorId.matches('^[a-zA-Z0-9_\\-]+$') &&
+        (data.authorId == request.auth.uid || isSuperAdmin()) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidBookingInquiry(data) {
+      return data.keys().hasAll([
+          'referenceCode',
+          'inquiryType',
+          'serviceName',
+          'devoteeName',
+          'phone',
+          'gotram',
+          'rashi',
+          'nakshatram',
+          'preferredDate',
+          'birthTime',
+          'birthPlace',
+          'notes',
+          'status',
+          'ownerId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'referenceCode',
+          'inquiryType',
+          'serviceName',
+          'devoteeName',
+          'phone',
+          'gotram',
+          'rashi',
+          'nakshatram',
+          'preferredDate',
+          'birthTime',
+          'birthPlace',
+          'notes',
+          'status',
+          'ownerId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.referenceCode is string && data.referenceCode.size() >= 4 && data.referenceCode.size() <= 40 &&
+        data.inquiryType is string && data.inquiryType in ['pooja', 'kundali_pdf', 'muhurtham', 'consultation'] &&
+        data.serviceName is string && data.serviceName.size() >= 2 && data.serviceName.size() <= 180 &&
+        data.devoteeName is string && data.devoteeName.size() >= 1 && data.devoteeName.size() <= 120 &&
+        data.phone is string && data.phone.size() >= 7 && data.phone.size() <= 24 &&
+        data.gotram is string && data.gotram.size() >= 1 && data.gotram.size() <= 100 &&
+        data.rashi is string && data.rashi.size() >= 1 && data.rashi.size() <= 80 &&
+        data.nakshatram is string && data.nakshatram.size() >= 1 && data.nakshatram.size() <= 80 &&
+        data.preferredDate is string && data.preferredDate.size() >= 4 && data.preferredDate.size() <= 40 &&
+        data.birthTime is string && data.birthTime.size() >= 0 && data.birthTime.size() <= 30 &&
+        data.birthPlace is string && data.birthPlace.size() >= 1 && data.birthPlace.size() <= 120 &&
+        data.notes is string && data.notes.size() >= 0 && data.notes.size() <= 1000 &&
+        data.status is string && data.status in ['pending', 'confirmed', 'completed', 'cancelled'] &&
+        data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$') &&
+        (data.ownerId == request.auth.uid || isSuperAdmin()) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidKundaliRecord(data) {
+      return data.keys().hasAll([
+          'clientName',
+          'phone',
+          'gotram',
+          'birthDate',
+          'birthTime',
+          'birthCityId',
+          'birthCityLabel',
+          'rashiTe',
+          'nakshatraTe',
+          'lagnaTe',
+          'activeDashaTe',
+          'guruNotes',
+          'pdfDelivered',
+          'ownerId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'clientName',
+          'phone',
+          'gotram',
+          'birthDate',
+          'birthTime',
+          'birthCityId',
+          'birthCityLabel',
+          'rashiTe',
+          'nakshatraTe',
+          'lagnaTe',
+          'activeDashaTe',
+          'guruNotes',
+          'pdfDelivered',
+          'ownerId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.clientName is string && data.clientName.size() >= 1 && data.clientName.size() <= 120 &&
+        data.phone is string && data.phone.size() >= 0 && data.phone.size() <= 24 &&
+        data.gotram is string && data.gotram.size() >= 0 && data.gotram.size() <= 100 &&
+        data.birthDate is string && data.birthDate.size() >= 8 && data.birthDate.size() <= 20 &&
+        data.birthTime is string && data.birthTime.size() >= 4 && data.birthTime.size() <= 20 &&
+        data.birthCityId is string && data.birthCityId.size() >= 2 && data.birthCityId.size() <= 60 &&
+        data.birthCityLabel is string && data.birthCityLabel.size() >= 2 && data.birthCityLabel.size() <= 120 &&
+        data.rashiTe is string && data.rashiTe.size() >= 1 && data.rashiTe.size() <= 60 &&
+        data.nakshatraTe is string && data.nakshatraTe.size() >= 1 && data.nakshatraTe.size() <= 80 &&
+        data.lagnaTe is string && data.lagnaTe.size() >= 1 && data.lagnaTe.size() <= 60 &&
+        data.activeDashaTe is string && data.activeDashaTe.size() >= 1 && data.activeDashaTe.size() <= 80 &&
+        data.guruNotes is string && data.guruNotes.size() >= 0 && data.guruNotes.size() <= 2000 &&
+        data.pdfDelivered is bool &&
+        data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$') &&
+        (data.ownerId == request.auth.uid || isSuperAdmin()) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    // 4. Collection Match Blocks
+    match /admins/{adminId} {
+      allow get: if isValidId(adminId) && (isSuperAdmin() || (isVerifiedUser() && request.auth.uid == adminId));
+      allow list: if isSuperAdmin();
+      allow create: if isSuperAdmin() &&
+        isValidId(adminId) &&
+        isValidAdminUser(incoming()) &&
+        incoming().uid == adminId &&
+        incoming().createdAt == request.time;
+      allow update: if isSuperAdmin() &&
+        isValidId(adminId) &&
+        isValidAdminUser(incoming()) &&
+        incoming().uid == existing().uid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'email']);
+      allow delete: if isSuperAdmin() && isValidId(adminId);
+    }
+
+    match /siteAnnouncements/{announcementId} {
+      allow get: if isValidId(announcementId) && (existing().isActive == true || isAdmin());
+      allow list: if existing().isActive == true || isSuperAdmin();
+      allow create: if isVerifiedUser() &&
+        isValidId(announcementId) &&
+        isValidSiteAnnouncement(incoming()) &&
+        incoming().authorId == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        isAdmin();
+      allow update: if isVerifiedUser() &&
+        isValidId(announcementId) &&
+        isValidSiteAnnouncement(incoming()) &&
+        incoming().authorId == existing().authorId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'titleTe',
+          'titleEn',
+          'messageTe',
+          'messageEn',
+          'badgeTe',
+          'ctaLabelTe',
+          'ctaTarget',
+          'consultationHoursTe',
+          'isActive',
+          'updatedAt'
+        ]);
+      allow delete: if isVerifiedUser() && isValidId(announcementId) && isAdmin();
+    }
+
+    match /bookings/{bookingId} {
+      allow get: if isVerifiedUser() &&
+        isValidId(bookingId) &&
+        (existing().ownerId == request.auth.uid || isAdmin());
+      allow list: if isVerifiedUser() &&
+        (existing().ownerId == request.auth.uid || isSuperAdmin());
+      allow create: if isVerifiedUser() &&
+        isValidId(bookingId) &&
+        isValidBookingInquiry(incoming()) &&
+        incoming().ownerId == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        (incoming().status == 'pending' || isAdmin());
+      allow update: if isVerifiedUser() &&
+        isValidId(bookingId) &&
+        isValidBookingInquiry(incoming()) &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          isAdmin() || (
+            existing().ownerId == request.auth.uid &&
+            !(existing().status in ['completed', 'cancelled']) &&
+            (
+              // Action 1: Owner updates notes or preferredDate while pending
+              (existing().status == 'pending' &&
+                incoming().status == 'pending' &&
+                incoming().diff(existing()).affectedKeys().hasOnly(['notes', 'preferredDate', 'updatedAt'])) ||
+              // Action 2: Owner cancels their own pending booking
+              (existing().status == 'pending' &&
+                incoming().status == 'cancelled' &&
+                incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']))
+            )
+          )
+        );
+      allow delete: if isVerifiedUser() && isValidId(bookingId) && isAdmin();
+    }
+
+    match /kundaliRecords/{recordId} {
+      allow get: if isVerifiedUser() &&
+        isValidId(recordId) &&
+        (existing().ownerId == request.auth.uid || isAdmin());
+      allow list: if isVerifiedUser() &&
+        (existing().ownerId == request.auth.uid || isSuperAdmin());
+      allow create: if isVerifiedUser() &&
+        isValidId(recordId) &&
+        isValidKundaliRecord(incoming()) &&
+        incoming().ownerId == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if isVerifiedUser() &&
+        isValidId(recordId) &&
+        isValidKundaliRecord(incoming()) &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          isAdmin() || (
+            existing().ownerId == request.auth.uid &&
+            incoming().diff(existing()).affectedKeys().hasOnly([
+              'clientName',
+              'phone',
+              'gotram',
+              'birthDate',
+              'birthTime',
+              'birthCityId',
+              'birthCityLabel',
+              'rashiTe',
+              'nakshatraTe',
+              'lagnaTe',
+              'activeDashaTe',
+              'guruNotes',
+              'pdfDelivered',
+              'updatedAt'
+            ])
+          )
+        );
+      allow delete: if isVerifiedUser() &&
+        isValidId(recordId) &&
+        (existing().ownerId == request.auth.uid || isAdmin());
+    }
+  }
+}

@@ -3,6 +3,7 @@ import { X, Calendar, CheckCircle2, User, Phone, MapPin, Sparkles, Send } from '
 import { POOJA_SERVICES, ALL_RASHIS, NAKSHATRAS } from '../data/panchangamData';
 import { PoojaService, BookingSubmission } from '../types/panchangam';
 import { OmEmblem } from './OmEmblem';
+import { auth, createBookingRecordInFirestore } from '../firebase';
 
 interface PoojaBookingModalProps {
   isOpen: boolean;
@@ -31,9 +32,16 @@ export const PoojaBookingModal: React.FC<PoojaBookingModalProps> = ({
 
   if (!isOpen) return null;
 
-  const currentPooja = POOJA_SERVICES.find((p) => p.id === poojaId) || POOJA_SERVICES[0];
+  const isKundaliPdfSelected = poojaId === 'kundali-100-pdf';
+  const currentPooja = isKundaliPdfSelected
+    ? {
+        id: 'kundali-100-pdf',
+        name: '100-Page Janma Kundali PDF Report',
+        teluguName: '100 పేజీల సంపూర్ణ జన్మ కుండలి PDF రిపోర్ట్',
+      }
+    : POOJA_SERVICES.find((p) => p.id === poojaId) || POOJA_SERVICES[0];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
       setErrorMessage('దయచేసి భక్తుని పేరు నమోదు చేయండి (Please enter your name).');
@@ -45,8 +53,9 @@ export const PoojaBookingModal: React.FC<PoojaBookingModalProps> = ({
     }
 
     setErrorMessage('');
+    const refId = `SLG-${Math.floor(100000 + Math.random() * 900000)}`;
     const newBooking: BookingSubmission = {
-      id: `SLG-${Math.floor(100000 + Math.random() * 900000)}`,
+      id: refId,
       name: name.trim(),
       phone: phone.trim(),
       email: email.trim(),
@@ -60,6 +69,29 @@ export const PoojaBookingModal: React.FC<PoojaBookingModalProps> = ({
       sankalpamNote: sankalpamNote.trim(),
       createdAt: new Date().toISOString(),
     };
+
+    if (auth.currentUser && auth.currentUser.emailVerified) {
+      try {
+        await createBookingRecordInFirestore({
+          referenceCode: refId,
+          inquiryType: isKundaliPdfSelected ? 'kundali_pdf' : 'pooja',
+          serviceName: currentPooja.teluguName,
+          devoteeName: newBooking.name,
+          phone: newBooking.phone,
+          gotram: newBooking.gotram,
+          rashi: newBooking.rashi,
+          nakshatram: newBooking.nakshatram,
+          preferredDate: newBooking.date,
+          birthTime: '',
+          birthPlace:
+            location === 'temple' ? 'కోవెలలో' : location === 'home' ? 'స్వగృహంలో' : 'ఆన్‌లైన్ సంకల్పం',
+          notes: newBooking.sankalpamNote || '',
+          status: 'pending',
+        });
+      } catch {
+        // Proceed with local receipt & WhatsApp even if offline
+      }
+    }
 
     setSubmittedBooking(newBooking);
     setIsSubmitted(true);
@@ -194,6 +226,9 @@ export const PoojaBookingModal: React.FC<PoojaBookingModalProps> = ({
                   onChange={(e) => setPoojaId(e.target.value)}
                   className="w-full p-2.5 bg-slate-50 border border-amber-300 rounded-xl font-telugu text-sm text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
                 >
+                  <option value="kundali-100-pdf">
+                    📜 100 పేజీల సంపూర్ణ జన్మ కుండలి PDF రిపోర్ట్ (100-Page Janma Kundali PDF)
+                  </option>
                   {POOJA_SERVICES.map((p) => (
                     <option key={p.id} value={p.id}>
                       {p.teluguName} ({p.name})
