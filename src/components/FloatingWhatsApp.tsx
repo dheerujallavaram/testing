@@ -3,12 +3,22 @@ import { MessageCircle } from 'lucide-react';
 
 export const FloatingWhatsApp: React.FC = () => {
   const [hasEntered, setHasEntered] = useState(false);
+  const [isBouncing, setIsBouncing] = useState(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    const enterTimer = window.setTimeout(() => {
       setHasEntered(true);
+      setIsBouncing(true);
     }, 180);
-    return () => window.clearTimeout(timer);
+
+    const stopBounceTimer = window.setTimeout(() => {
+      setIsBouncing(false);
+    }, 2200);
+
+    return () => {
+      window.clearTimeout(enterTimer);
+      window.clearTimeout(stopBounceTimer);
+    };
   }, []);
 
   const whatsappUrl = `https://wa.me/918977986166?text=${encodeURIComponent(
@@ -19,10 +29,10 @@ export const FloatingWhatsApp: React.FC = () => {
     <aside
       aria-label="WhatsApp Quick Contact"
       data-nosnippet
-      className={`fixed bottom-6 right-6 z-40 flex items-center gap-3 transition-all duration-700 ease-out transform ${
+      className={`fixed bottom-6 right-6 z-40 flex items-center gap-3 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] transform ${
         hasEntered
-          ? 'translate-y-0 opacity-100'
-          : 'translate-y-12 opacity-0 pointer-events-none'
+          ? 'translate-y-0 scale-100 opacity-100'
+          : 'translate-y-14 scale-75 opacity-0 pointer-events-none'
       }`}
     >
       {/* Tooltip badge on hover/desktop */}
@@ -36,12 +46,14 @@ export const FloatingWhatsApp: React.FC = () => {
         <span>ధీరజ్ శర్మ గారితో వాట్సాప్‌లో మాట్లాడండి (8977986166)</span>
       </a>
 
-      {/* Pulsing Floating Button */}
+      {/* Pulsing & Bouncing Floating Button */}
       <a
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="relative group flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-none focus:ring-4 focus:ring-emerald-300"
+        className={`relative group flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-none focus:ring-4 focus:ring-emerald-300 ${
+          isBouncing ? 'animate-bounce' : ''
+        }`}
         title="శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారితో వాట్సాప్ చాట్ చేయండి (8977986166)"
         aria-label="Chat on WhatsApp with Jallavaram Sai Dheeraj Sharma garu"
       >
@@ -51,4 +63,5 @@ export const FloatingWhatsApp: React.FC = () => {
     </aside>
   );
 };
+
 

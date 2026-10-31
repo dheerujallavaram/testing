@@ -13,7 +13,7 @@
       ]
     },
     {
-      "source": "/(llms\\.txt|llms-full\\.txt)",
+      "source": "/(llms\\.txt|llms-full\\.txt|ffe9fa91702c937109ee200641e2921e\\.txt)",
       "headers": [
         {
           "key": "Content-Type",
@@ -41,7 +41,7 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!favicon\\.ico|favicon.*\\.png|apple-touch-icon.*\\.png|ganapathi-favicon\\.svg|site\\.webmanifest|robots\\.txt|sitemap\\.xml|BingSiteAuth\\.xml|llms\\.txt|llms-full\\.txt|assets/).*)",
+      "source": "/((?!favicon\\.ico|favicon.*\\.png|apple-touch-icon.*\\.png|ganapathi-favicon\\.svg|site\\.webmanifest|robots\\.txt|sitemap\\.xml|BingSiteAuth\\.xml|ffe9fa91702c937109ee200641e2921e\\.txt|llms\\.txt|llms-full\\.txt|assets/).*)",
       "destination": "/index.html"
     }
   ]

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Sparkles, Star, AlertTriangle, CheckCircle2, Info, Share2, Clock, Compass } from 'lucide-react';
+import { Sparkles, Star, AlertTriangle, CheckCircle2, Info, Share2, Clock, Compass, Download } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import {
   RASHI_META_LIST,
   findMoonRashiIndex,
   getDailyRashiFortunes,
   generateHoroscopeShareText,
+  RashiDailyFortune,
 } from '../utils/panchangaLogic';
+import { downloadRashiStatusCardImage } from '../utils/panchangamImageGenerator';
 import { RashiMedallion, RashiGlyph } from './RashiGlyph';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -125,12 +127,27 @@ const ENGLISH_HOUSE_SUMMARIES: Record<
 export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
   const [filter, setFilter] = useState<'all' | 'favorable' | 'mixed' | 'caution'>('all');
   const [selectedRashiId, setSelectedRashiId] = useState<string>('all');
+  const [downloadingRashiId, setDownloadingRashiId] = useState<string | null>(null);
+  const [downloadedRashiId, setDownloadedRashiId] = useState<string | null>(null);
   const { language, t, tr } = useLanguage();
 
   const moonRashiIdx = findMoonRashiIndex(day);
   const moonRashiMeta = RASHI_META_LIST[moonRashiIdx] || RASHI_META_LIST[0];
 
   const rashiCards = getDailyRashiFortunes(day);
+
+  const handleDownloadStatusCard = async (rashi: RashiDailyFortune) => {
+    setDownloadingRashiId(rashi.id);
+    try {
+      await downloadRashiStatusCardImage(day, rashi);
+      setDownloadedRashiId(rashi.id);
+      setTimeout(() => {
+        setDownloadedRashiId((prev) => (prev === rashi.id ? null : prev));
+      }, 3000);
+    } finally {
+      setDownloadingRashiId(null);
+    }
+  };
 
   const filteredCards = rashiCards.filter((card) => {
     const matchesStatus = filter === 'all' ? true : card.status === filter;
@@ -471,24 +488,52 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between pt-1.5 border-t border-amber-100 text-[11px] gap-2">
+                <div className="flex flex-wrap items-center justify-between pt-2 border-t border-amber-100 text-[11px] gap-2">
                   <span className="text-slate-600 truncate">
                     {t('శుభ రంగు:', 'Color:')} <strong className="text-amber-900">{tr(rashi.luckyColor)}</strong> •{' '}
                     <strong className="text-amber-950">#{rashi.luckyNumber}</strong>
                   </span>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const text = generateHoroscopeShareText(day, rashi.id);
-                      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-                    }}
-                    className="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer shrink-0"
-                    title={`${rashi.teluguName} రాశి ఫలితం వాట్సాప్‌లో షేర్ చేయండి`}
-                  >
-                    <Share2 size={12} />
-                    <span>{t(`${rashi.teluguName} షేర్`, 'Share')}</span>
-                  </button>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {/* WhatsApp Status / Instagram Story Temple Card Image Download Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadStatusCard(rashi)}
+                      disabled={downloadingRashiId === rashi.id}
+                      className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg font-bold transition-all cursor-pointer border shadow-2xs ${
+                        downloadedRashiId === rashi.id
+                          ? 'bg-emerald-700 text-white border-emerald-800'
+                          : 'bg-gradient-to-r from-amber-800 to-amber-950 hover:from-amber-700 hover:to-amber-900 text-amber-100 border-amber-600'
+                      }`}
+                      title={t(
+                        `${rashi.teluguName} రాశి నేటి ఫలితం WhatsApp Status / Instagram Story ఇమేజ్ కార్డ్ డౌన్‌లోడ్ చేయండి`,
+                        `Download ${rashi.englishName} WhatsApp Status / Instagram Story Image Card`
+                      )}
+                    >
+                      <Download size={12} className="text-amber-300 shrink-0" />
+                      <span>
+                        {downloadingRashiId === rashi.id
+                          ? t('సిద్ధమవుతోంది...', 'Creating...')
+                          : downloadedRashiId === rashi.id
+                          ? t('డౌన్‌లోడ్ అయింది ✓', 'Saved ✓')
+                          : t('📸 స్టేటస్ కార్డ్', 'Status Card')}
+                      </span>
+                    </button>
+
+                    {/* WhatsApp Text Share Button */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const text = generateHoroscopeShareText(day, rashi.id);
+                        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                      }}
+                      className="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer shrink-0"
+                      title={`${rashi.teluguName} రాశి ఫలితం వాట్సాప్‌లో షేర్ చేయండి`}
+                    >
+                      <Share2 size={12} />
+                      <span>{t('షేర్', 'Share')}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
