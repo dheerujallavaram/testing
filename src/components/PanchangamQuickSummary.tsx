@@ -96,7 +96,8 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
   }, [day, isPlayingAudio, featuredRashi]);
 
   return (
-    <section 
+    <section
+      id="panchangam-quick-summary"
       aria-label="Panchangam Quick Summary"
       className="bg-gradient-to-br from-amber-900 via-amber-950 to-stone-900 text-white rounded-3xl p-5 sm:p-8 shadow-xl border-2 border-amber-500/70 relative overflow-hidden font-telugu my-6"
     >

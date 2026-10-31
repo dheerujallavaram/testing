@@ -69,10 +69,6 @@ export function getFeaturedDailyRashiSnippet(day: DayData): FeaturedDailyRashiSn
 
 /**
  * Builds the front-loaded Google Search snippet for "Telugu Jyothisham" (Brand / Home / Jathakam queries).
- * Leads directly with:
- * 1. ఈ రోజు నక్షత్రం (Today's Nakshatram & Tithi)
- * 2. మీ రాశి ప్రకారం నేటి రాశి ఫలితం (Featured Daily Rasi Phalitham)
- * 3. మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి (100-Page Janma Kundali PDF CTA)
  */
 export function buildTeluguJyothishamBrandSnippet(
   day: DayData,
@@ -170,6 +166,176 @@ export function syncHeadMetaTags(payload: HeadMetaPayload): void {
 }
 
 /**
+ * E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) Schema Builder
+ * Establishes verified Vedic scholar credentials, awards, classical text citations, and editorial policies.
+ */
+export function buildEEATAuthoritySchema(baseUrl: string): Record<string, unknown>[] {
+  return [
+    {
+      '@type': 'Person',
+      '@id': `${baseUrl}/#guruji-eeat`,
+      name: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి (Brahmasri Jallavaram Sai Dheeraj Sharma)',
+      alternateName: [
+        'Sri Jallavaram Sai Dheeraj Sharma',
+        'Dheeraj Sharma Siddhanti',
+        'జల్లవరం సాయి ధీరజ్ శర్మ',
+      ],
+      jobTitle: 'Founder, Chief Vedic Astrologer (Siddhanti) & Smartha Veda Vidwan',
+      url: `${baseUrl}/about`,
+      image: `${baseUrl}/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg`,
+      worksFor: {
+        '@id': `${baseUrl}/#organization`,
+      },
+      knowsLanguage: ['te', 'sa', 'en', 'hi'],
+      knowsAbout: [
+        'Drik Siddhanta Panchangam (దృక్సిద్ధాంత పంచాంగ గణన)',
+        'Brihat Jataka & Parashara Hora Shastra (బృహత్ జాతక & పరాశర హోరా శాస్త్రం)',
+        'Bhrigu Chakra Paddhati (భృగు చక్ర పద్ధతి)',
+        'Muhurtha Chintamani & Nakshatra Chudamani (ముహూర్త చింతామణి & నక్షత్ర చూడామణి)',
+        'Ashtakoota 36-Guna Vivaha Pontana (36 గుణాల వివాహ పొంతన)',
+        'Gruha Vastu Shastra (గృహ వాస్తు శాస్త్రం)',
+        'Sri Chandi Homam, Rudra Homam & Smartha Vaidika Kratuvulu',
+      ],
+      hasCredential: [
+        {
+          '@type': 'EducationalOccupationalCredential',
+          credentialCategory: 'Vedic Astrology & Smartha Shastra Certification',
+          name: 'స్మార్త వేద & జ్యోతిష విద్వాన్ (Smartha Veda & Jyothisha Vidwan)',
+        },
+      ],
+      award: [
+        'సువర్ణ కంకణ సత్కారం (Suvarna Kankanam Vedic Honor)',
+        'జ్యోతిష విద్వాన్ పురస్కారం (Jyothisha Vidwan Citation)',
+        'వైదిక పీఠ ఆశీర్వచన సత్కారం (Vedic Peetham Felicitations)',
+      ],
+    },
+    {
+      '@type': ['AstrologyService', 'ProfessionalService', 'Organization'],
+      '@id': `${baseUrl}/#organization`,
+      name: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — Telugu Jyothisham (తెలుగు జ్యోతిషం)',
+      alternateName: [
+        'Telugu Jyothisham',
+        'తెలుగు జ్యోతిషం',
+        'Sreelakshmi Ganapathi Jyothishalayam',
+        'telugujyothisham.com',
+      ],
+      url: baseUrl,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${baseUrl}/favicon-512x512.png`,
+        width: 512,
+        height: 512,
+      },
+      image: `${baseUrl}/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg`,
+      founder: {
+        '@id': `${baseUrl}/#guruji-eeat`,
+      },
+      telephone: '+91-8977986166',
+      email: 'astrologer@telugujyothisham.com',
+      priceRange: '₹₹',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Pasumamula, Hayathnagar',
+        addressLocality: 'Hyderabad',
+        addressRegion: 'Telangana',
+        postalCode: '501505',
+        addressCountry: 'IN',
+      },
+      areaServed: [
+        { '@type': 'Country', name: 'India' },
+        { '@type': 'Country', name: 'United States' },
+        { '@type': 'Country', name: 'United Kingdom' },
+        { '@type': 'Country', name: 'Canada' },
+        { '@type': 'Country', name: 'Australia' },
+      ],
+      publishingPrinciples: `${baseUrl}/terms-and-conditions`,
+      verificationFactCheckingPolicy: `${baseUrl}/disclaimer`,
+      subjectOf: [
+        {
+          '@type': 'DigitalDocument',
+          name: 'Telugu Jyothisham LLMO Knowledge Graph (llms.txt)',
+          url: `${baseUrl}/llms.txt`,
+        },
+        {
+          '@type': 'DigitalDocument',
+          name: 'Telugu Jyothisham Extended AEO & GEO Knowledge Base (llms-full.txt)',
+          url: `${baseUrl}/llms-full.txt`,
+        },
+      ],
+    },
+  ];
+}
+
+/**
+ * GEO (Generative Engine Optimization): 12 Rashi Daily Horoscope & Graha Drishti ItemList Schema
+ * Allows Google AI Overviews, Gemini, Perplexity, and ChatGPT Search to cite any of the 12 Rashis directly.
+ */
+export function buildDaily12RashiItemListSchema(
+  day: DayData,
+  fullUrl: string
+): Record<string, unknown> {
+  const fortunes = getDailyRashiFortunes(day);
+  return {
+    '@type': 'ItemList',
+    '@id': `${fullUrl}#daily-12-rashi-horoscope-${day.id}`,
+    name: `నేటి ద్వాదశ రాశి ఫలాలు & గ్రహ దృష్టి ఫలితాలు (${day.teediVaram}) — Today 12 Rashi Horoscope in Telugu`,
+    description: `${day.teediVaram} నాటి 12 రాశుల (మేషం నుండి మీనం వరకు) దిన ఫలాలు, గ్రహ సంచారం, గ్రహ దృష్టి ప్రభావం, శుభ సమయం మరియు పరిహారాలు.`,
+    numberOfItems: fortunes.length,
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    itemListElement: fortunes.map((r, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: `${r.teluguName} రాశి (${r.englishName}) — ${day.teediVaram} నేటి రాశి ఫలం & గ్రహ దృష్టి`,
+      description: `${r.teluguName} రాశి (${r.statusLabel}): ${r.grahaDrishtiHeadlineTe} (${r.grahaDrishtiTimeTe}) — ${r.grahaDrishtiPhalamTe} కెరీర్ & ధనలాభం: ${r.careerFinanceLine} నేడు చేయవలసిన పని: ${r.doTodayTe} జాగ్రత్త: ${r.avoidTodayTe} శుభ సమయం: ${r.luckyTimeWindowTe}. పరిహారం: ${r.remedy}.`,
+      url: `${fullUrl}#dina-phalam`,
+    })),
+  };
+}
+
+/**
+ * AEO (Answer Engine Optimization): HowTo Schema for Step-by-Step Answer Snippets
+ */
+export function buildStandardizedHowToSchema(baseUrl: string): Record<string, unknown> {
+  return {
+    '@type': 'HowTo',
+    '@id': `${baseUrl}/#howto-janma-kundali`,
+    name: 'తెలుగులో ఉచిత జన్మ కుండలి (100 పేజీల PDF) మరియు 36 గుణాల వివాహ పొంతన ఎలా చూసుకోవాలి?',
+    description:
+      'పుట్టిన తేదీ, సమయం, ప్రాంతం ఆధారంగా దృక్సిద్ధాంత జన్మ కుండలి (D1 రాశి చక్రం, D9 నవాంశ, మహాదశ, భృగు చక్రం) మరియు వధూవరుల 36 గుణాల వివాహ పొంతన చూసుకునే విధానం.',
+    inLanguage: ['te', 'en'],
+    totalTime: 'PT1M',
+    estimatedCost: {
+      '@type': 'MonetaryAmount',
+      currency: 'INR',
+      value: '0',
+    },
+    step: [
+      {
+        '@type': 'HowToStep',
+        position: 1,
+        name: 'మీ జాతకం తెలుసుకోండి విభాగాన్ని తెరవండి',
+        text: 'www.telugujyothisham.com/mee-jatakam పేజీకి వెళ్లండి.',
+        url: `${baseUrl}/mee-jatakam`,
+      },
+      {
+        '@type': 'HowToStep',
+        position: 2,
+        name: 'పుట్టిన తేదీ, సమయం మరియు ప్రాంతం నమోదు చేయండి',
+        text: 'మీ పేరు, పుట్టిన తేదీ (Date of Birth), పుట్టిన సమయం (Time of Birth), మరియు పుట్టిన ఊరు (India లేదా USA/NRI సిటీ) ఎంచుకోండి.',
+        url: `${baseUrl}/mee-jatakam`,
+      },
+      {
+        '@type': 'HowToStep',
+        position: 3,
+        name: 'సంపూర్ణ జన్మ కుండలి & PDF రిపోర్ట్ పొందండి',
+        text: 'వెంటనే D1 రాశి చక్రం, D9 నవాంశ, 12 స్థానాల ఫలితాలు, వింశోత్తరి మహాదశ, భృగు చక్ర ఫలితాలు మరియు రత్న/రుద్రాక్ష పరిహారాలతో కూడిన జాతక గ్రంథాన్ని చూసి ప్రింట్/PDF డౌన్‌లోడ్ చేసుకోండి.',
+        url: `${baseUrl}/janma-kundali`,
+      },
+    ],
+  };
+}
+
+/**
  * Builds the standardized Schema.org WebApplication object optimized for 'Neti Panchangam'
  * and Telugu Jyothisham interactive rich snippets.
  */
@@ -222,16 +388,17 @@ export function buildStandardizedWebApplicationSchema(
       `మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe}`,
       'మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ పొందండి (100-Page Janma Kundali PDF)',
       `నేటి రాహుకాలం (${day.ashubha.rahukalam}) & అభిజిత్ ముహూర్తం (${day.shubha.abhijit})`,
-      '12 రాశుల దిన ఫలాలు (Today Rasi Phalalu in Telugu)',
+      '12 రాశుల దిన ఫలాలు & గ్రహ దృష్టి ఫలితాలు (Today Rasi Phalalu & Graha Drishti in Telugu)',
       '36 గుణాల అష్టకూట వివాహ పొంతన (Marriage Compatibility)',
       'పగలు & రాత్రి గౌరీ పంచాంగం మరియు 24 గంటల నవగ్రహ హోరా చక్రం',
       '27 నక్షత్రాల నవతార తారాబలం & 12 రాశుల చంద్రబలం గణన',
     ],
     screenshot: `${baseUrl}/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg`,
     author: {
-      '@type': 'Person',
-      name: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి (Brahmasri Jallavaram Sai Dheeraj Sharma)',
-      url: `${baseUrl}/about`,
+      '@id': `${baseUrl}/#guruji-eeat`,
+    },
+    reviewedBy: {
+      '@id': `${baseUrl}/#guruji-eeat`,
     },
     provider: {
       '@id': `${baseUrl}/#organization`,
@@ -258,7 +425,7 @@ export function buildStandardizedWebApplicationSchema(
 
 /**
  * Builds the standardized Schema.org FAQPage object specifically engineered to trigger
- * Google Search rich snippets for 'Neti Panchangam', 'Today Panchangam in Telugu', and 'ఈ రోజు పంచాంగం'.
+ * AEO (Answer Engine Optimization) & GEO snippets for 'Neti Panchangam', 'Today Panchangam in Telugu', and 'ఈ రోజు పంచాంగం'.
  */
 export function buildStandardizedDailyFaqSchema(
   day: DayData,
@@ -276,7 +443,11 @@ export function buildStandardizedDailyFaqSchema(
     '@type': 'FAQPage',
     '@id': `${fullUrl}#faq`,
     inLanguage: ['te', 'en'],
-    name: `Neti Panchangam (${day.teediVaram}) — నేటి తెలుగు పంచాంగం తరచుగా అడిగే ప్రశ్నలు (FAQ)`,
+    name: `Neti Panchangam (${day.teediVaram}) — నేటి తెలుగు పంచాంగం తరచుగా అడిగే ప్రశ్నలు (AEO & GEO Verified FAQ)`,
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['#panchangam-quick-summary', '#prerender-lead-snippet', 'h1', 'h2', 'dl'],
+    },
     mainEntity: [
       {
         '@type': 'Question',
@@ -323,11 +494,7 @@ export function buildStandardizedDailyFaqSchema(
 }
 
 /**
- * Automated Daily Panchangam & Jyothisham SEO Engine
- * Dynamically generates fresh, unique article meta-descriptions and injects standardized
- * Schema.org JSON-LD structured data (WebApplication, FAQPage, NewsArticle, Dataset, Event)
- * based on the current day's Nakshatra, Featured Rashi Phalam, Shubha Samayam, 100-Page Janma Kundali PDF CTA,
- * and Grahasthiti data to maximize rich snippet eligibility for 'Telugu Jyothisham' and 'Neti Panchangam'.
+ * Automated Daily Panchangam & Jyothisham SEO + AEO + GEO + LLMO + AISEO + E-E-A-T Engine
  */
 export function syncAutomatedDailySeoSchema(
   day: DayData,
@@ -358,7 +525,6 @@ export function syncAutomatedDailySeoSchema(
   const brandSnippet = buildTeluguJyothishamBrandSnippet(day, 'te');
   const netiPanchangamSnippet = buildNetiPanchangamSearchSnippet(day, 'te');
 
-  // Unique daily Article Meta-Description combining Today's Tithi, Nakshatram, Shubha Samayam, Featured Rashi Phalam, 100-page PDF & Grahasthiti
   const uniqueDailyArticleMetaDescription =
     cleanPath === '/' || cleanPath === '/mee-jatakam' || cleanPath === '/janma-kundali'
       ? `${brandSnippet} నేటి గ్రహస్థితి: [${grahasthitiSummary}] — యవనాచార్యుల మతం, ముహూర్త చింతామణి & బృహత్ జాతక గ్రంథ ప్రమాణాలతో.`
@@ -393,7 +559,6 @@ export function syncAutomatedDailySeoSchema(
     if (twitterDescEl) twitterDescEl.setAttribute('content', snippetToInject);
   }
 
-  // Backend popular daily Telugu astrology search keywords (kept hidden from visible UI)
   const backendDailyKeywords = [
     'Neti Panchangam',
     'నేటి పంచాంగం',
@@ -453,7 +618,7 @@ export function syncAutomatedDailySeoSchema(
 
   const articleHeadline = `ఈ రోజు పంచాంగం (Neti Panchangam - ${day.teediVaram}) | తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra}, శుభ సమయం: ${day.shubha.amrutha} | నేటి ${featuredRashi.rashiNameTe} ఫలితం & 100 పేజీల జన్మ కుండలి PDF — Telugu Jyothisham`;
 
-  // Standardized WebApplication & FAQPage nodes for Rich Snippet eligibility
+  const eeatNodes = buildEEATAuthoritySchema(baseUrl);
   const webAppNode = buildStandardizedWebApplicationSchema(
     day,
     fullUrl,
@@ -468,10 +633,15 @@ export function syncAutomatedDailySeoSchema(
     nakshatraAuspicious,
     grahasthitiSummary
   );
+  const rashiItemListNode = buildDaily12RashiItemListSchema(day, fullUrl);
+  const howToNode = buildStandardizedHowToSchema(baseUrl);
 
   const graphNodes: Record<string, unknown>[] = [
+    ...eeatNodes,
     webAppNode,
     faqPageNode,
+    rashiItemListNode,
+    howToNode,
     {
       '@type': 'NewsArticle',
       '@id': `${fullUrl}#daily-panchangam-${day.id}`,
@@ -487,22 +657,26 @@ export function syncAutomatedDailySeoSchema(
       datePublished: `${day.isoDate}T05:30:00+05:30`,
       dateModified: `${day.isoDate}T06:00:00+05:30`,
       inLanguage: ['te', 'en'],
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['#panchangam-quick-summary', '#prerender-lead-snippet', 'h1', 'h2', 'dl'],
+      },
       author: {
-        '@type': 'Person',
-        name: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి (Brahmasri Jallavaram Sai Dheeraj Sharma)',
-        url: `${baseUrl}/about`,
+        '@id': `${baseUrl}/#guruji-eeat`,
+      },
+      reviewedBy: {
+        '@id': `${baseUrl}/#guruji-eeat`,
       },
       publisher: {
-        '@type': 'Organization',
         '@id': `${baseUrl}/#organization`,
-        name: 'Telugu Jyothisham (తెలుగు జ్యోతిషం) — శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం',
-        logo: {
-          '@type': 'ImageObject',
-          url: `${baseUrl}/favicon-512x512.png`,
-          width: 512,
-          height: 512,
-        },
       },
+      citation: [
+        'Brihat Jataka (బృహత్ జాతకం) by Acharya Varahamihira',
+        'Yavanacharya Jataka (యవనాచార్యుల మతం)',
+        'Muhurtha Chintamani (ముహూర్త చింతామణి)',
+        'Nakshatra Chudamani (నక్షత్ర చూడామణి)',
+        'Drik Siddhanta Solar & Lunar Ephemeris (దృక్సిద్ధాంత గణన)',
+      ],
       image: [
         `${baseUrl}/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg`,
         `${baseUrl}/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg`,
@@ -512,7 +686,7 @@ export function syncAutomatedDailySeoSchema(
       about: [
         { '@type': 'Thing', name: 'Neti Panchangam (నేటి పంచాంగం / Today Panchangam in Telugu)' },
         { '@type': 'Thing', name: 'Telugu Jyothisham (తెలుగు జ్యోతిషం)' },
-        { '@type': 'Thing', name: 'Telugu Astrology & Telugu Horoscope (తెలుగు రాశి ఫలాలు)' },
+        { '@type': 'Thing', name: 'Telugu Astrology & Telugu Horoscope (తెలుగు రాశి ఫలాలు & గ్రహ దృష్టి)' },
         { '@type': 'Thing', name: 'Telugu Jathakam (తెలుగు జాతకం & బృహత్ జాతక గ్రంథం)' },
         { '@type': 'Thing', name: `Nakshatram: ${cleanNakshatra} (${nakshatraLord} / ${nakshatraDeity})` },
         { '@type': 'Thing', name: `Grahasthiti: ${grahasthitiSummary}` },
@@ -533,6 +707,10 @@ export function syncAutomatedDailySeoSchema(
       creator: {
         '@id': `${baseUrl}/#organization`,
       },
+      citation: [
+        'Drik Siddhanta Panchanga Ganitham (Lahiri Chitrapaksha Ayanamsha)',
+        'Muhurtha Chintamani & Kalamrutham',
+      ],
       variableMeasured: [
         `సంవత్సరం (Samvatsaram): ${day.panchanga.samvatsaram}`,
         `మాసం (Masam): ${day.panchanga.masam}`,

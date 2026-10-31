@@ -195,6 +195,52 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
         </div>
 
+        {/* Google E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) Shastra Pramana Verification */}
+        <div
+          itemScope
+          itemType="https://schema.org/Person"
+          className="py-5 border-b border-amber-900/80 font-telugu"
+        >
+          <div className="bg-amber-900/40 border border-amber-700/60 rounded-2xl p-4 sm:p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+            <div className="space-y-1.5 max-w-4xl">
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-950/80 border border-emerald-600/50 px-2.5 py-0.5 rounded-md">
+                <ShieldCheck size={13} className="text-emerald-400 shrink-0" />
+                <span>
+                  {t(
+                    'శాస్త్ర ప్రమాణ & జ్యోతిష విద్వాన్ ధృవీకరణ • Verified Vedic Authority',
+                    'Verified Vedic Shastra Authority & Editorial Review'
+                  )}
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm font-bold text-white">
+                {t('శాస్త్రీయ పర్యవేక్షణ & రచన: ', 'Authored & Reviewed by: ')}
+                <span itemProp="name" className="text-amber-300">
+                  {t(
+                    'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి గారు (స్మార్త వేద & జ్యోతిష విద్వాంసులు)',
+                    'Brahmasri Jallavaram Sai Dheeraj Sharma Siddhanti (Smartha Veda & Jyothisha Vidwan)'
+                  )}
+                </span>
+              </p>
+              <p className="text-[11px] sm:text-xs text-amber-200/85 leading-relaxed">
+                {t(
+                  'ఈ వెబ్‌సైట్‌లోని దైనందిన పంచాంగం, గ్రహ సంచారం, గ్రహ దృష్టి ఫలితాలు, 36 గుణాల వివాహ పొంతన మరియు 100 పేజీల బృహత్ జాతక కుండలి గణనలు దృక్సిద్ధాంతం, వరాహమిహిరుల బృహత్ జాతకం, యవనాచార్యుల మతం, ముహూర్త చింతామణి మరియు నక్షత్ర చూడామణి గ్రంథ ప్రమాణాల ఆధారంగా ధృవీకరించబడ్డాయి.',
+                  'All daily Panchangam calculations, Graha Drishti predictions, 36-Guna Vivaha Pontana, and 100-page Janma Kundali reports are verified against Drik Siddhanta ephemeris, Varahamihira Brihat Jataka, Yavanacharya Jataka, and Muhurtha Chintamani.'
+                )}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 shrink-0 w-full lg:w-auto text-[11px]">
+              <div className="bg-amber-950/90 border border-amber-700/70 rounded-xl px-3 py-2 text-amber-100">
+                <span className="text-amber-400 font-bold block">15+ సం|| అనుభవం</span>
+                <span>స్మార్త &amp; జ్యోతిష సేవ</span>
+              </div>
+              <div className="bg-amber-950/90 border border-amber-700/70 rounded-xl px-3 py-2 text-amber-100">
+                <span className="text-amber-400 font-bold block">దృక్సిద్ధాంత గణన</span>
+                <span>1900–2100 ఖగోళ ప్రమాణం</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Shloka, Legal Policy Links (AdSense Compliance) and Dedication */}
         <div className="pt-8 text-center space-y-3 font-telugu">
           <p className="text-base sm:text-lg font-bold text-amber-300">

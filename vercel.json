@@ -11,14 +11,25 @@
           "value": "public, max-age=86400, must-revalidate"
         }
       ]
+    },
+    {
+      "source": "/(llms\\.txt|llms-full\\.txt)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
     }
   ],
   "rewrites": [
     {
-      "source": "/((?!favicon\\.ico|favicon.*\\.png|apple-touch-icon.*\\.png|ganapathi-favicon\\.svg|site\\.webmanifest|robots\\.txt|sitemap\\.xml|assets/).*)",
+      "source": "/((?!favicon\\.ico|favicon.*\\.png|apple-touch-icon.*\\.png|ganapathi-favicon\\.svg|site\\.webmanifest|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|assets/).*)",
       "destination": "/index.html"
     }
   ]
 }
-
-
