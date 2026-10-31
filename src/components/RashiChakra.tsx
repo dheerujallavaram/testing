@@ -5,6 +5,14 @@ import { RASHI_CHART_ORDER } from '../data/panchangamData';
 import { calculateGocharaStrengths, RashiGocharaStrength } from '../utils/panchangaLogic';
 import { RashiGlyph } from './RashiGlyph';
 import { useLanguage } from '../context/LanguageContext';
+import {
+  getPlanetaryMovementsForDate,
+  PLANET_META,
+  ASPECT_META,
+  formatTeluguDateFriendly,
+  formatTeluguTime12Hr,
+  getRashiDailyGrahaDrishtiPhalam,
+} from '../data/planetaryMovements2026';
 
 interface RashiChakraProps {
   day: DayData;
@@ -21,10 +29,15 @@ export const RashiChakra: React.FC<RashiChakraProps> = ({ day }) => {
 
   // Calculate Gochara transit strength for all 12 Rashis (Mesham -> Meenam)
   const gocharaData = useMemo(() => calculateGocharaStrengths(day), [day]);
+  const dayMovements = useMemo(() => getPlanetaryMovementsForDate(day.isoDate), [day.isoDate]);
 
   const activeRashiKey = selectedHouse?.key || chandraRashi?.key || 'mesham';
   const activeGochara: RashiGocharaStrength =
     gocharaData.find((g) => g.id === activeRashiKey) || gocharaData[0];
+  const activeRashiDrishti = useMemo(
+    () => getRashiDailyGrahaDrishtiPhalam(day.isoDate, activeRashiKey),
+    [day.isoDate, activeRashiKey]
+  );
 
   const handleSelectRashiById = (rashiId: string) => {
     const found = RASHI_CHART_ORDER.find((r) => r.key === rashiId) || null;
@@ -509,6 +522,84 @@ export const RashiChakra: React.FC<RashiChakraProps> = ({ day }) => {
               </div>
             </div>
           )}
+
+          {/* Selected Rashi's Graha Drishti Phalam + Today's Planetary Aspects in Simple Everyday Telugu */}
+          <div className="mt-4 pt-3 border-t border-amber-200/80 space-y-2.5 font-telugu">
+            <div className="bg-amber-50/90 border border-amber-300 rounded-xl p-2.5">
+              <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
+                <span className="text-xs font-bold text-amber-950">
+                  🌟 {activeRashiDrishti.rashiNameTe} — నేటి గ్రహ దృష్టి ఫలితం:
+                </span>
+                <span className="text-[10px] font-bold bg-amber-900 text-amber-100 px-2 py-0.5 rounded">
+                  {activeRashiDrishti.activeAspectTitleTe}
+                </span>
+              </div>
+              <p className="text-xs text-stone-800 leading-relaxed">
+                {language === 'en'
+                  ? activeRashiDrishti.loukikaPhalamEn
+                  : activeRashiDrishti.loukikaPhalamTe}
+              </p>
+            </div>
+
+            {(dayMovements.signEntries.length > 0 ||
+              dayMovements.nakshatraEntries.length > 0 ||
+              dayMovements.aspects.length > 0) && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-amber-950">
+                    {t(
+                      'నేటి ముఖ్య గ్రహ దృష్టులు & రాశి మార్పులు:',
+                      'Today’s Planetary Movements & Aspects:'
+                    )}
+                  </span>
+                  <span className="text-[11px] font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded">
+                    {formatTeluguDateFriendly(day.isoDate)}
+                  </span>
+                </div>
+
+                {(dayMovements.signEntries.length > 0 || dayMovements.nakshatraEntries.length > 0) && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {dayMovements.signEntries.map((s, i) => (
+                      <span
+                        key={`rc-sign-${i}`}
+                        className="text-[11px] font-bold bg-amber-200/80 text-amber-950 px-2.5 py-1 rounded-lg border border-amber-400"
+                      >
+                        {PLANET_META[s.planet].icon} {s.planetTe} → {s.signTe} ({formatTeluguTime12Hr(s.time)})
+                      </span>
+                    ))}
+                    {dayMovements.nakshatraEntries.map((n, i) => (
+                      <span
+                        key={`rc-nak-${i}`}
+                        className="text-[11px] font-bold bg-emerald-100 text-emerald-950 px-2.5 py-1 rounded-lg border border-emerald-300"
+                      >
+                        {PLANET_META[n.planet].icon} {n.planetTe} → {n.nakshatraTe} ({formatTeluguTime12Hr(n.time)})
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {dayMovements.aspects.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {dayMovements.aspects.slice(0, 5).map((ev) => (
+                      <span
+                        key={ev.id}
+                        className="text-[11px] bg-amber-50 text-amber-950 px-2.5 py-1 rounded-md border border-amber-200"
+                        title={ASPECT_META[ev.aspect].labelTe}
+                      >
+                        <strong>
+                          {PLANET_META[ev.fromPlanet].nameTe} → {PLANET_META[ev.toPlanet].nameTe}
+                        </strong>{' '}
+                        <span className="text-amber-800 font-semibold">
+                          ({ASPECT_META[ev.aspect].shortTe})
+                        </span>{' '}
+                        <span className="text-stone-600">• {formatTeluguTime12Hr(ev.time)}</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

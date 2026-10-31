@@ -1070,9 +1070,10 @@ function AppContent() {
               />
             </Suspense>
 
-            {/* Daily Astrology Guidance Insights & Simulated Live Planetary Movement Stream */}
+            {/* Daily Astrology Guidance Insights & Live 2026 Planetary Movement Stream */}
             <Suspense fallback={<SectionLoader minHeight="min-h-[320px]" />}>
               <DailyAstrologyInsights
+                currentDay={currentDay}
                 onOpenBooking={() => handleOpenBooking()}
               />
             </Suspense>

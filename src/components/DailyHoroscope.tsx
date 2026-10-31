@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { Sparkles, Star, AlertTriangle, CheckCircle2, Info } from 'lucide-react';
+import { Sparkles, Star, AlertTriangle, CheckCircle2, Info, Share2, Clock } from 'lucide-react';
 import { DayData } from '../types/panchangam';
-import { RASHI_META_LIST, findMoonRashiIndex, getDailyRashiFortunes } from '../utils/panchangaLogic';
+import {
+  RASHI_META_LIST,
+  findMoonRashiIndex,
+  getDailyRashiFortunes,
+  generateHoroscopeShareText,
+} from '../utils/panchangaLogic';
 import { RashiMedallion, RashiGlyph } from './RashiGlyph';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -281,7 +286,45 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                 </div>
 
                 {/* 4 to 5 Lines Comprehensive Prediction Breakdown */}
-                <div className="space-y-2 text-xs sm:text-[13px] text-slate-800 font-telugu leading-relaxed">
+                <div className="space-y-2.5 text-xs sm:text-[13px] text-slate-800 font-telugu leading-relaxed">
+                  {/* Dedicated Graha Drishti (Planetary Aspect) & Graha Sancharam Loukika Impact Section */}
+                  <div className="bg-gradient-to-br from-amber-100/95 via-amber-50 to-orange-50/95 p-3 rounded-xl border-2 border-amber-300 shadow-2xs space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-1.5 border-b border-amber-200/80 pb-1.5">
+                      <span className="text-[11px] font-extrabold text-amber-950 flex items-center gap-1">
+                        <span>🪐 {t('నేటి గ్రహ దృష్టి & గ్రహ సంచార ఫలితం:', 'Today’s Graha Drishti & Transit Impact:')}</span>
+                      </span>
+                      <span className="text-[10px] font-bold bg-amber-900 text-amber-100 px-2 py-0.5 rounded-md">
+                        {rashi.grahaDrishtiHeadlineTe} • 🕒 {rashi.grahaDrishtiTimeTe}
+                      </span>
+                    </div>
+
+                    <p className="font-semibold text-amber-950 text-xs leading-relaxed">
+                      {language === 'en' ? rashi.grahaDrishtiPhalamEn : rashi.grahaDrishtiPhalamTe}
+                    </p>
+
+                    {/* Practical Do Today & Avoid Today in common parlance */}
+                    <div className="grid grid-cols-1 gap-1.5 pt-1 text-[11px]">
+                      <div className="bg-emerald-50/90 border border-emerald-200 rounded-lg px-2.5 py-1.5 text-emerald-950">
+                        <strong className="text-emerald-800">✅ {t('నేడు చేయవలసిన పని:', 'Do Today:')}</strong>{' '}
+                        <span>{rashi.doTodayTe}</span>
+                      </div>
+                      <div className="bg-rose-50/80 border border-rose-200 rounded-lg px-2.5 py-1.5 text-rose-950">
+                        <strong className="text-rose-800">⚠️ {t('నేడు జాగ్రత్త:', 'Avoid Today:')}</strong>{' '}
+                        <span>{rashi.avoidTodayTe}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-amber-900 pt-1 border-t border-amber-200/60">
+                      <span className="inline-flex items-center gap-1 font-bold">
+                        <Clock size={12} className="text-amber-700" />
+                        <span>{t('నేటి శుభ సమయం:', 'Lucky Time:')}</span>
+                      </span>
+                      <span className="font-bold bg-white px-2 py-0.5 rounded border border-amber-300 text-amber-950">
+                        {rashi.luckyTimeWindowTe}
+                      </span>
+                    </div>
+                  </div>
+
                   {/* Line 1: Graha Sthiti */}
                   <div className="bg-amber-50/60 p-2 rounded-lg border border-amber-200/70">
                     <p className="font-medium text-amber-950">
@@ -329,7 +372,7 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                 </div>
               </div>
 
-              {/* Footer Meta: Authentic Vedic Remedy & Lucky Indicators */}
+              {/* Footer Meta: Authentic Vedic Remedy, Lucky Indicators & Direct Rashi Share */}
               <div className="mt-4 pt-3 border-t border-amber-200 flex flex-col gap-2 text-xs font-telugu text-slate-700">
                 <div className="flex items-start gap-1.5 text-amber-950">
                   <Star size={13} className="text-amber-600 shrink-0 mt-0.5" />
@@ -339,13 +382,24 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between pt-1 border-t border-amber-100 text-[11px]">
-                  <span className="text-slate-600">
-                    {t('శుభ రంగు:', 'Lucky Color:')} <strong className="text-amber-900">{tr(rashi.luckyColor)}</strong>
+                <div className="flex items-center justify-between pt-1.5 border-t border-amber-100 text-[11px] gap-2">
+                  <span className="text-slate-600 truncate">
+                    {t('శుభ రంగు:', 'Color:')} <strong className="text-amber-900">{tr(rashi.luckyColor)}</strong> •{' '}
+                    <strong className="text-amber-950">#{rashi.luckyNumber}</strong>
                   </span>
-                  <span className="bg-amber-100 text-amber-950 px-2 py-0.5 rounded font-mono font-bold border border-amber-300">
-                    {t('శుభ సంఖ్య:', 'Lucky No:')} {rashi.luckyNumber}
-                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const text = generateHoroscopeShareText(day, rashi.id);
+                      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                    }}
+                    className="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer shrink-0"
+                    title={`${rashi.teluguName} రాశి ఫలితం వాట్సాప్‌లో షేర్ చేయండి`}
+                  >
+                    <Share2 size={12} />
+                    <span>{t(`${rashi.teluguName} షేర్`, 'Share')}</span>
+                  </button>
                 </div>
               </div>
             </div>

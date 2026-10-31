@@ -1,5 +1,9 @@
 import { DayData, LagnaPramanam } from '../types/panchangam';
 import { NAKSHATRAS, ALL_RASHIS } from '../data/panchangamData';
+import {
+  getRashiDailyGrahaDrishtiPhalam,
+  getDailyGrahaTransitShareLines,
+} from '../data/planetaryMovements2026';
 
 export interface TaraResult {
   taraNumber: number;
@@ -122,6 +126,13 @@ export interface RashiDailyFortune {
   englishNavagrahaLabel: string;
   englishFullSummary: string;
   englishDairyam: string;
+  grahaDrishtiHeadlineTe: string;
+  grahaDrishtiTimeTe: string;
+  grahaDrishtiPhalamTe: string;
+  grahaDrishtiPhalamEn: string;
+  doTodayTe: string;
+  avoidTodayTe: string;
+  luckyTimeWindowTe: string;
 }
 
 export const RASHI_META_LIST = [
@@ -477,6 +488,8 @@ export function getDailyRashiFortunes(day: DayData): RashiDailyFortune[] {
       `5. Vedic Remedy: ${fortune.enRemedy}`,
     ].join('\n');
 
+    const drishtiInfo = getRashiDailyGrahaDrishtiPhalam(day.isoDate, rashi.id);
+
     return {
       ...rashi,
       gocharaHouse,
@@ -496,6 +509,13 @@ export function getDailyRashiFortunes(day: DayData): RashiDailyFortune[] {
       englishNavagrahaLabel,
       englishFullSummary,
       englishDairyam: fortune.enDairyam,
+      grahaDrishtiHeadlineTe: drishtiInfo.activeAspectTitleTe,
+      grahaDrishtiTimeTe: drishtiInfo.activeAspectTimeTe,
+      grahaDrishtiPhalamTe: drishtiInfo.loukikaPhalamTe,
+      grahaDrishtiPhalamEn: drishtiInfo.loukikaPhalamEn,
+      doTodayTe: drishtiInfo.doTodayTe,
+      avoidTodayTe: drishtiInfo.avoidTodayTe,
+      luckyTimeWindowTe: drishtiInfo.luckyTimeWindowTe,
     };
   });
 }
@@ -595,12 +615,13 @@ export function generateWhatsAppShareText(day: DayData, shareUrl?: string): stri
   const appLink = shareUrl || PANCHANGAM_PAGE_URL;
 
   const fortunes = getDailyRashiFortunes(day);
+  const transitLines = getDailyGrahaTransitShareLines(day.isoDate);
   const mesham = fortunes[0];
   const vrushabham = fortunes[1];
   const mithunam = fortunes[2];
 
   const lines = [
-    `🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — నిత్య పంచాంగం* 🕉️`,
+    `🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — నిత్య పంచాంగం & గ్రహ సంచారం* 🕉️`,
     `📅 *తేదీ & వారం:* ${day.teediVaram}`,
     `✨ *సంవత్సరం:* ${day.panchanga.samvatsaram}`,
     `🌙 *మాసం & పక్షం:* ${day.panchanga.masam}`,
@@ -615,12 +636,15 @@ export function generateWhatsAppShareText(day: DayData, shareUrl?: string): stri
     ``,
     `🌟 *నేటి విశేషం:* ${day.phalitham}`,
     ``,
-    `🔮 *నేటి రాశి ఫలితాలు (నవ గ్రహ దిన ఫలం):*`,
-    `• *మేష రాశి (${mesham.navagrahaTransitLabel}):* ${mesham.careerFinanceLine.replace(/^2\.\s*/, '')} [${mesham.statusLabel}]`,
-    `• *వృషభ రాశి (${vrushabham.navagrahaTransitLabel}):* ${vrushabham.careerFinanceLine.replace(/^2\.\s*/, '')} [${vrushabham.statusLabel}]`,
-    `• *మిథున రాశి (${mithunam.navagrahaTransitLabel}):* ${mithunam.careerFinanceLine.replace(/^2\.\s*/, '')} [${mithunam.statusLabel}]`,
+    `🪐 *నేటి గ్రహ సంచార & గ్రహ దృష్టి విశేషాలు (Graha Transit):*`,
+    ...transitLines.slice(0, 3),
     ``,
-    `✨ *కర్కాటకం నుండి మీన రాశి వరకు మిగతా రాశి ఫలితాలు, పూర్తి 4-5 లైన్ల ఫలితాలు & రాశి చక్రం కోసం క్రింది వెబ్‌సైట్ చూడండి:*`,
+    `🔮 *నేటి రాశి ఫలితాలు & గ్రహ దృష్టి ఫలితం:*`,
+    `• *మేష రాశి (${mesham.grahaDrishtiHeadlineTe}):* ${mesham.grahaDrishtiPhalamTe}`,
+    `• *వృషభ రాశి (${vrushabham.grahaDrishtiHeadlineTe}):* ${vrushabham.grahaDrishtiPhalamTe}`,
+    `• *మిథున రాశి (${mithunam.grahaDrishtiHeadlineTe}):* ${mithunam.grahaDrishtiPhalamTe}`,
+    ``,
+    `✨ *కర్కాటకం నుండి మీన రాశి వరకు మిగతా 12 రాశుల గ్రహ దృష్టి ఫలితాలు & రాశి చక్రం కోసం క్రింది వెబ్‌సైట్ చూడండి:*`,
   ];
 
   if (appLink) {
@@ -647,6 +671,7 @@ export function generateHoroscopeShareText(
 ): string {
   const appLink = shareUrl || PANCHANGAM_PAGE_URL;
   const fortunes = getDailyRashiFortunes(day);
+  const transitLines = getDailyGrahaTransitShareLines(day.isoDate);
   const moonRashiIdx = findMoonRashiIndex(day);
   const moonRashiName = RASHI_META_LIST[moonRashiIdx]?.teluguName || 'మేషం';
 
@@ -658,10 +683,17 @@ export function generateHoroscopeShareText(
       `🌙 *తిథి:* ${day.panchanga.tithi.split('-')[0].trim()} | *నక్షత్రం:* ${day.panchanga.nakshatram.split('-')[0].trim()}`,
       `✨ *చంద్ర సంచారం:* ${moonRashiName} రాశి`,
       ``,
-      `🔮 *${rashi.teluguName} రాశి (${rashi.englishName}) — సంపూర్ణ దిన ఫలం:*`,
-      `🪐 *గోచార సంయోగం:* ${rashi.navagrahaTransitLabel} (${rashi.statusLabel})`,
-      `👑 *రాశి అధిపతి:* ${rashi.lord}`,
+      `🪐 *నేటి గ్రహ సంచార విశేషం:*`,
+      ...transitLines.slice(0, 2),
       ``,
+      `🔮 *${rashi.teluguName} రాశి (${rashi.englishName}) — సంపూర్ణ దిన ఫలం:*`,
+      `🌟 *నేటి గ్రహ దృష్టి:* ${rashi.grahaDrishtiHeadlineTe} (${rashi.grahaDrishtiTimeTe})`,
+      `👑 *రాశి అధిపతి:* ${rashi.lord} | *గోచారం:* ${rashi.navagrahaTransitLabel}`,
+      ``,
+      `✨ *గ్రహ దృష్టి ఫలితం:* ${rashi.grahaDrishtiPhalamTe}`,
+      `✅ *నేడు చేయవలసిన పని:* ${rashi.doTodayTe}`,
+      `⚠️ *నేడు జాగ్రత్త:* ${rashi.avoidTodayTe}`,
+      `⏰ *నేటి శుభ సమయం:* ${rashi.luckyTimeWindowTe}`,
       `${rashi.grahaSthitiLine}`,
       `${rashi.careerFinanceLine}`,
       `${rashi.familyHealthLine}`,
@@ -677,18 +709,22 @@ export function generateHoroscopeShareText(
     return lines.join('\n');
   }
 
-  // Default ('all'): Custom summary message for each of the 12 Rashis with Navagraha & Courage reassurance
+  // Default ('all'): Custom summary message for each of the 12 Rashis with Graha Transit & Graha Drishti
   const lines = [
-    `🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — ద్వాదశ రాశి ఫలితాలు (నవ గ్రహ దిన ఫలం)* 🕉️`,
+    `🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — 12 రాశుల ఫలితాలు & గ్రహ సంచారం* 🕉️`,
     `📅 *తేదీ & వారం:* ${day.teediVaram}`,
     `🌙 *తిథి:* ${day.panchanga.tithi.split('-')[0].trim()} | *నక్షత్రం:* ${day.panchanga.nakshatram.split('-')[0].trim()}`,
     `✨ *నేటి చంద్ర సంచారం:* ${moonRashiName} రాశి`,
+    ``,
+    `🪐 *నేటి ముఖ్య గ్రహ సంచారం & దృష్టులు:*`,
+    ...transitLines.slice(0, 3),
     ``,
   ];
 
   fortunes.forEach((rashi, idx) => {
     lines.push(
-      `${idx + 1}. *${rashi.teluguName} రాశి (${rashi.englishName})* [${rashi.navagrahaTransitLabel} • ${rashi.statusLabel}]:`,
+      `${idx + 1}. *${rashi.teluguName} రాశి (${rashi.englishName})* [${rashi.statusLabel}]:`,
+      `   🪐 *గ్రహ దృష్టి ఫలితం:* ${rashi.grahaDrishtiPhalamTe}`,
       `   💼 ${rashi.careerFinanceLine.replace(/^2\.\s*/, '')}`,
       `   🏡 ${rashi.familyHealthLine.replace(/^3\.\s*/, '')}`,
       `   🛡️ ${rashi.dairyamLine.replace(/^4\.\s*/, '')}`,
