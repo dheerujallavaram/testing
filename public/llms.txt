@@ -21,11 +21,11 @@
 - [Daily Pooja Sankalpam Mantra (India Jambudweepe & USA Krounchadweepe)](https://www.telugujyothisham.com/nitya-sankalpam): Automated daily Telugu Sankalpam for devotees in India, USA (EST/CST/MST/PST), UK, Europe, and Australia.
 - [36-Point Vivaha Pontana (Marriage Compatibility)](https://www.telugujyothisham.com/vivaha-pontana): Authentic Ashtakoota Guna Milan calculator for bride and groom Rashis and Nakshatras.
 - [Naama Nakshatra & Rashi Finder by Name First Letter](https://www.telugujyothisham.com/naama-nakshatra): Find Rashi, Nakshatra, Pada, Gana, Nadi, and Rajju from Telugu/English name syllables.
-- [27 Nakshatra Telugu Baby Names](https://www.telugujyothisham.com/telugu-baby-names): Auspicious boy and girl names organized by all 27 Nakshatras and 4 Padas.
+- [27 Nakshatra & 4 Pada Telugu Baby Names Calculator (శిశు నామకరణ అక్షరాలు & పిల్లల పేర్లు)](https://www.telugujyothisham.com/telugu-baby-names): Interactive Nakshatra (1–27) and Pada (1–4) starting syllable finder with auspicious Telugu boy and girl names and meanings.
 - [Ugadi Rashi Phalalu 2026-2027 (Sri Parabhava Nama Samvatsaram)](https://www.telugujyothisham.com/ugadi-rashi-phalalu): Yearly Aadayam-Vyayam, Rajapujyam-Avamanam, and planetary transit remedies for all 12 Rashis.
 - [Shubha Muhurtham Dates 2026-2027](https://www.telugujyothisham.com/shubha-muhurthalu): Verified auspicious dates for Marriage (Vivaham), Gruhapravesham, Aksharabhyasam, Annaprasana, and festivals.
-- [Gruha Vastu Shastra Compass & Guide](https://www.telugujyothisham.com/vastu-shastra-telugu): 8-direction Ashta Dikpala Vastu rules and remedies.
-- [Dosha Nivarana & Vedic Remedies](https://www.telugujyothisham.com/dosha-pariharalu): Shastric remedies for Kuja Dosha, Kalasarpa Dosha, Elinati Shani (Sade Sati), and Gandamoola Nakshatras.
+- [Interactive House Facing (East, North, West, South) & 8-Direction Gruha Vastu Shastra Checker](https://www.telugujyothisham.com/vastu-shastra-telugu): Simhadwaram ఉచ్చ స్థానం rules for East, North, West, and South facing homes plus 8-direction Ashta Dikpala Vastu Mandala compass.
+- [Elinati Shani (Sade Sati), Ashtama Shani, Ardhashtama Shani & Kuja Dosha Checker](https://www.telugujyothisham.com/dosha-pariharalu): Interactive 12 Rashi Saturn transit calculator (identifying Sade Sati for Kumbha, Meena, Mesha; Ashtama Shani for Simha; Ardhashtama Shani for Dhanussu; Rajayoga for Vrushabha, Tula, Makara), Kuja Dosha house checker, and Vedic Shanti remedies.
 - [Vedic Pooja & Homam Services](https://www.telugujyothisham.com/services): Sri Chandi Homam, Lakshmi Ganapathi Homam, Rudra Homam, Sudarshana Homam, Satyanarayana Vratham, Gruhapravesham, and NRI Online Zoom Sankalpam Poojas.
 
 ## Classical Shastra Citations (GEO & E-E-A-T Sources)

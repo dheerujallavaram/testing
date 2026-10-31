@@ -479,6 +479,14 @@ export const NakshatraBabyNames: React.FC = () => {
   const [selectedNakshatra, setSelectedNakshatra] = useState<number>(0); // 0 = All
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [genderFilter, setGenderFilter] = useState<'all' | 'boy' | 'girl'>('all');
+  const [quickStarIdx, setQuickStarIdx] = useState<number>(1);
+  const [quickPada, setQuickPada] = useState<number>(1);
+
+  const activeQuickStar =
+    NAKSHATRA_BABY_NAMES_DB.find((n) => n.nakshatraIndex === quickStarIdx) ||
+    NAKSHATRA_BABY_NAMES_DB[0];
+  const activePadaSyllable =
+    activeQuickStar.syllables[quickPada - 1] || activeQuickStar.syllables[0];
 
   const filteredList = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -500,25 +508,139 @@ export const NakshatraBabyNames: React.FC = () => {
   }, [selectedNakshatra, searchQuery]);
 
   return (
-    <div className="space-y-6 font-telugu">
-      {/* Header & Filter Bar */}
-      <div className="bg-amber-50/70 rounded-2xl p-5 sm:p-6 border border-amber-200/90 space-y-4">
-        <div>
-          <h3 className="text-xl sm:text-2xl font-bold text-amber-950 flex items-center gap-2">
-            <Baby size={22} className="text-amber-700" />
+    <div id="nakshatra-baby-naming-tool" className="space-y-6 font-telugu scroll-mt-24">
+      {/* Interactive 27 Nakshatra + 4 Pada Instant Starting Letter Finder */}
+      <div className="bg-gradient-to-br from-amber-950 via-[#3b1506] to-amber-900 text-white rounded-3xl p-5 sm:p-7 border-2 border-amber-500/60 shadow-lg space-y-5">
+        <div className="space-y-1.5">
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-amber-300">
+            <Sparkles size={15} className="text-amber-400" />
             <span>
               {t(
-                '27 నక్షత్రాల పాదాల వారీగా తెలుగు పిల్లల పేర్లు (Nakshatra Baby Names)',
-                '27 Nakshatra Telugu Baby Names with Starting Syllables & Meanings'
+                'శిశు నామకరణ అక్షర నిర్ణయ యంత్రం • Instant Nakshatra Pada Letter Finder',
+                'Instant Nakshatra & Pada Baby Name Letter Calculator'
               )}
             </span>
-          </h3>
-          <p className="text-sm text-slate-600 mt-1">
+          </span>
+          <h3 className="text-xl sm:text-3xl font-extrabold text-white">
             {t(
-              'శిశువు జన్మ నక్షత్రం మరియు పాద అక్షరాల ఆధారంగా శాస్త్రోక్తమైన మగ మరియు ఆడ పిల్లల పేర్లు, వాటి అర్థాలు.',
-              'Find auspicious Vedic boy and girl names aligned with birth Nakshatra syllables (Nama Nakshatra Aksharas).'
+              '27 నక్షత్రాలు & 4 పాదాల నామకరణ అక్షరాలు — పిల్లల పేర్ల టూల్',
+              '27 Nakshatras & 4 Padas Starting Letters for Baby Naming'
+            )}
+          </h3>
+          <p className="text-xs sm:text-sm text-amber-100/90 max-w-3xl">
+            {t(
+              'మీ పాప లేదా బాబు పుట్టిన నక్షత్రం మరియు పాదం (1, 2, 3, 4) ఎంచుకోగానే శాస్త్రోక్తంగా పెట్టవలసిన మొదటి అక్షరం మరియు అదృష్ట పేర్లు వెంటనే కనిపిస్తాయి:',
+              'Select your baby’s birth star (Nakshatra) and Pada (1 to 4) below to instantly discover the auspicious starting syllable and matching names:'
             )}
           </p>
+        </div>
+
+        <div className="grid md:grid-cols-12 gap-4 items-center bg-white/10 backdrop-blur-xs rounded-2xl p-4 sm:p-5 border border-amber-400/40">
+          {/* Select Nakshatra */}
+          <div className="md:col-span-5">
+            <label className="block text-xs font-bold text-amber-200 mb-1.5">
+              1️⃣ {t('శిశువు జన్మ నక్షత్రం ఎంచుకోండి:', 'Select Birth Nakshatra (1–27):')}
+            </label>
+            <select
+              value={quickStarIdx}
+              onChange={(e) => {
+                const idx = Number(e.target.value);
+                setQuickStarIdx(idx);
+                setSelectedNakshatra(idx);
+              }}
+              className="w-full rounded-xl bg-white text-amber-950 font-extrabold px-3.5 py-3 text-sm border-2 border-amber-300 focus:outline-none"
+            >
+              {NAKSHATRA_BABY_NAMES_DB.map((item) => (
+                <option key={item.nakshatraIndex} value={item.nakshatraIndex}>
+                  {item.nakshatraIndex}. {item.nakshatraTe} ({item.nakshatraEn}) — {item.rashiTe}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Select Pada 1 - 4 */}
+          <div className="md:col-span-4">
+            <label className="block text-xs font-bold text-amber-200 mb-1.5">
+              2️⃣ {t('నక్షత్ర పాదం ఎంచుకోండి (1–4):', 'Select Nakshatra Pada (1–4):')}
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {[1, 2, 3, 4].map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setQuickPada(p)}
+                  className={`py-2.5 rounded-xl font-extrabold text-xs sm:text-sm border transition-all cursor-pointer ${
+                    quickPada === p
+                      ? 'bg-amber-400 text-amber-950 border-white shadow-md scale-105'
+                      : 'bg-amber-950/80 text-amber-100 border-amber-600 hover:bg-amber-800'
+                  }`}
+                >
+                  {p}వ పాదం
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Result Syllable Highlight */}
+          <div className="md:col-span-3 bg-gradient-to-r from-amber-400 to-amber-300 text-amber-950 rounded-2xl p-3.5 text-center shadow-inner border-2 border-white">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-900 block">
+              ✨ {activeQuickStar.nakshatraTe} - {quickPada}వ పాదం అక్షరం:
+            </span>
+            <strong className="text-2xl sm:text-3xl font-black block mt-0.5">
+              {activePadaSyllable}
+            </strong>
+            <span className="text-[11px] font-bold text-amber-900 block mt-0.5">
+              రాశి: {activeQuickStar.rashiTe}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+          <p className="text-xs text-amber-200">
+            💡 <strong>4 పాదాల అక్షరాలు:</strong> {activeQuickStar.syllables.join('  •  ')}
+          </p>
+          <a
+            href={`https://wa.me/918977986166?text=${encodeURIComponent(
+              `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ సిద్ధాంతి గారు, మా శిశువు జన్మ నక్షత్రం "${activeQuickStar.nakshatraTe} - ${quickPada}వ పాదం" (అక్షరం: ${activePadaSyllable}). సంఖ్యాశాస్త్రం (Numerology) ప్రకారం అదృష్ట పేరు మరియు నామకరణ ముహూర్తం కోసం సంప్రదిస్తున్నాను.`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-sm shrink-0"
+          >
+            <span>👶 సంఖ్యాశాస్త్ర ప్రకారం పిల్లల పేరు & నామకరణ ముహూర్తం (WhatsApp)</span>
+          </a>
+        </div>
+      </div>
+
+      {/* Header & Filter Bar */}
+      <div className="bg-amber-50/70 rounded-2xl p-5 sm:p-6 border border-amber-200/90 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 className="text-xl sm:text-2xl font-bold text-amber-950 flex items-center gap-2">
+              <Baby size={22} className="text-amber-700" />
+              <span>
+                {t(
+                  '27 నక్షత్రాల పాదాల వారీగా తెలుగు పిల్లల పేర్లు (Nakshatra Baby Names)',
+                  '27 Nakshatra Telugu Baby Names with Starting Syllables & Meanings'
+                )}
+              </span>
+            </h3>
+            <p className="text-sm text-slate-600 mt-1">
+              {t(
+                'శిశువు జన్మ నక్షత్రం మరియు పాద అక్షరాల ఆధారంగా శాస్త్రోక్తమైన మగ మరియు ఆడ పిల్లల పేర్లు, వాటి అర్థాలు.',
+                'Find auspicious Vedic boy and girl names aligned with birth Nakshatra syllables (Nama Nakshatra Aksharas).'
+              )}
+            </p>
+          </div>
+          {selectedNakshatra !== 0 && (
+            <button
+              type="button"
+              onClick={() => setSelectedNakshatra(0)}
+              className="px-3.5 py-2 rounded-xl bg-amber-900 text-white text-xs font-bold cursor-pointer self-start sm:self-center shrink-0"
+            >
+              {t('మొత్తం 27 నక్షత్రాలు చూపించు', 'Show All 27 Nakshatras')}
+            </button>
+          )}
         </div>
 
         <div className="grid sm:grid-cols-3 gap-4">
@@ -659,3 +781,4 @@ export const NakshatraBabyNames: React.FC = () => {
     </div>
   );
 };
+

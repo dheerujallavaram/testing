@@ -133,20 +133,236 @@ const COMPASS_GRID_IDS = [
   ['nairuthi', 'south', 'agneyam'],
 ];
 
-export const VastuChakraGuide: React.FC = () => {
-  const { t } = useLanguage();
-  const [selectedId, setSelectedId] = useState<string>('ishanyam');
+interface HouseFacingVastuInfo {
+  id: 'east-facing' | 'north-facing' | 'west-facing' | 'south-facing';
+  titleTe: string;
+  titleEn: string;
+  badgeTe: string;
+  rulerTe: string;
+  suitedRashisTe: string;
+  simhadwaramRuleTe: string;
+  prosperityBenefitsTe: string;
+  doshaPrecautionTe: string;
+  remedyTe: string;
+}
 
-  const selectedDir = ASHTA_DIKPALA_DIRECTIONS.find((d) => d.id === selectedId) || ASHTA_DIKPALA_DIRECTIONS[0];
+const HOUSE_FACING_VASTU_DB: HouseFacingVastuInfo[] = [
+  {
+    id: 'east-facing',
+    titleTe: '🌅 తూర్పు ముఖద్వారం (East Facing House)',
+    titleEn: 'East Facing House (Purva Simhadwaram)',
+    badgeTe: 'అత్యుత్తమ సూర్య తేజస్సు & ఆరోగ్య యోగం',
+    rulerTe: 'సూర్య భగవానుడు & దేవేంద్రుడు',
+    suitedRashisTe: 'మేషం, సింహం, ధనుస్సు, కర్కాటకం, వృశ్చికం, మీనం (మరియు సర్వ రాశులకు శుభప్రదం)',
+    simhadwaramRuleTe:
+      'తూర్పు గోడకు ఈశాన్యం వైపు (తూర్పు-ఈశాన్యం ఉచ్చ స్థానం) ప్రధాన సింహద్వారం ఉండాలి. ఆగ్నేయం వైపు ప్రధాన ద్వారం పెట్టరాదు.',
+    prosperityBenefitsTe:
+      'ప్రభుత్వ ఉద్యోగాలు, రాజకీయ పదవులు, సంతాన వృద్ధి, సంపూర్ణ ఆరోగ్యం మరియు సమాజంలో గౌరవ మర్యాదలు పెరుగుతాయి.',
+    doshaPrecautionTe:
+      'తూర్పు వైపు మెట్లు, సెప్టిక్ ట్యాంక్, ఎత్తైన చెట్లు లేదా అడ్డంకులు ఉండకూడదు. తూర్పు కంటే పడమర ఎత్తుగా ఉండాలి.',
+    remedyTe:
+      'సింహద్వారం పైన రాగి సూర్య యంత్రం / లక్ష్మీ గణపతి పటం ఉంచి, తూర్పు-ఈశాన్యంలో తులసి కోట లేదా నీటి సంపు ఏర్పాటు చేయాలి.',
+  },
+  {
+    id: 'north-facing',
+    titleTe: '🧭 ఉత్తర ముఖద్వారం (North Facing House)',
+    titleEn: 'North Facing House (Kubera Simhadwaram)',
+    badgeTe: 'కుబేర ధన యోగం & వ్యాపార అభివృద్ధి',
+    rulerTe: 'కుబేరుడు & బుధ గ్రహం',
+    suitedRashisTe: 'వృషభం, మిథునం, కన్య, తుల, మకరం, కుంభం (వ్యాపార, ఐటీ & ఆర్థిక రంగాల వారికి విశేషం)',
+    simhadwaramRuleTe:
+      'ఉత్తర గోడకు ఈశాన్యం వైపు (ఉత్తర-ఈశాన్యం ఉచ్చ స్థానం) సింహద్వారం ఉండాలి. వాయువ్యం చివర ప్రధాన ద్వారం ఉండరాదు.',
+    prosperityBenefitsTe:
+      'అఖండ ధన ప్రవాహం, వ్యాపార విస్తరణ, షేర్ మార్కెట్ & బ్యాంకింగ్ రంగాలలో విజయం, ఆర్థిక స్థిరత్వం లభిస్తాయి.',
+    doshaPrecautionTe:
+      'ఉత్తరం వైపు ఎత్తుగా ఉండటం, ఉత్తరంలో బరువైన స్టోర్ రూమ్ లేదా చెత్త ఉంచడం వల్ల కుబేర అనుగ్రహం తగ్గుతుంది.',
+    remedyTe:
+      'ఉత్తర దిశలో శ్రీ లక్ష్మీ కుబేర యంత్రం స్థాపించి, బీరువా తలుపు ఉత్తరం వైపు తెరుచుకునేలా నైరుతి గదిలో అమర్చాలి.',
+  },
+  {
+    id: 'west-facing',
+    titleTe: '🌇 పశ్చిమ (పడమర) ముఖద్వారం (West Facing House)',
+    titleEn: 'West Facing House (Paschima Simhadwaram)',
+    badgeTe: 'స్థిర ఆస్తులు & శని-వరుణ అనుగ్రహం',
+    rulerTe: 'వరుణ దేవుడు & శని భగవానుడు',
+    suitedRashisTe: 'వృషభం, మిథునం, తుల, మకరం, కుంభం (న్యాయ, రియల్ ఎస్టేట్, ఇంజనీరింగ్ & వ్యాపారస్తులకు)',
+    simhadwaramRuleTe:
+      'పడమర గోడకు వాయువ్యం వైపు (పశ్చిమ-వాయువ్యం ఉచ్చ స్థానం) సింహద్వారం పెట్టాలి. పశ్చిమ-నైరుతిలో ద్వారం అసలు ఉండరాదు.',
+    prosperityBenefitsTe:
+      'స్థిరాస్తుల వృద్ధి, విదేశీ యోగం, సమాజంలో స్థిరమైన పేరు ప్రతిష్ఠలు మరియు భాగస్వామ్య వ్యాపారాలలో లాభాలు కలుగుతాయి.',
+    doshaPrecautionTe:
+      'పడమర వైపు అండర్‌గ్రౌండ్ సంపు లేదా బోరు బావి తవ్వకూడదు (నీటి సంపు ఈశాన్యంలోనే ఉండాలి).',
+    remedyTe:
+      'పడమర సింహద్వారానికి పసుపు-కుంకుమ స్వస్తిక్ చిహ్నం వేసి, శనివారం ఆంజనేయ స్వామి / వేంకటేశ్వర ఆరాధన చేయాలి.',
+  },
+  {
+    id: 'south-facing',
+    titleTe: '🔥 దక్షిణ ముఖద్వారం (South Facing House)',
+    titleEn: 'South Facing House (Dakshina Simhadwaram)',
+    badgeTe: 'ఉచ్చ స్థానంలో పెడితే అఖండ ఐశ్వర్యం',
+    rulerTe: 'కుజ గ్రహం (Mars) & యమధర్మరాజు',
+    suitedRashisTe: 'మేషం, వృశ్చికం, సింహం, మకరం (పోలీస్, వైద్య, రియల్ ఎస్టేట్, బంగారం & ఆహార వ్యాపారాలకు)',
+    simhadwaramRuleTe:
+      'దక్షిణ గోడకు ఆగ్నేయం వైపు (దక్షిణ-ఆగ్నేయం ఉచ్చ స్థానం / 4వ పదం) మాత్రమే సింహద్వారం ఉండాలి. దక్షిణ-నైరుతిలో ద్వారం ఉండరాదు.',
+    prosperityBenefitsTe:
+      'సరైన ఉచ్చ స్థానంలో దక్షిణ సింహద్వారం ఉంటే ధైర్య సాహసాలు, భూ-గృహ లాభాలు, శత్రు జయం మరియు అంచెలంచెలుగా ఐశ్వర్యం పెరుగుతాయి.',
+    doshaPrecautionTe:
+      'దక్షిణం వైపు బోరు బావి, గొయ్యి, లేదా దక్షిణ-నైరుతి వీధి పోటు అసలు ఉండకూడదు. దక్షిణం కంటే ఉత్తరం పల్లంగా ఉండాలి.',
+    remedyTe:
+      'దక్షిణ సింహద్వారం పైన పంచముఖి ఆంజనేయ స్వామి చిత్రపటం / మత్స్య యంత్రం ఉంచి, సుబ్రహ్మణ్య స్వామి ఆరాధన చేయాలి.',
+  },
+];
+
+export const VastuChakraGuide: React.FC = () => {
+  const { language, t } = useLanguage();
+  const [selectedId, setSelectedId] = useState<string>('ishanyam');
+  const [selectedFacingId, setSelectedFacingId] =
+    useState<HouseFacingVastuInfo['id']>('east-facing');
+
+  const selectedDir =
+    ASHTA_DIKPALA_DIRECTIONS.find((d) => d.id === selectedId) || ASHTA_DIKPALA_DIRECTIONS[0];
+  const selectedFacing =
+    HOUSE_FACING_VASTU_DB.find((f) => f.id === selectedFacingId) || HOUSE_FACING_VASTU_DB[0];
 
   return (
-    <div className="space-y-8 font-telugu">
+    <div id="gruha-vastu-checker" className="space-y-8 font-telugu scroll-mt-24">
+      {/* ============================================================== */}
+      {/* PART 1: INTERACTIVE HOUSE FACING (SIMHADWARAM) VASTU CHECKER   */}
+      {/* ============================================================== */}
+      <div className="bg-gradient-to-br from-amber-950 via-[#3b1506] to-amber-900 text-white rounded-3xl p-5 sm:p-7 border-2 border-amber-500/60 shadow-lg space-y-5">
+        <div className="space-y-1.5">
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-amber-300">
+            <Home size={15} className="text-amber-400" />
+            <span>
+              {t(
+                'ఇంటి ముఖద్వార వాస్తు చెకర్ • House Facing Simhadwaram Vastu Checker',
+                'Interactive House Facing Vastu Checker'
+              )}
+            </span>
+          </span>
+          <h3 className="text-xl sm:text-3xl font-extrabold text-white">
+            {t(
+              'మీ ఇంటి ముఖద్వారం (తూర్పు / ఉత్తరం / పశ్చిమం / దక్షిణం) వాస్తు ఫలితాలు',
+              'Check Your House Facing Vastu Rules (East, North, West & South)'
+            )}
+          </h3>
+          <p className="text-xs sm:text-sm text-amber-100/90 max-w-3xl">
+            {t(
+              'మీ ఇల్లు లేదా ప్లాట్ ఏ దిశకు అభిముఖంగా ఉందో క్రింద ఎంచుకొని, సింహద్వార ఉచ్చ స్థానం, అనుకూల రాశులు మరియు వాస్తు నియమాలను వెంటనే తెలుసుకోండి:',
+              'Select your home or plot facing direction below to view auspicious Simhadwaram placement, suited Rashis, and Vastu remedies:'
+            )}
+          </p>
+        </div>
+
+        {/* 4 Facing Buttons */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+          {HOUSE_FACING_VASTU_DB.map((facing) => {
+            const isActive = facing.id === selectedFacingId;
+            return (
+              <button
+                key={facing.id}
+                type="button"
+                onClick={() => setSelectedFacingId(facing.id)}
+                className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-amber-400 text-amber-950 border-white font-extrabold shadow-md scale-[1.02]'
+                    : 'bg-amber-900/60 hover:bg-amber-900 text-amber-100 border-amber-600/60 font-bold'
+                }`}
+              >
+                <span className="text-xs sm:text-sm block leading-snug">
+                  {language === 'te' ? facing.titleTe : facing.titleEn}
+                </span>
+                <span
+                  className={`text-[10px] block mt-1 ${
+                    isActive ? 'text-amber-900 font-bold' : 'text-amber-300/90'
+                  }`}
+                >
+                  {facing.badgeTe}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Selected Facing Detail Card */}
+        <div className="bg-white text-slate-900 rounded-2xl p-5 sm:p-6 border border-amber-300 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-100 pb-3">
+            <div>
+              <h4 className="text-lg sm:text-2xl font-extrabold text-amber-950">
+                {language === 'te' ? selectedFacing.titleTe : selectedFacing.titleEn}
+              </h4>
+              <p className="text-xs text-amber-900 font-semibold mt-0.5">
+                <strong>👑 అధిపతి:</strong> {selectedFacing.rulerTe} &nbsp;|&nbsp;{' '}
+                <strong>🌟 అనుకూల రాశులు:</strong> {selectedFacing.suitedRashisTe}
+              </p>
+            </div>
+            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold self-start sm:self-center shrink-0">
+              {selectedFacing.badgeTe}
+            </span>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4 text-xs sm:text-sm">
+            <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5 space-y-1">
+              <strong className="text-emerald-950 font-bold block">
+                🚪 సింహద్వార ఉచ్చ స్థాన నియమం:
+              </strong>
+              <p className="text-slate-800 leading-relaxed">{selectedFacing.simhadwaramRuleTe}</p>
+            </div>
+
+            <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-3.5 space-y-1">
+              <strong className="text-amber-950 font-bold block">
+                ✨ కలిగే శుభ ఫలితాలు & ఐశ్వర్య యోగం:
+              </strong>
+              <p className="text-slate-800 leading-relaxed">
+                {selectedFacing.prosperityBenefitsTe}
+              </p>
+            </div>
+
+            <div className="bg-rose-50/70 border border-rose-200 rounded-xl p-3.5 space-y-1">
+              <strong className="text-rose-950 font-bold block">
+                ⚠️ తీసుకోవలసిన వాస్తు జాగ్రత్తలు:
+              </strong>
+              <p className="text-slate-800 leading-relaxed">{selectedFacing.doshaPrecautionTe}</p>
+            </div>
+
+            <div className="bg-sky-50/70 border border-sky-200 rounded-xl p-3.5 space-y-1">
+              <strong className="text-sky-950 font-bold block">
+                🪔 వాస్తు శాంతి & దోష నివారణ పరిహారం:
+              </strong>
+              <p className="text-slate-800 leading-relaxed">{selectedFacing.remedyTe}</p>
+            </div>
+          </div>
+
+          <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-amber-100">
+            <span className="text-xs text-slate-600 font-medium">
+              📐 కొత్త ఇంటి ప్లాన్, ఫ్లాట్ కొనుగోలు లేదా శంకుస్థాపన / గృహప్రవేశ ముహూర్తం కోసం:
+            </span>
+            <a
+              href={`https://wa.me/918977986166?text=${encodeURIComponent(
+                `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ సిద్ధాంతి గారు, మా "${selectedFacing.titleTe}" ఇంటి వాస్తు పరిశీలన మరియు గృహప్రవేశ ముహూర్తం కోసం సంప్రదిస్తున్నాను.`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs sm:text-sm inline-flex items-center gap-2 shadow-xs"
+            >
+              <MessageCircle size={16} />
+              <span>
+                {t('వాస్తు పరిశీలన కోసం WhatsApp చేయండి', 'Consult Guruji for Vastu on WhatsApp')}
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* ============================================================== */}
+      {/* PART 2: 8-DIRECTION ASHTA DIKPALA VASTU MANDALA COMPASS        */}
+      {/* ============================================================== */}
       <div className="bg-amber-50/70 rounded-2xl p-5 sm:p-6 border border-amber-200/90">
         <h3 className="text-xl sm:text-2xl font-bold text-amber-950 flex items-center gap-2">
           <Compass size={22} className="text-amber-700" />
           <span>
             {t(
-              'అష్ట దిక్పాలక గృహ వాస్తు చక్రం & గదుల నియమాలు (Vastu Shastra Guide)',
+              'అష్ట దిక్పాలక గృహ వాస్తు చక్రం & 8 దిక్కుల గదుల నియమాలు (Vastu Compass)',
               'Interactive 8-Direction Ashta Dikpala Gruha Vastu Compass'
             )}
           </span>
@@ -273,3 +489,4 @@ export const VastuChakraGuide: React.FC = () => {
     </div>
   );
 };
+

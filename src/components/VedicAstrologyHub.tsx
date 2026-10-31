@@ -29,6 +29,9 @@ const NakshatraBabyNames = lazy(() =>
 const VastuChakraGuide = lazy(() =>
   import('./VastuChakraGuide').then((m) => ({ default: m.VastuChakraGuide }))
 );
+const ShaniDoshaChecker = lazy(() =>
+  import('./ShaniDoshaChecker').then((m) => ({ default: m.ShaniDoshaChecker }))
+);
 
 export type HubSectionId =
   | 'pontana'
@@ -257,7 +260,7 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
     { id: 'vastu', labelTe: 'గృహ వాస్తు చక్రం', labelEn: 'Gruha Vastu Compass', icon: Compass },
     { id: 'ugadi', labelTe: 'ఉగాది వార్షిక రాశి ఫలాలు', labelEn: 'Ugadi Yearly Horoscope', icon: Sparkles },
     { id: 'muhurtham', labelTe: 'శుభ ముహూర్తాలు & తిథులు', labelEn: 'Shubha Muhurthams & Tithis', icon: Calendar },
-    { id: 'dosha', labelTe: 'జాతక దోషాలు & శాంతి పరిహారాలు', labelEn: 'Dosha Remedies & Shanti', icon: ShieldAlert },
+    { id: 'dosha', labelTe: 'ఏలినాటి శని & దోషాల చెకర్', labelEn: 'Elinati Shani & Dosha Checker', icon: ShieldAlert },
   ];
 
   return (
@@ -597,9 +600,13 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
         </div>
       )}
 
-      {/* SECTION 5: VEDIC DOSHA REMEDIES GUIDE */}
+      {/* SECTION 5: INTERACTIVE SHANI DOSHA CHECKER & VEDIC DOSHA REMEDIES GUIDE */}
       {activeSection === 'dosha' && (
-        <div className="space-y-5 animate-fadeIn">
+        <div className="space-y-8 animate-fadeIn">
+          <Suspense fallback={<div className="py-12 text-center text-sm text-amber-900">శని & దోష చెకర్ లోడ్ అవుతోంది...</div>}>
+            <ShaniDoshaChecker onOpenBooking={onOpenBooking} />
+          </Suspense>
+
           <div className="grid md:grid-cols-2 gap-5">
             {DOSHA_REMEDIES_LIST.map((dosha) => (
               <div

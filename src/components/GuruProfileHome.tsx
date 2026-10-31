@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import {
   Sparkles,
   Phone,
@@ -20,12 +20,24 @@ import {
   Mail,
   Sun,
   Download,
+  ShieldAlert,
+  Baby,
 } from 'lucide-react';
 import { DayData, PoojaService } from '../types/panchangam';
 import { POOJA_SERVICES } from '../data/panchangamData';
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
 import { getFeaturedDailyRashiSnippet } from '../utils/dailySeoEngine';
+
+const ShaniDoshaChecker = lazy(() =>
+  import('./ShaniDoshaChecker').then((m) => ({ default: m.ShaniDoshaChecker }))
+);
+const NakshatraBabyNames = lazy(() =>
+  import('./NakshatraBabyNames').then((m) => ({ default: m.NakshatraBabyNames }))
+);
+const VastuChakraGuide = lazy(() =>
+  import('./VastuChakraGuide').then((m) => ({ default: m.VastuChakraGuide }))
+);
 
 export interface GuruProfileHomeProps {
   currentDay: DayData;
@@ -44,6 +56,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
   onOpenBooking,
 }) => {
   const { t, tr } = useLanguage();
+  const [activeHomeTool, setActiveHomeTool] = useState<'shani' | 'babynames' | 'vastu'>('shani');
   const cleanTithi = currentDay.panchanga.tithi?.split('-')[0]?.trim() || currentDay.panchanga.tithi;
   const cleanNakshatra = currentDay.panchanga.nakshatram?.split('-')[0]?.trim() || currentDay.panchanga.nakshatram;
   const featuredRashi = getFeaturedDailyRashiSnippet(currentDay);
@@ -323,6 +336,84 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
           <span>{t('ఉచిత కుండలి నివేదిక పొందండి', 'Generate Kundali Now')}</span>
         </button>
       </div>
+
+      {/* ============================================================== */}
+      {/* 4B. 3 HIGH-DEMAND INTERACTIVE VEDIC TOOLS (SHANI, BABY, VASTU) */}
+      {/* ============================================================== */}
+      <section
+        id="home-interactive-tools"
+        aria-label="Interactive Shani Dosha, Baby Naming and Vastu Checkers"
+        className="bg-gradient-to-b from-amber-50/90 via-white to-amber-50/60 border-2 border-amber-300 rounded-3xl p-4 sm:p-7 shadow-lg space-y-6 scroll-mt-24"
+      >
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-amber-200 pb-4">
+          <div className="space-y-1">
+            <span className="text-xs font-bold uppercase tracking-widest text-amber-800 block">
+              ✨ {t('ఉచిత ఆన్‌లైన్ జ్యోతిష & వాస్తు సేవలు • Free Vedic Checkers', 'Free Interactive Vedic Checkers')}
+            </span>
+            <h2 className="text-xl sm:text-3xl font-extrabold text-amber-950">
+              {t(
+                'ఏలినాటి శని చెకర్, 27 నక్షత్రాల పిల్లల పేర్లు & గృహ వాస్తు చక్రం',
+                'Elinati Shani Checker, 27 Nakshatra Baby Names & Gruha Vastu Guide'
+              )}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setActiveHomeTool('shani')}
+              className={`px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm border flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                activeHomeTool === 'shani'
+                  ? 'bg-amber-900 text-white border-amber-950 shadow-md scale-[1.02]'
+                  : 'bg-white text-amber-950 border-amber-300 hover:bg-amber-100'
+              }`}
+            >
+              <ShieldAlert size={16} className={activeHomeTool === 'shani' ? 'text-amber-300' : 'text-amber-700'} />
+              <span>🪐 {t('ఏలినాటి శని & దోష చెకర్', 'Shani & Dosha Checker')}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveHomeTool('babynames')}
+              className={`px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm border flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                activeHomeTool === 'babynames'
+                  ? 'bg-amber-900 text-white border-amber-950 shadow-md scale-[1.02]'
+                  : 'bg-white text-amber-950 border-amber-300 hover:bg-amber-100'
+              }`}
+            >
+              <Baby size={16} className={activeHomeTool === 'babynames' ? 'text-amber-300' : 'text-amber-700'} />
+              <span>👶 {t('27 నక్షత్రాల పిల్లల పేర్లు', '27 Star Baby Names')}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveHomeTool('vastu')}
+              className={`px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm border flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                activeHomeTool === 'vastu'
+                  ? 'bg-amber-900 text-white border-amber-950 shadow-md scale-[1.02]'
+                  : 'bg-white text-amber-950 border-amber-300 hover:bg-amber-100'
+              }`}
+            >
+              <Compass size={16} className={activeHomeTool === 'vastu' ? 'text-amber-300' : 'text-amber-700'} />
+              <span>🏠 {t('ఇంటి ముఖద్వార & వాస్తు చెకర్', 'House Vastu Checker')}</span>
+            </button>
+          </div>
+        </div>
+
+        <Suspense
+          fallback={
+            <div className="py-12 text-center text-sm font-bold text-amber-900 animate-pulse">
+              జ్యోతిష సమాచారం లోడ్ అవుతోంది... • Loading Vedic Tool...
+            </div>
+          }
+        >
+          {activeHomeTool === 'shani' && (
+            <ShaniDoshaChecker onOpenBooking={() => onOpenBooking()} />
+          )}
+          {activeHomeTool === 'babynames' && <NakshatraBabyNames />}
+          {activeHomeTool === 'vastu' && <VastuChakraGuide />}
+        </Suspense>
+      </section>
 
       {/* ============================================================== */}
       {/* 5. CORE SACRED SERVICES                                        */}
