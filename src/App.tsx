@@ -30,6 +30,7 @@ import type { HubSectionId } from './components/VedicAstrologyHub';
 import type { LegalDocType } from './components/LegalComplianceModal';
 import type { ClientKundaliPrefill } from './components/AdminDashboard';
 import { LiveSiteAnnouncementBanner } from './components/LiveSiteAnnouncementBanner';
+import { AstroSearchTopic, searchAstroTopics } from './data/astroSearchIndex';
 
 export type PanchangamSubTab = 'main' | 'gowri-hora' | 'tarabalam' | 'sankalpam';
 
@@ -459,6 +460,60 @@ function AppContent() {
     }
   }, [activeTab]);
 
+  const handleSelectSearchTopic = useCallback((topic: AstroSearchTopic) => {
+    setSelectedCity(null);
+    setIsAdminView(false);
+    setActiveTab(topic.targetTab);
+
+    if (topic.panchangamSubTab) {
+      setPanchangamSubTab(topic.panchangamSubTab);
+    } else if (topic.targetTab === 'panchangam') {
+      setPanchangamSubTab('main');
+    }
+
+    if (topic.hubSection) {
+      setHubSection(topic.hubSection);
+    }
+
+    if (typeof window !== 'undefined') {
+      try {
+        if (window.location.pathname !== topic.targetPath) {
+          window.history.pushState(
+            { tab: topic.targetTab, hubSection: topic.hubSection, panchangamSubTab: topic.panchangamSubTab },
+            '',
+            topic.targetPath
+          );
+        }
+      } catch {}
+
+      setTimeout(() => {
+        if (topic.scrollToElementId) {
+          const el = document.getElementById(topic.scrollToElementId);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+          }
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 120);
+    }
+  }, []);
+
+  // Support Google Sitelinks Searchbox (?q=... or ?search=...) on initial load
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('q') || params.get('search');
+      if (q && q.trim()) {
+        const matches = searchAstroTopics(q);
+        if (matches.length > 0) {
+          handleSelectSearchTopic(matches[0]);
+        }
+      }
+    } catch {}
+  }, [handleSelectSearchTopic]);
+
   // Listen to browser Back / Forward navigation (popstate)
   useEffect(() => {
     const onPopState = () => {
@@ -624,23 +679,23 @@ function AppContent() {
     };
 
     const titlesTelugu: Record<NavTab, string> = {
-      home: `Telugu Astrology & Telugu Jyothisham (తెలుగు జ్యోతిషం) | Daily Telugu Panchangam & Telugu Horoscope — telugujyothisham.com`,
-      panchangam: `Daily Telugu Panchangam & Telugu Astrology (Neti Panchangam - ${currentDay.teediVaram}) | తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra} & Telugu Horoscope`,
-      jathakam: 'మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి | మీ జాతకం తెలుసుకోండి — Telugu Jyothisham (తెలుగు జ్యోతిషం)',
+      home: `Panchangam, Jatakam, Jyothisham, Horoscope & Astrology Predictions (తెలుగు జ్యోతిషం) | Daily Telugu Panchangam — telugujyothisham.com`,
+      panchangam: `Daily Telugu Panchangam, Horoscope & Astrology Predictions (Neti Panchangam - ${currentDay.teediVaram}) | తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra}`,
+      jathakam: 'Free Jatakam & 100-Page Janma Kundali Horoscope Prediction PDF (మీ జాతకం తెలుసుకోండి) — Telugu Jyothisham',
       awards: 'పొందిన సత్కారాలు & పురస్కారాలు | Telugu Jyothisham (తెలుగు జ్యోతిషం) - శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ',
-      services: 'వైదిక పూజా సేవలు & హోమాలు | Telugu Jyothisham (తెలుగు జ్యోతిషం) - శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం',
-      about: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి గురించి | Telugu Jyothisham (తెలుగు జ్యోతిషం) - శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం',
-      contact: 'సంప్రదించండి | Telugu Jyothisham (తెలుగు జ్యోతిషం) - శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com)',
+      services: 'Pooja Services & వైదిక హోమాలు | Telugu Jyothisham (తెలుగు జ్యోతిషం) - శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం',
+      about: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి గురించి | Telugu Jyothisham & Vedic Astrology',
+      contact: 'సంప్రదించండి | Telugu Jyothisham, Panchangam, Jatakam & Horoscope Predictions (telugujyothisham.com)',
     };
 
     const titlesEnglish: Record<NavTab, string> = {
-      home: `Telugu Astrology & Telugu Jyothisham (తెలుగు జ్యోతిషం) | Daily Telugu Panchangam & Telugu Horoscope — telugujyothisham.com`,
-      panchangam: `Daily Telugu Panchangam & Telugu Astrology (${currentDay.teediVaram}) | Neti Panchangam & Telugu Horoscope — telugujyothisham.com`,
-      jathakam: 'Get Your 100-Page Janma Kundali PDF (మీ జన్మ కుండలి 100 పేజీల PDF పొందండి) | Telugu Jyothisham',
+      home: `Panchangam, Jatakam, Jyothisham, Horoscope & Astrology Predictions (తెలుగు జ్యోతిషం) — telugujyothisham.com`,
+      panchangam: `Daily Telugu Panchangam, Horoscope & Astrological Predictions (${currentDay.teediVaram}) | Neti Panchangam — telugujyothisham.com`,
+      jathakam: 'Free Jatakam & 100-Page Janma Kundali Horoscope Prediction PDF | Telugu Jyothisham & Astrology',
       awards: 'Vedic Honors & Awards | Telugu Jyothisham - Sri Jallavaram Sai Dheeraj Sharma — telugujyothisham.com',
-      services: 'Vedic Homams & Rituals | Telugu Jyothisham - Sri Chandi Homam, Lakshmi Kubera Yagam — telugujyothisham.com',
-      about: 'About Sri Jallavaram Sai Dheeraj Sharma | Telugu Jyothisham (తెలుగు జ్యోతిషం) — telugujyothisham.com',
-      contact: 'Contact Vedic Astrologer & Purohit | Telugu Jyothisham (తెలుగు జ్యోతిషం) — telugujyothisham.com',
+      services: 'Pooja Services, Vedic Homams & Rituals | Telugu Jyothisham - Sri Chandi Homam — telugujyothisham.com',
+      about: 'About Sri Jallavaram Sai Dheeraj Sharma | Telugu Jyothisham & Vedic Astrology — telugujyothisham.com',
+      contact: 'Contact Vedic Astrologer & Purohit | Panchangam, Jatakam, Horoscope & Pooja Services — telugujyothisham.com',
     };
 
     const descriptionsTelugu: Record<NavTab, string> = {
@@ -719,11 +774,12 @@ function AppContent() {
 
   return (
     <div id="top" className="min-h-screen flex flex-col bg-[#faf7f2] text-slate-900 font-telugu">
-      {/* Top Navigation with language switcher, tabs, bell & booking CTA */}
+      {/* Top Navigation with language switcher, search bar, tabs, bell & booking CTA */}
       <Header
         activeTab={activeTab}
         onSelectTab={handleSelectTab}
         onOpenBooking={() => handleOpenBooking()}
+        onSelectSearchTopic={handleSelectSearchTopic}
       />
 
       {/* Live Website Bulletin & Daily Special Message controlled from Admin Panel */}

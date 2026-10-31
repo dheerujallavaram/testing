@@ -1,10 +1,11 @@
 # Telugu Jyothisham (తెలుగు జ్యోతిషం) — శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (telugujyothisham.com)
 
-> Official Vedic Astrology, Drik Siddhanta Daily Telugu Panchangam (నేటి పంచాంగం), 12 Rashi Horoscope (రాశి ఫలాలు & గ్రహ దృష్టి ఫలితాలు), 100-Page Brihat Jataka Janma Kundali PDF Generator, 36-Point Ashtakoota Vivaha Pontana, and Smartha Vedic Ritual Portal by **Brahmasri Jallavaram Sai Dheeraj Sharma Siddhanti (బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి గారు)**.
+> Official Vedic Astrology (`astrology` / `astrological`), Drik Siddhanta Daily Telugu Panchangam (`Panchangam` / `నేటి పంచాంగం`), 12 Rashi Horoscope & Astrological Predictions (`horoscope`, `Predictions`, `prediction`, `రాశి ఫలాలు & గ్రహ దృష్టి ఫలితాలు`), 100-Page Brihat Jataka Janma Kundali PDF Generator (`jatakam` / `Jathakam`), Vastu Shastra (`Vastu`), Shubha Muhurtham (`Muhurtham`), and Smartha Vedic Pooja Services (`Pooja services`) by **Brahmasri Jallavaram Sai Dheeraj Sharma Siddhanti (బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి గారు)**.
 
 ## Primary Entity & E-E-A-T Authority Profile
 - **Brand Name**: శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (Telugu Jyothisham / Sreelakshmi Ganapathi Jyothishalayam)
 - **Canonical Domain**: https://www.telugujyothisham.com
+- **Core Search Intents Covered**: `Panchangam`, `jatakam`, `Jyothisham`, `horoscope`, `astrology`, `astrological`, `Predictions`, `prediction`, `Vastu`, `Muhurtham`, `Pooja services`
 - **Lead Vedic Scholar & Siddhanti**: బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (Brahmasri Jallavaram Sai Dheeraj Sharma)
 - **Credentials & Lineage**: Certified Smartha Veda Vidwan, Drik Siddhanta Panchanga Ganitha Scholar, recipient of Suvarna Kankanam and Vedic Peetham Honors
 - **Headquarters**: Pasumamula, Hayathnagar, Hyderabad, Telangana, India
