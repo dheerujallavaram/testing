@@ -382,6 +382,10 @@ export function generateLocalizedStaticRoutes(activeDay?: DayData): LocalizedRou
     const templeProximity = getCityTempleProximity(city);
     const isUSA = city.regionType === 'USA';
 
+    const shortCity = city.name.slice(0, 18);
+    const clampTitle = (s: string) => (s.length <= 60 ? s : s.slice(0, 57) + '...');
+    const clampDesc = (s: string) => (s.length <= 158 ? s : s.slice(0, 155) + '...');
+
     // Route Set 1: Best Telugu Astrologer & Vedic Purohit in [City] (258 routes)
     const astrologerPath = `/telugu-astrologer-in-${city.slug}`;
     routes.push({
@@ -393,9 +397,9 @@ export function generateLocalizedStaticRoutes(activeDay?: DayData): LocalizedRou
       state: city.state,
       regionType: city.regionType,
       intent: 'astrologer-purohit',
-      titleTe: `${city.teluguName} (${city.name}) లో ప్రముఖ తెలుగు జ్యోతిష్యులు & పురోహితులు | Telugu Jyothisham — శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం`,
-      titleEn: `Best Telugu Astrologer in ${city.name}, ${city.state} (${city.teluguName}) | Telugu Jyothisham & Panchangam`,
-      metaDescription: `${city.teluguName} (${city.name}, ${city.state}) భక్తుల కొరకు ${templeProximity.templeNameTe} పరిధిలో బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారిచే జాతక పరిశీలన (Telugu Jathakam), వివాహ & గృహప్రవేశ ముహూర్తాలు, నేటి పంచాంగం (${dayLabel}: ${tithiLabel}, ${nakshatraLabel}) మరియు వైదిక హోమ సేవలు.`,
+      titleTe: clampTitle(`Telugu Astrologer in ${shortCity} - Telugu Jyothisham.com`),
+      titleEn: clampTitle(`Telugu Astrologer in ${shortCity} - Telugu Jyothisham.com`),
+      metaDescription: clampDesc(`${city.teluguName} (${city.name}) భక్తుల కొరకు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారిచే జాతక పరిశీలన, ముహూర్తాలు, పంచాంగం & హోమాలు - telugujyothisham.com.`),
       templeProximity,
       priority: isUSA ? 0.85 : 0.9,
       changefreq: 'daily',
@@ -412,9 +416,9 @@ export function generateLocalizedStaticRoutes(activeDay?: DayData): LocalizedRou
       state: city.state,
       regionType: city.regionType,
       intent: 'neti-panchangam',
-      titleTe: `నేటి పంచాంగం ${city.teluguName} (${dayLabel}) | Neti Panchangam in ${city.name} - తిథి: ${tithiLabel}, నక్షత్రం: ${nakshatraLabel}`,
-      titleEn: `Neti Panchangam in ${city.name} (${city.teluguName}) | Today Telugu Panchangam, Rahu Kalam & Shubha Muhurtham`,
-      metaDescription: `${city.teluguName} (${city.name}) స్థానిక సూర్యోదయ ప్రమాణాలతో ${dayLabel} నేటి పంచాంగం (Neti Panchangam): తిథి ${tithiLabel}, నక్షత్రం ${nakshatraLabel}, రాహుకాలం, అమృత ఘడియలు, గౌరీ పంచాంగం & ${templeProximity.templeNameTe} సంకల్ప కాలమానం.`,
+      titleTe: clampTitle(`Neti Panchangam in ${shortCity} - Telugu Jyothisham.com`),
+      titleEn: clampTitle(`Neti Panchangam in ${shortCity} - Telugu Jyothisham.com`),
+      metaDescription: clampDesc(`${city.teluguName} (${city.name}) నేటి పంచాంగం: తిథి ${tithiLabel}, నక్షత్రం ${nakshatraLabel}, రాహుకాలం, అమృత ఘడియలు, రాశి ఫలాలు - telugujyothisham.com.`),
       templeProximity,
       priority: 0.85,
       changefreq: 'daily',
@@ -429,6 +433,9 @@ export function generateLocalizedStaticRoutes(activeDay?: DayData): LocalizedRou
   ];
 
   for (const city of topCitiesForJathakam) {
+    const shortCity = city.name.slice(0, 18);
+    const clampTitle = (s: string) => (s.length <= 60 ? s : s.slice(0, 57) + '...');
+    const clampDesc = (s: string) => (s.length <= 158 ? s : s.slice(0, 155) + '...');
     const templeProximity = getCityTempleProximity(city);
     const jathakamPath = `/vivaha-pontana-jatakam-in-${city.slug}`;
     routes.push({
@@ -440,9 +447,9 @@ export function generateLocalizedStaticRoutes(activeDay?: DayData): LocalizedRou
       state: city.state,
       regionType: city.regionType,
       intent: 'vivaha-muhurtham',
-      titleTe: `${city.teluguName} (${city.name}) వివాహ పొంతన, జన్మ కుండలి & శుభ ముహూర్తాలు | బృహత్ జాతక గ్రంథం & భృగు చక్ర పద్ధతి`,
-      titleEn: `Telugu Jathakam, 36 Guna Marriage Matching & Wedding Muhurtham in ${city.name} (${city.teluguName})`,
-      metaDescription: `${city.teluguName} (${city.name}) లో బృహత్ జాతక గ్రంథం, భృగు చక్ర పద్ధతి & ముహూర్త చింతామణి ఆధారంగా 36 గుణాల వివాహ పొంతన, జన్మ కుండలి విశ్లేషణ మరియు ${templeProximity.templeNameTe} సాన్నిధ్యంలో శుభ ముహూర్త నిర్ణయం.`,
+      titleTe: clampTitle(`Vivaha Pontana & Jatakam in ${shortCity} - Jyothisham.com`),
+      titleEn: clampTitle(`Vivaha Pontana & Jatakam in ${shortCity} - Jyothisham.com`),
+      metaDescription: clampDesc(`${city.teluguName} (${city.name}) లో 36 గుణాల వివాహ పొంతన, 100 పేజీల జన్మ కుండలి PDF మరియు శుభ ముహూర్త నిర్ణయం - telugujyothisham.com.`),
       templeProximity,
       priority: 0.8,
       changefreq: 'weekly',

@@ -42,15 +42,17 @@ export const CityAstrologyPage: React.FC<CityAstrologyPageProps> = ({
 
   // Dynamic SEO Injection for programmatic page
   useEffect(() => {
+    const shortCity = city.name.slice(0, 18);
     const pageTitle = isUSA
-      ? `Best Telugu Astrologer in ${city.name}, ${city.state} | Vedic Purohit & NRI Astrology Services`
-      : `Best Telugu Astrologer in ${city.name} (${city.teluguName}) | శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం`;
+      ? `Telugu Astrologer in ${shortCity}, ${city.state} - Jyothisham`
+      : `Telugu Astrologer in ${shortCity} - Telugu Jyothisham.com`;
 
-    const pageDescription = isUSA
-      ? `Trusted Telugu Astrologer & Vedic Purohit in ${city.name}, ${city.state}. Sri Jallavaram Sai Dheeraj Sharma provides USA timezone (${city.timezone || 'US'}) online horoscope consultation, Gruhapravesham muhurthams, Satyanarayana Vratham & Live Homams.`
-      : `${city.name} (${city.teluguName}) లోని భక్తుల కొరకు ప్రముఖ జ్యోతిష పండితులు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారిచే జాతక పరిశీలన, వివాహ ముహూర్తాలు, గృహప్రవేశం, చండీ & లక్ష్మీ గణపతి హోమాలు మరియు వైదిక పూజా సేవలు.`;
+    const rawDesc = isUSA
+      ? `Trusted Telugu Astrologer & Vedic Purohit in ${city.name}, ${city.state}. Online Jatakam PDF, Muhurtham, Panchangam & Homam - telugujyothisham.com.`
+      : `${city.name} (${city.teluguName}) భక్తుల కొరకు శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారిచే జాతక పరిశీలన, ముహూర్తాలు, పంచాంగం & హోమాలు - telugujyothisham.com.`;
+    const pageDescription = rawDesc.length <= 158 ? rawDesc : rawDesc.slice(0, 155) + '...';
 
-    document.title = pageTitle;
+    document.title = pageTitle.slice(0, 60);
 
     // Meta Description
     let metaDesc = document.querySelector('meta[name="description"]');

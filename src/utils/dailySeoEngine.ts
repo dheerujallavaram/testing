@@ -74,15 +74,16 @@ export function buildTeluguJyothishamBrandSnippet(
   day: DayData,
   lang: 'te' | 'en' = 'te'
 ): string {
-  const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
-  const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.trim() || day.panchanga.nakshatram;
-  const featuredRashi = getFeaturedDailyRashiSnippet(day);
+  const cleanTithi = day.panchanga.tithi.split('-')[0]?.split('(')[0]?.trim() || day.panchanga.tithi;
+  const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.split('(')[0]?.trim() || day.panchanga.nakshatram;
 
   if (lang === 'en') {
-    return `Panchangam, Jatakam, Jyothisham, Horoscope & Astrology Predictions — Today Nakshatram: ${cleanNakshatra} (${day.teediVaram}, Tithi: ${cleanTithi}) | Daily Astrological Prediction: ${featuredRashi.rashiNameEn} (${featuredRashi.predictionTe}) | Free 100-Page Janma Kundali Jatakam PDF, Vastu, Muhurtham & Pooja Services — telugujyothisham.com.`;
+    const descEn = `Daily Telugu Panchangam (Tithi: ${cleanTithi}, Star: ${cleanNakshatra}), Horoscope Predictions, Free 100-Page Jatakam PDF, Vastu - telugujyothisham.com.`;
+    return descEn.length <= 158 ? descEn : descEn.slice(0, 155) + '...';
   }
 
-  return `Panchangam, Jatakam, Jyothisham, Horoscope & Astrology Predictions (తెలుగు జ్యోతిషం) — Daily Telugu Panchangam: ఈ రోజు నక్షత్రం ${cleanNakshatra} (${day.teediVaram}, తిథి: ${cleanTithi}) | Astrological Prediction (నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe}) | 100 పేజీల జన్మ కుండలి Jatakam PDF, Vastu, Muhurtham & Pooja Services (${day.shubha.amrutha}).`;
+  const descTe = `Daily Telugu Panchangam (ఈ రోజు పంచాంగం: ${cleanTithi}, ${cleanNakshatra}), Horoscope (రాశి ఫలాలు), 100-Page Jatakam PDF, Vastu - telugujyothisham.com.`;
+  return descTe.length <= 158 ? descTe : descTe.slice(0, 155) + '...';
 }
 
 /**
@@ -92,15 +93,16 @@ export function buildNetiPanchangamSearchSnippet(
   day: DayData,
   lang: 'te' | 'en' = 'te'
 ): string {
-  const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
-  const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.trim() || day.panchanga.nakshatram;
-  const featuredRashi = getFeaturedDailyRashiSnippet(day);
+  const cleanTithi = day.panchanga.tithi.split('-')[0]?.split('(')[0]?.trim() || day.panchanga.tithi;
+  const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.split('(')[0]?.trim() || day.panchanga.nakshatram;
 
   if (lang === 'en') {
-    return `Panchangam, Jatakam, Jyothisham, Horoscope & Astrological Predictions (${day.teediVaram}): Tithi ${cleanTithi}, Nakshatram ${cleanNakshatra}, Shubha Muhurtham: ${day.shubha.amrutha}, Abhijit: ${day.shubha.abhijit} | Daily Horoscope Prediction (${featuredRashi.rashiNameEn}): ${featuredRashi.predictionTe} | 100-Page Janma Kundali PDF.`;
+    const descEn = `Neti Panchangam (${day.teediVaram}): Tithi ${cleanTithi}, Nakshatram ${cleanNakshatra}, Horoscope Predictions, 100-Page Jatakam PDF - telugujyothisham.com.`;
+    return descEn.length <= 158 ? descEn : descEn.slice(0, 155) + '...';
   }
 
-  return `Daily Telugu Panchangam, Jatakam, Jyothisham, Horoscope & Astrology Predictions — ఈ రోజు పంచాంగం (${day.teediVaram}): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం: ${day.shubha.amrutha} | Daily Horoscope Prediction (నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe}) | 100 పేజీల జన్మ కుండలి PDF (రాహుకాలం: ${day.ashubha.rahukalam}).`;
+  const descTe = `ఈ రోజు పంచాంగం (Neti Panchangam): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, నేటి రాశి ఫలాలు, శుభ సమయం, 100-Page Jatakam PDF - telugujyothisham.com.`;
+  return descTe.length <= 158 ? descTe : descTe.slice(0, 155) + '...';
 }
 
 /**
