@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Star, AlertTriangle, CheckCircle2, Info, Share2, Clock } from 'lucide-react';
+import { Sparkles, Star, AlertTriangle, CheckCircle2, Info, Share2, Clock, Compass } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import {
   RASHI_META_LIST,
@@ -13,6 +13,24 @@ import { useLanguage } from '../context/LanguageContext';
 interface DailyHoroscopeProps {
   day: DayData;
 }
+
+const RASHI_EXTRA_META: Record<
+  string,
+  { syllablesTe: string; luckyDirectionTe: string; luckyDirectionEn: string }
+> = {
+  mesham: { syllablesTe: 'చూ, చే, చో, లా, లీ, లూ, లే, లో, ఆ', luckyDirectionTe: 'తూర్పు (East)', luckyDirectionEn: 'East' },
+  vrushabham: { syllablesTe: 'ఈ, ఊ, ఏ, ఓ, వా, వీ, వూ, వే, వో', luckyDirectionTe: 'ఆగ్నేయం (South-East)', luckyDirectionEn: 'South-East' },
+  mithunam: { syllablesTe: 'కా, కీ, కూ, ఖం, ఙ, ఛా, కే, కో, హా', luckyDirectionTe: 'ఉత్తరం (North)', luckyDirectionEn: 'North' },
+  karkatakam: { syllablesTe: 'హీ, హూ, హే, హో, డా, డీ, డూ, డే, డో', luckyDirectionTe: 'వాయువ్యం (North-West)', luckyDirectionEn: 'North-West' },
+  simham: { syllablesTe: 'మా, మీ, మూ, మే, మో, టా, టీ, టూ, టే', luckyDirectionTe: 'తూర్పు (East)', luckyDirectionEn: 'East' },
+  kanya: { syllablesTe: 'టో, పా, పీ, పూ, షం, ణా, ఠా, పే, పో', luckyDirectionTe: 'ఉత్తరం (North)', luckyDirectionEn: 'North' },
+  tula: { syllablesTe: 'రా, రీ, రూ, రే, రో, తా, తీ, తూ, తే', luckyDirectionTe: 'పడమర / ఆగ్నేయం', luckyDirectionEn: 'West / South-East' },
+  vruschikam: { syllablesTe: 'తో, నా, నీ, నూ, నే, నో, యా, యీ, యూ', luckyDirectionTe: 'ఉత్తరం / తూర్పు', luckyDirectionEn: 'North / East' },
+  dhanussu: { syllablesTe: 'యే, యో, భా, భీ, భూ, ధా, ఫా, ఢా, భే', luckyDirectionTe: 'ఈశాన్యం (North-East)', luckyDirectionEn: 'North-East' },
+  makaram: { syllablesTe: 'భో, జా, జీ, జూ, జే, జో, ఖా, గా, గీ', luckyDirectionTe: 'పడమర (West)', luckyDirectionEn: 'West' },
+  kumbham: { syllablesTe: 'గూ, గే, గో, సా, సీ, సూ, సే, సో, దా', luckyDirectionTe: 'పడమర (West)', luckyDirectionEn: 'West' },
+  meenam: { syllablesTe: 'దీ, దూ, థ, ఝ, ఞ, దే, దో, చా, చీ', luckyDirectionTe: 'ఈశాన్యం (North-East)', luckyDirectionEn: 'North-East' },
+};
 
 const ENGLISH_HOUSE_SUMMARIES: Record<
   number,
@@ -106,6 +124,7 @@ const ENGLISH_HOUSE_SUMMARIES: Record<
 
 export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
   const [filter, setFilter] = useState<'all' | 'favorable' | 'mixed' | 'caution'>('all');
+  const [selectedRashiId, setSelectedRashiId] = useState<string>('all');
   const { language, t, tr } = useLanguage();
 
   const moonRashiIdx = findMoonRashiIndex(day);
@@ -113,9 +132,11 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
 
   const rashiCards = getDailyRashiFortunes(day);
 
-  const filteredCards = rashiCards.filter((card) =>
-    filter === 'all' ? true : card.status === filter
-  );
+  const filteredCards = rashiCards.filter((card) => {
+    const matchesStatus = filter === 'all' ? true : card.status === filter;
+    const matchesRashi = selectedRashiId === 'all' ? true : card.id === selectedRashiId;
+    return matchesStatus && matchesRashi;
+  });
 
   return (
     <section
@@ -201,7 +222,64 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
         </div>
       </div>
 
-      {/* 12 Rashis Grid: Mobile 1-col, Tablet 2-col, Desktop 3-col */}
+      {/* Quick 12-Rashi & Name First-Syllable Selector Bar */}
+      <div className="mb-5 bg-amber-50/70 border border-amber-200 rounded-2xl p-3">
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <span className="text-xs font-bold text-amber-950 font-telugu">
+            🔍 {t('మీ రాశిని లేదా పేరు మొదటి అక్షరాన్ని ఎంచుకోండి:', 'Select Your Rashi or Name First Letter:')}
+          </span>
+          {selectedRashiId !== 'all' && (
+            <button
+              type="button"
+              onClick={() => setSelectedRashiId('all')}
+              className="text-[11px] font-bold text-amber-800 hover:text-amber-950 underline cursor-pointer"
+            >
+              {t('అన్ని రాశులు చూపించు (12)', 'Show All 12 Signs')}
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <button
+            type="button"
+            onClick={() => setSelectedRashiId('all')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-telugu font-bold whitespace-nowrap transition-all cursor-pointer border shrink-0 ${
+              selectedRashiId === 'all'
+                ? 'bg-amber-800 text-white border-amber-900 shadow-2xs'
+                : 'bg-white text-amber-950 border-amber-200 hover:bg-amber-100'
+            }`}
+          >
+            {t('అన్నీ (12)', 'All (12)')}
+          </button>
+          {rashiCards.map((rc) => {
+            const extra = RASHI_EXTRA_META[rc.id];
+            const isSelected = selectedRashiId === rc.id;
+            return (
+              <button
+                key={rc.id}
+                type="button"
+                onClick={() => {
+                  setSelectedRashiId(rc.id);
+                  setFilter('all');
+                }}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-telugu font-bold whitespace-nowrap transition-all cursor-pointer border shrink-0 flex items-center gap-1.5 ${
+                  isSelected
+                    ? 'bg-amber-900 text-amber-100 border-amber-950 shadow-xs'
+                    : 'bg-white text-amber-950 border-amber-200 hover:bg-amber-100'
+                }`}
+              >
+                <RashiGlyph rashi={rc.id} size={13} className={isSelected ? 'text-amber-300' : 'text-amber-700'} />
+                <span>{language === 'en' ? rc.englishName : rc.teluguName}</span>
+                {extra && language !== 'en' && (
+                  <span className={`text-[10px] font-normal ${isSelected ? 'text-amber-200' : 'text-slate-500'}`}>
+                    ({extra.syllablesTe.split(',').slice(0, 3).join(',')})
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* 12 Rashis Grid: Mobile 1-col, Tablet 2-col, Desktop 3-col */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {filteredCards.map((rashi) => {
@@ -314,14 +392,25 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-amber-900 pt-1 border-t border-amber-200/60">
+                    <div className="flex flex-wrap items-center justify-between gap-1.5 text-[11px] text-amber-900 pt-1 border-t border-amber-200/60">
                       <span className="inline-flex items-center gap-1 font-bold">
                         <Clock size={12} className="text-amber-700" />
-                        <span>{t('నేటి శుభ సమయం:', 'Lucky Time:')}</span>
+                        <span>{t('శుభ సమయం:', 'Lucky Time:')}</span>
+                        <span className="font-bold bg-white px-2 py-0.5 rounded border border-amber-300 text-amber-950">
+                          {rashi.luckyTimeWindowTe}
+                        </span>
                       </span>
-                      <span className="font-bold bg-white px-2 py-0.5 rounded border border-amber-300 text-amber-950">
-                        {rashi.luckyTimeWindowTe}
-                      </span>
+                      {RASHI_EXTRA_META[rashi.id] && (
+                        <span className="inline-flex items-center gap-1 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-amber-950">
+                          <Compass size={11} className="text-amber-700" />
+                          <span>
+                            {t('దిశ:', 'Dir:')}{' '}
+                            {language === 'en'
+                              ? RASHI_EXTRA_META[rashi.id].luckyDirectionEn
+                              : RASHI_EXTRA_META[rashi.id].luckyDirectionTe}
+                          </span>
+                        </span>
+                      )}
                     </div>
                   </div>
 

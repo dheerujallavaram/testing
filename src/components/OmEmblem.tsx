@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 
 interface OmEmblemProps {
   className?: string;
@@ -11,6 +11,12 @@ interface OmEmblemProps {
  * sacred Vibhuti & Kumkuma Tilak, elephant ears, Ekadanta (tusk), and curved trunk holding a Modakam.
  */
 export const OmEmblem: React.FC<OmEmblemProps> = ({ className = 'w-9 h-9', size = 38 }) => {
+  const rawId = useId().replace(/:/g, '');
+  const bgId = `ganapathiBgGrad-${rawId}`;
+  const rimId = `goldRimGrad-${rawId}`;
+  const crownId = `goldCrownGrad-${rawId}`;
+  const skinId = `ganapathiSkinGrad-${rawId}`;
+
   return (
     <svg
       width={size}
@@ -22,13 +28,36 @@ export const OmEmblem: React.FC<OmEmblemProps> = ({ className = 'w-9 h-9', size 
       aria-label="శ్రీ మహా గణపతి (Lord Sri Maha Ganapathi)"
       role="img"
     >
-      {/* 1. Outer Sacred Golden Halo Circle (Targeted by CSS selector svg > circle:nth-of-type(1)) */}
+      <defs>
+        <radialGradient id={bgId} cx="50%" cy="45%" r="55%">
+          <stop offset="0%" stopColor="#991B1B" />
+          <stop offset="70%" stopColor="#7F1D1D" />
+          <stop offset="100%" stopColor="#450A0A" />
+        </radialGradient>
+        <linearGradient id={rimId} x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FEF08A" />
+          <stop offset="50%" stopColor="#F59E0B" />
+          <stop offset="100%" stopColor="#B45309" />
+        </linearGradient>
+        <linearGradient id={crownId} x1="33" y1="13" x2="67" y2="37" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FEF08A" />
+          <stop offset="50%" stopColor="#FBBF24" />
+          <stop offset="100%" stopColor="#D97706" />
+        </linearGradient>
+        <linearGradient id={skinId} x1="20" y1="35" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FDE68A" />
+          <stop offset="50%" stopColor="#FBBF24" />
+          <stop offset="100%" stopColor="#F59E0B" />
+        </linearGradient>
+      </defs>
+
+      {/* 1. Outer Sacred Golden Halo Circle */}
       <circle
         cx="50"
         cy="50"
         r="47"
-        fill="url(#ganapathiBgGrad)"
-        stroke="url(#goldRimGrad)"
+        fill={`url(#${bgId})`}
+        stroke={`url(#${rimId})`}
         strokeWidth="3.5"
       />
 
@@ -61,13 +90,13 @@ export const OmEmblem: React.FC<OmEmblemProps> = ({ className = 'w-9 h-9', size 
       {/* Left & Right Sacred Ears (Karna) */}
       <path
         d="M32 42 C16 36, 13 50, 19 61 C23 67, 30 65, 34 59 Z"
-        fill="url(#ganapathiSkinGrad)"
+        fill={`url(#${skinId})`}
         stroke="#B45309"
         strokeWidth="1.6"
       />
       <path
         d="M68 42 C84 36, 87 50, 81 61 C77 67, 70 65, 66 59 Z"
-        fill="url(#ganapathiSkinGrad)"
+        fill={`url(#${skinId})`}
         stroke="#B45309"
         strokeWidth="1.6"
       />
@@ -78,7 +107,7 @@ export const OmEmblem: React.FC<OmEmblemProps> = ({ className = 'w-9 h-9', size 
       {/* Royal Golden Kireetam (Temple Crown) */}
       <path
         d="M33 37 L38 20 L45 27 L50 13 L55 27 L62 20 L67 37 Z"
-        fill="url(#goldCrownGrad)"
+        fill={`url(#${crownId})`}
         stroke="#FEF08A"
         strokeWidth="1.5"
         strokeLinejoin="round"
@@ -93,7 +122,7 @@ export const OmEmblem: React.FC<OmEmblemProps> = ({ className = 'w-9 h-9', size 
       {/* Lord Ganapathi Face & Curved Trunk (Vakratunda) */}
       <path
         d="M33 40 C33 38, 67 38, 67 40 C69 51, 65 60, 58 64 C56 71, 58 76, 63 75 C67 74, 68 70, 65 68 C63 67, 64 64, 67 65 C72 67, 73 74, 67 79 C60 83, 47 81, 44 71 C43 67, 42 63, 41 61 C35 58, 31 50, 33 40 Z"
-        fill="url(#ganapathiSkinGrad)"
+        fill={`url(#${skinId})`}
         stroke="#92400E"
         strokeWidth="1.6"
       />
@@ -121,30 +150,7 @@ export const OmEmblem: React.FC<OmEmblemProps> = ({ className = 'w-9 h-9', size 
       {/* Golden Modakam / Laddu Held in Curved Trunk Tip */}
       <circle cx="65" cy="71" r="4.2" fill="#FBBF24" stroke="#FFFBEB" strokeWidth="1.2" />
       <circle cx="64" cy="70" r="1" fill="#FEF08A" />
-
-      {/* Gradients */}
-      <defs>
-        <radialGradient id="ganapathiBgGrad" cx="50%" cy="45%" r="55%">
-          <stop offset="0%" stopColor="#991B1B" />
-          <stop offset="70%" stopColor="#7F1D1D" />
-          <stop offset="100%" stopColor="#450A0A" />
-        </radialGradient>
-        <linearGradient id="goldRimGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#FEF08A" />
-          <stop offset="50%" stopColor="#F59E0B" />
-          <stop offset="100%" stopColor="#B45309" />
-        </linearGradient>
-        <linearGradient id="goldCrownGrad" x1="33" y1="13" x2="67" y2="37" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#FEF08A" />
-          <stop offset="50%" stopColor="#FBBF24" />
-          <stop offset="100%" stopColor="#D97706" />
-        </linearGradient>
-        <linearGradient id="ganapathiSkinGrad" x1="20" y1="35" x2="80" y2="80" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#FDE68A" />
-          <stop offset="50%" stopColor="#FBBF24" />
-          <stop offset="100%" stopColor="#F59E0B" />
-        </linearGradient>
-      </defs>
     </svg>
   );
 };
+
