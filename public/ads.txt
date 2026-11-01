@@ -1,0 +1,4 @@
+# Google AdSense Authorized Digital Sellers (ads.txt)
+# Domain: telugujyothisham.com
+# Publisher ID: ca-pub-8193475484408755
+google.com, pub-8193475484408755, DIRECT, f08c47fec0942fa0

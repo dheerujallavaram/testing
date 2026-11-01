@@ -448,9 +448,11 @@ export function generateCompactRowFromAstronomy(isoDate: string): CompactPanchan
 
 const computedDayCache = new Map<string, DayData>();
 
-export function getOrGenerateDayData(isoDate: string, existingDays: DayData[]): DayData {
-  const found = existingDays.find((d) => d.id === isoDate || d.isoDate === isoDate);
-  if (found) return found;
+export function getOrGenerateDayData(isoDate: string, existingDays: DayData[] = []): DayData {
+  if (Array.isArray(existingDays) && existingDays.length > 0) {
+    const found = existingDays.find((d) => d.id === isoDate || d.isoDate === isoDate);
+    if (found) return found;
+  }
 
   const cached = computedDayCache.get(isoDate);
   if (cached) return cached;
@@ -465,7 +467,7 @@ export function getOrGenerateDayData(isoDate: string, existingDays: DayData[]): 
     computedDayCache.set(isoDate, dayData);
     return dayData;
   } catch {
-    return existingDays[0];
+    return existingDays?.[0] || computedDayCache.values().next().value;
   }
 }
 

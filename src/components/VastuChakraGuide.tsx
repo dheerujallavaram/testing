@@ -339,7 +339,7 @@ export const VastuChakraGuide: React.FC = () => {
             </span>
             <a
               href={`https://wa.me/918977986166?text=${encodeURIComponent(
-                `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ సిద్ధాంతి గారు, మా "${selectedFacing.titleTe}" ఇంటి వాస్తు పరిశీలన మరియు గృహప్రవేశ ముహూర్తం కోసం సంప్రదిస్తున్నాను.`
+                `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ గారు, మా "${selectedFacing.titleTe}" ఇంటి వాస్తు పరిశీలన మరియు గృహప్రవేశ ముహూర్తం కోసం సంప్రదిస్తున్నాను.`
               )}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -469,7 +469,7 @@ export const VastuChakraGuide: React.FC = () => {
           <div className="pt-2">
             <a
               href={`https://wa.me/918977986166?text=${encodeURIComponent(
-                `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ సిద్ధాంతి గారు, మా ఇంటి / ప్లాట్ (${selectedDir.directionTe}) వాస్తు పరిశీలన మరియు గృహప్రవేశ ముహూర్తం కోసం సంప్రదిస్తున్నాను.`
+                `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ గారు, మా ఇంటి / ప్లాట్ (${selectedDir.directionTe}) వాస్తు పరిశీలన మరియు గృహప్రవేశ ముహూర్తం కోసం సంప్రదిస్తున్నాను.`
               )}`}
               target="_blank"
               rel="noopener noreferrer"

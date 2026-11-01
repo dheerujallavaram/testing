@@ -278,16 +278,30 @@ export const ActionControls: React.FC<ActionControlsProps> = ({ day, onOpenBooki
           </span>
         </button>
 
-        {/* Download WhatsApp Status Image Card */}
-        <button
-          type="button"
-          onClick={() => downloadDailyPanchangamCardImage(day)}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white px-5 py-3.5 sm:py-3 rounded-2xl sm:rounded-full font-bold text-sm sm:text-base shadow-md transition-transform hover:scale-105 active:scale-95 font-telugu cursor-pointer"
-          title={t('వాట్సాప్ స్టేటస్ కోసం నేటి పంచాంగం ఫోటో డౌన్‌లోడ్ చేయండి', 'Download Daily Panchangam Status Image')}
-        >
-          <Download size={18} />
-          <span>{t('నేటి పంచాంగం ఫోటో డౌన్‌లోడ్ (Status Image)', 'Download Status Photo')}</span>
-        </button>
+        {/* Download WhatsApp Status Image Card (Telugu & English) */}
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => downloadDailyPanchangamCardImage(day, language)}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white px-5 py-3.5 sm:py-3 rounded-2xl sm:rounded-full font-bold text-sm sm:text-base shadow-md transition-transform hover:scale-105 active:scale-95 font-telugu cursor-pointer"
+            title={t('వాట్సాప్ స్టేటస్ కోసం నేటి పంచాంగం ఫోటో డౌన్‌లోడ్ చేయండి', 'Download Daily Panchangam Status Image')}
+          >
+            <Download size={18} />
+            <span>
+              {language === 'en'
+                ? 'Download Status Card (English)'
+                : 'నేటి పంచాంగం ఫోటో డౌన్‌లోడ్ (Status Image)'}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => downloadDailyPanchangamCardImage(day, language === 'en' ? 'te' : 'en')}
+            className="text-xs text-amber-800 hover:text-amber-950 underline px-2 py-1 font-semibold cursor-pointer"
+            title={language === 'en' ? 'Download Telugu Panchangam Card' : 'Download English Panchangam Card'}
+          >
+            {language === 'en' ? '🇮🇳 Telugu Card' : '🇬🇧 English Card'}
+          </button>
+        </div>
 
         {/* Print / PDF */}
         <button

@@ -1132,13 +1132,19 @@ export interface RashiDailyDrishtiPhalam {
   lordPlanet: PlanetCode;
   lordNameTe: string;
   activeAspectTitleTe: string;
+  activeAspectTitleEn: string;
   activeAspectTimeTe: string;
+  activeAspectTimeEn: string;
   loukikaPhalamTe: string;
   loukikaPhalamEn: string;
   doTodayTe: string;
+  doTodayEn: string;
   avoidTodayTe: string;
+  avoidTodayEn: string;
   luckyTimeWindowTe: string;
+  luckyTimeWindowEn: string;
   remedyShortTe: string;
+  remedyShortEn: string;
   mood: 'auspicious' | 'moderate' | 'careful';
 }
 
@@ -1173,9 +1179,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: string;
     carefulEn: string;
     doTodayTe: string;
+    doTodayEn: string;
     avoidTodayTe: string;
+    avoidTodayEn: string;
     luckyTimeWindowTe: string;
+    luckyTimeWindowEn: string;
     remedyTe: string;
+    remedyEn: string;
   }
 > = {
   mesham: {
@@ -1189,9 +1199,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Steady completion of daily tasks with family support; keep expenses planned.',
     carefulEn: 'Avoid haste or arguments at work; calm patience brings smooth results today.',
     doTodayTe: 'పెండింగ్‌లో ఉన్న బ్యాంక్, ఆఫీసు లేదా స్థల సంబంధిత పనులు పూర్తి చేయండి.',
+    doTodayEn: 'Complete pending banking, official, or land/property matters.',
     avoidTodayTe: 'కోపంతో తొందరపాటు మాటలు అనడం, అనవసర వాదనలు.',
+    avoidTodayEn: 'Speaking in anger, impatience, and unnecessary arguments.',
     luckyTimeWindowTe: 'ఉదయం 09:30 AM – 11:15 AM',
+    luckyTimeWindowEn: 'Morning 09:30 AM – 11:15 AM',
     remedyTe: 'సుబ్రహ్మణ్య స్వామి లేదా ఆంజనేయ స్వామి స్మరణ శుభం.',
+    remedyEn: 'Chant Lord Subrahmanya or Lord Hanuman Stotram for strength.',
   },
   vrushabham: {
     auspiciousTe:
@@ -1204,9 +1218,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Balanced income and household expenses; joint family decisions bring benefit.',
     carefulEn: 'Be cautious with financial lending and health; rest well.',
     doTodayTe: 'కుటుంబ సభ్యులతో కలిసి ఆర్థిక ప్రణాళికలు, పొదుపు నిర్ణయాలు తీసుకోండి.',
+    doTodayEn: 'Plan family financial savings and discuss household budgets calmly.',
     avoidTodayTe: 'ఎవరికీ ఆర్థిక పూచీకత్తు (Guarantee) ఇవ్వవద్దు.',
+    avoidTodayEn: 'Giving financial guarantees or informal loans to anyone.',
     luckyTimeWindowTe: 'ఉదయం 10:15 AM – 12:00 PM',
+    luckyTimeWindowEn: 'Morning 10:15 AM – 12:00 PM',
     remedyTe: 'శ్రీ మహాలక్ష్మి అమ్మవారికి దీపారాధన చేయడం విశేషం.',
+    remedyEn: 'Light a sacred ghee lamp for Goddess Sri Mahalakshmi.',
   },
   mithunam: {
     auspiciousTe:
@@ -1219,9 +1237,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Good news from relatives and favorable short travels; avoid delaying tasks.',
     carefulEn: 'Speak clearly to avoid misunderstandings and verify documents carefully.',
     doTodayTe: 'ముఖ్యమైన ఫోన్ కాల్స్, వ్యాపార చర్చలు మరియు ఇంటర్వ్యూలకు ప్రయత్నించండి.',
+    doTodayEn: 'Initiate important calls, business discussions, and interviews.',
     avoidTodayTe: 'పనులను రేపటికి వాయిదా వేయడం, పూర్తిగా చదవకుండా సంతకాలు చేయడం.',
+    avoidTodayEn: 'Procrastinating on urgent tasks and signing without reading.',
     luckyTimeWindowTe: 'ఉదయం 11:00 AM – మధ్యాహ్నం 12:45 PM',
+    luckyTimeWindowEn: 'Morning 11:00 AM – 12:45 PM',
     remedyTe: 'శ్రీ మహావిష్ణువు లేదా వేంకటేశ్వర స్వామి నామస్మరణ.',
+    remedyEn: 'Chant Sri Maha Vishnu or Lord Venkateswara sacred names.',
   },
   karkatakam: {
     auspiciousTe:
@@ -1234,9 +1256,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Household responsibilities progress smoothly with emotional stability.',
     carefulEn: 'Avoid overthinking minor issues; take care during travel and seasonal changes.',
     doTodayTe: 'తల్లిదండ్రుల ఆశీస్సులు తీసుకుని ఇంటి/కుటుంబ పనులు మొదలుపెట్టండి.',
+    doTodayEn: 'Seek parents’ blessings and commence auspicious household tasks.',
     avoidTodayTe: 'చిన్న విషయాలకే అతిగా ఆలోచించి ఆందోళన పడటం.',
+    avoidTodayEn: 'Overthinking minor worries and letting emotions take over.',
     luckyTimeWindowTe: 'ఉదయం 09:00 AM – 10:45 AM',
+    luckyTimeWindowEn: 'Morning 09:00 AM – 10:45 AM',
     remedyTe: 'పార్వతీ పరమేశ్వరుల ధ్యానం మనశ్శాంతిని ఇస్తుంది.',
+    remedyEn: 'Meditate on Parvati Parameshwara for peaceful mental stability.',
   },
   simham: {
     auspiciousTe:
@@ -1249,9 +1275,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Confidence helps complete tough tasks; elders’ advice proves valuable.',
     carefulEn: 'Keep ego aside in discussions and take proper rest for health.',
     doTodayTe: 'పైఅధికారులను కలవడం, ప్రభుత్వ లేదా ఆఫీసు ముఖ్య పనులు పూర్తి చేయడం.',
+    doTodayEn: 'Meet senior officials and complete official or corporate paperwork.',
     avoidTodayTe: 'పంతాలకు పోవడం, ఆఫీసులో సహోద్యోగులతో వాదనలు.',
+    avoidTodayEn: 'Egoistic stances and confrontational arguments at workplace.',
     luckyTimeWindowTe: 'ఉదయం 08:30 AM – 10:15 AM',
+    luckyTimeWindowEn: 'Morning 08:30 AM – 10:15 AM',
     remedyTe: 'సూర్య నమస్కారం మరియు ఆదిత్య హృదయ స్మరణ.',
+    remedyEn: 'Perform Surya Namaskaram and chant Aditya Hrudayam.',
   },
   kanya: {
     auspiciousTe:
@@ -1264,9 +1294,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Planned work succeeds and family needs are met within budget.',
     carefulEn: 'Manage work stress calmly and maintain timely food habits.',
     doTodayTe: 'రావలసిన బాకీలు అడగడం, వ్యాపార లెక్కలు మరియు చదువుపై దృష్టి పెట్టడం.',
+    doTodayEn: 'Follow up on pending payments, audit business books, and study.',
     avoidTodayTe: 'ఇతరుల వ్యక్తిగత విషయాలలో జోక్యం చేసుకోవడం, భోజనం ఆలస్యం చేయడం.',
+    avoidTodayEn: 'Interfering in personal affairs of others and delaying timely meals.',
     luckyTimeWindowTe: 'మధ్యాహ్నం 12:00 PM – 01:30 PM',
+    luckyTimeWindowEn: 'Afternoon 12:00 PM – 01:30 PM',
     remedyTe: 'శ్రీ విష్ణు సహస్రనామ పారాయణం శుభప్రదం.',
+    remedyEn: 'Recite Sri Vishnu Sahasranama Stotram for prosperity.',
   },
   tula: {
     auspiciousTe:
@@ -1279,9 +1313,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Friendly diplomacy resolves tasks and brings partial recovery of dues.',
     carefulEn: 'Avoid unnecessary luxury spending and keep partnership accounts clear.',
     doTodayTe: 'వ్యాపార విస్తరణ చర్చలు, ఇంటికి అవసరమైన శుభ కొనుగోళ్లు చేయండి.',
+    doTodayEn: 'Hold business expansion talks and make beneficial home purchases.',
     avoidTodayTe: 'మొహమాటానికి పోయి అనవసర ఖర్చులు చేయడం.',
+    avoidTodayEn: 'Impulsive luxury expenses out of hesitation or vanity.',
     luckyTimeWindowTe: 'సాయంత్రం 04:30 PM – 06:15 PM',
+    luckyTimeWindowEn: 'Evening 04:30 PM – 06:15 PM',
     remedyTe: 'లలితా దేవి లేదా లక్ష్మీ అమ్మవారి కుంకుమార్చన/స్మరణ.',
+    remedyEn: 'Offer worship to Goddess Lalitha Devi or Sri Lakshmi Devi.',
   },
   vruschikam: {
     auspiciousTe:
@@ -1294,9 +1332,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Persistence brings success with timely support from friends and siblings.',
     carefulEn: 'Drive carefully, speak gently, and keep confidential plans private.',
     doTodayTe: 'నిలిచిపోయిన పనులను పట్టుదలతో మళ్లీ మొదలుపెట్టి పూర్తి చేయండి.',
+    doTodayEn: 'Resume stalled tasks with focus and execute determined steps.',
     avoidTodayTe: 'మీ భవిష్యత్తు ప్రణాళికలను, ఆర్థిక రహస్యాలను అందరికీ చెప్పడం.',
+    avoidTodayEn: 'Disclosing financial secrets or future plans prematurely.',
     luckyTimeWindowTe: 'ఉదయం 10:30 AM – మధ్యాహ్నం 12:15 PM',
+    luckyTimeWindowEn: 'Morning 10:30 AM – 12:15 PM',
     remedyTe: 'ఆంజనేయ స్వామికి తమలపాకుల పూజ లేదా హనుమాన్ చాలీసా పఠనం.',
+    remedyEn: 'Offer betel leaf garland or recite Hanuman Chalisa.',
   },
   dhanussu: {
     auspiciousTe:
@@ -1309,9 +1351,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Good news regarding children’s progress and spiritual peace.',
     carefulEn: 'Think before making promises and keep household budget in check.',
     doTodayTe: 'శుభకార్య చర్చలు, గురువులు/పెద్దల సలహాతో కొత్త పనుల ఆరంభం.',
+    doTodayEn: 'Initiate auspicious discussions with advice from spiritual elders.',
     avoidTodayTe: 'ఆలోచించకుండా ఎవరికైనా పెద్ద హామీలు ఇవ్వడం.',
+    avoidTodayEn: 'Making grand commitments or rash promises without thought.',
     luckyTimeWindowTe: 'ఉదయం 09:15 AM – 11:00 AM',
+    luckyTimeWindowEn: 'Morning 09:15 AM – 11:00 AM',
     remedyTe: 'గురు దత్తాత్రేయ లేదా దక్షిణామూర్తి శ్లోక పఠనం.',
+    remedyEn: 'Recite Guru Dattatreya or Sri Dakshinamurthy Stotram.',
   },
   makaram: {
     auspiciousTe:
@@ -1324,9 +1370,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Slow but sure success in undertakings; family duties handled well.',
     carefulEn: 'Stay active without procrastination and take care of physical fatigue.',
     doTodayTe: 'వృత్తి/ఉద్యోగ బాధ్యతలను క్రమశిక్షణతో పూర్తి చేయడం, దీర్ఘకాలిక పెట్టుబడులు.',
+    doTodayEn: 'Fulfill career and family duties with disciplined dedication.',
     avoidTodayTe: 'పనులలో బద్ధకం లేదా నిరుత్సాహపడటం.',
+    avoidTodayEn: 'Procrastination, laziness, or indulging in pessimistic doubts.',
     luckyTimeWindowTe: 'ఉదయం 10:45 AM – మధ్యాహ్నం 12:30 PM',
+    luckyTimeWindowEn: 'Morning 10:45 AM – 12:30 PM',
     remedyTe: 'శనివార నియమాలు, వేంకటేశ్వర స్వామి లేదా శివ ఆరాధన.',
+    remedyEn: 'Perform Shani Stotram chanting and Lord Venkateswara worship.',
   },
   kumbham: {
     auspiciousTe:
@@ -1339,9 +1389,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Steady progress in ongoing works and constructive family planning.',
     carefulEn: 'Avoid lending money blindly and practice calm meditation.',
     doTodayTe: 'కొత్త ఆదాయ మార్గాలు, మిత్రుల సహకారంతో చేసే వ్యాపార పనులు చేపట్టండి.',
+    doTodayEn: 'Explore new income streams and collaborate with trusted friends.',
     avoidTodayTe: 'ఎవరినీ గుడ్డిగా నమ్మి పెద్ద మొత్తంలో అప్పు ఇవ్వడం.',
+    avoidTodayEn: 'Lending large sums of money or blind trust in casual acquaintances.',
     luckyTimeWindowTe: 'సాయంత్రం 04:00 PM – 05:45 PM',
+    luckyTimeWindowEn: 'Evening 04:00 PM – 05:45 PM',
     remedyTe: 'రుద్రాభిషేకం లేదా "ఓం నమః శివాయ" పంచాక్షరీ జపం.',
+    remedyEn: 'Chant "Om Namah Shivaya" or perform Shiva Abhishekam.',
   },
   meenam: {
     auspiciousTe:
@@ -1354,9 +1408,13 @@ const PRACTICAL_OUTCOMES_BY_RASHI: Record<
     moderateEn: 'Spiritual inclination, recovery of dues, and pleasant time with relatives.',
     carefulEn: 'Do not take on unnecessary burdens out of hesitation; watch travel expenses.',
     doTodayTe: 'దైవ ప్రార్థనతో రోజును ప్రారంభించి, రావలసిన డబ్బు వసూలుపై దృష్టి పెట్టండి.',
+    doTodayEn: 'Begin the day with prayer and focus on collecting pending dues.',
     avoidTodayTe: 'మొహమాటం కొద్దీ ఇతరుల కష్టాలను మీ నెత్తిమీద వేసుకోవడం.',
+    avoidTodayEn: 'Taking on unnecessary emotional burdens out of polite hesitation.',
     luckyTimeWindowTe: 'ఉదయం 09:30 AM – 11:30 AM',
+    luckyTimeWindowEn: 'Morning 09:30 AM – 11:30 AM',
     remedyTe: 'గురు స్తోత్రం మరియు శ్రీ మహావిష్ణువు ఆరాధన.',
+    remedyEn: 'Chant Brihaspati (Guru) Stotram and worship Lord Maha Vishnu.',
   },
 };
 
@@ -1408,6 +1466,7 @@ export function getRashiDailyGrahaDrishtiPhalam(
       : 'moderate';
 
     const aspectHeadlineTe = `${fromMeta.nameTe} - ${toMeta.nameTe} (${aspMeta.shortTe})`;
+    const aspectHeadlineEn = `${fromMeta.nameEn} - ${toMeta.nameEn} (${aspMeta.labelEn})`;
     const baseOutcomeTe =
       mood === 'auspicious'
         ? outcomes.auspiciousTe
@@ -1429,13 +1488,19 @@ export function getRashiDailyGrahaDrishtiPhalam(
       lordPlanet: cfg.lordPlanet,
       lordNameTe: cfg.lordNameTe,
       activeAspectTitleTe: aspectHeadlineTe,
+      activeAspectTitleEn: aspectHeadlineEn,
       activeAspectTimeTe: friendlyTime,
+      activeAspectTimeEn: chosenAspect.time.slice(0, 5),
       loukikaPhalamTe: `ఈ రోజు ${friendlyTime} కు ఏర్పడే ${fromMeta.nameTe} - ${toMeta.nameTe} (${aspMeta.shortTe}) ప్రభావంతో: ${baseOutcomeTe}`,
       loukikaPhalamEn: `Due to ${fromMeta.nameEn} - ${toMeta.nameEn} (${aspMeta.labelEn}) at ${chosenAspect.time.slice(0, 5)}: ${baseOutcomeEn}`,
       doTodayTe: outcomes.doTodayTe,
+      doTodayEn: outcomes.doTodayEn,
       avoidTodayTe: outcomes.avoidTodayTe,
+      avoidTodayEn: outcomes.avoidTodayEn,
       luckyTimeWindowTe: outcomes.luckyTimeWindowTe,
+      luckyTimeWindowEn: outcomes.luckyTimeWindowEn,
       remedyShortTe: outcomes.remedyTe,
+      remedyShortEn: outcomes.remedyEn,
       mood,
     };
   }
@@ -1463,13 +1528,19 @@ export function getRashiDailyGrahaDrishtiPhalam(
     lordPlanet: cfg.lordPlanet,
     lordNameTe: cfg.lordNameTe,
     activeAspectTitleTe: `రాశ్యాధిపతి ${cfg.lordNameTe} & చంద్ర దృష్టి బలం`,
+    activeAspectTitleEn: `Ruling Planet ${PLANET_META[cfg.lordPlanet].nameEn} & Lunar Aspect`,
     activeAspectTimeTe: 'రోజంతా (నిత్య గోచారం)',
+    activeAspectTimeEn: 'All Day (Daily Transit)',
     loukikaPhalamTe: `రాశ్యాధిపతి ${cfg.lordNameTe} మరియు నేటి చంద్ర గమన దృష్టి వల్ల: ${baseOutcomeTe}`,
     loukikaPhalamEn: `Guided by ruling planet ${PLANET_META[cfg.lordPlanet].nameEn} and Moon transit aspect: ${baseOutcomeEn}`,
     doTodayTe: outcomes.doTodayTe,
+    doTodayEn: outcomes.doTodayEn,
     avoidTodayTe: outcomes.avoidTodayTe,
+    avoidTodayEn: outcomes.avoidTodayEn,
     luckyTimeWindowTe: outcomes.luckyTimeWindowTe,
+    luckyTimeWindowEn: outcomes.luckyTimeWindowEn,
     remedyShortTe: outcomes.remedyTe,
+    remedyShortEn: outcomes.remedyEn,
     mood,
   };
 }

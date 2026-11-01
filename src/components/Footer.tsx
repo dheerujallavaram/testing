@@ -216,8 +216,8 @@ export const Footer: React.FC<FooterProps> = ({
                 {t('శాస్త్రీయ పర్యవేక్షణ & రచన: ', 'Authored & Reviewed by: ')}
                 <span itemProp="name" className="text-amber-300">
                   {t(
-                    'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి గారు (స్మార్త వేద & జ్యోతిష విద్వాంసులు)',
-                    'Brahmasri Jallavaram Sai Dheeraj Sharma Siddhanti (Smartha Veda & Jyothisha Vidwan)'
+                    'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (స్మార్త వేద & జ్యోతిష విద్వాంసులు)',
+                    'Brahmasri Jallavaram Sai Dheeraj Sharma (Smartha Veda & Jyothisha Vidwan)'
                   )}
                 </span>
               </p>
@@ -235,7 +235,7 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <div className="bg-amber-950/90 border border-amber-700/70 rounded-xl px-3 py-2 text-amber-100">
                 <span className="text-amber-400 font-bold block">దృక్సిద్ధాంత గణన</span>
-                <span>1900–2100 ఖగోళ ప్రమాణం</span>
+                <span className="hidden">1900–2100 ఖగోళ ప్రమాణం</span>
               </div>
             </div>
           </div>

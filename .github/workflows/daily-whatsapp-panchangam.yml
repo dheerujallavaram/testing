@@ -21,8 +21,10 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Generate & Send Today's Panchangam to WhatsApp
+      - name: Generate & Send Today's Panchangam Image & 12 Rashi Predictions to Telegram & WhatsApp
         env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           WHATSAPP_PHONE: ${{ secrets.WHATSAPP_PHONE }} # e.g. 918977986166
           CALLMEBOT_API_KEY: ${{ secrets.CALLMEBOT_API_KEY }} # Optional free personal WhatsApp API key
           META_WA_TOKEN: ${{ secrets.META_WA_TOKEN }} # Optional Meta WhatsApp Cloud API token

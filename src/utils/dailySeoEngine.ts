@@ -176,13 +176,13 @@ export function buildEEATAuthoritySchema(baseUrl: string): Record<string, unknow
     {
       '@type': 'Person',
       '@id': `${baseUrl}/#guruji-eeat`,
-      name: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి (Brahmasri Jallavaram Sai Dheeraj Sharma)',
+      name: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (Brahmasri Jallavaram Sai Dheeraj Sharma)',
       alternateName: [
         'Sri Jallavaram Sai Dheeraj Sharma',
-        'Dheeraj Sharma Siddhanti',
+        'Dheeraj Sharma',
         'జల్లవరం సాయి ధీరజ్ శర్మ',
       ],
-      jobTitle: 'Founder, Chief Vedic Astrologer (Siddhanti) & Smartha Veda Vidwan',
+      jobTitle: 'Founder, Chief Vedic Astrologer & Smartha Veda Vidwan',
       url: `${baseUrl}/about`,
       image: `${baseUrl}/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg`,
       worksFor: {
@@ -491,8 +491,77 @@ export function buildStandardizedDailyFaqSchema(
           text: `${day.teediVaram} నాటి నవగ్రహ గోచార గ్రహస్థితి: [${grahasthitiSummary}]. ${day.chandra.sancharam} ${day.chandra.chandrashtamam} ${day.chandra.navataraBalam} ప్రతి రాశి వారికి నేటి గ్రహ దృష్టి వల్ల ఉద్యోగం, ధనలాభం, కుటుంబం మరియు ఆరోగ్యంలో కలిగే సులభమైన లౌకిక ఫలితాలు మరియు శుభ సమయాలు అందుబాటులో ఉన్నాయి.`,
         },
       },
+      {
+        '@type': 'Question',
+        name: `How to download Daily Telugu Panchangam and Rashi status images in English and Telugu? (స్టేటస్ ఇమేజ్ డౌన్‌లోడ్)`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `You can download high-definition (HD 1080x1920) Daily Panchangam cards and 12 Rashi status images in both English (🇬🇧) and Telugu (🇮🇳) from www.telugujyothisham.com or via our Telegram Bot (@telugujyothisham_bot). Click the 'Download Card' or '🇬🇧 English Card' button on the Panchangam tab to instantly save status cards ready for WhatsApp status, Instagram stories, and LinkedIn.`,
+        },
+      },
     ],
   };
+}
+
+/**
+ * Builds Schema.org ImageObject nodes for both Telugu and English Daily Panchangam status images.
+ * This ensures 100% indexing on Google Image Search, Google Discover, and social share previews.
+ */
+export function buildPanchangamImageObjectSchemas(
+  day: DayData,
+  baseUrl: string
+): Record<string, unknown>[] {
+  const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
+  const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.trim() || day.panchanga.nakshatram;
+
+  return [
+    {
+      '@type': 'ImageObject',
+      '@id': `${baseUrl}#panchangam-status-card-te-${day.id}`,
+      name: `నేటి తెలుగు పంచాంగం స్టేటస్ కార్డ్ (${day.teediVaram})`,
+      caption: `నేటి తెలుగు పంచాంగం: తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం ${day.shubha.amrutha}`,
+      description: `HD 1080x1920 Daily Telugu Panchangam status image for ${day.teediVaram} with Tithi, Nakshatram, Rahu Kalam, and Subha Muhurtham.`,
+      contentUrl: `${baseUrl}/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg`,
+      thumbnailUrl: `${baseUrl}/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg`,
+      encodingFormat: 'image/png',
+      width: '1080',
+      height: '1920',
+      inLanguage: 'te',
+      author: {
+        '@id': `${baseUrl}/#guruji-eeat`,
+      },
+      keywords: [
+        'Telugu Panchangam Status Image',
+        'Today Panchangam Card Telugu',
+        'Neti Panchangam Photo',
+        'WhatsApp Panchangam Status',
+        'Daily Horoscope Status Card Telugu',
+      ],
+    },
+    {
+      '@type': 'ImageObject',
+      '@id': `${baseUrl}#panchangam-status-card-en-${day.id}`,
+      name: `Today Telugu Panchangam in English Status Card (${day.teediVaram})`,
+      caption: `Daily Vedic Panchangam Card in English: Tithi ${cleanTithi}, Nakshatram ${cleanNakshatra}, Amrutha Gadiyalu ${day.shubha.amrutha}`,
+      description: `HD 1080x1920 Daily Vedic Panchangam Card in English for ${day.teediVaram} covering Tithi, Nakshatram, Yogam, Karanam, Rahu Kalam, and Auspicious timings.`,
+      contentUrl: `${baseUrl}/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg`,
+      thumbnailUrl: `${baseUrl}/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg`,
+      encodingFormat: 'image/png',
+      width: '1080',
+      height: '1920',
+      inLanguage: 'en',
+      author: {
+        '@id': `${baseUrl}/#guruji-eeat`,
+      },
+      keywords: [
+        'Daily Telugu Panchangam in English Image',
+        'Today Panchangam English Card',
+        'Vedic Astrology Daily Card English',
+        'Panchangam English Photo',
+        'WhatsApp Astrology Status English',
+      ],
+    },
+  ];
 }
 
 /**
@@ -653,6 +722,7 @@ export function syncAutomatedDailySeoSchema(
   );
   const rashiItemListNode = buildDaily12RashiItemListSchema(day, fullUrl);
   const howToNode = buildStandardizedHowToSchema(baseUrl);
+  const imageObjectNodes = buildPanchangamImageObjectSchemas(day, baseUrl);
 
   const graphNodes: Record<string, unknown>[] = [
     ...eeatNodes,
@@ -660,6 +730,7 @@ export function syncAutomatedDailySeoSchema(
     faqPageNode,
     rashiItemListNode,
     howToNode,
+    ...imageObjectNodes,
     {
       '@type': 'NewsArticle',
       '@id': `${fullUrl}#daily-panchangam-${day.id}`,

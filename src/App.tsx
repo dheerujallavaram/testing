@@ -942,15 +942,14 @@ function AppContent() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => downloadDailyPanchangamCardImage(currentDay)}
+                  onClick={() => downloadDailyPanchangamCardImage(currentDay, language)}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-600 hover:from-emerald-800 hover:to-emerald-700 text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer"
                 >
                   <span>📲</span>
                   <span>
-                    {t(
-                      'వాట్సాప్ స్టేటస్ పంచాంగం ఇమేజ్ డౌన్‌లోడ్',
-                      'Download WhatsApp Status Card'
-                    )}
+                    {language === 'en'
+                      ? 'Download English Status Card'
+                      : 'వాట్సాప్ స్టేటస్ పంచాంగం ఇమేజ్ డౌన్‌లోడ్'}
                   </span>
                 </button>
               </div>

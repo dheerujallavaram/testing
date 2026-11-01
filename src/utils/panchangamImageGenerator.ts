@@ -1,5 +1,6 @@
 import { DayData } from '../types/panchangam';
 import { RashiDailyFortune } from './panchangaLogic';
+import { translatePanchangamString, Language } from '../context/LanguageContext';
 
 /**
  * Helper to wrap text onto canvas lines using strictly left-aligned LTR rendering
@@ -94,11 +95,12 @@ function drawRoundedRect(
 }
 
 /**
- * Draws the Left-Aligned Sacred Temple Emblem + Header used across cards
+ * Draws the Left-Aligned Sacred Temple Emblem + Header used across cards in Telugu or English
  */
 function drawLeftAlignedTempleHeader(
   ctx: CanvasRenderingContext2D,
-  subtitleText: string
+  subtitleText: string,
+  lang: Language = 'te'
 ) {
   ctx.textAlign = 'left';
   ctx.direction = 'ltr';
@@ -119,25 +121,32 @@ function drawLeftAlignedTempleHeader(
   drawMeasuredCenteredText(ctx, 'ॐ', 60, 122, 128, 10);
 
   ctx.fillStyle = '#451a03';
-  ctx.font = 'bold 24px "Noto Serif Telugu", serif';
-  drawMeasuredCenteredText(ctx, 'శుభం', 60, 122, 174, 10);
+  ctx.font = lang === 'en' ? 'bold 22px sans-serif' : 'bold 24px "Noto Serif Telugu", serif';
+  drawMeasuredCenteredText(ctx, lang === 'en' ? 'Shubham' : 'శుభం', 60, 122, 174, 10);
 
   // Left-aligned Temple Headings (x = 204)
   const headerX = 204;
   const maxHeaderWidth = 816;
 
   ctx.fillStyle = '#fde68a';
-  ctx.font = 'bold 25px "Noto Serif Telugu", serif';
+  ctx.font = lang === 'en' ? 'bold 24px sans-serif' : 'bold 25px "Noto Serif Telugu", serif';
   ctx.fillText(subtitleText, headerX, 90, maxHeaderWidth);
 
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 46px "Noto Serif Telugu", serif';
-  ctx.fillText('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం', headerX, 148, maxHeaderWidth);
+  ctx.font = lang === 'en' ? 'bold 42px "Noto Serif Telugu", serif' : 'bold 46px "Noto Serif Telugu", serif';
+  ctx.fillText(
+    lang === 'en' ? 'Sri Lakshmi Ganapathi Jyothishalayam' : 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం',
+    headerX,
+    148,
+    maxHeaderWidth
+  );
 
   ctx.fillStyle = '#fcd34d';
-  ctx.font = 'bold 25px "Noto Serif Telugu", serif';
+  ctx.font = lang === 'en' ? 'bold 23px sans-serif' : 'bold 25px "Noto Serif Telugu", serif';
   ctx.fillText(
-    'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి గారు (వేద జ్యోతిష నిపుణులు)',
+    lang === 'en'
+      ? 'Brahmasri Jallavaram Sai Dheeraj Sharma (Vedic Astrologer)'
+      : 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (వేద జ్యోతిష నిపుణులు)',
     headerX,
     192,
     maxHeaderWidth
@@ -146,8 +155,12 @@ function drawLeftAlignedTempleHeader(
 
 /**
  * Generates a 1080x1440 WhatsApp Status / Instagram Portrait PNG image of the Daily Panchangam
+ * in either Telugu or English.
  */
-export async function downloadDailyPanchangamCardImage(day: DayData): Promise<void> {
+export async function downloadDailyPanchangamCardImage(
+  day: DayData,
+  lang: Language = 'te'
+): Promise<void> {
   if (typeof document !== 'undefined' && document.fonts?.ready) {
     await document.fonts.ready;
   }
@@ -184,33 +197,32 @@ export async function downloadDailyPanchangamCardImage(day: DayData): Promise<vo
   ctx.stroke();
 
   // 2. Left-Aligned Top Temple Header
-  drawLeftAlignedTempleHeader(
-    ctx,
-    'ఓం శ్రీలక్ష్మి గణపతయే నమః • దృక్సిద్ధాంత నిత్య పంచాంగం'
-  );
+  const headerSubtitle =
+    lang === 'en'
+      ? 'Om Sri Lakshmi Ganapataye Namaha • Drik Siddhanta Daily Panchangam'
+      : 'ఓం శ్రీలక్ష్మి గణపతయే నమః • దృక్సిద్ధాంత నిత్య పంచాంగం';
+  drawLeftAlignedTempleHeader(ctx, headerSubtitle, lang);
 
   // Date Pill Banner
   drawRoundedRect(ctx, 64, 222, 952, 72, 36);
   ctx.fillStyle = '#f59e0b';
   ctx.fill();
   ctx.fillStyle = '#3b1103';
-  ctx.font = 'bold 31px "Noto Serif Telugu", serif';
-  ctx.fillText(
-    `📅 ${day.teediVaram}  •  ${day.panchanga.samvatsaram}`,
-    96,
-    269,
-    890
-  );
+  ctx.font = lang === 'en' ? 'bold 29px sans-serif' : 'bold 31px "Noto Serif Telugu", serif';
+  const datePillText =
+    lang === 'en'
+      ? `📅 ${translatePanchangamString(day.teediVaram, 'en')}  •  ${translatePanchangamString(day.panchanga.samvatsaram, 'en')}`
+      : `📅 ${day.teediVaram}  •  ${day.panchanga.samvatsaram}`;
+  ctx.fillText(datePillText, 96, 269, 890);
 
   // 3. Samvatsaram & Masam Bar
   ctx.fillStyle = '#78350f';
-  ctx.font = 'bold 27px "Noto Serif Telugu", serif';
-  ctx.fillText(
-    `🕉️ మాసం: ${day.panchanga.masam}   •   ఆరాధ్య దైవం: ${day.deity}`,
-    72,
-    342,
-    936
-  );
+  ctx.font = lang === 'en' ? 'bold 25px sans-serif' : 'bold 27px "Noto Serif Telugu", serif';
+  const masamBarText =
+    lang === 'en'
+      ? `🕉️ Month: ${translatePanchangamString(day.panchanga.masam, 'en')}   •   Presiding Deity: ${translatePanchangamString(day.deity, 'en')}`
+      : `🕉️ మాసం: ${day.panchanga.masam}   •   ఆరాధ్య దైవం: ${day.deity}`;
+  ctx.fillText(masamBarText, 72, 342, 936);
 
   // 4. Core Panchangam Limbs Card (White Box)
   drawRoundedRect(ctx, 64, 372, 952, 364, 24);
@@ -220,24 +232,39 @@ export async function downloadDailyPanchangamCardImage(day: DayData): Promise<vo
   ctx.lineWidth = 3;
   ctx.stroke();
 
-  const limbs = [
-    { label: '🌙 తిథి:', value: day.panchanga.tithi },
-    { label: '⭐ నక్షత్రం:', value: day.panchanga.nakshatram },
-    { label: '✨ యోగం & కరణం:', value: `${day.panchanga.yogam}  |  ${day.panchanga.karanam}` },
-    { label: '🌅 సూర్యోదయం / అస్తమయం:', value: 'ఉదయం 06:34 AM  /  సాయంత్రం 05:40 PM' },
-    { label: '🪔 ఆరాధ్య దైవం & శుభ రంగు:', value: `${day.deity}  |  ${day.luckyColor}` },
-  ];
+  const limbs =
+    lang === 'en'
+      ? [
+          { label: '🌙 Tithi:', value: translatePanchangamString(day.panchanga.tithi, 'en') },
+          { label: '⭐ Nakshatram:', value: translatePanchangamString(day.panchanga.nakshatram, 'en') },
+          {
+            label: '✨ Yogam & Karanam:',
+            value: `${translatePanchangamString(day.panchanga.yogam, 'en')}  |  ${translatePanchangamString(day.panchanga.karanam, 'en')}`,
+          },
+          { label: '🌅 Sunrise / Sunset:', value: '06:15 AM  /  05:52 PM IST' },
+          {
+            label: '🪔 Deity & Lucky Color:',
+            value: `${translatePanchangamString(day.deity, 'en')}  |  ${translatePanchangamString(day.luckyColor, 'en')}`,
+          },
+        ]
+      : [
+          { label: '🌙 తిథి:', value: day.panchanga.tithi },
+          { label: '⭐ నక్షత్రం:', value: day.panchanga.nakshatram },
+          { label: '✨ యోగం & కరణం:', value: `${day.panchanga.yogam}  |  ${day.panchanga.karanam}` },
+          { label: '🌅 సూర్యోదయం / అస్తమయం:', value: 'ఉదయం 06:15 AM  /  సాయంత్రం 05:52 PM' },
+          { label: '🪔 ఆరాధ్య దైవం & శుభ రంగు:', value: `${day.deity}  |  ${day.luckyColor}` },
+        ];
 
   let rowY = 430;
   limbs.forEach((item, idx) => {
     ctx.fillStyle = '#92400e';
-    ctx.font = 'bold 24px "Noto Serif Telugu", serif';
+    ctx.font = lang === 'en' ? 'bold 23px sans-serif' : 'bold 24px "Noto Serif Telugu", serif';
     ctx.fillText(item.label, 92, rowY);
 
     ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 24px "Noto Serif Telugu", serif';
+    ctx.font = lang === 'en' ? 'bold 23px sans-serif' : 'bold 24px "Noto Serif Telugu", serif';
     const maxValWidth = 560;
-    const displayVal = item.value.length > 46 ? item.value.slice(0, 44) + '...' : item.value;
+    const displayVal = item.value.length > 50 ? item.value.slice(0, 48) + '...' : item.value;
     ctx.fillText(displayVal, 425, rowY, maxValWidth);
 
     if (idx < limbs.length - 1) {
@@ -260,22 +287,22 @@ export async function downloadDailyPanchangamCardImage(day: DayData): Promise<vo
   ctx.stroke();
 
   ctx.fillStyle = '#065f46';
-  ctx.font = 'bold 27px "Noto Serif Telugu", serif';
-  ctx.fillText('✅ శుభ సమయాలు', 92, 808);
+  ctx.font = lang === 'en' ? 'bold 25px sans-serif' : 'bold 27px "Noto Serif Telugu", serif';
+  ctx.fillText(lang === 'en' ? '✅ Auspicious Timings' : '✅ శుభ సమయాలు', 92, 808);
 
   ctx.fillStyle = '#047857';
-  ctx.font = 'bold 22px "Noto Serif Telugu", serif';
-  ctx.fillText('అభిజిత్ ముహూర్తం:', 92, 852);
+  ctx.font = lang === 'en' ? 'bold 21px sans-serif' : 'bold 22px "Noto Serif Telugu", serif';
+  ctx.fillText(lang === 'en' ? 'Abhijit Muhurtham:' : 'అభిజిత్ ముహూర్తం:', 92, 852);
   ctx.fillStyle = '#0f172a';
-  ctx.font = 'bold 22px "Noto Serif Telugu", serif';
-  ctx.fillText(day.shubha.abhijit, 92, 885, 405);
+  ctx.font = lang === 'en' ? 'bold 21px sans-serif' : 'bold 22px "Noto Serif Telugu", serif';
+  ctx.fillText(translatePanchangamString(day.shubha.abhijit, lang), 92, 885, 405);
 
   ctx.fillStyle = '#047857';
-  ctx.font = 'bold 22px "Noto Serif Telugu", serif';
-  ctx.fillText('అమృత ఘడియలు:', 92, 932);
+  ctx.font = lang === 'en' ? 'bold 21px sans-serif' : 'bold 22px "Noto Serif Telugu", serif';
+  ctx.fillText(lang === 'en' ? 'Amrutha Ghadayalu:' : 'అమృత ఘడియలు:', 92, 932);
   ctx.fillStyle = '#0f172a';
-  ctx.font = 'bold 21px "Noto Serif Telugu", serif';
-  ctx.fillText(day.shubha.amrutha.slice(0, 38), 92, 965, 405);
+  ctx.font = lang === 'en' ? 'bold 20px sans-serif' : 'bold 21px "Noto Serif Telugu", serif';
+  ctx.fillText(translatePanchangamString(day.shubha.amrutha.slice(0, 38), lang), 92, 965, 405);
 
   // Right: Ashubha Samayalu
   drawRoundedRect(ctx, 556, 760, 460, 250, 22);
@@ -286,22 +313,22 @@ export async function downloadDailyPanchangamCardImage(day: DayData): Promise<vo
   ctx.stroke();
 
   ctx.fillStyle = '#9f1239';
-  ctx.font = 'bold 27px "Noto Serif Telugu", serif';
-  ctx.fillText('⚠️ వర్జించవలసిన సమయాలు', 584, 808);
+  ctx.font = lang === 'en' ? 'bold 25px sans-serif' : 'bold 27px "Noto Serif Telugu", serif';
+  ctx.fillText(lang === 'en' ? '⚠️ Inauspicious Timings' : '⚠️ వర్జించవలసిన సమయాలు', 584, 808);
 
   ctx.fillStyle = '#be123c';
-  ctx.font = 'bold 22px "Noto Serif Telugu", serif';
-  ctx.fillText('రాహు కాలం:', 584, 852);
+  ctx.font = lang === 'en' ? 'bold 21px sans-serif' : 'bold 22px "Noto Serif Telugu", serif';
+  ctx.fillText(lang === 'en' ? 'Rahu Kalam:' : 'రాహు కాలం:', 584, 852);
   ctx.fillStyle = '#0f172a';
-  ctx.font = 'bold 22px "Noto Serif Telugu", serif';
-  ctx.fillText(day.ashubha.rahukalam, 584, 885, 405);
+  ctx.font = lang === 'en' ? 'bold 21px sans-serif' : 'bold 22px "Noto Serif Telugu", serif';
+  ctx.fillText(translatePanchangamString(day.ashubha.rahukalam, lang), 584, 885, 405);
 
   ctx.fillStyle = '#be123c';
-  ctx.font = 'bold 22px "Noto Serif Telugu", serif';
-  ctx.fillText('వర్జ్యం:', 584, 932);
+  ctx.font = lang === 'en' ? 'bold 21px sans-serif' : 'bold 22px "Noto Serif Telugu", serif';
+  ctx.fillText(lang === 'en' ? 'Varjyam:' : 'వర్జ్యం:', 584, 932);
   ctx.fillStyle = '#0f172a';
-  ctx.font = 'bold 21px "Noto Serif Telugu", serif';
-  ctx.fillText(day.ashubha.varjyam.slice(0, 38), 584, 965, 405);
+  ctx.font = lang === 'en' ? 'bold 20px sans-serif' : 'bold 21px "Noto Serif Telugu", serif';
+  ctx.fillText(translatePanchangamString(day.ashubha.varjyam.slice(0, 38), lang), 584, 965, 405);
 
   // 6. Today's Vishesham / Phalitham Box
   drawRoundedRect(ctx, 64, 1035, 952, 210, 22);
@@ -312,19 +339,28 @@ export async function downloadDailyPanchangamCardImage(day: DayData): Promise<vo
   ctx.stroke();
 
   ctx.fillStyle = '#92400e';
-  ctx.font = 'bold 26px "Noto Serif Telugu", serif';
-  ctx.fillText('🌸 నేటి పంచాంగ విశేషం & దైవ ఆరాధన:', 94, 1082);
+  ctx.font = lang === 'en' ? 'bold 25px sans-serif' : 'bold 26px "Noto Serif Telugu", serif';
+  ctx.fillText(
+    lang === 'en'
+      ? '🌸 Today Significance & Divine Worship:'
+      : '🌸 నేటి పంచాంగ విశేషం & దైవ ఆరాధన:',
+    94,
+    1082
+  );
 
   ctx.fillStyle = '#1e293b';
-  ctx.font = '24px "Noto Serif Telugu", serif';
-  wrapCanvasText(ctx, day.phalitham || 'సర్వజన శుభకృత్', 94, 1126, 890, 36, 3);
+  ctx.font = lang === 'en' ? '23px sans-serif' : '24px "Noto Serif Telugu", serif';
+  const visheshamText = translatePanchangamString(day.phalitham || 'సర్వజన శుభకృత్', lang);
+  wrapCanvasText(ctx, visheshamText, 94, 1126, 890, 36, 3);
 
-  // 7. Bottom Footer Branding (Left-aligned / Measured-Centered without textAlign='center')
+  // 7. Bottom Footer Branding
   ctx.fillStyle = '#fde68a';
-  ctx.font = 'bold 25px "Noto Serif Telugu", serif';
+  ctx.font = lang === 'en' ? 'bold 24px sans-serif' : 'bold 25px "Noto Serif Telugu", serif';
   drawMeasuredCenteredText(
     ctx,
-    'జాతక పరిశీలన, వివాహ ముహూర్తాలు & హోమాల కొరకు సంప్రదించండి:',
+    lang === 'en'
+      ? 'For Horoscope Analysis, Vedic Muhurthas & Poojas Consultation:'
+      : 'జాతక పరిశీలన, వివాహ ముహూర్తాలు & హోమాల కొరకు సంప్రదించండి:',
     64,
     952,
     1315,
@@ -332,7 +368,7 @@ export async function downloadDailyPanchangamCardImage(day: DayData): Promise<vo
   );
 
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 32px "Noto Serif Telugu", sans-serif';
+  ctx.font = 'bold 32px sans-serif';
   drawMeasuredCenteredText(
     ctx,
     '📞 WhatsApp: +91 8977986166   |   🌐 www.telugujyothisham.com',
@@ -345,7 +381,10 @@ export async function downloadDailyPanchangamCardImage(day: DayData): Promise<vo
   // Export & trigger download
   canvas.toBlob((blob) => {
     if (!blob) return;
-    const fileName = `telugu-panchangam-${day.id}.png`;
+    const fileName =
+      lang === 'en'
+        ? `english-panchangam-${day.id}-telugujyothisham.png`
+        : `telugu-panchangam-${day.id}.png`;
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -359,11 +398,12 @@ export async function downloadDailyPanchangamCardImage(day: DayData): Promise<vo
 
 /**
  * Generates a 1080x1920 (9:16 Full-Screen WhatsApp Status & Instagram Story) Sacred Temple Card PNG
- * for any individual Rashi ("నేటి రాశి ఫలం - Daily Horoscope Prediction") with prominent telugujyothisham.com branding.
+ * for any individual Rashi ("నేటి రాశి ఫలం - Daily Horoscope Prediction") in Telugu or English.
  */
 export async function downloadRashiStatusCardImage(
   day: DayData,
-  rashi: RashiDailyFortune
+  rashi: RashiDailyFortune,
+  lang: Language = 'te'
 ): Promise<void> {
   if (typeof document !== 'undefined' && document.fonts?.ready) {
     await document.fonts.ready;
@@ -375,8 +415,6 @@ export async function downloadRashiStatusCardImage(
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  // Strictly enforce left-aligned LTR drawing across the entire canvas
-  // so mobile browsers never shift Telugu strings off the right edge
   ctx.textAlign = 'left';
   ctx.direction = 'ltr';
 
@@ -405,13 +443,14 @@ export async function downloadRashiStatusCardImage(
   drawRoundedRect(ctx, 38, 38, 1004, 1844, 26);
   ctx.stroke();
 
-  // 2. Left-Aligned Top Temple Branding Header (with Golden Om Emblem on Left)
-  drawLeftAlignedTempleHeader(
-    ctx,
-    'ఓం శ్రీలక్ష్మి గణపతయే నమః • నేటి రాశి ఫలం (Daily Horoscope)'
-  );
+  // 2. Left-Aligned Top Temple Branding Header
+  const headerSubtitle =
+    lang === 'en'
+      ? 'Om Sri Lakshmi Ganapataye Namaha • Daily Zodiac Horoscope (English)'
+      : 'ఓం శ్రీలక్ష్మి గణపతయే నమః • నేటి రాశి ఫలం (Daily Horoscope)';
+  drawLeftAlignedTempleHeader(ctx, headerSubtitle, lang);
 
-  // Date & Tithi/Nakshatra Pill (strip long time ranges after '-' or '(' for crisp single-line display)
+  // Date & Tithi/Nakshatra Pill
   const shortTithi = day.panchanga.tithi.split(/[-–(]/)[0].trim();
   const shortNak = day.panchanga.nakshatram.split(/[-–(]/)[0].trim();
   drawRoundedRect(ctx, 60, 222, 960, 68, 34);
@@ -419,13 +458,12 @@ export async function downloadRashiStatusCardImage(
   ctx.fill();
 
   ctx.fillStyle = '#3b1103';
-  ctx.font = 'bold 28px "Noto Serif Telugu", serif';
-  ctx.fillText(
-    `📅 ${day.teediVaram}  •  తిథి: ${shortTithi}  •  నక్షత్రం: ${shortNak}`,
-    92,
-    266,
-    896
-  );
+  ctx.font = lang === 'en' ? 'bold 26px sans-serif' : 'bold 28px "Noto Serif Telugu", serif';
+  const pillDateText =
+    lang === 'en'
+      ? `📅 ${translatePanchangamString(day.teediVaram, 'en')}  •  Tithi: ${translatePanchangamString(shortTithi, 'en')}  •  Star: ${translatePanchangamString(shortNak, 'en')}`
+      : `📅 ${day.teediVaram}  •  తిథి: ${shortTithi}  •  నక్షత్రం: ${shortNak}`;
+  ctx.fillText(pillDateText, 92, 266, 896);
 
   // 3. Rashi Hero Title Card
   drawRoundedRect(ctx, 60, 314, 960, 212, 26);
@@ -436,34 +474,42 @@ export async function downloadRashiStatusCardImage(
   ctx.stroke();
 
   ctx.fillStyle = '#451a03';
-  ctx.font = 'bold 46px "Noto Serif Telugu", serif';
-  ctx.fillText(`✨ ${rashi.teluguName} రాశి (${rashi.englishName})`, 92, 384, 550);
+  ctx.font = lang === 'en' ? 'bold 44px sans-serif' : 'bold 46px "Noto Serif Telugu", serif';
+  const heroTitle =
+    lang === 'en'
+      ? `✨ ${rashi.englishName} Zodiac (${rashi.teluguName})`
+      : `✨ ${rashi.teluguName} రాశి (${rashi.englishName})`;
+  ctx.fillText(heroTitle, 92, 384, 550);
 
-  // Status Pill Badge on Right (sized generously & measured-centered so Telugu text never clips)
-  const pillX = 664;
-  const pillW = 324;
+  // Status Pill Badge on Right
+  const pillX = 644;
+  const pillW = 344;
   drawRoundedRect(ctx, pillX, 336, pillW, 60, 30);
   ctx.fillStyle = isFav ? '#047857' : isCaution ? '#be123c' : '#b45309';
   ctx.fill();
 
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 25px "Noto Serif Telugu", serif';
-  drawMeasuredCenteredText(ctx, rashi.statusLabel, pillX, pillW, 375, 16);
+  ctx.font = lang === 'en' ? 'bold 23px sans-serif' : 'bold 25px "Noto Serif Telugu", serif';
+  const statusBadgeText = lang === 'en' ? rashi.statusLabelEn : rashi.statusLabel;
+  drawMeasuredCenteredText(ctx, statusBadgeText, pillX, pillW, 375, 16);
 
   ctx.fillStyle = '#78350f';
-  ctx.font = 'bold 25px "Noto Serif Telugu", serif';
-  ctx.fillText(
-    `అధిపతి: ${rashi.lord}   •   చిహ్నం: ${rashi.vedicSymbolName}`,
-    92,
-    444,
-    896
-  );
+  ctx.font = lang === 'en' ? 'bold 24px sans-serif' : 'bold 25px "Noto Serif Telugu", serif';
+  const subMetaText =
+    lang === 'en'
+      ? `Lord: ${rashi.lordEn}   •   Vedic Symbol: ${rashi.vedicSymbolNameEn}`
+      : `అధిపతి: ${rashi.lord}   •   చిహ్నం: ${rashi.vedicSymbolName}`;
+  ctx.fillText(subMetaText, 92, 444, 896);
 
   ctx.fillStyle = isFav ? '#065f46' : isCaution ? '#9f1239' : '#92400e';
-  ctx.font = 'bold 24px "Noto Serif Telugu", serif';
-  ctx.fillText(`🪐 గోచార స్థితి: ${rashi.navagrahaTransitLabel}`, 92, 494, 896);
+  ctx.font = lang === 'en' ? 'bold 23px sans-serif' : 'bold 24px "Noto Serif Telugu", serif';
+  const transitText =
+    lang === 'en'
+      ? `🪐 Planetary Transit: ${rashi.englishNavagrahaLabel}`
+      : `🪐 గోచార స్థితి: ${rashi.navagrahaTransitLabel}`;
+  ctx.fillText(transitText, 92, 494, 896);
 
-  // 4. Graha Drishti & Sancharam Box (2-line header so long aspect titles never overflow)
+  // 4. Graha Drishti & Sancharam Box
   drawRoundedRect(ctx, 60, 546, 960, 314, 26);
   ctx.fillStyle = '#fffbeb';
   ctx.fill();
@@ -472,21 +518,28 @@ export async function downloadRashiStatusCardImage(
   ctx.stroke();
 
   ctx.fillStyle = '#78350f';
-  ctx.font = 'bold 27px "Noto Serif Telugu", serif';
-  ctx.fillText('🪐 నేటి గ్రహ దృష్టి & గ్రహ సంచార ఫలితం:', 92, 596, 896);
-
-  ctx.fillStyle = '#b45309';
-  ctx.font = 'bold 23px "Noto Serif Telugu", serif';
+  ctx.font = lang === 'en' ? 'bold 25px sans-serif' : 'bold 27px "Noto Serif Telugu", serif';
   ctx.fillText(
-    `✨ ${rashi.grahaDrishtiHeadlineTe}  (${rashi.grahaDrishtiTimeTe})`,
+    lang === 'en'
+      ? '🪐 Planetary Aspect & Transit Influence:'
+      : '🪐 నేటి గ్రహ దృష్టి & గ్రహ సంచార ఫలితం:',
     92,
-    636,
+    596,
     896
   );
 
+  ctx.fillStyle = '#b45309';
+  ctx.font = lang === 'en' ? 'bold 22px sans-serif' : 'bold 23px "Noto Serif Telugu", serif';
+  const aspectHeadline =
+    lang === 'en'
+      ? `✨ ${rashi.grahaDrishtiHeadlineEn}  (${rashi.grahaDrishtiTimeEn})`
+      : `✨ ${rashi.grahaDrishtiHeadlineTe}  (${rashi.grahaDrishtiTimeTe})`;
+  ctx.fillText(aspectHeadline, 92, 636, 896);
+
   ctx.fillStyle = '#1e293b';
-  ctx.font = 'bold 24px "Noto Serif Telugu", serif';
-  wrapCanvasText(ctx, rashi.grahaDrishtiPhalamTe, 92, 684, 896, 40, 4);
+  ctx.font = lang === 'en' ? 'bold 23px sans-serif' : 'bold 24px "Noto Serif Telugu", serif';
+  const aspectBody = lang === 'en' ? rashi.grahaDrishtiPhalamEn : rashi.grahaDrishtiPhalamTe;
+  wrapCanvasText(ctx, aspectBody, 92, 684, 896, 40, 4);
 
   // 5. Career, Finance, Family & Daily Guidance Card
   drawRoundedRect(ctx, 60, 880, 960, 480, 26);
@@ -496,26 +549,28 @@ export async function downloadRashiStatusCardImage(
   ctx.lineWidth = 3;
   ctx.stroke();
 
-  // Strip duplicate prefixes like "2. ఉద్యోగ & ఆర్థిక ఫలం: " or "3. కుటుంబం & ఆరోగ్యం: "
-  const cleanCareerText = rashi.careerFinanceLine
-    .replace(/^[0-9]+\.\s*[^:]+:\s*/, '')
-    .trim();
-  const cleanFamilyText = rashi.familyHealthLine
-    .replace(/^[0-9]+\.\s*[^:]+:\s*/, '')
-    .trim();
+  const cleanCareerText =
+    lang === 'en'
+      ? rashi.englishFullSummary.split('\n')[1]?.replace(/^[0-9]+\.\s*[^:]+:\s*/, '').trim() || rashi.englishFullSummary
+      : rashi.careerFinanceLine.replace(/^[0-9]+\.\s*[^:]+:\s*/, '').trim();
+
+  const cleanFamilyText =
+    lang === 'en'
+      ? rashi.englishFullSummary.split('\n')[2]?.replace(/^[0-9]+\.\s*[^:]+:\s*/, '').trim() || rashi.englishDairyam
+      : rashi.familyHealthLine.replace(/^[0-9]+\.\s*[^:]+:\s*/, '').trim();
 
   ctx.fillStyle = '#92400e';
-  ctx.font = 'bold 26px "Noto Serif Telugu", serif';
-  ctx.fillText('💼 వృత్తి, ఉద్యోగం & ధనలాభం:', 92, 930);
+  ctx.font = lang === 'en' ? 'bold 25px sans-serif' : 'bold 26px "Noto Serif Telugu", serif';
+  ctx.fillText(lang === 'en' ? '💼 Career & Financial Outlook:' : '💼 వృత్తి, ఉద్యోగం & ధనలాభం:', 92, 930);
   ctx.fillStyle = '#0f172a';
-  ctx.font = '24px "Noto Serif Telugu", serif';
+  ctx.font = lang === 'en' ? '23px sans-serif' : '24px "Noto Serif Telugu", serif';
   wrapCanvasText(ctx, cleanCareerText, 92, 970, 896, 36, 2);
 
   ctx.fillStyle = '#92400e';
-  ctx.font = 'bold 26px "Noto Serif Telugu", serif';
-  ctx.fillText('🏡 కుటుంబం & ఆరోగ్యం:', 92, 1062);
+  ctx.font = lang === 'en' ? 'bold 25px sans-serif' : 'bold 26px "Noto Serif Telugu", serif';
+  ctx.fillText(lang === 'en' ? '🏡 Family, Health & Personal Life:' : '🏡 కుటుంబం & ఆరోగ్యం:', 92, 1062);
   ctx.fillStyle = '#0f172a';
-  ctx.font = '24px "Noto Serif Telugu", serif';
+  ctx.font = lang === 'en' ? '23px sans-serif' : '24px "Noto Serif Telugu", serif';
   wrapCanvasText(ctx, cleanFamilyText, 92, 1102, 896, 36, 2);
 
   // Do Today & Avoid Today Pills inside the box
@@ -526,10 +581,10 @@ export async function downloadRashiStatusCardImage(
   ctx.lineWidth = 1.5;
   ctx.stroke();
   ctx.fillStyle = '#065f46';
-  ctx.font = 'bold 22px "Noto Serif Telugu", serif';
+  ctx.font = lang === 'en' ? 'bold 21px sans-serif' : 'bold 22px "Noto Serif Telugu", serif';
   wrapCanvasText(
     ctx,
-    `✅ నేడు చేయవలసిన పని: ${rashi.doTodayTe}`,
+    lang === 'en' ? `✅ Do Today: ${rashi.doTodayEn}` : `✅ నేడు చేయవలసిన పని: ${rashi.doTodayTe}`,
     108,
     1228,
     864,
@@ -544,10 +599,10 @@ export async function downloadRashiStatusCardImage(
   ctx.lineWidth = 1.5;
   ctx.stroke();
   ctx.fillStyle = '#9f1239';
-  ctx.font = 'bold 22px "Noto Serif Telugu", serif';
+  ctx.font = lang === 'en' ? 'bold 21px sans-serif' : 'bold 22px "Noto Serif Telugu", serif';
   wrapCanvasText(
     ctx,
-    `⚠️ నేడు జాగ్రత్త: ${rashi.avoidTodayTe}`,
+    lang === 'en' ? `⚠️ Avoid Today: ${rashi.avoidTodayEn}` : `⚠️ నేడు జాగ్రత్త: ${rashi.avoidTodayTe}`,
     108,
     1312,
     864,
@@ -564,26 +619,27 @@ export async function downloadRashiStatusCardImage(
   ctx.stroke();
 
   ctx.fillStyle = '#451a03';
-  ctx.font = 'bold 24px "Noto Serif Telugu", serif';
-  ctx.fillText(
-    `⏰ శుభ సమయం: ${rashi.luckyTimeWindowTe}   •   🎨 రంగు: ${rashi.luckyColor}   •   🔢 సంఖ్య: #${rashi.luckyNumber}`,
-    92,
-    1432,
-    896
-  );
+  ctx.font = lang === 'en' ? 'bold 23px sans-serif' : 'bold 24px "Noto Serif Telugu", serif';
+  const luckyLine =
+    lang === 'en'
+      ? `⏰ Lucky Time: ${rashi.luckyTimeWindowEn}   •   🎨 Color: ${rashi.luckyColorEn}   •   🔢 Lucky #: #${rashi.luckyNumber}`
+      : `⏰ శుభ సమయం: ${rashi.luckyTimeWindowTe}   •   🎨 రంగు: ${rashi.luckyColor}   •   🔢 సంఖ్య: #${rashi.luckyNumber}`;
+  ctx.fillText(luckyLine, 92, 1432, 896);
 
   ctx.fillStyle = '#78350f';
-  ctx.font = 'bold 25px "Noto Serif Telugu", serif';
-  ctx.fillText('🪔 నేటి శాస్త్రోక్త పరిహారం:', 92, 1486);
+  ctx.font = lang === 'en' ? 'bold 24px sans-serif' : 'bold 25px "Noto Serif Telugu", serif';
+  ctx.fillText(lang === 'en' ? '🪔 Daily Vedic Remedy:' : '🪔 నేటి శాస్త్రోక్త పరిహారం:', 92, 1486);
   ctx.fillStyle = '#1e293b';
-  ctx.font = 'bold 24px "Noto Serif Telugu", serif';
-  wrapCanvasText(ctx, rashi.remedy, 92, 1528, 896, 36, 2);
+  ctx.font = lang === 'en' ? 'bold 23px sans-serif' : 'bold 24px "Noto Serif Telugu", serif';
+  wrapCanvasText(ctx, lang === 'en' ? rashi.remedyEn : rashi.remedy, 92, 1528, 896, 36, 2);
 
-  // 7. Prominent Left-Safe Viral Footer Branding (Traffic Magnet for WhatsApp Status & Instagram Story)
+  // 7. Bottom Viral Footer
   ctx.fillStyle = '#fde68a';
-  ctx.font = 'bold 25px "Noto Serif Telugu", serif';
+  ctx.font = lang === 'en' ? 'bold 24px sans-serif' : 'bold 25px "Noto Serif Telugu", serif';
   ctx.fillText(
-    '✨ ఉచిత 100 పేజీల జన్మ కుండలి PDF, నేటి పంచాంగం & రాశి ఫలాల కోసం చూడండి:',
+    lang === 'en'
+      ? '✨ Free 100-Page Kundali PDF, Daily Panchangam & Astrology:'
+      : '✨ ఉచిత 100 పేజీల జన్మ కుండలి PDF, నేటి పంచాంగం & రాశి ఫలాల కోసం చూడండి:',
     68,
     1662,
     944
@@ -599,19 +655,14 @@ export async function downloadRashiStatusCardImage(
 
   ctx.fillStyle = '#3b1103';
   ctx.font = 'bold 42px sans-serif';
-  drawMeasuredCenteredText(
-    ctx,
-    '🌐 www.telugujyothisham.com',
-    68,
-    944,
-    1747,
-    24
-  );
+  drawMeasuredCenteredText(ctx, '🌐 www.telugujyothisham.com', 68, 944, 1747, 24);
 
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 26px "Noto Serif Telugu", sans-serif';
+  ctx.font = lang === 'en' ? 'bold 24px sans-serif' : 'bold 26px "Noto Serif Telugu", sans-serif';
   ctx.fillText(
-    '📞 వ్యక్తిగత జాతక పరిశీలన & హోమాల కొరకు WhatsApp: +91 8977986166',
+    lang === 'en'
+      ? '📞 Vedic Consultation & Homam inquiries on WhatsApp: +91 8977986166'
+      : '📞 వ్యక్తిగత జాతక పరిశీలన & హోమాల కొరకు WhatsApp: +91 8977986166',
     68,
     1832,
     944
@@ -624,9 +675,11 @@ export async function downloadRashiStatusCardImage(
         resolve();
         return;
       }
-      const fileName = `${rashi.id}-rashi-phalam-${day.id}-telugujyothisham.png`;
+      const fileName =
+        lang === 'en'
+          ? `english-horoscope-${rashi.id}-${day.id}-telugujyothisham.png`
+          : `${rashi.id}-rashi-phalam-${day.id}-telugujyothisham.png`;
 
-      // Download image file directly so user can upload to WhatsApp Status / Instagram Story
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -639,4 +692,3 @@ export async function downloadRashiStatusCardImage(
     }, 'image/png');
   });
 }
-

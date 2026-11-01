@@ -228,7 +228,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
   const activeDasha = chartData.dashaList.find((d) => d.isCurrent) || chartData.dashaList[0];
 
   const whatsappConsultUrl = `https://wa.me/918977986166?text=${encodeURIComponent(
-    `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ సిద్ధాంతి గారు, నా దృక్సిద్ధాంత జన్మ కుండలి వివరాలు:\nపేరు: ${name}\nపుట్టిన తేదీ: ${birthDate}\nసమయం: ${birthTime}\nప్రాంతం: ${selectedCity.labelTe}\nజన్మ రాశి: ${chartData.rashi.te}\nజన్మ నక్షత్రం: ${chartData.nakshatraName} (${chartData.pada}వ పాదం)\nజన్మ లగ్నం (D1): ${chartData.lagna.te}\nనవాంశ లగ్నం (D9): ${chartData.navamshaLagna.te}\nప్రస్తుత మహాదశ: ${activeDasha.lordTe}.\nసంపూర్ణ జాతక పరిశీలన మరియు పరిహారాల కోసం సంప్రదిస్తున్నాను.`
+    `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ గారు, నా దృక్సిద్ధాంత జన్మ కుండలి వివరాలు:\nపేరు: ${name}\nపుట్టిన తేదీ: ${birthDate}\nసమయం: ${birthTime}\nప్రాంతం: ${selectedCity.labelTe}\nజన్మ రాశి: ${chartData.rashi.te}\nజన్మ నక్షత్రం: ${chartData.nakshatraName} (${chartData.pada}వ పాదం)\nజన్మ లగ్నం (D1): ${chartData.lagna.te}\nనవాంశ లగ్నం (D9): ${chartData.navamshaLagna.te}\nప్రస్తుత మహాదశ: ${activeDasha.lordTe}.\nసంపూర్ణ జాతక పరిశీలన మరియు పరిహారాల కోసం సంప్రదిస్తున్నాను.`
   )}`;
 
   const activePlanetsMap = chartMode === 'D1' ? chartData.d1RashiPlanets : chartData.d9NavamshaPlanets;

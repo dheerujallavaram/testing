@@ -531,8 +531,8 @@ export const ShaniDoshaChecker: React.FC<{ onOpenBooking?: () => void }> = ({ on
               <Flame size={16} className="text-emerald-700" />
               <span>
                 {t(
-                  'బ్రహ్మశ్రీ ధీరజ్ శర్మ సిద్ధాంతి గారి శాస్త్రోక్త పరిహార సూచన:',
-                  'Vedic Shanti Remedy by Brahmasri Dheeraj Sharma Siddhanthi:'
+                  'బ్రహ్మశ్రీ ధీరజ్ శర్మ గారి శాస్త్రోక్త పరిహార సూచన:',
+                  'Vedic Shanti Remedy by Brahmasri Dheeraj Sharma:'
                 )}
               </span>
             </span>
@@ -544,7 +544,7 @@ export const ShaniDoshaChecker: React.FC<{ onOpenBooking?: () => void }> = ({ on
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <a
               href={`https://wa.me/918977986166?text=${encodeURIComponent(
-                `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ సిద్ధాంతి గారు, నాది "${activeRashi.nameTe}" (${activeRashi.badgeTe}). నా జాతకంలో శని/గ్రహ దోష పరిశీలన మరియు శాంతి పరిహార పూజ కోసం సంప్రదిస్తున్నాను.`
+                `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ గారు, నాది "${activeRashi.nameTe}" (${activeRashi.badgeTe}). నా జాతకంలో శని/గ్రహ దోష పరిశీలన మరియు శాంతి పరిహార పూజ కోసం సంప్రదిస్తున్నాను.`
               )}`}
               target="_blank"
               rel="noopener noreferrer"

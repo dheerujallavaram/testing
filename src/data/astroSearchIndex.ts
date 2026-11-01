@@ -249,7 +249,7 @@ export const ASTRO_SEARCH_TOPICS: AstroSearchTopic[] = [
     id: 'jyothisham-astrology',
     titleTe: 'తెలుగు జ్యోతిషం & వేద జ్యోతిషశాస్త్ర సంప్రదింపులు (Jyothisham & Astrology)',
     titleEn: 'Telugu Jyothisham & Vedic Astrology Consultation with Guruji',
-    descriptionTe: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ సిద్ధాంతి గారిచే వ్యక్తిగత జాతక పరిశీలన, ముహూర్త నిర్ణయం & పరిహారాలు.',
+    descriptionTe: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారిచే వ్యక్తిగత జాతక పరిశీలన, ముహూర్త నిర్ణయం & పరిహారాలు.',
     descriptionEn: 'Authentic Vedic astrology, astrological guidance, horoscope analysis & personal consultation with Sri Dheeraj Sharma.',
     categoryTe: 'జ్యోతిషం',
     categoryEn: 'Jyothisham & Astrology',

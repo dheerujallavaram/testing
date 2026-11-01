@@ -10,7 +10,7 @@ import {
 } from '../utils/panchangaLogic';
 import { downloadRashiStatusCardImage } from '../utils/panchangamImageGenerator';
 import { RashiMedallion, RashiGlyph } from './RashiGlyph';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, Language } from '../context/LanguageContext';
 
 interface DailyHoroscopeProps {
   day: DayData;
@@ -136,10 +136,10 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
 
   const rashiCards = getDailyRashiFortunes(day);
 
-  const handleDownloadStatusCard = async (rashi: RashiDailyFortune) => {
+  const handleDownloadStatusCard = async (rashi: RashiDailyFortune, targetLang?: Language) => {
     setDownloadingRashiId(rashi.id);
     try {
-      await downloadRashiStatusCardImage(day, rashi);
+      await downloadRashiStatusCardImage(day, rashi, targetLang || language);
       setDownloadedRashiId(rashi.id);
       setTimeout(() => {
         setDownloadedRashiId((prev) => (prev === rashi.id ? null : prev));
@@ -333,11 +333,15 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                       </h3>
                       <p className="text-[11px] sm:text-xs text-slate-600 font-telugu mt-0.5">
                         {t('చిహ్నం:', 'Symbol:')}{' '}
-                        <strong className="text-amber-950 font-medium">{rashi.vedicSymbolName}</strong>
+                        <strong className="text-amber-950 font-medium">
+                          {language === 'en' ? rashi.vedicSymbolNameEn : rashi.vedicSymbolName}
+                        </strong>
                       </p>
                       <p className="text-[11px] sm:text-xs text-slate-500 font-telugu">
                         {t('అధిపతి:', 'Lord:')}{' '}
-                        <strong className="text-amber-900">{tr(rashi.lord)}</strong>
+                        <strong className="text-amber-900">
+                          {language === 'en' ? rashi.lordEn : rashi.lord}
+                        </strong>
                       </p>
                     </div>
                   </div>
@@ -354,7 +358,7 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                     {isFav && <CheckCircle2 size={12} className="text-emerald-700 shrink-0" />}
                     {isCaution && <AlertTriangle size={12} className="text-rose-700 shrink-0" />}
                     {!isFav && !isCaution && <Info size={12} className="text-amber-700 shrink-0" />}
-                    <span>{language === 'en' ? tr(rashi.statusLabel) : rashi.statusLabel}</span>
+                    <span>{language === 'en' ? rashi.statusLabelEn : rashi.statusLabel}</span>
                   </span>
                 </div>
 
@@ -389,7 +393,7 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                         <span>🪐 {t('నేటి గ్రహ దృష్టి & గ్రహ సంచార ఫలితం:', 'Today’s Graha Drishti & Transit Impact:')}</span>
                       </span>
                       <span className="text-[10px] font-bold bg-amber-900 text-amber-100 px-2 py-0.5 rounded-md">
-                        {rashi.grahaDrishtiHeadlineTe} • 🕒 {rashi.grahaDrishtiTimeTe}
+                        {language === 'en' ? rashi.grahaDrishtiHeadlineEn : rashi.grahaDrishtiHeadlineTe} • 🕒 {language === 'en' ? rashi.grahaDrishtiTimeEn : rashi.grahaDrishtiTimeTe}
                       </span>
                     </div>
 
@@ -401,11 +405,11 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                     <div className="grid grid-cols-1 gap-1.5 pt-1 text-[11px]">
                       <div className="bg-emerald-50/90 border border-emerald-200 rounded-lg px-2.5 py-1.5 text-emerald-950">
                         <strong className="text-emerald-800">✅ {t('నేడు చేయవలసిన పని:', 'Do Today:')}</strong>{' '}
-                        <span>{rashi.doTodayTe}</span>
+                        <span>{language === 'en' ? rashi.doTodayEn : rashi.doTodayTe}</span>
                       </div>
                       <div className="bg-rose-50/80 border border-rose-200 rounded-lg px-2.5 py-1.5 text-rose-950">
                         <strong className="text-rose-800">⚠️ {t('నేడు జాగ్రత్త:', 'Avoid Today:')}</strong>{' '}
-                        <span>{rashi.avoidTodayTe}</span>
+                        <span>{language === 'en' ? rashi.avoidTodayEn : rashi.avoidTodayTe}</span>
                       </div>
                     </div>
 
@@ -414,7 +418,7 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                         <Clock size={12} className="text-amber-700" />
                         <span>{t('శుభ సమయం:', 'Lucky Time:')}</span>
                         <span className="font-bold bg-white px-2 py-0.5 rounded border border-amber-300 text-amber-950">
-                          {rashi.luckyTimeWindowTe}
+                          {language === 'en' ? rashi.luckyTimeWindowEn : rashi.luckyTimeWindowTe}
                         </span>
                       </span>
                       {RASHI_EXTRA_META[rashi.id] && (
@@ -484,13 +488,13 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
                   <Star size={13} className="text-amber-600 shrink-0 mt-0.5" />
                   <p>
                     <span className="font-bold text-amber-900">{t('శాస్త్రోక్త పరిహారం:', 'Vedic Remedy:')}</span>{' '}
-                    <span>{tr(rashi.remedy)}</span>
+                    <span>{language === 'en' ? rashi.remedyEn : rashi.remedy}</span>
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center justify-between pt-2 border-t border-amber-100 text-[11px] gap-2">
                   <span className="text-slate-600 truncate">
-                    {t('శుభ రంగు:', 'Color:')} <strong className="text-amber-900">{tr(rashi.luckyColor)}</strong> •{' '}
+                    {t('శుభ రంగు:', 'Color:')} <strong className="text-amber-900">{language === 'en' ? rashi.luckyColorEn : rashi.luckyColor}</strong> •{' '}
                     <strong className="text-amber-950">#{rashi.luckyNumber}</strong>
                   </span>
 

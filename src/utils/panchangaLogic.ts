@@ -127,27 +127,37 @@ export interface RashiDailyFortune {
   englishFullSummary: string;
   englishDairyam: string;
   grahaDrishtiHeadlineTe: string;
+  grahaDrishtiHeadlineEn: string;
   grahaDrishtiTimeTe: string;
+  grahaDrishtiTimeEn: string;
   grahaDrishtiPhalamTe: string;
   grahaDrishtiPhalamEn: string;
   doTodayTe: string;
+  doTodayEn: string;
   avoidTodayTe: string;
+  avoidTodayEn: string;
   luckyTimeWindowTe: string;
+  luckyTimeWindowEn: string;
+  statusLabelEn: string;
+  remedyEn: string;
+  vedicSymbolNameEn: string;
+  lordEn: string;
+  luckyColorEn: string;
 }
 
 export const RASHI_META_LIST = [
-  { id: 'mesham', teluguName: 'మేషం', englishName: 'Aries', symbol: '♈', vedicSymbolName: 'పొట్టేలు (Ram)', lord: 'కుజుడు', luckyColor: 'ఎరుపు (Red)', baseLuckyNumber: 9 },
-  { id: 'vrushabham', teluguName: 'వృషభం', englishName: 'Taurus', symbol: '♉', vedicSymbolName: 'ఎద్దు (Bull)', lord: 'శుక్రుడు', luckyColor: 'తెలుపు (White)', baseLuckyNumber: 6 },
-  { id: 'mithunam', teluguName: 'మిథునం', englishName: 'Gemini', symbol: '♊', vedicSymbolName: 'మిథున జంట (Twins)', lord: 'బుధుడు', luckyColor: 'ఆకుపచ్చ (Green)', baseLuckyNumber: 5 },
-  { id: 'karkatakam', teluguName: 'కర్కాటకం', englishName: 'Cancer', symbol: '♋', vedicSymbolName: 'పీత (Crab)', lord: 'చంద్రుడు', luckyColor: 'ముత్యపు తెలుపు (Pearl)', baseLuckyNumber: 2 },
-  { id: 'simham', teluguName: 'సింహం', englishName: 'Leo', symbol: '♌', vedicSymbolName: 'సింహం (Lion)', lord: 'సూర్యుడు', luckyColor: 'బంగారు పసుపు (Gold)', baseLuckyNumber: 1 },
-  { id: 'kanya', teluguName: 'కన్య', englishName: 'Virgo', symbol: '♍', vedicSymbolName: 'కన్యక (Maiden)', lord: 'బుధుడు', luckyColor: 'లేత ఆకుపచ్చ (Light Green)', baseLuckyNumber: 5 },
-  { id: 'tula', teluguName: 'తుల', englishName: 'Libra', symbol: '♎', vedicSymbolName: 'త్రాసు (Scales)', lord: 'శుక్రుడు', luckyColor: 'గులాబీ / తెలుపు (Cream)', baseLuckyNumber: 6 },
-  { id: 'vruschikam', teluguName: 'వృశ్చికం', englishName: 'Scorpio', symbol: '♏', vedicSymbolName: 'తేలు (Scorpion)', lord: 'కుజుడు', luckyColor: 'కాషాయం / ఎరుపు (Coral)', baseLuckyNumber: 9 },
-  { id: 'dhanussu', teluguName: 'ధనుస్సు', englishName: 'Sagittarius', symbol: '♐', vedicSymbolName: 'విల్లంబు (Bow & Arrow)', lord: 'గురుడు', luckyColor: 'పసుపు (Yellow)', baseLuckyNumber: 3 },
-  { id: 'makaram', teluguName: 'మకరం', englishName: 'Capricorn', symbol: '♑', vedicSymbolName: 'మకరం (Sea-Goat)', lord: 'శని', luckyColor: 'నీలం (Blue)', baseLuckyNumber: 8 },
-  { id: 'kumbham', teluguName: 'కుంభం', englishName: 'Aquarius', symbol: '♒', vedicSymbolName: 'కుంభం (Water Pot)', lord: 'శని', luckyColor: 'లేత నీలం (Sky Blue)', baseLuckyNumber: 4 },
-  { id: 'meenam', teluguName: 'మీనం', englishName: 'Pisces', symbol: '♓', vedicSymbolName: 'మీన ద్వయం (Two Fishes)', lord: 'గురుడు', luckyColor: 'పసుపు / కాషాయం (Saffron)', baseLuckyNumber: 7 },
+  { id: 'mesham', teluguName: 'మేషం', englishName: 'Aries', symbol: '♈', vedicSymbolName: 'పొట్టేలు (Ram)', vedicSymbolNameEn: 'Ram (Mesha)', lord: 'కుజుడు', lordEn: 'Mars (Kuja)', luckyColor: 'ఎరుపు (Red)', luckyColorEn: 'Crimson Red', baseLuckyNumber: 9 },
+  { id: 'vrushabham', teluguName: 'వృషభం', englishName: 'Taurus', symbol: '♉', vedicSymbolName: 'ఎద్దు (Bull)', vedicSymbolNameEn: 'Bull (Vrushabha)', lord: 'శుక్రుడు', lordEn: 'Venus (Shukra)', luckyColor: 'తెలుపు (White)', luckyColorEn: 'Pearl White', baseLuckyNumber: 6 },
+  { id: 'mithunam', teluguName: 'మిథునం', englishName: 'Gemini', symbol: '♊', vedicSymbolName: 'మిథున జంట (Twins)', vedicSymbolNameEn: 'Twins (Mithuna)', lord: 'బుధుడు', lordEn: 'Mercury (Budha)', luckyColor: 'ఆకుపచ్చ (Green)', luckyColorEn: 'Emerald Green', baseLuckyNumber: 5 },
+  { id: 'karkatakam', teluguName: 'కర్కాటకం', englishName: 'Cancer', symbol: '♋', vedicSymbolName: 'పీత (Crab)', vedicSymbolNameEn: 'Crab (Karkataka)', lord: 'చంద్రుడు', lordEn: 'Moon (Chandra)', luckyColor: 'ముత్యపు తెలుపు (Pearl)', luckyColorEn: 'Shimmering White', baseLuckyNumber: 2 },
+  { id: 'simham', teluguName: 'సింహం', englishName: 'Leo', symbol: '♌', vedicSymbolName: 'సింహం (Lion)', vedicSymbolNameEn: 'Lion (Simha)', lord: 'సూర్యుడు', lordEn: 'Sun (Surya)', luckyColor: 'బంగారు పసుపు (Gold)', luckyColorEn: 'Golden Yellow', baseLuckyNumber: 1 },
+  { id: 'kanya', teluguName: 'కన్య', englishName: 'Virgo', symbol: '♍', vedicSymbolName: 'కన్యక (Maiden)', vedicSymbolNameEn: 'Maiden (Kanya)', lord: 'బుధుడు', lordEn: 'Mercury (Budha)', luckyColor: 'లేత ఆకుపచ్చ (Light Green)', luckyColorEn: 'Light Green', baseLuckyNumber: 5 },
+  { id: 'tula', teluguName: 'తుల', englishName: 'Libra', symbol: '♎', vedicSymbolName: 'త్రాసు (Scales)', vedicSymbolNameEn: 'Scales (Tula)', lord: 'శుక్రుడు', lordEn: 'Venus (Shukra)', luckyColor: 'గులాబీ / తెలుపు (Cream)', luckyColorEn: 'Rose Pink / Cream', baseLuckyNumber: 6 },
+  { id: 'vruschikam', teluguName: 'వృశ్చికం', englishName: 'Scorpio', symbol: '♏', vedicSymbolName: 'తేలు (Scorpion)', vedicSymbolNameEn: 'Scorpion (Vruschika)', lord: 'కుజుడు', lordEn: 'Mars (Kuja)', luckyColor: 'కాషాయం / ఎరుపు (Coral)', luckyColorEn: 'Coral Red', baseLuckyNumber: 9 },
+  { id: 'dhanussu', teluguName: 'ధనుస్సు', englishName: 'Sagittarius', symbol: '♐', vedicSymbolName: 'విల్లంబు (Bow & Arrow)', vedicSymbolNameEn: 'Bow & Arrow (Dhanus)', lord: 'గురుడు', lordEn: 'Jupiter (Guru)', luckyColor: 'పసుపు (Yellow)', luckyColorEn: 'Bright Yellow', baseLuckyNumber: 3 },
+  { id: 'makaram', teluguName: 'మకరం', englishName: 'Capricorn', symbol: '♑', vedicSymbolName: 'మకరం (Sea-Goat)', vedicSymbolNameEn: 'Sea-Goat (Makara)', lord: 'శని', lordEn: 'Saturn (Shani)', luckyColor: 'నీలం (Blue)', luckyColorEn: 'Royal Blue', baseLuckyNumber: 8 },
+  { id: 'kumbham', teluguName: 'కుంభం', englishName: 'Aquarius', symbol: '♒', vedicSymbolName: 'కుంభం (Water Pot)', vedicSymbolNameEn: 'Water Pot (Kumbha)', lord: 'శని', lordEn: 'Saturn (Shani)', luckyColor: 'లేత నీలం (Sky Blue)', luckyColorEn: 'Sky Blue', baseLuckyNumber: 4 },
+  { id: 'meenam', teluguName: 'మీనం', englishName: 'Pisces', symbol: '♓', vedicSymbolName: 'మీన ద్వయం (Two Fishes)', vedicSymbolNameEn: 'Two Fishes (Meena)', lord: 'గురుడు', lordEn: 'Jupiter (Guru)', luckyColor: 'పసుపు / కాషాయం (Saffron)', luckyColorEn: 'Saffron Yellow', baseLuckyNumber: 7 },
 ];
 
 export const GOCHARA_FORTUNES: Record<
@@ -510,12 +520,22 @@ export function getDailyRashiFortunes(day: DayData): RashiDailyFortune[] {
       englishFullSummary,
       englishDairyam: fortune.enDairyam,
       grahaDrishtiHeadlineTe: drishtiInfo.activeAspectTitleTe,
+      grahaDrishtiHeadlineEn: drishtiInfo.activeAspectTitleEn,
       grahaDrishtiTimeTe: drishtiInfo.activeAspectTimeTe,
+      grahaDrishtiTimeEn: drishtiInfo.activeAspectTimeEn,
       grahaDrishtiPhalamTe: drishtiInfo.loukikaPhalamTe,
       grahaDrishtiPhalamEn: drishtiInfo.loukikaPhalamEn,
       doTodayTe: drishtiInfo.doTodayTe,
+      doTodayEn: drishtiInfo.doTodayEn,
       avoidTodayTe: drishtiInfo.avoidTodayTe,
+      avoidTodayEn: drishtiInfo.avoidTodayEn,
       luckyTimeWindowTe: drishtiInfo.luckyTimeWindowTe,
+      luckyTimeWindowEn: drishtiInfo.luckyTimeWindowEn,
+      statusLabelEn: isChandrashtamam ? 'Chandrashtamam • Caution' : fortune.enStatusLabel,
+      remedyEn: fortune.enRemedy,
+      vedicSymbolNameEn: rashi.vedicSymbolNameEn,
+      lordEn: rashi.lordEn,
+      luckyColorEn: rashi.luckyColorEn,
     };
   });
 }

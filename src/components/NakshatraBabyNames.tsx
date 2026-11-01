@@ -601,7 +601,7 @@ export const NakshatraBabyNames: React.FC = () => {
           </p>
           <a
             href={`https://wa.me/918977986166?text=${encodeURIComponent(
-              `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ సిద్ధాంతి గారు, మా శిశువు జన్మ నక్షత్రం "${activeQuickStar.nakshatraTe} - ${quickPada}వ పాదం" (అక్షరం: ${activePadaSyllable}). సంఖ్యాశాస్త్రం (Numerology) ప్రకారం అదృష్ట పేరు మరియు నామకరణ ముహూర్తం కోసం సంప్రదిస్తున్నాను.`
+              `నమస్కారం బ్రహ్మశ్రీ ధీరజ్ శర్మ గారు, మా శిశువు జన్మ నక్షత్రం "${activeQuickStar.nakshatraTe} - ${quickPada}వ పాదం" (అక్షరం: ${activePadaSyllable}). సంఖ్యాశాస్త్రం (Numerology) ప్రకారం అదృష్ట పేరు మరియు నామకరణ ముహూర్తం కోసం సంప్రదిస్తున్నాను.`
             )}`}
             target="_blank"
             rel="noopener noreferrer"
