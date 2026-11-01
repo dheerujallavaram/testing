@@ -18,7 +18,7 @@ export const MuhurthaTimings: React.FC<MuhurthaTimingsProps> = ({ day }) => {
           <div className="flex items-center justify-between border-b border-emerald-100 pb-4 mb-6">
             <h3 className="text-2xl text-emerald-950 flex items-center gap-2.5 font-bold font-telugu">
               <Shield size={24} className="text-emerald-600" />
-              <span>{t('శుభ సమయాలు (ముహూర్తాలు)', 'Auspicious Timings (Shubha Muhurtham)')}</span>
+              <span>{t('శుభ సమయాలు & శుభ ముహూర్తాలు (Shubha Muhurtham)', 'Shubha Muhurtham & Auspicious Timings')}</span>
             </h3>
             <span className="text-xs px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-md border border-emerald-200 font-telugu font-semibold">
               {t('శుభ కార్యాలకు శ్రేష్ఠం', 'Best for Good Works')}

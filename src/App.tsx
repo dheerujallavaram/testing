@@ -587,20 +587,20 @@ function AppContent() {
 
     const evergreenSeoMeta: Record<string, { titleTe: string; titleEn: string; descTe: string; descEn: string }> = {
       '/neti-panchangam': {
-        titleTe: 'Neti Panchangam (ఈ రోజు పంచాంగం) - Telugu Jyothisham.com',
-        titleEn: 'Neti Panchangam (Today Panchangam) - Telugu Jyothisham',
+        titleTe: 'నేటి పంచాంగం (Neti Panchangam): ఈ రోజు నక్షత్రం, తిథి, శుభ సమయం',
+        titleEn: 'Neti Panchangam: Today Panchangam in Telugu, Ee Roju Nakshatra & Timings',
         descTe: netiPanchangamDescTe,
         descEn: netiPanchangamDescEn,
       },
       '/today-panchangam-in-telugu': {
-        titleTe: 'Today Panchangam in Telugu (ఈ రోజు పంచాంగం) - Jyothisham',
-        titleEn: 'Today Panchangam in Telugu - Neti Panchangam & Horoscope',
+        titleTe: 'Today Panchangam in Telugu (నేటి పంచాంగం) - శుభ సమయం & రాశి ఫలాలు',
+        titleEn: 'Today Panchangam in Telugu - Neti Panchangam, Star & Horoscope',
         descTe: netiPanchangamDescTe,
         descEn: netiPanchangamDescEn,
       },
       '/ee-roju-panchangam': {
-        titleTe: 'ఈ రోజు పంచాంగం (Ee Roju Panchangam) - Telugu Jyothisham',
-        titleEn: 'Ee Roju Panchangam - Daily Telugu Panchangam & Horoscope',
+        titleTe: 'ఈ రోజు పంచాంగం (Ee Roju Panchangam): తిథి, నక్షత్రం, శుభ ముహూర్తం',
+        titleEn: 'Ee Roju Panchangam - Daily Telugu Panchangam & Shubha Timings',
         descTe: netiPanchangamDescTe,
         descEn: netiPanchangamDescEn,
       },
@@ -623,8 +623,8 @@ function AppContent() {
         descEn: `Automated daily Telugu Pooja Sankalpam text for ${currentDay.teediVaram} with Jambudweepe (India) and Krounchadweepe (USA/Canada) options.`,
       },
       '/janma-kundali': {
-        titleTe: 'Free Jatakam & 100-Page Janma Kundali PDF - Jyothisham',
-        titleEn: 'Free 100-Page Janma Kundali Jatakam PDF - Jyothisham.com',
+        titleTe: 'Free Jathakam by Date of Birth in Telugu (ఉచిత జన్మ కుండలి 100p PDF)',
+        titleEn: 'Free Jathakam by Date of Birth in Telugu - Free Download Kundali PDF',
         descTe: brandDescTe,
         descEn: brandDescEn,
       },
@@ -679,9 +679,9 @@ function AppContent() {
     };
 
     const titlesTelugu: Record<NavTab, string> = {
-      home: 'Panchangam, Jatakam, Horoscope - Telugu Jyothisham.com',
-      panchangam: 'Daily Telugu Panchangam & Horoscope - Neti Panchangam',
-      jathakam: 'Free Jatakam & 100-Page Janma Kundali PDF - Jyothisham',
+      home: 'నేటి పంచాంగం | Neti Panchangam, తెలుగు జ్యోతిష్యం & Free Jathakam',
+      panchangam: 'నేటి పంచాంగం (Neti Panchangam): ఈ రోజు నక్షత్రం, తిథి, శుభ సమయం',
+      jathakam: 'Free Jathakam by Date of Birth in Telugu (ఉచిత జన్మ కుండలి 100p PDF)',
       awards: 'పొందిన సత్కారాలు & పురస్కారాలు - Telugu Jyothisham.com',
       services: 'Pooja Services & వైదిక హోమాలు - Telugu Jyothisham.com',
       about: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు - Telugu Jyothisham',
@@ -689,9 +689,9 @@ function AppContent() {
     };
 
     const titlesEnglish: Record<NavTab, string> = {
-      home: 'Panchangam, Jatakam, Horoscope - Telugu Jyothisham.com',
-      panchangam: 'Daily Telugu Panchangam & Horoscope - Neti Panchangam',
-      jathakam: 'Free Jatakam & 100-Page Janma Kundali PDF - Jyothisham',
+      home: 'Neti Panchangam, Telugu Jyothishyam & Free Jathakam by Date of Birth',
+      panchangam: 'Neti Panchangam: Today Panchangam in Telugu, Ee Roju Nakshatra & Muhurtham',
+      jathakam: 'Free Jathakam by Date of Birth in Telugu - Free Download Kundali PDF',
       awards: 'Vedic Honors & Awards - Sri Dheeraj Sharma Jyothisham',
       services: 'Pooja Services & Vedic Homams - Telugu Jyothisham.com',
       about: 'About Sri Jallavaram Sai Dheeraj Sharma - Jyothisham',

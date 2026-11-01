@@ -78,11 +78,11 @@ export function buildTeluguJyothishamBrandSnippet(
   const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.split('(')[0]?.trim() || day.panchanga.nakshatram;
 
   if (lang === 'en') {
-    const descEn = `Daily Telugu Panchangam (Tithi: ${cleanTithi}, Star: ${cleanNakshatra}), Horoscope Predictions, Free 100-Page Jatakam PDF, Vastu - telugujyothisham.com.`;
+    const descEn = `Telugu Jyothishyam & Neti Panchangam: Ee roju nakshatra ${cleanNakshatra}, Tithi ${cleanTithi}, Subha timings. Astrology in Telugu by date of birth and time free download 100p PDF.`;
     return descEn.length <= 158 ? descEn : descEn.slice(0, 155) + '...';
   }
 
-  const descTe = `Daily Telugu Panchangam (ఈ రోజు పంచాంగం: ${cleanTithi}, ${cleanNakshatra}), Horoscope (రాశి ఫలాలు), 100-Page Jatakam PDF, Vastu - telugujyothisham.com.`;
+  const descTe = `తెలుగు జ్యోతిష్యం (Telugu Jyothisham) & నేటి పంచాంగం: ఈ రోజు నక్షత్రం ${cleanNakshatra}, తిథి ${cleanTithi}, శుభ సమయం. Jathakam by date of birth in Telugu free download (100p PDF).`;
   return descTe.length <= 158 ? descTe : descTe.slice(0, 155) + '...';
 }
 
@@ -97,11 +97,11 @@ export function buildNetiPanchangamSearchSnippet(
   const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.split('(')[0]?.trim() || day.panchanga.nakshatram;
 
   if (lang === 'en') {
-    const descEn = `Neti Panchangam (${day.teediVaram}): Tithi ${cleanTithi}, Nakshatram ${cleanNakshatra}, Horoscope Predictions, 100-Page Jatakam PDF - telugujyothisham.com.`;
+    const descEn = `Neti Panchangam (${day.teediVaram}): Ee roju nakshatra ${cleanNakshatra}, Tithi ${cleanTithi}, Subha Muhurtham, Telugu Jyotish, Jathakam by date of birth in Telugu free download.`;
     return descEn.length <= 158 ? descEn : descEn.slice(0, 155) + '...';
   }
 
-  const descTe = `ఈ రోజు పంచాంగం (Neti Panchangam): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, నేటి రాశి ఫలాలు, శుభ సమయం, 100-Page Jatakam PDF - telugujyothisham.com.`;
+  const descTe = `నేటి పంచాంగం (Neti Panchangam): ఈ రోజు నక్షత్రం ${cleanNakshatra}, తిథి ${cleanTithi}, శుభ సమయం, రాశి ఫలాలు. Astrology in Telugu by date of birth free download (100p PDF).`;
   return descTe.length <= 158 ? descTe : descTe.slice(0, 155) + '...';
 }
 
@@ -493,6 +493,22 @@ export function buildStandardizedDailyFaqSchema(
       },
       {
         '@type': 'Question',
+        name: `Ee roju nakshatra in Telugu ఏమిటి? (${day.teediVaram} - Today Nakshatra & Tithi in Telugu)`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `ఈ రోజు నక్షత్రం (Ee roju nakshatra): ${cleanNakshatra} (అధిపతి: ${nakshatraLord}, దేవత: ${nakshatraDeity}). నేటి తిథి: ${day.panchanga.tithi}. శుభ సమయం (అమృత ఘడియలు): ${day.shubha.amrutha}, అభిజిత్ ముహూర్తం: ${day.shubha.abhijit}. రాహుకాలం: ${day.ashubha.rahukalam}.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `Jathakam by date of birth in Telugu free download (Astrology in Telugu by date of birth and time free download)?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `www.telugujyothisham.com లో మీ పుట్టిన తేదీ, సమయం మరియు ప్రాంతం వివరాలతో మీ సంపూర్ణ 100 పేజీల జన్మ కుండలి (D1 రాశి చక్రం, D9 నవాంశ, 12 భావాలు, 120 ఏళ్ల వింశోత్తరి మహాదశ & పరిహారాలు) తక్షణమే ఉచితంగా PDF డౌన్‌లోడ్ చేసుకోవచ్చు.`,
+        },
+      },
+      {
+        '@type': 'Question',
         name: `How to download Daily Telugu Panchangam and Rashi status images in English and Telugu? (స్టేటస్ ఇమేజ్ డౌన్‌లోడ్)`,
         acceptedAnswer: {
           '@type': 'Answer',
@@ -646,6 +662,20 @@ export function syncAutomatedDailySeoSchema(
     'Vastu',
     'Muhurtham',
     'Pooja services',
+    'శుభ',
+    'శుభ సమయం',
+    'శుభ ముహూర్తాలు',
+    'తెలుగు జ్యోతిష్యం',
+    'telugujathakam',
+    'telugujatakam',
+    'telugu jyotish',
+    'neti panchangam',
+    'jyothisham telugu',
+    'jathakam by date of birth in telugu free',
+    'ee roju nakshatra in telugu',
+    'ee roju nakshatra',
+    'ఈ రోజు నక్షత్రం',
+    'astrology in telugu by date of birth and time free download',
     'Neti Panchangam',
     'నేటి పంచాంగం',
     'Today Panchangam in Telugu',

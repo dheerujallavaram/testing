@@ -811,16 +811,16 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
                 )}
               </span>
             </span>
-            <h3 className="text-xl sm:text-2xl font-bold text-amber-950">
+            <h2 className="text-xl sm:text-2xl font-bold text-amber-950">
               {t(
-                'మీ జాతకం తెలుసుకోండి — ఉచిత జన్మ కుండలి & సంపూర్ణ జాతక ఫలితాలు',
-                'Know Your Horoscope — Free Janma Kundali & Comprehensive Horoscope Predictions'
+                'మీ జాతకం తెలుసుకోండి — Free Jathakam by Date of Birth in Telugu (ఉచిత జన్మ కుండలి 100 పేజీల PDF)',
+                'Free Jathakam by Date of Birth in Telugu — Janma Kundali & Horoscope Predictions'
               )}
-            </h3>
+            </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-1">
               {t(
-                'మీ పుట్టిన తేదీ, సమయం, ప్రాంతం నమోదు చేయగానే రాశి చక్రం (D1), నవాంశ చక్రం (D9), గ్రహ డిగ్రీలు మరియు 8 అధ్యాయాల సమగ్ర జాతక ఫలితాలు తయారవుతాయి.',
-                'Enter your birth date, time, and city for instant D1 Rashi, D9 Navamsha, exact degrees, and an 8-chapter comprehensive horoscope report.'
+                'పుట్టిన తేదీ, సమయంతో ఉచిత సంపూర్ణ జాతకం (Astrology in Telugu by Date of Birth and Time Free Download): రాశి చక్రం (D1), నవాంశ (D9), గ్రహ భావాలు మరియు 120 ఏళ్ల వింశోత్తరి మహాదశ ఫలితాలు.',
+                'Generate instant free Telugu Jatakam (Astrology in Telugu by date of birth and time free download): D1 Rashi, D9 Navamsha, exact planetary degrees, and 120-year Vimshottari Mahadasha report.'
               )}
             </p>
           </div>

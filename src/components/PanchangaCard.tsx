@@ -39,7 +39,7 @@ export const PanchangaCard: React.FC<PanchangaCardProps> = ({ day }) => {
     },
     {
       icon: Star,
-      label: t('నక్షత్రం', 'Nakshatram (Lunar Constellation)'),
+      label: t('ఈ రోజు నక్షత్రం (Nakshatram)', 'Ee Roju Nakshatra in Telugu (Star)'),
       value: tr(day.panchanga.nakshatram),
       highlight: true,
     },
@@ -66,7 +66,7 @@ export const PanchangaCard: React.FC<PanchangaCardProps> = ({ day }) => {
         <div className="flex items-center justify-between border-b border-amber-100 pb-4 mb-6">
           <h3 className="text-2xl text-amber-950 flex items-center gap-2.5 font-bold font-telugu">
             <Sparkles size={22} className="text-amber-600" />
-            <span>{t('పంచాంగ వివరాలు', 'Panchangam Details (Five Limbs)')}</span>
+            <span>{t('నేటి పంచాంగ వివరాలు (Neti Panchangam)', 'Neti Panchangam Details (Five Limbs)')}</span>
           </h3>
           <span className="text-xs px-2.5 py-1 bg-amber-50 text-amber-800 rounded-md border border-amber-200 font-telugu font-semibold">
             {t('పంచాంగ పంచాంగాలు', 'Vedic Almanac')}
