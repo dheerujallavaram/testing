@@ -1,8 +1,9 @@
 import React from 'react';
-import { Sparkles, Compass, Sunrise, Moon } from 'lucide-react';
+import { Compass, Sunrise, Moon, Bell } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import { useLanguage } from '../context/LanguageContext';
-import { getFeaturedDailyRashiSnippet } from '../utils/dailySeoEngine';
+import { VirupakshaGatewayScene } from './VirupakshaGopuramArt';
+import { playTempleBell } from '../utils/audioChime';
 
 interface BannerProps {
   currentDay: DayData;
@@ -14,7 +15,7 @@ export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName }) =
   const { t, tr } = useLanguage();
   const cleanTithi = currentDay.panchanga.tithi.split('-')[0]?.trim() || currentDay.panchanga.tithi;
   const cleanNakshatra = currentDay.panchanga.nakshatram.split('-')[0]?.trim() || currentDay.panchanga.nakshatram;
-  const featuredRashi = getFeaturedDailyRashiSnippet(currentDay);
+  const cleanYogam = currentDay.panchanga.yogam.split('-')[0]?.trim() || currentDay.panchanga.yogam;
 
   const moonRashiDisplay = (() => {
     const moonEntry = Object.entries(currentDay.grahaStithi).find(([, val]) => val?.includes('చంద్రుడు'));
@@ -43,78 +44,71 @@ export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName }) =
     currentDay.lagnalu[0]?.samayam.match(/ఉదయం\s*[\d:]+\s*(AM|PM)/)?.[0] || 'ఉదయం 06:15 AM';
 
   return (
-    <section className="relative bg-gradient-to-b from-amber-950 via-amber-900 to-amber-950 text-amber-50 overflow-hidden py-12 lg:py-16 border-b-2 border-amber-600/50 rounded-2xl">
-      {/* Subtle traditional sacred background geometric pattern */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#ffd166_1px,transparent_1px)] [background-size:24px_24px]" />
+    <section className="rounded-3xl overflow-hidden shadow-2xl border-2 border-amber-500/70 bg-gradient-to-b from-[#2A050C] via-[#3A0912] to-[#24040A] text-amber-50">
+      {/* TOP STAGE: Unobstructed Virupaksha Gateway Sunset Panorama */}
+      <div className="relative w-full h-44 sm:h-56 lg:h-64 overflow-hidden border-b border-amber-400/40">
+        <VirupakshaGatewayScene className="w-full h-full object-cover" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto">
-          {/* Sanskrit invocation */}
-          <p className="text-amber-300 text-sm sm:text-base font-semibold font-telugu mb-2 flex items-center justify-center gap-2 drop-shadow-xs" data-nosnippet>
+        <button
+          type="button"
+          onClick={() => playTempleBell()}
+          title={t('ఆలయ గంటను మోగించండి', 'Ring Sacred Temple Bell')}
+          className="absolute top-3 right-3 sm:top-4 sm:right-5 z-20 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#2A050C]/80 hover:bg-[#460D16] text-amber-200 border border-amber-400/50 text-xs font-bold shadow-lg backdrop-blur-xs transition-transform active:scale-95 cursor-pointer"
+        >
+          <Bell size={14} className="text-amber-300 animate-bounce" />
+          <span>{t('ఆలయ గంట', 'Ring Bell')}</span>
+        </button>
+      </div>
+
+      {/* BOTTOM STAGE: Clean High-Contrast Panchangam Header */}
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-8 text-center">
+        <p
+          className="text-amber-300 text-xs sm:text-sm font-semibold font-telugu mb-2 tracking-wide"
+          data-nosnippet
+        >
+          {t(
+            'శుక్లాంబరధరం విష్ణుం శశివర్ణం చతుర్భుజమ్ · ప్రసన్నవదనం ధ్యాయేత్ సర్వవిఘ్నోపశాంతయే',
+            'Shuklambaradharam Vishnum Shashivarnam Chaturbhujam · Prasannavadanam Dhyayet Sarvavighnopashantaye'
+          )}
+        </p>
+
+        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold font-telugu text-white tracking-tight leading-tight mb-3">
+          {t(
+            `ఈ రోజు తెలుగు పంచాంగం (${currentDay.teediVaram})`,
+            `Daily Telugu Panchangam (${tr(currentDay.teediVaram)})`
+          )}
+        </h1>
+
+        <p className="text-xs sm:text-sm font-bold text-amber-200 tracking-wide mb-4 max-w-3xl mx-auto">
+          {t(
+            `${currentDay.panchanga.samvatsaram} · ${currentDay.panchanga.masam} · తిథి: ${cleanTithi} · నక్షత్రం: ${cleanNakshatra} · యోగం: ${cleanYogam}`,
+            `${tr(currentDay.panchanga.samvatsaram)} · ${tr(currentDay.panchanga.masam)} · Tithi: ${tr(cleanTithi)} · Nakshatram: ${tr(cleanNakshatra)}`
+          )}
+        </p>
+
+        {/* Highlight Chips */}
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-xs sm:text-sm font-telugu">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 border border-amber-400/40 text-amber-100">
+            <Sunrise size={16} className="text-amber-300" />
             <span>
-              {t(
-                'శుక్లాంబరధరం విష్ణుం శశివర్ణం చతుర్భుజమ్ · ప్రసన్నవదనం ధ్యాయేత్ సర్వవిఘ్నోపశాంతయే',
-                'Shuklambaradharam Vishnum Shashivarnam Chaturbhujam · Prasannavadanam Dhyayet Sarvavighnopashantaye'
-              )}
+              {t('సూర్యోదయం:', 'Sunrise:')} <strong className="text-white">{tr(sunriseTime)}</strong>
             </span>
-          </p>
-
-          {/* Primary Query Pill for Telugu Astrology & Jyothisham */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-200 text-xs sm:text-sm font-medium mb-3">
-            <Sparkles size={14} className="text-amber-300 shrink-0" />
-            <span>Telugu Astrology &amp; Telugu Jyothisham · Daily Telugu Panchangam &amp; Telugu Horoscope</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-telugu text-white tracking-tight drop-shadow-sm mb-3">
-            {t(
-              `ఈ రోజు పంచాంగం (Telugu Panchangam) & జ్యోతిషం — తిథి: ${cleanTithi} • నక్షత్రం: ${cleanNakshatra}`,
-              `Telugu Astrology & Daily Telugu Panchangam (${tr(cleanTithi)}, ${tr(cleanNakshatra)})`
-            )}
-          </h1>
-
-          <p className="text-xs sm:text-sm font-semibold text-amber-300/95 tracking-wide mb-2">
-            {t(
-              `నేటి పంచాంగం (${currentDay.teediVaram}): తిథి ${cleanTithi} • నక్షత్రం ${cleanNakshatra} • శుభ సమయం (అమృత ఘడియలు): ${currentDay.shubha.amrutha} • అభిజిత్: ${currentDay.shubha.abhijit}`,
-              `Today Panchangam in Telugu (${tr(currentDay.teediVaram)}): Tithi ${tr(cleanTithi)} • Nakshatram ${tr(cleanNakshatra)} • Shubha Samayam: ${tr(currentDay.shubha.amrutha)}`
-            )}
-          </p>
-
-          <p className="text-base sm:text-lg text-amber-100/95 font-telugu leading-relaxed mb-6 max-w-3xl mx-auto">
-            {t(
-              `మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe} | మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ పొందండి — రాహుకాలం: ${currentDay.ashubha.rahukalam} (${currentDay.panchanga.samvatsaram} · ${currentDay.panchanga.masam}).`,
-              `Today's Featured ${featuredRashi.rashiNameEn} Horoscope: ${featuredRashi.predictionEn} | Get your 100-Page Janma Kundali PDF Report — Rahu Kalam: ${tr(currentDay.ashubha.rahukalam)}.`
-            )}
-          </p>
-
-          {/* Quick status badges */}
-          <div className="flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm font-telugu">
-            <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-800/80 border border-amber-600/40 text-amber-100 shadow-inner">
-              <Sunrise size={16} className="text-amber-300" />
+          {activeLagnaName && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/20 border border-amber-400/60 text-amber-200">
+              <Compass size={16} className="text-amber-300" />
               <span>
-                {t('సూర్యోదయం:', 'Sunrise:')} {tr(sunriseTime)}
+                {t('ప్రస్తుత లగ్నం:', 'Active Lagna:')} <strong className="text-white">{tr(activeLagnaName)}</strong>
               </span>
             </div>
-            {activeLagnaName && (
-              <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-600/80 border border-amber-400/50 text-white shadow-md animate-pulse">
-                <Compass size={16} className="text-amber-200" />
-                <span>
-                  {t('ఇప్పుడు నడుస్తున్నది:', 'Current Ascendant (Lagna):')}{' '}
-                  <strong>{tr(activeLagnaName)}</strong>
-                </span>
-              </div>
-            )}
-            <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-800/80 border border-amber-600/40 text-amber-100 shadow-inner">
-              <Moon size={16} className="text-amber-300" />
-              <span>
-                {t('చంద్ర సంచారం:', 'Moon Transit:')} {moonRashiDisplay}
-              </span>
-            </div>
-            {currentDay.specialEvent && (
-              <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-900/70 border border-rose-500/50 text-rose-200 shadow-inner">
-                <Sparkles size={16} className="text-rose-300" />
-                <span>{tr(currentDay.specialEvent)}</span>
-              </div>
-            )}
+          )}
+
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 border border-amber-400/40 text-amber-100">
+            <Moon size={16} className="text-amber-300" />
+            <span>
+              {t('చంద్ర రాశి:', 'Moon Sign:')} <strong className="text-white">{moonRashiDisplay}</strong>
+            </span>
           </div>
         </div>
       </div>

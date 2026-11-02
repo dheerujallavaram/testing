@@ -207,24 +207,14 @@ export const DailyAstrologyInsights: React.FC<DailyAstrologyInsightsProps> = ({
             </div>
 
             <h2 className="text-2xl sm:text-4xl font-black text-amber-100 tracking-tight leading-tight">
-              నేటి గ్రహ సంచారం, గ్రహ దృష్టులు & 12 రాశుల ఫలితాలు
+              2026 గ్రహ సంచారం, రాశి-నక్షత్ర మార్పులు & జ్యోతిష విజ్ఞానం
             </h2>
             <p className="text-amber-200/90 text-sm sm:text-base max-w-3xl leading-relaxed">
-              అక్టోబర్, నవంబర్, డిసెంబర్ 2026 నెలలలో ఏ గ్రహం ఎప్పుడు రాశి మారుతుందో, ఏ నక్షత్రంలోకి వస్తుందో మరియు ప్రతిరోజూ ఏర్పడే గ్రహాల కలయిక & దృష్టుల వల్ల మేషం నుండి మీనం వరకు 12 రాశుల వారికి కలిగే సులభమైన ఫలితాలు.
+              అక్టోబర్, నవంబర్, డిసెంబర్ 2026 నెలలలో ఏ గ్రహం ఎప్పుడు రాశి మారుతుందో, ఏ నక్షత్రంలోకి ప్రవేశిస్తుందో మరియు ప్రతిరోజూ ఏర్పడే గ్రహాల కలయిక & దృష్టుల ఖగోళ వివరాలు.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
-            <button
-              type="button"
-              onClick={handleShareDailyTransitAndRashis}
-              className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-md"
-              title="నేటి గ్రహ సంచారం & 12 రాశుల ఫలితాలు వాట్సాప్‌లో షేర్ చేయండి"
-            >
-              <MessageCircle size={15} />
-              <span>నేటి గ్రహ సంచారం షేర్ చేయండి</span>
-            </button>
-
             <button
               type="button"
               onClick={handleRefreshStream}
@@ -386,108 +376,6 @@ export const DailyAstrologyInsights: React.FC<DailyAstrologyInsightsProps> = ({
               })}
             </div>
           )}
-        </div>
-      </div>
-
-      {/* 1B. RASHI-WISE DAILY PREDICTIONS FROM GRAHA DRISHTI (మేషం నుండి మీనం వరకు 12 రాశుల ఫలితాలు) */}
-      <div className="bg-gradient-to-b from-amber-50/90 via-white to-orange-50/50 rounded-3xl p-5 sm:p-8 border-2 border-amber-300 shadow-lg space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-amber-200 pb-4">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-800 block">
-              గ్రహ దృష్టుల వల్ల ద్వాదశ రాశి ఫలితాలు • Daily Rashi Impact ({formatTeluguDateFriendly(activeIsoDate)})
-            </span>
-            <h3 className="text-xl sm:text-3xl font-extrabold text-amber-950 mt-1">
-              ఈ రోజు ఏ రాశి వారికి ఏ గ్రహ దృష్టి వల్ల ఏ ఫలితం ఉంటుంది? (మేషం – మీనం)
-            </h3>
-            <p className="text-xs sm:text-sm text-stone-600 mt-1">
-              కఠినమైన జ్యోతిష పదాలు లేకుండా, ప్రతి రాశి వారికి ఈ రోజు ఏర్పడే గ్రహ దృష్టి/కలయిక వల్ల ఉద్యోగం, డబ్బు రాబడి, కుటుంబం మరియు ఆరోగ్యంలో కలిగే ఫలితాలు:
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleShareDailyTransitAndRashis}
-            className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all cursor-pointer shrink-0 shadow-sm"
-          >
-            <MessageCircle size={16} />
-            <span>12 రాశుల గ్రహ దృష్టి ఫలితాలు షేర్ చేయండి</span>
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {allRashisDrishti.map((item) => {
-            const isAusp = item.mood === 'auspicious';
-            const isCare = item.mood === 'careful';
-            return (
-              <div
-                key={item.rashiId}
-                className={`rounded-2xl p-4 border transition-all flex flex-col justify-between ${
-                  isAusp
-                    ? 'bg-emerald-50/40 border-emerald-300/90'
-                    : isCare
-                    ? 'bg-rose-50/40 border-rose-300/90'
-                    : 'bg-amber-50/50 border-amber-300/90'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <div>
-                      <h4 className="text-base font-extrabold text-amber-950">
-                        {item.rashiNameTe}{' '}
-                        <span className="text-xs font-normal text-stone-500">({item.rashiNameEn})</span>
-                      </h4>
-                      <span className="text-[11px] text-stone-600">
-                        రాశ్యాధిపతి: <strong className="text-amber-900">{item.lordNameTe}</strong>
-                      </span>
-                    </div>
-
-                    <span
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${
-                        isAusp
-                          ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
-                          : isCare
-                          ? 'bg-rose-100 text-rose-900 border-rose-300'
-                          : 'bg-amber-100 text-amber-900 border-amber-300'
-                      }`}
-                    >
-                      {isAusp ? 'శుభ ఫలితం' : isCare ? 'కొంచెం జాగ్రత్త' : 'మిశ్రమ శుభం'}
-                    </span>
-                  </div>
-
-                  <div className="bg-white/90 rounded-xl p-2.5 border border-amber-200/80 mb-2.5">
-                    <span className="text-[11px] font-bold text-amber-900 block">
-                      🪐 నేటి గ్రహ దృష్టి: {item.activeAspectTitleTe}
-                    </span>
-                    <div className="flex flex-wrap items-center justify-between gap-1 mt-0.5">
-                      <span className="text-[11px] text-stone-500">
-                        🕒 దృష్టి సమయం: {item.activeAspectTimeTe}
-                      </span>
-                      <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                        ⏰ శుభ సమయం: {item.luckyTimeWindowTe}
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="text-xs sm:text-[13px] text-stone-800 leading-relaxed font-medium mb-2.5">
-                    {item.loukikaPhalamTe}
-                  </p>
-
-                  <div className="space-y-1.5 bg-white/80 rounded-xl p-2.5 border border-amber-200/70 text-[11px]">
-                    <p className="text-emerald-950 leading-snug">
-                      <strong className="text-emerald-800">✅ నేడు చేయవలసిన పని:</strong> {item.doTodayTe}
-                    </p>
-                    <p className="text-rose-950 leading-snug">
-                      <strong className="text-rose-800">⚠️ నేడు జాగ్రత్త:</strong> {item.avoidTodayTe}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-3 pt-2 border-t border-amber-200/70 text-[11px] text-amber-950">
-                  <strong className="text-amber-900">🙏 నేటి పరిహారం:</strong> {item.remedyShortTe}
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
 

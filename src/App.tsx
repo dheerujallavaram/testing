@@ -926,32 +926,20 @@ function AppContent() {
               onSelectDay={(dayId) => setSelectedDayId(dayId)}
             />
 
-            {/* Selected Date Header + 1-Click WhatsApp Status Card Download */}
+            {/* Selected Date Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-amber-200/80 pb-4">
               <div>
                 <span className="text-xs font-semibold text-amber-800 uppercase tracking-widest font-display">
                   {t('ఎంచుకున్న రోజు వివరాలు • Selected Day Overview', 'Selected Day Overview')}
                 </span>
-                <h1 className="text-3xl sm:text-4xl font-bold text-amber-950 font-telugu mt-0.5">
-                  {tr(currentDay.label)} {t('పంచాంగం', 'Panchangam')}
-                </h1>
+                <h2 className="text-3xl sm:text-4xl font-bold text-amber-950 font-telugu mt-0.5">
+                  {tr(currentDay.label)} {t('పంచాంగం & రాశి ఫలాలు', 'Panchangam & Predictions')}
+                </h2>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <p className="text-base sm:text-lg text-amber-900 font-semibold font-telugu bg-amber-100/70 px-4 py-1.5 rounded-xl border border-amber-200">
                   {tr(currentDay.teediVaram)}
                 </p>
-                <button
-                  type="button"
-                  onClick={() => downloadDailyPanchangamCardImage(currentDay, language)}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-600 hover:from-emerald-800 hover:to-emerald-700 text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer"
-                >
-                  <span>📲</span>
-                  <span>
-                    {language === 'en'
-                      ? 'Download English Status Card'
-                      : 'వాట్సాప్ స్టేటస్ పంచాంగం ఇమేజ్ డౌన్‌లోడ్'}
-                  </span>
-                </button>
               </div>
             </div>
 
@@ -967,28 +955,28 @@ function AppContent() {
                     {
                       id: 'main' as PanchangamSubTab,
                       href: '/panchangam',
-                      badge: '1. పంచాంగం & రాశి ఫలాలు',
-                      titleTe: '📅 ప్రధాన పంచాంగం & దిన ఫలం',
-                      titleEn: '📅 Main Panchangam & Horoscope',
+                      badge: 'నిత్య పంచాంగం & ద్వాదశ రాశి ఫలాలు',
+                      titleTe: '📅 సంపూర్ణ పంచాంగం & రాశి ఫలాలు',
+                      titleEn: '📅 Panchangam & Daily Predictions',
                     },
                     {
                       id: 'gowri-hora' as PanchangamSubTab,
                       href: '/gowri-panchangam',
-                      badge: '2. తక్షణ శుభ సమయం',
+                      badge: 'తక్షణ శుభ సమయం',
                       titleTe: '⏳ గౌరీ పంచాంగం & హోరా చక్రం',
                       titleEn: '⏳ Gowri Panchangam & Hora',
                     },
                     {
                       id: 'tarabalam' as PanchangamSubTab,
                       href: '/tarabalam-chandrabalam',
-                      badge: '3. వ్యక్తిగత బలం',
-                      titleTe: '🌟 తారాబలం & చంద్రబలం',
+                      badge: 'వ్యక్తిగత బలం',
+                      titleTe: '🌟 తారాబలం & చంద్రబలం చెకర్',
                       titleEn: '🌟 Tarabalam & Chandrabalam',
                     },
                     {
                       id: 'sankalpam' as PanchangamSubTab,
                       href: '/nitya-sankalpam',
-                      badge: '4. నిత్య పూజ & NRI సంకల్పం',
+                      badge: 'నిత్య పూజ & సంకల్పం',
                       titleTe: '🙏 నేటి సంకల్పం & నిత్య స్తోత్రం',
                       titleEn: '🙏 Daily Sankalpam & Stotra',
                     },
@@ -1046,32 +1034,15 @@ function AppContent() {
               </Suspense>
             )}
 
-            {/* SUB-TAB 1 (DEFAULT): MAIN PANCHANGAM OVERVIEW */}
+            {/* SUB-TAB 1 (DEFAULT): PANCHANGAM FIRST -> PREDICTIONS NEXT */}
             {panchangamSubTab === 'main' && (
               <>
-                {/* Fast Facts & AI Generative Engine Optimization (Google Zero-Click Answer Card) */}
+                {/* ========================================================= */}
+                {/* సంపూర్ణ నిత్య పంచాంగం (PANCHANGAM FIRST)                   */}
+                {/* ========================================================= */}
                 <PanchangamQuickSummary day={currentDay} />
 
-                {/* Automated Visual Countdown for Next Upcoming Temple Ritual / Festival */}
-                <Suspense fallback={<SectionLoader minHeight="min-h-[140px]" />}>
-                  <UpcomingRitualCountdown
-                    variant="compact"
-                    days={WEEK_DATA}
-                    onOpenBooking={(service) => handleOpenBooking(service)}
-                    onSelectDate={(isoDate) => {
-                      setSelectedDayId(isoDate);
-                      window.scrollTo({ top: 380, behavior: 'smooth' });
-                    }}
-                  />
-                </Suspense>
-
-                {/* Day Special Vishesham / Phalitham */}
-                <DayVisheshamCard day={currentDay} />
-
-                {/* Daily Horoscope (దిన ఫలం) for all 12 Rashis */}
-                <DailyHoroscope day={currentDay} />
-
-                {/* Core 2-Column: Panchanga Limbs & South Indian Rashi Kundli */}
+                {/* Core 2-Column: Panchanga 5 Limbs & South Indian Rashi Kundli */}
                 <section id="panchangam" className="scroll-mt-24">
                   <div className="grid lg:grid-cols-2 gap-8 items-stretch">
                     <PanchangaCard day={currentDay} />
@@ -1102,43 +1073,69 @@ function AppContent() {
                   </Suspense>
                 </section>
 
-                {/* Interactive Personal Zodiac & Nakshatra Checker */}
-                <Suspense fallback={<SectionLoader minHeight="min-h-[360px]" />}>
-                  <DevoteeCompatibilityChecker day={currentDay} />
-                </Suspense>
+                {/* ========================================================= */}
+                {/* నేటి దిన ఫలితం & ద్వాదశ రాశి ఫలాలు (PREDICTIONS)          */}
+                {/* ========================================================= */}
+                <div className="pt-6 border-t-2 border-amber-300/80">
+                  <div className="mandapam-dark-frame text-white rounded-3xl p-5 sm:p-7 shadow-xl mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <span className="text-xs font-bold uppercase tracking-widest text-amber-300 block mb-1">
+                        {t('నేటి దిన ఫలితాలు & ద్వాదశ రాశి ఫలాలు • Daily Predictions & Horoscope', 'Daily Predictions & 12-Rashi Horoscope')}
+                      </span>
+                      <h2 className="text-2xl sm:text-3xl font-extrabold font-telugu text-white">
+                        {t(
+                          'నేటి సమగ్ర దిన ఫలితం, ద్వాదశ రాశి ఫలాలు & నక్షత్ర విశ్లేషణ',
+                          'Comprehensive Daily Prediction, 12-Rashi Horoscope & Star Analysis'
+                        )}
+                      </h2>
+                      <p className="text-xs sm:text-sm text-amber-100/90 font-telugu mt-1">
+                        {t(
+                          'నేటి పంచాంగం మరియు ముహూర్త సమయాల ఆధారంగా తిథి-నక్షత్ర దిన ఫలితం మరియు 12 రాశుల విస్తృత ఫలితాలను ఇక్కడ చదవండి.',
+                          'Explore today’s detailed daily predictions and 12-Rashi horoscopes calculated from today’s Panchangam below.'
+                        )}
+                      </p>
+                    </div>
+                    <a
+                      href="#dina-phalam"
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-400 text-amber-950 font-bold text-xs sm:text-sm whitespace-nowrap shrink-0 self-start md:self-auto shadow-md"
+                    >
+                      {t('12 రాశుల ఫలితాలు చూడండి ↓', 'Jump to 12 Rashis ↓')}
+                    </a>
+                  </div>
+
+                  <div className="space-y-10">
+                    {/* Expanded Day Special Vishesham / Phalitham */}
+                    <DayVisheshamCard day={currentDay} />
+
+                    {/* Expanded Daily Horoscope (దిన ఫలం) for all 12 Rashis */}
+                    <DailyHoroscope day={currentDay} />
+
+                    {/* Daily In-Depth Nakshatra & Tithi Phala Article */}
+                    <Suspense fallback={<SectionLoader minHeight="min-h-[360px]" />}>
+                      <DailyNakshatraArticle
+                        currentDay={currentDay}
+                        onOpenBooking={() => handleOpenBooking()}
+                      />
+                    </Suspense>
+
+                    {/* 2026 Planetary Ephemeris & Vedic Astrology Articles */}
+                    <Suspense fallback={<SectionLoader minHeight="min-h-[320px]" />}>
+                      <DailyAstrologyInsights
+                        currentDay={currentDay}
+                        onOpenBooking={() => handleOpenBooking()}
+                      />
+                    </Suspense>
+                  </div>
+                </div>
               </>
             )}
-
-            {/* Complete Vedic Astrology & Muhurtham SEO Hub (Free Janma Kundali, Marriage Compatibility, Name Syllable Star Finder, Baby Names, Ugadi Aadayam-Vyayam, Shubha Muhurthams, Gruha Vastu & Dosha Remedies) */}
-            <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
-              <VedicAstrologyHub
-                initialSection={hubSection}
-                onOpenBooking={() => handleOpenBooking()}
-              />
-            </Suspense>
-
-            {/* Daily In-Depth Nakshatra & Tithi Phala Article (Yavanacharya, Muhurtha Chintamani & Nakshatra Chudamani) */}
-            <Suspense fallback={<SectionLoader minHeight="min-h-[360px]" />}>
-              <DailyNakshatraArticle
-                currentDay={currentDay}
-                onOpenBooking={() => handleOpenBooking()}
-              />
-            </Suspense>
-
-            {/* Daily Astrology Guidance Insights & Live 2026 Planetary Movement Stream */}
-            <Suspense fallback={<SectionLoader minHeight="min-h-[320px]" />}>
-              <DailyAstrologyInsights
-                currentDay={currentDay}
-                onOpenBooking={() => handleOpenBooking()}
-              />
-            </Suspense>
 
             {/* Beginner-Friendly Panchangam FAQ Section (Tithi, Nakshatra, Muhurtham, etc.) */}
             <Suspense fallback={<SectionLoader minHeight="min-h-[320px]" />}>
               <PanchangamFAQ />
             </Suspense>
 
-            {/* Sharing & Quick Action Controls */}
+            {/* Single Clean Sharing & Quick Action Controls */}
             <ActionControls
               day={currentDay}
               onOpenBooking={() => handleOpenBooking()}

@@ -453,44 +453,6 @@ export const DailyNakshatraArticle: React.FC<DailyNakshatraArticleProps> = ({
           </div>
         </section>
 
-        {/* 11. Astrologer Advice & Direct Consultation CTA */}
-        <section className="bg-gradient-to-r from-amber-100 via-stone-50 to-amber-100 p-6 sm:p-8 rounded-3xl border-2 border-amber-400 text-center sm:text-left flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-md">
-          <div className="space-y-2">
-            <span className="text-xs uppercase tracking-widest text-amber-800 font-bold bg-amber-200/80 px-3 py-1 rounded-full inline-block">
-              ధైర్యం &amp; మార్గదర్శనం
-            </span>
-            <h4 className="text-xl sm:text-2xl font-bold text-amber-950">
-              మీ జన్మ నక్షత్రం, పాద నిర్ణయం మరియు వ్యక్తిగత జాతక పరిశీలన
-            </h4>
-            <p className="text-stone-700 text-xs sm:text-sm max-w-2xl leading-relaxed">
-              నక్షత్ర మరియు గోచార ఫలితాలు సాధారణ సూచనలు మాత్రమే. మీ జనన సమయ లగ్నం, నవాంశ చక్రం, ప్రస్తుత దశాభుక్తులు మరియు అష్టకవర్గ బిందువులను సమగ్రంగా పరిశీలించి శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు ఖచ్చితమైన భవిష్యత్ నిర్ణయం, ముహూర్తం మరియు శాస్త్రోక్త పరిహారాలు అందిస్తారు.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-6 py-3.5 rounded-2xl shadow-lg transition-all text-sm cursor-pointer"
-            >
-              <MessageCircle size={18} />
-              <span>గురూజీ గారిని సంప్రదించండి</span>
-            </a>
-
-            {onOpenBooking && (
-              <button
-                type="button"
-                onClick={onOpenBooking}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-amber-950 font-black px-5 py-3.5 rounded-2xl shadow-lg transition-all text-sm cursor-pointer"
-              >
-                <Sparkles size={18} />
-                <span>పూజా బుకింగ్</span>
-              </button>
-            )}
-          </div>
-        </section>
-
       </div>
     </section>
   );
