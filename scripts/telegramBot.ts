@@ -18,7 +18,7 @@ if (fs.existsSync(fontPath)) {
 }
 
 const DEFAULT_BOT_TOKEN = '9209965871:AAEa0mqf-gCfYFmKnGop1g4Ns6X5EosGdXY';
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || DEFAULT_BOT_TOKEN;
+export const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || DEFAULT_BOT_TOKEN;
 const SUBSCRIBERS_FILE = path.join(__dirname, '.telegram_subscribers.json');
 
 const RASHI_COMMANDS: Record<string, string> = {
@@ -1359,53 +1359,6 @@ export async function handleCommandOrCallback(chatId: number | string, command: 
 
     // Default fallback: send today's Panchangam + Predictions bundle
     await sendFullDailyBundleToChat(chatId);
-
-    if (cleanCmd === 'english' || cleanCmd === 'cmd_english') {
-      const { day, fortunes } = getTodayISTData();
-      const msgs = buildEnglishOnlyPredictionsText(day, fortunes);
-      for (let i = 0; i < msgs.length; i++) {
-        const isLast = i === msgs.length - 1;
-        await sendTelegramMessage(chatId, msgs[i], isLast ? getMainInlineKeyboard() : undefined);
-      }
-      return;
-    }
-
-    if (cleanCmd === 'telugu' || cleanCmd === 'cmd_telugu') {
-      const { day, fortunes } = getTodayISTData();
-      const msgs = buildTeluguOnlyPredictionsText(day, fortunes);
-      for (let i = 0; i < msgs.length; i++) {
-        const isLast = i === msgs.length - 1;
-        await sendTelegramMessage(chatId, msgs[i], isLast ? getMainInlineKeyboard() : undefined);
-      }
-      return;
-    }
-
-    if (cleanCmd === 'social' || cleanCmd === 'cmd_social') {
-      const { day, fortunes } = getTodayISTData();
-      const copy = buildInstagramLinkedInSocialCopy(day, fortunes);
-      await sendTelegramMessage(chatId, copy, getMainInlineKeyboard());
-      return;
-    }
-
-    if (cleanCmd === 'allcards' || cleanCmd === 'cmd_allcards') {
-      await sendTelegramMessage(
-        chatId,
-        '⏳ *12 రాశుల HD Status ఇమేజ్ కార్డులు తయారవుతున్నాయి... వరుసగా వస్తున్నాయి:*'
-      );
-      for (const rashiId of Object.keys(RASHI_COMMANDS)) {
-        await sendSingleRashiCardToChat(chatId, rashiId);
-      }
-      return;
-    }
-
-    const rashiKey = cleanCmd.replace(/^rashi_/, '');
-    if (RASHI_COMMANDS[rashiKey]) {
-      await sendSingleRashiCardToChat(chatId, rashiKey);
-      return;
-    }
-
-    // Default fallback: send today's Panchangam + Predictions bundle
-    await sendFullDailyBundleToChat(chatId);
   } catch (cmdErr) {
     console.error(`[Telegram] Error handling command ${command} for ${chatId}:`, cmdErr);
     await sendTelegramMessage(
@@ -1415,10 +1368,15 @@ export async function handleCommandOrCallback(chatId: number | string, command: 
   }
 }
 
+let isDaemonRunning = false;
+
 /**
  * Starts the 24/7 Long-Polling Telegram Bot + Daily 06:00 AM IST Auto-Scheduler
  */
 export async function startTelegramBotDaemon() {
+  if (isDaemonRunning) return;
+  isDaemonRunning = true;
+
   console.log('🕉️ Starting @telugujyothisham_bot (Telugu Jyothisham Daily Panchangam Bot)...');
   await registerBotCommands();
   console.log('✅ Registered Bot Menu Commands (/start, /panchangam, /predictions, /allcards, /social, /mesham..)');

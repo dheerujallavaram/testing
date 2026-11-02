@@ -5,7 +5,24 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      {
+        name: 'telegram-bot-auto-daemon',
+        configureServer() {
+          import('./scripts/telegramBot')
+            .then((m) => {
+              if (typeof m.startTelegramBotDaemon === 'function') {
+                m.startTelegramBotDaemon().catch((err: unknown) =>
+                  console.error('[Telegram Bot Daemon Error]:', err)
+                );
+              }
+            })
+            .catch((err) => console.error('[Failed to load Telegram Bot Daemon]:', err));
+        },
+      },
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

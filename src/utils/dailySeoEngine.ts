@@ -845,6 +845,42 @@ export function syncAutomatedDailySeoSchema(
         `అభిజిత్ ముహూర్తం (Abhijit Muhurtham): ${day.shubha.abhijit}`,
       ],
     },
+    {
+      '@type': 'HowTo',
+      '@id': `${fullUrl}#howto-free-jathakam-download`,
+      name: 'How to Check Jathakam by Date of Birth in Telugu & Download Free 100-Page PDF (పుట్టిన తేదీతో ఉచిత జాతకం డౌన్‌లోడ్ చేసే విధానం)',
+      description: 'Step-by-step guide to generate and download your free 100-page Telugu Janma Kundali (Astrology in Telugu by date of birth and time free download) with D1 Rashi, D9 Navamsha, and 120-year Vimshottari Mahadasha.',
+      totalTime: 'PT1M',
+      estimatedCost: {
+        '@type': 'MonetaryAmount',
+        currency: 'INR',
+        value: '0',
+      },
+      image: `${baseUrl}/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg`,
+      step: [
+        {
+          '@type': 'HowToStep',
+          position: 1,
+          name: 'Open Free Jathakam Calculator (మీ జాతకం ట్యాబ్ తెరవండి)',
+          text: 'Visit www.telugujyothisham.com and click on the "మీ జాతకం (Free Jatakam)" tab or open /mee-jatakam.',
+          url: `${baseUrl}/mee-jatakam`,
+        },
+        {
+          '@type': 'HowToStep',
+          position: 2,
+          name: 'Enter Date of Birth, Time & Place (పుట్టిన తేదీ, సమయం నమోదు చేయండి)',
+          text: 'Enter your full name, exact Date of Birth, Time of Birth, and select your Place of Birth (Hyderabad, Vijayawada, Tirupati, USA, etc.).',
+          url: `${baseUrl}/mee-jatakam`,
+        },
+        {
+          '@type': 'HowToStep',
+          position: 3,
+          name: 'Download Free 100-Page Jathakam PDF & HD Chart (100 పేజీల PDF డౌన్‌లోడ్ చేసుకోండి)',
+          text: 'View your instant South Indian D1 Rashi Chart, D9 Navamsha, 12 Bhava predictions, and click "Download PDF / Print" or "Download HD Image Card" for free.',
+          url: `${baseUrl}/janma-kundali`,
+        },
+      ],
+    },
   ];
 
   if (day.specialEvent) {
