@@ -91,7 +91,7 @@
   "rewrites": [
     {
       "source": "/((?!api/|favicon\\.ico|favicon.*\\.png|apple-touch-icon.*\\.png|ganapathi-favicon\\.svg|site\\.webmanifest|robots\\.txt|sitemap\\.xml|BingSiteAuth\\.xml|ads\\.txt|ffe9fa91702c937109ee200641e2921e\\.txt|llms\\.txt|llms-full\\.txt|assets/).*)",
-      "destination": "/index.html"
+      "destination": "/api/ssr?__pathname=/$1"
     }
   ]
 }

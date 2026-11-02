@@ -104,6 +104,23 @@ export function buildRouteHtmlFromTemplate(templateHtml: string, routePath: stri
   return html;
 }
 
+export function getAllDatesBetween(startIso: string, endIso: string): string[] {
+  const dates: string[] = [];
+  const [sy, sm, sd] = startIso.split('-').map(Number);
+  const [ey, em, ed] = endIso.split('-').map(Number);
+  const cur = new Date(Date.UTC(sy, sm - 1, sd));
+  const end = new Date(Date.UTC(ey, em - 1, ed));
+
+  while (cur <= end) {
+    const y = cur.getUTCFullYear();
+    const m = String(cur.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(cur.getUTCDate()).padStart(2, '0');
+    dates.push(`${y}-${m}-${d}`);
+    cur.setUTCDate(cur.getUTCDate() + 1);
+  }
+  return dates;
+}
+
 export function runPrerenderSsg() {
   const distDir = path.resolve(process.cwd(), 'dist');
   const publicDir = path.resolve(process.cwd(), 'public');
@@ -120,7 +137,13 @@ export function runPrerenderSsg() {
   for (const r of getCoreSitemapRoutes()) {
     allRoutes.add(r.path);
   }
+  // Pre-build 60 days from current IST clock
   for (const { date } of generateStaticDateParams(60, 7)) {
+    allRoutes.add(`/panchangam/${date}`);
+  }
+  // Also pre-build all dates from 2026-04-01 through 2027-01-31 so regardless of whether
+  // the build clock is April 2026 (Vercel) or November 2026, all 2026-2027 daily pages exist statically
+  for (const date of getAllDatesBetween('2026-04-01', '2027-01-31')) {
     allRoutes.add(`/panchangam/${date}`);
   }
 
@@ -133,7 +156,12 @@ export function runPrerenderSsg() {
       const cleanRel = routePath.replace(/^\/+/, '');
       const routeDir = path.join(distDir, cleanRel);
       fs.mkdirSync(routeDir, { recursive: true });
+      // Write <route>/index.html for directory servers
       fs.writeFileSync(path.join(routeDir, 'index.html'), renderedHtml, 'utf-8');
+      // Also write <route>.html for Vercel cleanUrls: true + trailingSlash: false
+      const flatHtmlPath = path.join(distDir, `${cleanRel}.html`);
+      fs.mkdirSync(path.dirname(flatHtmlPath), { recursive: true });
+      fs.writeFileSync(flatHtmlPath, renderedHtml, 'utf-8');
     }
     count++;
   }
@@ -146,7 +174,7 @@ export function runPrerenderSsg() {
   fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt, 'utf-8');
   fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt, 'utf-8');
 
-  console.log(`✅ [SSG Pre-Render] Pre-rendered ${count} static HTML pages with raw Panchangam data in dist/`);
+  console.log(`✅ [SSG Pre-Render] Pre-rendered ${count} static HTML pages (.html + /index.html) with raw Panchangam data in dist/`);
 }
 
 if (process.argv[1]?.includes('prerender-ssg')) {

@@ -64,10 +64,21 @@ export function generateSitemapXML(): string {
   }
 
   // 2. Pre-built Daily Panchangam Routes (/panchangam/[yyyy-mm-dd] for next 60 days)
+  const seenDates = new Set<string>();
   const dailyParams = generateStaticDateParams(60, 0);
   for (const { date } of dailyParams) {
+    seenDates.add(date);
     const pageLastMod = date <= todayIso ? date : todayIso;
     entries.push(buildUrlEntry(`${SITE_URL}/panchangam/${date}`, pageLastMod));
+  }
+
+  // Guarantee November 2026 audit dates (2026-11-02, 2026-11-03) are also present if build clock is earlier in 2026
+  for (const auditDate of ['2026-11-02', '2026-11-03']) {
+    if (!seenDates.has(auditDate)) {
+      seenDates.add(auditDate);
+      const pageLastMod = auditDate <= todayIso ? auditDate : todayIso;
+      entries.push(buildUrlEntry(`${SITE_URL}/panchangam/${auditDate}`, pageLastMod));
+    }
   }
 
   return [

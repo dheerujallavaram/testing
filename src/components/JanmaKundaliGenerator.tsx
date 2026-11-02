@@ -34,6 +34,7 @@ import {
   generateBhriguLifeProgression,
   generateVedicRemediesProfile,
 } from '../utils/kundaliPredictionsEngine';
+import { generateSaptamaMarriageAnalysis } from '../utils/saptamaVisleshanaEngine';
 
 interface JanmaKundaliGeneratorProps {
   onOpenBooking?: () => void;
@@ -222,6 +223,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       all12Houses: generateAll12HousesCompleteAnalysis(chartData.planets, lagnaIdx),
       bhriguCycles: generateBhriguLifeProgression(chartData.planets, lagnaIdx, birthDate),
       remedies: generateVedicRemediesProfile(lagnaIdx, moonIdx),
+      saptamaMarriage: generateSaptamaMarriageAnalysis(chartData.planets, lagnaIdx, birthDate),
     };
   }, [chartData.planets, birthDate]);
 
@@ -485,6 +487,20 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       <h4>సహజ బలాలు, ఆధ్యాత్మిక ఉపాసన & తీసుకోవలసిన జాగ్రత్తలు</h4>
       <p><strong>ప్రధాన బలాలు:</strong> ${predictions.sunMoon144.strengthsTe}. ${predictions.sunMoon144.spiritualPathTe}</p>
       <p><strong>జాగ్రత్తలు & జీవన లక్ష్యం:</strong> ${predictions.sunMoon144.weaknessesTe} ${predictions.lagnaProfile.lifeMissionTe}</p>
+    </div>
+
+    <div class="section-title">సప్తమ భావ (7వ స్థానం) వివాహ రహస్యాలు: కాబోయే భాగస్వామి లక్షణాలు, వివాహ సమయం & కుజ దోష శాతం</div>
+    <div class="card">
+      <h4>కాబోయే భర్త / భార్య స్వభావం, రూపం & వృత్తి (సప్తమ రాశి: ${predictions.saptamaMarriage.saptamaRashiTe} · అధిపతి: ${predictions.saptamaMarriage.saptamaLordTe})</h4>
+      <p>${predictions.saptamaMarriage.spouseAppearanceAndNatureTe}</p>
+      <p>${predictions.saptamaMarriage.spouseCareerAndFamilyTe}</p>
+    </div>
+    <div class="card">
+      <h4>${predictions.saptamaMarriage.marriageTypeBadgeTe} &amp; ${predictions.saptamaMarriage.marriageTimingTitleTe}</h4>
+      <p>${predictions.saptamaMarriage.marriageTypeAnalysisTe}</p>
+      <p><strong>వివాహ యోగ కాలం:</strong> ${predictions.saptamaMarriage.marriageTimingDetailsTe} (${predictions.saptamaMarriage.favorableAgesTe})</p>
+      <p><strong>కుజ దోష శాతం &amp; కాలసర్ప పరిశీలన:</strong> ${predictions.saptamaMarriage.kujaDoshaTitleTe} — ${predictions.saptamaMarriage.kujaDoshaExplanationTe} | ${predictions.saptamaMarriage.kalasarpaStatusTe}</p>
+      <p><strong>వైదిక వివాహ శాంతి &amp; జప నియమం:</strong> ${predictions.saptamaMarriage.remedyMetalAndDayTe} · ${predictions.saptamaMarriage.remedyJapaScheduleTe}</p>
     </div>
 
     <div class="section-title">అధ్యాయం 3: పంచభూత తత్వ సప్తగ్రహ బల & శాంతి ఉపాసన</div>
@@ -1378,6 +1394,155 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
                   {t(predictions.sunMoon144.weaknessesTe, predictions.sunMoon144.weaknessesEn)}{' '}
                   {t(predictions.lagnaProfile.lifeMissionTe, predictions.lagnaProfile.lifeMissionEn)}
                 </p>
+              </div>
+            </div>
+
+            {/* ====================================================================
+                SPECIAL FEATURE: 7TH HOUSE (SAPTAMA BHAVA) SPOUSE, MARRIAGE TIMING,
+                LOVE VS ARRANGED YOGA & KUJA DOSHA % ANALYSIS
+                ==================================================================== */}
+            <div className="bg-gradient-to-br from-amber-950 via-[#3b1506] to-amber-900 text-white rounded-3xl p-5 sm:p-7 border-2 border-amber-500/80 shadow-xl space-y-5">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-amber-700/70 pb-4">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-950 bg-amber-300 px-3 py-1 rounded-full mb-2">
+                    <Sparkles size={13} />
+                    <span>
+                      {t(
+                        'సప్తమ భావ (7th House) వివాహ & జీవిత భాగస్వామి విశ్లేషణ',
+                        '7th House Future Spouse, Marriage Timing & Dosha Analysis'
+                      )}
+                    </span>
+                  </span>
+                  <h5 className="text-xl sm:text-2xl font-extrabold text-amber-100">
+                    {t(
+                      'కాబోయే భర్త / భార్య లక్షణాలు, ప్రేమ/పెద్దల వివాహం, పెళ్లి సమయం & కుజ దోష శాతం (%)',
+                      'Future Spouse Traits, Love vs Arranged Yoga, Marriage Timing & Kuja Dosha %'
+                    )}
+                  </h5>
+                </div>
+                <div className="bg-amber-900/90 border border-amber-400/70 rounded-2xl px-4 py-2.5 text-xs sm:text-sm font-bold text-amber-200 shrink-0">
+                  {t(
+                    `7వ స్థానం: ${predictions.saptamaMarriage.saptamaRashiTe} · అధిపతి: ${predictions.saptamaMarriage.saptamaLordTe} (${predictions.saptamaMarriage.saptamaLordHouse}వ ఇంట)`,
+                    `7th House: ${predictions.saptamaMarriage.saptamaRashiEn} · Lord: ${predictions.saptamaMarriage.saptamaLordEn} (in ${predictions.saptamaMarriage.saptamaLordHouse}H)`
+                  )}
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* 1. Future Spouse Appearance, Nature & Career */}
+                <div className="bg-white/10 backdrop-blur-xs rounded-2xl p-4 sm:p-5 border border-amber-400/30 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-amber-300 uppercase tracking-wider">
+                      {t('1. కాబోయే జీవిత భాగస్వామి రూపం, స్వభావం & వృత్తి', '1. Future Spouse Personality, Looks & Career')}
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-amber-50 leading-relaxed">
+                    {t(
+                      predictions.saptamaMarriage.spouseAppearanceAndNatureTe,
+                      predictions.saptamaMarriage.spouseAppearanceAndNatureEn
+                    )}
+                  </p>
+                  <p className="text-xs sm:text-sm text-emerald-200 font-semibold leading-relaxed pt-2 border-t border-white/15">
+                    {t(
+                      predictions.saptamaMarriage.spouseCareerAndFamilyTe,
+                      predictions.saptamaMarriage.spouseCareerAndFamilyEn
+                    )}
+                  </p>
+                </div>
+
+                {/* 2. Love vs Arranged Marriage & Marriage Timing Window */}
+                <div className="bg-white/10 backdrop-blur-xs rounded-2xl p-4 sm:p-5 border border-amber-400/30 space-y-2.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-amber-300 uppercase tracking-wider">
+                      {t('2. ప్రేమ / పెద్దల వివాహం & పెళ్లి ఎప్పుడు అవుతుంది?', '2. Love vs Arranged Yoga & Marriage Timing')}
+                    </span>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-400/20 text-emerald-200 border border-emerald-400/40">
+                      {t(
+                        predictions.saptamaMarriage.marriageTypeBadgeTe,
+                        predictions.saptamaMarriage.marriageTypeBadgeEn
+                      )}
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-amber-50 leading-relaxed">
+                    {t(
+                      predictions.saptamaMarriage.marriageTypeAnalysisTe,
+                      predictions.saptamaMarriage.marriageTypeAnalysisEn
+                    )}
+                  </p>
+                  <div className="pt-2 border-t border-white/15 space-y-1">
+                    <strong className="text-xs sm:text-sm text-amber-200 block">
+                      ⏳ {t(predictions.saptamaMarriage.marriageTimingTitleTe, predictions.saptamaMarriage.marriageTimingTitleEn)}
+                    </strong>
+                    <p className="text-xs text-amber-100/90 leading-relaxed">
+                      {t(
+                        predictions.saptamaMarriage.marriageTimingDetailsTe,
+                        predictions.saptamaMarriage.marriageTimingDetailsEn
+                      )}
+                    </p>
+                    <p className="text-xs font-bold text-emerald-300">
+                      ✦ {t('అనుకూల వివాహ వయస్సు / కాలం: ', 'Favorable Age / Period: ')}
+                      {t(predictions.saptamaMarriage.favorableAgesTe, predictions.saptamaMarriage.favorableAgesEn)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 3. Kuja Dosha % & Kalasarpa Check */}
+                <div className="bg-white/10 backdrop-blur-xs rounded-2xl p-4 sm:p-5 border border-amber-400/30 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-amber-300 uppercase tracking-wider">
+                      {t('3. కుజ దోష శాతం (%) & కాలసర్ప యోగ తనిఖీ', '3. Exact Kuja Dosha % & Kalasarpa Check')}
+                    </span>
+                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-amber-300 text-amber-950">
+                      {predictions.saptamaMarriage.kujaDoshaPercentage}%
+                    </span>
+                  </div>
+                  <strong className="text-sm text-white block">
+                    {t(predictions.saptamaMarriage.kujaDoshaTitleTe, predictions.saptamaMarriage.kujaDoshaTitleEn)}
+                  </strong>
+                  <p className="text-xs text-amber-100/90 leading-relaxed">
+                    {t(
+                      predictions.saptamaMarriage.kujaDoshaExplanationTe,
+                      predictions.saptamaMarriage.kujaDoshaExplanationEn
+                    )}
+                  </p>
+                  <div className="pt-2 border-t border-white/15 text-xs text-emerald-200">
+                    <strong>{t(predictions.saptamaMarriage.kalasarpaStatusTe, predictions.saptamaMarriage.kalasarpaStatusEn)}:</strong>{' '}
+                    {t(predictions.saptamaMarriage.kalasarpaDetailTe, predictions.saptamaMarriage.kalasarpaDetailEn)}
+                  </div>
+                </div>
+
+                {/* 4. Saptama Graha Shanti & Japa Schedule */}
+                <div className="bg-white/10 backdrop-blur-xs rounded-2xl p-4 sm:p-5 border border-amber-400/30 flex flex-col justify-between space-y-3">
+                  <div className="space-y-2">
+                    <span className="text-xs font-bold text-amber-300 uppercase tracking-wider block">
+                      {t('4. శీఘ్ర వివాహం & దాంపత్య సౌఖ్య జప నియమం', '4. Vedic Marriage Shanti & Japa Schedule')}
+                    </span>
+                    <strong className="text-sm text-amber-200 block">
+                      🙏 {t(predictions.saptamaMarriage.remedyMetalAndDayTe, predictions.saptamaMarriage.remedyMetalAndDayEn)}
+                    </strong>
+                    <p className="text-xs sm:text-sm text-amber-50 leading-relaxed">
+                      {t(
+                        predictions.saptamaMarriage.remedyJapaScheduleTe,
+                        predictions.saptamaMarriage.remedyJapaScheduleEn
+                      )}
+                    </p>
+                  </div>
+
+                  <a
+                    href={whatsappConsultUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-colors no-print"
+                  >
+                    <MessageCircle size={15} />
+                    <span>
+                      {t(
+                        'వివాహ సమయం & సప్తమ భావ పరిశీలనకు గురువుగారిని సంప్రదించండి',
+                        'Consult Guruji on WhatsApp for Marriage Timing & Remedies'
+                      )}
+                    </span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

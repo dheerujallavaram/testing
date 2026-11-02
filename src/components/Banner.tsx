@@ -8,10 +8,11 @@ import { playTempleBell } from '../utils/audioChime';
 interface BannerProps {
   currentDay: DayData;
   activeLagnaName?: string;
+  customH1?: string;
   onOpenBooking: () => void;
 }
 
-export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName }) => {
+export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName, customH1 }) => {
   const { t, tr } = useLanguage();
   const cleanTithi = currentDay.panchanga.tithi.split('-')[0]?.trim() || currentDay.panchanga.tithi;
   const cleanNakshatra = currentDay.panchanga.nakshatram.split('-')[0]?.trim() || currentDay.panchanga.nakshatram;
@@ -84,10 +85,11 @@ export const Banner: React.FC<BannerProps> = ({ currentDay, activeLagnaName }) =
         </p>
 
         <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold font-telugu text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-300 tracking-wide leading-tight mb-2">
-          {t(
-            `ఈ రోజు తెలుగు పంచాంగం (${currentDay.teediVaram})`,
-            `Daily Telugu Panchangam (${tr(currentDay.teediVaram)})`
-          )}
+          {customH1 ||
+            t(
+              `ఈ రోజు తెలుగు పంచాంగం (${currentDay.teediVaram})`,
+              `Daily Telugu Panchangam (${tr(currentDay.teediVaram)})`
+            )}
         </h1>
 
         <p className="text-xs sm:text-sm font-semibold text-amber-300 tracking-wider mb-5">

@@ -805,10 +805,9 @@ function AppContent() {
                     )}
                   </span>
                   <h1 className="text-2xl sm:text-4xl font-extrabold text-amber-100 leading-tight">
-                    {t(
-                      'పుట్టిన తేదీతో తెలుగు జాతకం — ఉచిత జన్మ కుండలి & సంపూర్ణ బృహత్ జాతక గ్రంథం',
-                      'Jathakam by Date of Birth in Telugu — Free Janma Kundali & Brihat Jataka Grantham'
-                    )}
+                    {generatePageMetadata(
+                      typeof window !== 'undefined' ? window.location.pathname : '/mee-jatakam'
+                    ).h1}
                   </h1>
                   <p className="text-xs sm:text-base text-amber-200/90 leading-relaxed">
                     {t(
@@ -841,6 +840,11 @@ function AppContent() {
               <Banner
                 currentDay={currentDay}
                 activeLagnaName={activeLagna?.lagnam}
+                customH1={
+                  generatePageMetadata(
+                    typeof window !== 'undefined' ? window.location.pathname : '/panchangam'
+                  ).h1
+                }
                 onOpenBooking={() => handleOpenBooking()}
               />
 
