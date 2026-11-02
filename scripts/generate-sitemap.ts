@@ -5,6 +5,7 @@ import {
   generateStaticDateParams,
   getTodayIsoDateIST,
 } from '../src/seo/panchangamSsrEngine';
+import { RASHI_LIST } from '../src/utils/gocharaEngine';
 
 export interface SitemapEntry {
   path: string;
@@ -13,6 +14,11 @@ export interface SitemapEntry {
 
 export function getCoreSitemapRoutes(): SitemapEntry[] {
   const todayIso = getTodayIsoDateIST();
+  const rashiGocharaEntries: SitemapEntry[] = RASHI_LIST.map((r) => ({
+    path: `/gochara-phalalu/${r.slug}`,
+    lastmod: '2026-10-30',
+  }));
+
   return [
     { path: '/', lastmod: todayIso },
     { path: '/panchangam', lastmod: todayIso },
@@ -21,25 +27,31 @@ export function getCoreSitemapRoutes(): SitemapEntry[] {
     { path: '/panchangam/vijayawada', lastmod: todayIso },
     { path: '/panchangam/visakhapatnam', lastmod: todayIso },
     { path: '/panchangam/usa', lastmod: todayIso },
-    { path: '/mee-jatakam', lastmod: '2026-10-28' },
     { path: '/janma-kundali', lastmod: '2026-10-28' },
+    { path: '/mee-jatakam', lastmod: '2026-10-28' },
     { path: '/vivaha-pontana', lastmod: '2026-10-26' },
     { path: '/telugu-baby-names', lastmod: '2026-10-25' },
     { path: '/gowri-panchangam', lastmod: todayIso },
     { path: '/tarabalam-chandrabalam', lastmod: todayIso },
-    { path: '/nitya-sankalpam', lastmod: todayIso },
     { path: '/naama-nakshatra', lastmod: '2026-10-22' },
-    { path: '/ugadi-rashi-phalalu', lastmod: '2026-10-20' },
+    { path: '/nitya-sankalpam', lastmod: todayIso },
     { path: '/shubha-muhurthalu', lastmod: '2026-10-21' },
-    { path: '/festivals', lastmod: '2026-10-19' },
+    { path: '/ugadi-rashi-phalalu', lastmod: '2026-10-20' },
     { path: '/vastu-shastra-telugu', lastmod: '2026-10-18' },
     { path: '/dosha-pariharalu', lastmod: '2026-10-17' },
+    { path: '/gochara-phalalu', lastmod: '2026-10-30' },
+    { path: '/gochara-phalalu/shani', lastmod: '2026-10-30' },
+    { path: '/gochara-phalalu/guru', lastmod: '2026-10-30' },
+    { path: '/gochara-phalalu/rahu-ketu', lastmod: '2026-10-30' },
+    { path: '/yelinati-shani', lastmod: '2026-10-30' },
+    ...rashiGocharaEntries,
+    { path: '/festivals', lastmod: '2026-10-19' },
     { path: '/services', lastmod: '2026-10-15' },
     { path: '/about', lastmod: '2026-10-14' },
     { path: '/contact', lastmod: '2026-10-14' },
     { path: '/privacy-policy', lastmod: '2026-10-10' },
-    { path: '/disclaimer', lastmod: '2026-10-10' },
     { path: '/terms-and-conditions', lastmod: '2026-10-10' },
+    { path: '/disclaimer', lastmod: '2026-10-10' },
   ];
 }
 
@@ -58,14 +70,14 @@ export function generateSitemapXML(): string {
   const todayIso = getTodayIsoDateIST();
   const entries: string[] = [];
 
-  // 1. Core Indexable Static, 4 City & Tool Routes (Zero doorway town pages, zero /awards)
+  // 1. Core Indexable Static, 4 City, Tool & Gochara Routes (Zero doorway town pages, zero /awards)
   for (const route of getCoreSitemapRoutes()) {
     entries.push(buildUrlEntry(`${SITE_URL}${route.path}`, route.lastmod));
   }
 
-  // 2. Pre-built Daily Panchangam Routes (/panchangam/[yyyy-mm-dd] for next 60 days)
+  // 2. Pre-built Daily Panchangam Routes (/panchangam/[yyyy-mm-dd] for next 60 days + past 7 days)
   const seenDates = new Set<string>();
-  const dailyParams = generateStaticDateParams(60, 0);
+  const dailyParams = generateStaticDateParams(60, 7);
   for (const { date } of dailyParams) {
     seenDates.add(date);
     const pageLastMod = date <= todayIso ? date : todayIso;

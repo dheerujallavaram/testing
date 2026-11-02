@@ -21,6 +21,32 @@ export interface AstroSearchTopic {
 
 export const ASTRO_SEARCH_TOPICS: AstroSearchTopic[] = [
   {
+    id: 'gochara-phalalu',
+    titleTe: 'గోచార ఫలాలు – శని, గురు, రాహు కేతు గోచారం & ఏలినాటి శని',
+    titleEn: 'Gochara Phalalu – Saturn, Jupiter, Rahu-Ketu Transit & Sade Sati',
+    descriptionTe: 'మీ జన్మ రాశి నుండి నవగ్రహాల ప్రస్తుత గోచార స్థితి, శని గోచారం, గురు గోచారం, రాహు-కేతు సంచారం.',
+    descriptionEn: 'Current sidereal planetary transits of Saturn, Jupiter, Rahu & Ketu from your Moon sign.',
+    categoryTe: 'గోచార ఫలాలు',
+    categoryEn: 'Gochara Transits',
+    keywords: [
+      'gochara phalalu',
+      'gocharam',
+      'shani gochara phalalu',
+      'guru gochara phalalu',
+      'rahu ketu gocharam',
+      'yelinati shani',
+      'గోచార ఫలాలు',
+      'ఈ నెల గోచారం',
+      'శని గోచారం',
+      'గురు గోచారం',
+      'రాహు కేతు గోచారం',
+      'ఏలినాటి శని ఫలాలు',
+    ],
+    targetTab: 'panchangam',
+    targetPath: '/gochara-phalalu',
+    scrollToElementId: 'gochara-phalalu-section',
+  },
+  {
     id: 'vastu-shastra',
     titleTe: 'గృహ వాస్తు శాస్త్రం & అష్ట దిక్పాలక వాస్తు చక్రం (Vastu Shastra)',
     titleEn: 'Vastu Shastra Guide & 8-Direction Gruha Vastu Compass',

@@ -61,6 +61,9 @@ const VedicAstrologyHub = lazy(() =>
 const JanmaKundaliGenerator = lazy(() =>
   import('./components/JanmaKundaliGenerator').then((m) => ({ default: m.JanmaKundaliGenerator }))
 );
+const GocharaPhalaluView = lazy(() =>
+  import('./components/GocharaPhalaluView').then((m) => ({ default: m.GocharaPhalaluView }))
+);
 const DailyNakshatraArticle = lazy(() =>
   import('./components/DailyNakshatraArticle').then((m) => ({ default: m.DailyNakshatraArticle }))
 );
@@ -247,6 +250,9 @@ export function resolveTabFromLocation(): NavTab {
     pathname === '/shubha-muhurthalu' ||
     pathname === '/festivals' ||
     pathname === '/dosha-pariharalu' ||
+    pathname === '/gochara-phalalu' ||
+    pathname.startsWith('/gochara-phalalu/') ||
+    pathname === '/yelinati-shani' ||
     Boolean(resolveCityTimingSlugFromLocation()) ||
     hash === '#panchangam' ||
     hash === '#dina-phalam' ||
@@ -857,6 +863,23 @@ function AppContent() {
                 onSelectCitySlug={handleSelectCityTimingRoute}
                 onToggleCalendarView={handleToggleCalendarRoute}
               />
+
+              {/* Gochara Phalalu Interactive Calculator (shown at top on /gochara-phalalu* and /yelinati-shani, or accessible anytime) */}
+              {typeof window !== 'undefined' &&
+                (window.location.pathname.startsWith('/gochara-phalalu') ||
+                  window.location.pathname === '/yelinati-shani') && (
+                  <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
+                    <GocharaPhalaluView
+                      initialPathname={window.location.pathname}
+                      onNavigateGocharaRoute={(targetPath) => {
+                        try {
+                          window.history.pushState({ gocharaPath: targetPath }, '', targetPath);
+                          window.dispatchEvent(new PopStateEvent('popstate'));
+                        } catch {}
+                      }}
+                    />
+                  </Suspense>
+                )}
 
               <DaySelector
                 days={WEEK_DATA}
