@@ -63,6 +63,15 @@ export const CityAstrologyPage: React.FC<CityAstrologyPageProps> = ({
     }
     metaDesc.setAttribute('content', pageDescription);
 
+    // Robots: noindex, follow for town doorway pages (Task 2)
+    let metaRobots = document.querySelector('meta[name="robots"]');
+    if (!metaRobots) {
+      metaRobots = document.createElement('meta');
+      metaRobots.setAttribute('name', 'robots');
+      document.head.appendChild(metaRobots);
+    }
+    metaRobots.setAttribute('content', 'noindex, follow');
+
     // Canonical
     let canonical = document.querySelector('link[rel="canonical"]');
     if (!canonical) {

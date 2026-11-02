@@ -1,148 +1,90 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  ALL_CITIES,
-  AP_CITIES,
-  TELANGANA_CITIES,
-  USA_TELUGU_CITIES,
-  CitySEOData,
-} from '../src/data/citiesData';
+  SITE_URL,
+  generateStaticDateParams,
+  getTodayIsoDateIST,
+} from '../src/seo/panchangamSsrEngine';
 
-const BASE_URL = 'https://www.telugujyothisham.com';
-
-interface StaticRoute {
+export interface SitemapEntry {
   path: string;
-  priority: number;
-  changefreq: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly';
+  lastmod: string;
 }
 
-const STATIC_ROUTES: StaticRoute[] = [
-  { path: '/', priority: 1.0, changefreq: 'daily' },
-  { path: '/panchangam', priority: 0.98, changefreq: 'daily' },
-  { path: '/mee-jatakam', priority: 0.98, changefreq: 'daily' },
-  { path: '/neti-panchangam', priority: 0.98, changefreq: 'daily' },
-  { path: '/today-panchangam-in-telugu', priority: 0.98, changefreq: 'daily' },
-  { path: '/ee-roju-panchangam', priority: 0.98, changefreq: 'daily' },
-  { path: '/janma-kundali', priority: 0.98, changefreq: 'weekly' },
-  { path: '/gowri-panchangam', priority: 0.95, changefreq: 'daily' },
-  { path: '/tarabalam-chandrabalam', priority: 0.95, changefreq: 'daily' },
-  { path: '/nitya-sankalpam', priority: 0.95, changefreq: 'daily' },
-  { path: '/vivaha-pontana', priority: 0.95, changefreq: 'weekly' },
-  { path: '/ugadi-rashi-phalalu', priority: 0.95, changefreq: 'weekly' },
-  { path: '/shubha-muhurthalu', priority: 0.95, changefreq: 'weekly' },
-  { path: '/vastu-shastra-telugu', priority: 0.95, changefreq: 'monthly' },
-  { path: '/services', priority: 0.95, changefreq: 'weekly' },
-  { path: '/telugu-baby-names', priority: 0.92, changefreq: 'monthly' },
-  { path: '/naama-nakshatra', priority: 0.90, changefreq: 'monthly' },
-  { path: '/festivals', priority: 0.90, changefreq: 'weekly' },
-  { path: '/dosha-pariharalu', priority: 0.90, changefreq: 'monthly' },
-  { path: '/about', priority: 0.85, changefreq: 'monthly' },
-  { path: '/awards', priority: 0.85, changefreq: 'monthly' },
-  { path: '/contact', priority: 0.75, changefreq: 'monthly' },
-  { path: '/privacy-policy', priority: 0.60, changefreq: 'yearly' },
-  { path: '/terms-and-conditions', priority: 0.60, changefreq: 'yearly' },
-  { path: '/disclaimer', priority: 0.60, changefreq: 'yearly' },
-];
+export function getCoreSitemapRoutes(): SitemapEntry[] {
+  const todayIso = getTodayIsoDateIST();
+  return [
+    { path: '/', lastmod: todayIso },
+    { path: '/panchangam', lastmod: todayIso },
+    { path: '/panchangam/calendar', lastmod: todayIso },
+    { path: '/panchangam/hyderabad', lastmod: todayIso },
+    { path: '/panchangam/vijayawada', lastmod: todayIso },
+    { path: '/panchangam/visakhapatnam', lastmod: todayIso },
+    { path: '/panchangam/usa', lastmod: todayIso },
+    { path: '/mee-jatakam', lastmod: '2026-10-28' },
+    { path: '/janma-kundali', lastmod: '2026-10-28' },
+    { path: '/vivaha-pontana', lastmod: '2026-10-26' },
+    { path: '/telugu-baby-names', lastmod: '2026-10-25' },
+    { path: '/gowri-panchangam', lastmod: todayIso },
+    { path: '/tarabalam-chandrabalam', lastmod: todayIso },
+    { path: '/nitya-sankalpam', lastmod: todayIso },
+    { path: '/naama-nakshatra', lastmod: '2026-10-22' },
+    { path: '/ugadi-rashi-phalalu', lastmod: '2026-10-20' },
+    { path: '/shubha-muhurthalu', lastmod: '2026-10-21' },
+    { path: '/festivals', lastmod: '2026-10-19' },
+    { path: '/vastu-shastra-telugu', lastmod: '2026-10-18' },
+    { path: '/dosha-pariharalu', lastmod: '2026-10-17' },
+    { path: '/services', lastmod: '2026-10-15' },
+    { path: '/about', lastmod: '2026-10-14' },
+    { path: '/contact', lastmod: '2026-10-14' },
+    { path: '/privacy-policy', lastmod: '2026-10-10' },
+    { path: '/disclaimer', lastmod: '2026-10-10' },
+    { path: '/terms-and-conditions', lastmod: '2026-10-10' },
+  ];
+}
 
-const MAJOR_HUB_SLUGS = new Set([
-  'hyderabad',
-  'secunderabad',
-  'hayathnagar',
-  'kukatpally',
-  'dilsukhnagar',
-  'lb-nagar',
-  'madhapur',
-  'gachibowli',
-  'miyapur',
-  'uppal',
-  'warangal',
-  'karimnagar',
-  'nizamabad',
-  'khammam',
-  'nalgonda',
-  'suryapet',
-  'siddipet',
-  'mahbubnagar',
-  'visakhapatnam',
-  'vijayawada',
-  'tirupati',
-  'guntur',
-  'rajahmundry',
-  'kakinada',
-  'nellore',
-  'kurnool',
-  'dallas-tx',
-  'san-jose-ca',
-  'irving-tx',
-  'frisco-tx',
-  'edison-nj',
-  'atlanta-ga',
-]);
+export const CORE_SITEMAP_ROUTES: SitemapEntry[] = getCoreSitemapRoutes();
 
-function buildUrlEntry(
-  loc: string,
-  lastmod: string,
-  changefreq: string,
-  priority: number
-): string {
+function buildUrlEntry(loc: string, lastmod: string): string {
   return [
     `  <url>`,
     `    <loc>${loc}</loc>`,
     `    <lastmod>${lastmod}</lastmod>`,
-    `    <changefreq>${changefreq}</changefreq>`,
-    `    <priority>${priority.toFixed(2)}</priority>`,
     `  </url>`,
   ].join('\n');
 }
 
-export function generateSitemapXML(cities: CitySEOData[] = ALL_CITIES): string {
-  const today = new Date().toISOString().split('T')[0];
+export function generateSitemapXML(): string {
+  const todayIso = getTodayIsoDateIST();
   const entries: string[] = [];
 
-  // 1. Core Static Routes (24 routes)
-  for (const route of STATIC_ROUTES) {
-    entries.push(buildUrlEntry(`${BASE_URL}${route.path}`, today, route.changefreq, route.priority));
+  // 1. Core Indexable Static, 4 City & Tool Routes (Zero doorway town pages, zero /awards)
+  for (const route of getCoreSitemapRoutes()) {
+    entries.push(buildUrlEntry(`${SITE_URL}${route.path}`, route.lastmod));
   }
 
-  // 2. Programmatic City Pages Set 1: /telugu-astrologer-in-[city-slug] (258+ routes)
-  for (const city of cities) {
-    const isMajorHub = MAJOR_HUB_SLUGS.has(city.slug) || city.regionType === 'Telangana';
-    const priority = MAJOR_HUB_SLUGS.has(city.slug) ? 0.90 : isMajorHub ? 0.85 : 0.80;
-    entries.push(
-      buildUrlEntry(`${BASE_URL}/telugu-astrologer-in-${city.slug}`, today, 'weekly', priority)
-    );
-  }
-
-  // 3. Programmatic City Pages Set 2: /neti-panchangam-in-[city-slug] (258+ routes)
-  for (const city of cities) {
-    const priority = MAJOR_HUB_SLUGS.has(city.slug) ? 0.88 : 0.82;
-    entries.push(
-      buildUrlEntry(`${BASE_URL}/neti-panchangam-in-${city.slug}`, today, 'daily', priority)
-    );
-  }
-
-  // 4. Programmatic City Pages Set 3: /vivaha-pontana-jatakam-in-[city-slug] (Top 50+ cities)
-  const topCitiesForJathakam = [
-    ...TELANGANA_CITIES.slice(0, 20),
-    ...AP_CITIES.slice(0, 20),
-    ...USA_TELUGU_CITIES.slice(0, 15),
-  ];
-  const seenJathakamSlugs = new Set<string>();
-  for (const city of topCitiesForJathakam) {
-    if (seenJathakamSlugs.has(city.slug)) continue;
-    seenJathakamSlugs.add(city.slug);
-    const priority = MAJOR_HUB_SLUGS.has(city.slug) ? 0.85 : 0.80;
-    entries.push(
-      buildUrlEntry(`${BASE_URL}/vivaha-pontana-jatakam-in-${city.slug}`, today, 'weekly', priority)
-    );
+  // 2. Pre-built Daily Panchangam Routes (/panchangam/[yyyy-mm-dd] for next 60 days)
+  const dailyParams = generateStaticDateParams(60, 0);
+  for (const { date } of dailyParams) {
+    const pageLastMod = date <= todayIso ? date : todayIso;
+    entries.push(buildUrlEntry(`${SITE_URL}/panchangam/${date}`, pageLastMod));
   }
 
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"`,
-    `        xmlns:xhtml="http://www.w3.org/1999/xhtml">`,
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
     ...entries,
     `</urlset>`,
+    ``,
+  ].join('\n');
+}
+
+export function generateRobotsTxt(): string {
+  return [
+    `User-agent: *`,
+    `Allow: /`,
+    ``,
+    `Sitemap: ${SITE_URL}/sitemap.xml`,
     ``,
   ].join('\n');
 }
@@ -153,17 +95,15 @@ export function runGenerator() {
     fs.mkdirSync(publicDir, { recursive: true });
   }
 
-  const sitemapXml = generateSitemapXML(ALL_CITIES);
-  const sitemapPath = path.join(publicDir, 'sitemap.xml');
-  fs.writeFileSync(sitemapPath, sitemapXml, 'utf-8');
+  const sitemapXml = generateSitemapXML();
+  const robotsTxt = generateRobotsTxt();
+  fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapXml, 'utf-8');
+  fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt, 'utf-8');
 
   const urlCount = (sitemapXml.match(/<url>/g) || []).length;
-  console.log(`✅ [Sitemap Generator] Successfully generated sitemap.xml at ${sitemapPath}`);
-  console.log(`   Total Indexed URLs: ${urlCount} (Static: ${STATIC_ROUTES.length}, City Pages: ${urlCount - STATIC_ROUTES.length})`);
+  console.log(`✅ [Sitemap & Robots] Generated sitemap.xml (${urlCount} indexable URLs) and robots.txt`);
 }
 
-// If invoked directly from terminal / node
 if (process.argv[1]?.includes('generate-sitemap')) {
   runGenerator();
 }
-

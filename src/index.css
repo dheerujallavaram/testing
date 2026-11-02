@@ -3,15 +3,16 @@
 @layer base {
   :root {
     --font-telugu: 'Noto Serif Telugu', serif;
-    --font-display: 'Cinzel', serif;
+    --font-display: 'Cinzel', 'Noto Serif Telugu', serif;
     --font-body: 'Noto Serif Telugu', 'Lora', serif;
   }
 
   html, body {
     font-family: 'Noto Serif Telugu', 'Lora', serif;
-    background-color: #fffdf7;
-    color: #2c1507;
+    background-color: #faf7f2;
+    color: #2a1205;
     scroll-behavior: smooth;
+    line-height: 1.6;
   }
 }
 
@@ -27,25 +28,48 @@
   font-family: 'Lora', 'Noto Serif Telugu', serif;
 }
 
-/* Luminous Royal Temple Cards & Frames */
-.mandapam-card {
-  background-color: #ffffff;
-  border: 1px solid #fde68a;
-  box-shadow: 0 8px 24px -6px rgba(146, 64, 14, 0.08);
+/* Sacred Temple Ornamental Borders */
+.mandapam-frame {
+  border: 2px solid #d97706;
+  box-shadow: 0 10px 30px -10px rgba(180, 83, 9, 0.25), inset 0 0 0 4px #fef3c7, inset 0 0 0 5px rgba(217, 119, 6, 0.35);
 }
 
 .mandapam-dark-frame {
-  background: linear-gradient(135deg, #2d070e 0%, #54111c 50%, #3b0d06 100%);
-  border: 2px solid rgba(245, 158, 11, 0.55);
+  background: linear-gradient(135deg, #4a1504 0%, #2d0c02 55%, #180501 100%);
+  border: 2px solid #f59e0b;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.45), inset 0 0 0 3px rgba(245, 158, 11, 0.25);
 }
 
-/* Custom scrollbar for clean appearance */
+.sacred-divider {
+  background: linear-gradient(90deg, transparent, #d97706, #f59e0b, #d97706, transparent);
+  height: 2px;
+}
+
+.gold-shimmer {
+  background: linear-gradient(90deg, #b45309, #f59e0b, #fde68a, #f59e0b, #b45309);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hide scrollbars on horizontal filter pills while keeping scrollability */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom scrollbar for desktop */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #fffbeb;
+  background: #fef3c7;
 }
 ::-webkit-scrollbar-thumb {
   background: #d97706;

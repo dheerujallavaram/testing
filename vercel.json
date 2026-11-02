@@ -2,7 +2,56 @@
   "installCommand": "npm install --legacy-peer-deps",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "telugujyothisham.com"
+        }
+      ],
+      "destination": "https://www.telugujyothisham.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/neti-panchangam",
+      "destination": "/panchangam",
+      "permanent": true
+    },
+    {
+      "source": "/today-panchangam-in-telugu",
+      "destination": "/panchangam",
+      "permanent": true
+    },
+    {
+      "source": "/ee-roju-panchangam",
+      "destination": "/panchangam",
+      "permanent": true
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy-policy",
+      "permanent": true
+    },
+    {
+      "source": "/awards",
+      "destination": "/about",
+      "permanent": true
+    }
+  ],
   "headers": [
+    {
+      "source": "/panchangam/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=86400, stale-while-revalidate=86400"
+        }
+      ]
+    },
     {
       "source": "/(favicon\\.ico|favicon.*\\.png|apple-touch-icon.*\\.png|ganapathi-favicon\\.svg)",
       "headers": [

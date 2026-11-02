@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, MapPin, Phone, Mail, Clock, ShieldCheck, Heart, Compass } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, ShieldCheck, Compass } from 'lucide-react';
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
 import { HubSectionId } from './VedicAstrologyHub';
@@ -10,162 +10,174 @@ export interface FooterProps {
   onNavigateHubSection?: (section: HubSectionId, path: string) => void;
   onOpenLegal?: (doc: LegalDocType) => void;
   onOpenAdmin?: () => void;
+  onNavigateAbout?: () => void;
+  onNavigateContact?: () => void;
 }
 
 const SEO_HUB_LINKS: { section: HubSectionId; path: string; labelTe: string; labelEn: string }[] = [
-  { section: 'pontana', path: '/neti-panchangam', labelTe: 'నేటి పంచాంగం (Neti Panchangam)', labelEn: 'Neti Panchangam (Today Panchangam)' },
-  { section: 'pontana', path: '/today-panchangam-in-telugu', labelTe: 'ఈ రోజు పంచాంగం (Today Panchangam in Telugu)', labelEn: 'Today Panchangam in Telugu - ఈ రోజు పంచాంగం' },
-  { section: 'kundali', path: '/janma-kundali', labelTe: 'ఉచిత తెలుగు జన్మ కుండలి & మహాదశ (Free Janam Kundli)', labelEn: 'Free Telugu Janma Kundali & Mahadasha' },
-  { section: 'pontana', path: '/gowri-panchangam', labelTe: 'గౌరీ పంచాంగం & హోరా చక్రం (Gowri Panchangam)', labelEn: 'Today Gowri Panchangam & Hora Timings' },
+  { section: 'pontana', path: '/panchangam', labelTe: 'నేటి పంచాంగం (Today Telugu Panchangam)', labelEn: 'Today Telugu Panchangam (నేటి పంచాంగం)' },
+  { section: 'pontana', path: '/panchangam/calendar', labelTe: '60 రోజుల తెలుగు పంచాంగం క్యాలెండర్', labelEn: '60-Day Monthly Telugu Panchangam Calendar' },
+  { section: 'kundali', path: '/janma-kundali', labelTe: 'పుట్టిన తేదీతో ఉచిత జన్మ కుండలి (Jathakam by Date of Birth)', labelEn: 'Jathakam by Date of Birth in Telugu' },
+  { section: 'pontana', path: '/vivaha-pontana', labelTe: '36 గుణాల వివాహ పొంతన (Vivaha Pontana Telugu)', labelEn: '36-Point Vivaha Pontana Marriage Matching' },
+  { section: 'babynames', path: '/telugu-baby-names', labelTe: '27 నక్షత్రాల తెలుగు పిల్లల పేర్లు (Telugu Baby Names)', labelEn: 'Telugu Baby Names by Nakshatra' },
+  { section: 'pontana', path: '/gowri-panchangam', labelTe: 'గౌరీ పంచాంగం & హోరా చక్రం', labelEn: 'Today Gowri Panchangam & Hora Timings' },
   { section: 'pontana', path: '/tarabalam-chandrabalam', labelTe: 'తారాబలం & చంద్రబలం క్యాలిక్యులేటర్', labelEn: 'Tarabalam & Chandrabalam Calculator' },
-  { section: 'pontana', path: '/nitya-sankalpam', labelTe: 'నేటి పూజా సంకల్పం మంత్రం (India & USA NRI)', labelEn: 'Today Telugu Pooja Sankalpam' },
-  { section: 'pontana', path: '/vivaha-pontana', labelTe: '36 గుణాల వివాహ పొంతన (Vivaha Pontana)', labelEn: '36-Point Marriage Compatibility' },
-  { section: 'akshara', path: '/naama-nakshatra', labelTe: 'పేరు మొదటి అక్షరంతో రాశి & నక్షత్రం', labelEn: 'Name First Letter Rashi Finder' },
-  { section: 'babynames', path: '/telugu-baby-names', labelTe: '27 నక్షత్రాల తెలుగు పిల్లల పేర్లు', labelEn: 'Telugu Baby Names by Nakshatra' },
+  { section: 'pontana', path: '/nitya-sankalpam', labelTe: 'నేటి పూజా సంకల్పం మంత్రం (India & USA)', labelEn: 'Today Telugu Pooja Sankalpam' },
+  { section: 'akshara', path: '/naama-nakshatra', labelTe: 'పేరు మొదటి అక్షరంతో రాశి & నక్షత్రం', labelEn: 'Naama Nakshatra Rashi Finder' },
   { section: 'ugadi', path: '/ugadi-rashi-phalalu', labelTe: 'శ్రీ పరాభవ నామ సంవత్సర ఉగాది రాశి ఫలాలు', labelEn: 'Ugadi Yearly Horoscope 2026-2027' },
   { section: 'muhurtham', path: '/shubha-muhurthalu', labelTe: 'శుభ ముహూర్తాలు & పండుగల క్యాలెండర్', labelEn: 'Auspicious Muhurthams & Festivals' },
   { section: 'vastu', path: '/vastu-shastra-telugu', labelTe: 'గృహ వాస్తు చక్రం & దిక్పాలక నియమాలు', labelEn: 'Telugu Gruha Vastu Shastra Guide' },
-  { section: 'dosha', path: '/dosha-pariharalu', labelTe: 'కుజ, కాలసర్ప, ఏలినాటి శని దోష పరిహారాలు', labelEn: 'Kuja, Kalasarpa & Shani Dosha Remedies' },
+  { section: 'dosha', path: '/dosha-pariharalu', labelTe: 'ఏలినాటి శని, అష్టమ శని & కుజ దోష పరిహారాలు', labelEn: 'Elinati Shani & Kuja Dosha Remedies' },
 ];
 
-const POPULAR_CITY_LINKS: { slug: string; nameTe: string; nameEn: string }[] = [
-  { slug: 'hyderabad', nameTe: 'హైదరాబాద్ జ్యోతిష్యులు', nameEn: 'Hyderabad' },
-  { slug: 'hayathnagar', nameTe: 'హయత్‌నగర్ (హైదరాబాద్)', nameEn: 'Hayathnagar' },
-  { slug: 'kukatpally', nameTe: 'కూకట్‌పల్లి / KPHB', nameEn: 'Kukatpally' },
-  { slug: 'dilsukhnagar', nameTe: 'దిల్‌సుఖ్‌నగర్', nameEn: 'Dilsukhnagar' },
-  { slug: 'lb-nagar', nameTe: 'ఎల్బీ నగర్', nameEn: 'LB Nagar' },
-  { slug: 'madhapur', nameTe: 'మాదాపూర్', nameEn: 'Madhapur' },
-  { slug: 'gachibowli', nameTe: 'గచ్చిబౌలి', nameEn: 'Gachibowli' },
-  { slug: 'miyapur', nameTe: 'మియాపూర్', nameEn: 'Miyapur' },
-  { slug: 'uppal', nameTe: 'ఉప్పల్', nameEn: 'Uppal' },
-  { slug: 'secunderabad', nameTe: 'సికింద్రాబాద్', nameEn: 'Secunderabad' },
-  { slug: 'warangal', nameTe: 'వరంగల్', nameEn: 'Warangal' },
-  { slug: 'karimnagar', nameTe: 'కరీంనగర్', nameEn: 'Karimnagar' },
-  { slug: 'nizamabad', nameTe: 'నిజామాబాద్', nameEn: 'Nizamabad' },
-  { slug: 'khammam', nameTe: 'ఖమ్మం', nameEn: 'Khammam' },
-  { slug: 'nalgonda', nameTe: 'నల్గొండ', nameEn: 'Nalgonda' },
-  { slug: 'suryapet', nameTe: 'సూర్యాపేట', nameEn: 'Suryapet' },
-  { slug: 'siddipet', nameTe: 'సిద్దిపేట', nameEn: 'Siddipet' },
-  { slug: 'mahbubnagar', nameTe: 'మహబూబ్‌నగర్', nameEn: 'Mahbubnagar' },
-  { slug: 'vijayawada', nameTe: 'విజయవాడ', nameEn: 'Vijayawada' },
-  { slug: 'visakhapatnam', nameTe: 'విశాఖపట్నం', nameEn: 'Visakhapatnam' },
-  { slug: 'tirupati', nameTe: 'తిరుపతి', nameEn: 'Tirupati' },
-  { slug: 'guntur', nameTe: 'గుంటూరు', nameEn: 'Guntur' },
-  { slug: 'rajahmundry', nameTe: 'రాజమండ్రి', nameEn: 'Rajahmundry' },
-  { slug: 'bengaluru', nameTe: 'బెంగళూరు', nameEn: 'Bengaluru' },
-  { slug: 'dallas', nameTe: 'డల్లాస్ (USA)', nameEn: 'Dallas TX' },
-  { slug: 'new-jersey', nameTe: 'న్యూ జెర్సీ (USA)', nameEn: 'New Jersey' },
-  { slug: 'san-jose', nameTe: 'బే ఏరియా (USA)', nameEn: 'San Jose CA' },
-  { slug: 'london', nameTe: 'లండన్ (UK)', nameEn: 'London UK' },
-  { slug: 'sydney', nameTe: 'సిడ్నీ (Australia)', nameEn: 'Sydney AU' },
-  { slug: 'toronto', nameTe: 'టొరంటో (Canada)', nameEn: 'Toronto CA' },
+const VERIFIED_CITY_PANCHANGAM_LINKS: {
+  slug: 'hyderabad' | 'vijayawada' | 'visakhapatnam' | 'usa';
+  nameTe: string;
+  nameEn: string;
+}[] = [
+  { slug: 'hyderabad', nameTe: 'హైదరాబాద్ నేటి పంచాంగం (Hyderabad)', nameEn: 'Hyderabad Telugu Panchangam' },
+  { slug: 'vijayawada', nameTe: 'విజయవాడ నేటి పంచాంగం (Vijayawada)', nameEn: 'Vijayawada Telugu Panchangam' },
+  { slug: 'visakhapatnam', nameTe: 'విశాఖపట్నం నేటి పంచాంగం (Visakhapatnam)', nameEn: 'Visakhapatnam Telugu Panchangam' },
+  { slug: 'usa', nameTe: 'అమెరికా తెలుగు పంచాంగం (USA EST/CST/PST)', nameEn: 'USA NRI Telugu Panchangam' },
 ];
 
 export const Footer: React.FC<FooterProps> = ({
   onSelectCity,
   onNavigateHubSection,
   onOpenLegal,
-  onOpenAdmin,
+  onNavigateAbout,
+  onNavigateContact,
 }) => {
   const { t, language } = useLanguage();
 
   return (
-    <footer className="bg-amber-950 text-amber-100/90 pt-14 pb-8 border-t-4 border-amber-600">
+    <footer className="bg-gradient-to-b from-amber-950 via-[#2a0c03] to-[#1a0701] text-amber-200/80 pt-14 pb-10 border-t-4 border-amber-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-3 gap-8 pb-10 border-b border-amber-900/80" data-nosnippet>
+        <div className="grid md:grid-cols-3 gap-10 pb-10 border-b border-amber-800/50">
           {/* Col 1: Temple info */}
           <div>
-            <h4 className="text-xl font-bold font-telugu text-white flex items-center gap-2.5 mb-3">
-              <OmEmblem className="w-8 h-8 shrink-0" size={32} />
-              <span>{t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (Telugu Jyothisham)', 'Telugu Jyothisham · Sreelakshmi Ganapathi Astrology')}</span>
+            <h4 className="text-lg font-bold font-telugu text-amber-100 flex items-center gap-2.5 mb-3">
+              <OmEmblem className="w-7 h-7 shrink-0" size={28} />
+              <span>
+                {t(
+                  'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (Telugu Jyothisham)',
+                  'Telugu Jyothisham • Sreelakshmi Ganapathi Astrology'
+                )}
+              </span>
             </h4>
-            <p className="text-sm font-telugu text-amber-200/80 leading-relaxed mb-3">
+            <p className="text-xs sm:text-sm font-telugu text-amber-200/85 leading-relaxed mb-3">
               {t(
-                'తెలుగు జ్యోతిషం (Telugu Jyothisham) — ఈ రోజు నక్షత్రం, తిథి, శుభ సమయం, మీ రాశి ప్రకారం నేటి ద్వాదశ రాశి ఫలితాలు మరియు మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ పొందండి. బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి దృక్సిద్ధాంత పంచాంగం.',
-                'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Check Today Nakshatram, Tithi, Shubha Samayam, Daily Rashi Phalalu according to your sign, and get your 100-page Janma Kundali PDF report.'
+                'తెలుగు జ్యోతిషం (Telugu Jyothisham) — బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి దృక్సిద్ధాంత పంచాంగ గణనతో ప్రతిరోజూ నేటి పంచాంగం, తిథి, నక్షత్రం, రాహుకాలం, వర్జ్యం, అభిజిత్ ముహూర్తం, ద్వాదశ రాశి ఫలాలు మరియు ఉచిత జన్మ కుండలి సేవలు.',
+                'Telugu Jyothisham — Daily Drik Siddhanta Telugu Panchangam, Tithi, Nakshatra, Rahu Kalam, Varjyam, Abhijit Muhurtham, Rashi Phalalu, and Janma Kundali by Brahmasri Jallavaram Sai Dheeraj Sharma.'
               )}
             </p>
             <a
-              href="https://www.telugujyothisham.com"
-              className="inline-block text-xs font-mono font-bold text-amber-300 hover:text-white underline underline-offset-4 mb-2"
+              href="https://www.telugujyothisham.com/"
+              className="inline-block text-xs font-mono font-bold text-amber-300 bg-amber-900/60 hover:bg-amber-800 px-3 py-1 rounded-full border border-amber-500/50 transition-colors"
             >
-              Telugu Jyothisham — www.telugujyothisham.com
+              🌐 https://www.telugujyothisham.com
             </a>
-            <p className="text-xs font-telugu font-semibold text-amber-400">
-              {t('మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి • నేటి పంచాంగం & రాశి ఫలాలు', 'Get Your 100-Page Janma Kundali PDF • Today Panchangam & Horoscope')}
-            </p>
           </div>
 
           {/* Col 2: Services & Timings */}
-          <div data-nosnippet>
-            <h4 className="text-base font-bold font-telugu text-white mb-3 flex items-center gap-2">
-              <Clock size={16} className="text-amber-400" />
+          <div>
+            <h4 className="text-base font-bold font-telugu text-amber-100 mb-3 flex items-center gap-2">
+              <Clock size={18} className="text-amber-400" />
               <span>{t('జ్యోతిషాలయ సమయాలు & సేవలు', 'Timings & Sacred Services')}</span>
             </h4>
-            <ul className="text-sm font-telugu space-y-2 text-amber-200/80">
-              <li>{t('ఉదయం: 06:30 AM నుండి 12:30 PM వరకు', 'Morning: 06:30 AM to 12:30 PM')}</li>
-              <li>{t('సాయంత్రం: 04:30 PM నుండి 08:30 PM వరకు', 'Evening: 04:30 PM to 08:30 PM')}</li>
-              <li className="pt-2 text-xs text-amber-300">
-                • {t('జాతక పరిశీలన, 100 పేజీల జన్మ కుండలి PDF, వివాహ పొంతన, వాస్తు సలహాలు', 'Horoscope analysis, 100-page Janma Kundali PDF, marriage matching & Vastu guidance')}
+            <ul className="text-xs sm:text-sm font-telugu space-y-2 text-amber-200/85">
+              <li>• {t('ఉదయం: 06:30 AM నుండి 12:30 PM వరకు', 'Morning: 06:30 AM to 12:30 PM')}</li>
+              <li>• {t('సాయంత్రం: 04:30 PM నుండి 08:30 PM వరకు', 'Evening: 04:30 PM to 08:30 PM')}</li>
+              <li className="pt-1 text-amber-300 font-medium">
+                ✦{' '}
+                {t(
+                  'జాతక పరిశీలన, జన్మ కుండలి PDF, 36 గుణాల వివాహ పొంతన & వాస్తు సలహాలు',
+                  'Horoscope analysis, Janma Kundali PDF, 36-Guna marriage matching & Vastu guidance'
+                )}
               </li>
-              <li className="text-xs text-amber-300">
-                • {t('సంపూర్ణ గృహప్రవేశ మరియు వైదిక హోమ క్రతువులు', 'Comprehensive Gruhapravesam & Vedic Homam rituals')}
+              <li className="text-amber-300 font-medium">
+                ✦{' '}
+                {t(
+                  'సంపూర్ణ గృహప్రవేశ మరియు వైదిక హోమ క్రతువులు',
+                  'Comprehensive Gruhapravesam & Vedic Homam rituals'
+                )}
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Contact & Devotee Desk */}
-          <div data-nosnippet>
-            <h4 className="text-base font-bold font-telugu text-white mb-3 flex items-center gap-2">
-              <Phone size={16} className="text-amber-400" />
+          {/* Col 3: Contact */}
+          <div>
+            <h4 className="text-base font-bold font-telugu text-amber-100 mb-3 flex items-center gap-2">
+              <Phone size={18} className="text-amber-400" />
               <span>{t('సంప్రదించవలసిన వివరాలు', 'Contact & Devotee Desk')}</span>
             </h4>
-            <div className="text-sm font-telugu space-y-3 text-amber-200/90">
+            <div className="text-xs sm:text-sm font-telugu space-y-3 text-amber-200/85">
               <a
-                href={`https://wa.me/918977986166?text=${encodeURIComponent('నమస్కారం శ్రీ ధీరజ్ శర్మ గారు, పూజ / జ్యోతిష వివరాల కోసం సంప్రదిస్తున్నాను.')}`}
+                href={`https://wa.me/918977986166?text=${encodeURIComponent(
+                  'నమస్కారం శ్రీ ధీరజ్ శర్మ గారు, పూజ / జ్యోతిష వివరాల కోసం సంప్రదిస్తున్నాను.'
+                )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2.5 p-2.5 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/60 rounded-xl text-emerald-200 transition-colors group"
+                className="flex items-center gap-3 p-3 bg-emerald-900/50 hover:bg-emerald-800/70 border border-emerald-500/50 rounded-2xl text-emerald-100 transition-colors"
               >
-                <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform">
-                  💬
-                </div>
+                <span className="text-xl">💬</span>
                 <div>
-                  <span className="text-xs text-emerald-300 block font-semibold">{t('వాట్సాప్ సంప్రదింపులు', 'WhatsApp Desk')}</span>
-                  <span className="font-mono text-base font-bold text-white tracking-wide">8977986166</span>
+                  <span className="text-xs text-emerald-300 block font-bold">
+                    {t('వాట్సాప్ సంప్రదింపులు (WhatsApp)', 'WhatsApp Desk')}
+                  </span>
+                  <span className="font-mono text-base font-bold text-white tracking-wider">
+                    +91 89779 86166
+                  </span>
                 </div>
               </a>
 
               <a
                 href="tel:+918977986166"
-                className="flex items-center gap-2 hover:text-white transition-colors"
+                className="flex items-center gap-2 hover:text-amber-100 transition-colors"
               >
-                <Phone size={16} className="text-amber-400 shrink-0" />
-                <span>{t('ఫోన్ కాల్: ', 'Direct Call: ')}<strong className="font-mono text-amber-200 font-semibold tracking-wide">+91 8977986166</strong></span>
+                <Phone size={15} className="text-amber-400 shrink-0" />
+                <span>
+                  {t('ఫోన్ కాల్: ', 'Direct Call: ')}
+                  <strong className="font-mono text-amber-300 text-sm">
+                    +91 8977986166
+                  </strong>
+                </span>
               </a>
 
               <p className="flex items-start gap-2">
-                <MapPin size={16} className="text-amber-400 shrink-0 mt-0.5" />
-                <span>{t('పసుమాముల, హయత్‌నగర్, హైదరాబాద్', 'Pasumamula, Hayathnagar, Hyderabad, Telangana')}</span>
+                <MapPin size={16} className="text-amber-400 shrink-0 mt-1" />
+                <span>
+                  {t(
+                    'పసుమాముల, హయత్‌నగర్, హైదరాబాద్ – 501505',
+                    'Pasumamula, Hayathnagar, Hyderabad, Telangana – 501505'
+                  )}
+                </span>
               </p>
 
               <a
                 href="mailto:astrologer@telugujyothisham.com"
-                className="flex items-center gap-2 hover:text-white transition-colors"
+                className="flex items-center gap-2 hover:text-amber-100 transition-colors"
               >
-                <Mail size={16} className="text-amber-400 shrink-0" />
-                <span className="font-mono text-xs text-amber-300">astrologer@telugujyothisham.com</span>
+                <Mail size={15} className="text-amber-400 shrink-0" />
+                <span className="font-mono text-xs text-amber-300">
+                  astrologer@telugujyothisham.com
+                </span>
               </a>
             </div>
           </div>
         </div>
 
-        {/* Crawlable SEO Internal Links for Vedic Tools & Global Telugu Cities */}
-        <div className="py-6 border-b border-amber-900/80 space-y-4 font-telugu">
+        {/* Crawlable SEO Internal Links for Vedic Tools & Verified City Timings */}
+        <div className="py-6 border-b border-amber-800/50 space-y-5 font-telugu">
           <div>
-            <h5 className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2.5 flex items-center gap-1.5">
-              <Compass size={13} />
-              <span>{t('ముఖ్యమైన జ్యోతిష & పంచాంగ విభాగాలు (Quick Astrology Tools)', 'Vedic Astrology Calculators & Guides')}</span>
+            <h5 className="text-xs font-bold uppercase tracking-widest text-amber-300 mb-3 flex items-center gap-1.5">
+              <Compass size={14} className="text-amber-400" />
+              <span>
+                {t(
+                  'ముఖ్యమైన జ్యోతిష & పంచాంగ విభాగాలు • Quick Astrology Tools',
+                  'Vedic Astrology Calculators & Guides'
+                )}
+              </span>
             </h5>
             <div className="flex flex-wrap gap-2">
               {SEO_HUB_LINKS.map((item) => (
@@ -178,96 +190,132 @@ export const Footer: React.FC<FooterProps> = ({
                       onNavigateHubSection(item.section, item.path);
                     }
                   }}
-                  className="text-xs bg-amber-900/60 hover:bg-amber-800 text-amber-100 border border-amber-700/60 px-3 py-1.5 rounded-xl transition-colors"
+                  className="text-xs bg-amber-900/55 hover:bg-amber-700 text-amber-100 border border-amber-600/50 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
                 >
-                  {language === 'en' ? item.labelEn : item.labelTe}
+                  ✦ {language === 'en' ? item.labelEn : item.labelTe}
                 </a>
               ))}
             </div>
           </div>
 
           <div>
-            <h5 className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2 flex items-center gap-1.5">
-              <MapPin size={13} />
-              <span>{t('ప్రపంచవ్యాప్త తెలుగు జ్యోతిష సేవలు (India & NRI Cities)', 'Global Telugu Astrologer & Purohit Services')}</span>
+            <h5 className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2.5 flex items-center gap-1.5">
+              <MapPin size={13} className="text-amber-400" />
+              <span>
+                {t(
+                  'నగరాల వారీగా ఖగోళ పంచాంగ సమయాలు • City Local Panchangam Timings',
+                  'City Local Telugu Panchangam Timings'
+                )}
+              </span>
             </h5>
-            <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-amber-300/80">
-              {POPULAR_CITY_LINKS.map((city) => (
+            <div className="flex flex-wrap gap-2.5 text-xs text-amber-200">
+              {VERIFIED_CITY_PANCHANGAM_LINKS.map((city) => (
                 <a
                   key={city.slug}
-                  href={`/telugu-astrologer-in-${city.slug}`}
+                  href={`/panchangam/${city.slug}`}
                   onClick={(e) => {
                     if (onSelectCity) {
                       e.preventDefault();
                       onSelectCity(city.slug);
                     }
                   }}
-                  className="hover:text-white hover:underline underline-offset-2 transition-colors"
+                  className="bg-amber-900/40 hover:bg-amber-800/80 px-3 py-1 rounded-full border border-amber-700/50 hover:text-white transition-colors"
                 >
-                  {language === 'en' ? `Telugu Astrologer in ${city.nameEn}` : city.nameTe}
+                  {language === 'en' ? city.nameEn : city.nameTe}
                 </a>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Google E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) Shastra Pramana Verification */}
+        {/* E-E-A-T Author Bio Verification */}
         <div
           itemScope
           itemType="https://schema.org/Person"
-          className="py-5 border-b border-amber-900/80 font-telugu"
+          className="py-6 border-b border-amber-800/50 font-telugu"
         >
-          <div className="bg-amber-900/40 border border-amber-700/60 rounded-2xl p-4 sm:p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="bg-amber-950/60 border border-amber-700/50 rounded-2xl p-4 sm:p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div className="space-y-1.5 max-w-4xl">
-              <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-950/80 border border-emerald-600/50 px-2.5 py-0.5 rounded-md">
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2.5 py-0.5 rounded-full">
                 <ShieldCheck size={13} className="text-emerald-400 shrink-0" />
                 <span>
                   {t(
-                    'శాస్త్ర ప్రమాణ & జ్యోతిష విద్వాన్ ధృవీకరణ • Verified Vedic Authority',
+                    'రచయిత & సిద్ధాంత పర్యవేక్షణ • Verified Vedic Authority',
                     'Verified Vedic Shastra Authority & Editorial Review'
                   )}
                 </span>
               </div>
-              <p className="text-xs sm:text-sm font-bold text-white">
+              <p className="text-xs sm:text-sm font-bold text-amber-100">
                 {t('శాస్త్రీయ పర్యవేక్షణ & రచన: ', 'Authored & Reviewed by: ')}
                 <span itemProp="name" className="text-amber-300">
                   {t(
-                    'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (స్మార్త వేద & జ్యోతిష విద్వాంసులు)',
+                    'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (Jallavaram Sai Dheeraj Sharma)',
                     'Brahmasri Jallavaram Sai Dheeraj Sharma (Smartha Veda & Jyothisha Vidwan)'
                   )}
                 </span>
               </p>
-              <p className="text-[11px] sm:text-xs text-amber-200/85 leading-relaxed">
+              <p className="text-[11px] sm:text-xs text-amber-200/80 leading-relaxed">
                 {t(
-                  'ఈ వెబ్‌సైట్‌లోని దైనందిన పంచాంగం, గ్రహ సంచారం, గ్రహ దృష్టి ఫలితాలు, 36 గుణాల వివాహ పొంతన మరియు 100 పేజీల బృహత్ జాతక కుండలి గణనలు దృక్సిద్ధాంతం, వరాహమిహిరుల బృహత్ జాతకం, యవనాచార్యుల మతం, ముహూర్త చింతామణి మరియు నక్షత్ర చూడామణి గ్రంథ ప్రమాణాల ఆధారంగా ధృవీకరించబడ్డాయి.',
-                  'All daily Panchangam calculations, Graha Drishti predictions, 36-Guna Vivaha Pontana, and 100-page Janma Kundali reports are verified against Drik Siddhanta ephemeris, Varahamihira Brihat Jataka, Yavanacharya Jataka, and Muhurtha Chintamani.'
+                  'ఈ వెబ్‌సైట్‌లోని దైనందిన పంచాంగం, గ్రహ సంచారం, 36 గుణాల వివాహ పొంతన మరియు బృహత్ జాతక కుండలి గణనలు దృక్సిద్ధాంతం, వరాహమిహిరుల బృహత్ జాతకం మరియు ముహూర్త చింతామణి గ్రంథ ప్రమాణాల ఆధారంగా ధృవీకరించబడ్డాయి.',
+                  'All daily Panchangam calculations, 36-Guna Vivaha Pontana, and Janma Kundali reports are verified against Drik Siddhanta ephemeris, Varahamihira Brihat Jataka, and Muhurtha Chintamani.'
                 )}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-2 shrink-0 w-full lg:w-auto text-[11px]">
-              <div className="bg-amber-950/90 border border-amber-700/70 rounded-xl px-3 py-2 text-amber-100">
-                <span className="text-amber-400 font-bold block">15+ సం|| అనుభవం</span>
+              <div className="bg-amber-900/50 border border-amber-600/40 rounded-xl px-3 py-2 text-amber-100">
+                <span className="text-amber-300 font-bold block">15+ సం|| అనుభవం</span>
                 <span>స్మార్త &amp; జ్యోతిష సేవ</span>
               </div>
-              <div className="bg-amber-950/90 border border-amber-700/70 rounded-xl px-3 py-2 text-amber-100">
-                <span className="text-amber-400 font-bold block">దృక్సిద్ధాంత గణన</span>
-                <span className="hidden">1900–2100 ఖగోళ ప్రమాణం</span>
+              <div className="bg-amber-900/50 border border-amber-600/40 rounded-xl px-3 py-2 text-amber-100">
+                <span className="text-amber-300 font-bold block">దృక్సిద్ధాంత గణన</span>
+                <span>ఖగోళ సూర్యోదయ ప్రమాణం</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Shloka, Legal Policy Links (AdSense Compliance) and Dedication */}
-        <div className="pt-8 text-center space-y-3 font-telugu">
-          <p className="text-base sm:text-lg font-bold text-amber-300">
-            {t('సర్వేజనా సుఖినోభవంతు · లోకాః సమస్తాః సుఖినోభవంతు', 'Sarvejana Sukhinobhavantu · Lokah Samastah Sukhino Bhavantu')}
+        {/* Footer Navigation Links: About, Contact, Privacy, Disclaimer, Terms */}
+        <div className="pt-8 text-center space-y-2 font-telugu">
+          <p className="text-sm sm:text-base font-bold text-amber-300">
+            {t(
+              'సర్వేజనా సుఖినోభవంతు • లోకాః సమస్తాః సుఖినోభవంతు',
+              'Sarvejana Sukhinobhavantu • Lokah Samastah Sukhino Bhavantu'
+            )}
           </p>
-          <p className="text-xs sm:text-sm text-amber-200/70">
-            {t('సమర్పణ: ', 'Devotedly presented by: ')}<strong>{t('జల్లవరం సాయి ధీరజ్ శర్మ', 'Jallavaram Sai Dheeraj Sharma')}</strong>
+          <p className="text-xs text-amber-400/75">
+            {t('సమర్పణ: ', 'Devotedly presented by: ')}
+            <strong className="text-amber-200">
+              {t('బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (Jallavaram Sai Dheeraj Sharma)', 'Jallavaram Sai Dheeraj Sharma')}
+            </strong>
           </p>
 
-          {/* Privacy Policy, Terms & Disclaimer Links */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs text-amber-300/90">
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-[11px] sm:text-xs text-amber-300/90 font-semibold">
+            <a
+              href="/about"
+              onClick={(e) => {
+                if (onNavigateAbout) {
+                  e.preventDefault();
+                  onNavigateAbout();
+                }
+              }}
+              className="hover:text-white underline transition-colors"
+            >
+              {t('మా గురించి (About Us)', 'About Us')}
+            </a>
+            <span className="text-amber-600">•</span>
+            <a
+              href="/contact"
+              onClick={(e) => {
+                if (onNavigateContact) {
+                  e.preventDefault();
+                  onNavigateContact();
+                }
+              }}
+              className="hover:text-white underline transition-colors"
+            >
+              {t('సంప్రదించండి (Contact Us)', 'Contact Us')}
+            </a>
+            <span className="text-amber-600">•</span>
             <a
               href="/privacy-policy"
               onClick={(e) => {
@@ -276,24 +324,11 @@ export const Footer: React.FC<FooterProps> = ({
                   onOpenLegal('privacy');
                 }
               }}
-              className="hover:text-white underline underline-offset-4 transition-colors"
+              className="hover:text-white underline transition-colors"
             >
               {t('గోప్యతా విధానం (Privacy Policy)', 'Privacy Policy')}
             </a>
-            <span className="text-amber-700">•</span>
-            <a
-              href="/terms-and-conditions"
-              onClick={(e) => {
-                if (onOpenLegal) {
-                  e.preventDefault();
-                  onOpenLegal('terms');
-                }
-              }}
-              className="hover:text-white underline underline-offset-4 transition-colors"
-            >
-              {t('నిబంధనలు (Terms & Conditions)', 'Terms & Conditions')}
-            </a>
-            <span className="text-amber-700">•</span>
+            <span className="text-amber-600">•</span>
             <a
               href="/disclaimer"
               onClick={(e) => {
@@ -302,16 +337,29 @@ export const Footer: React.FC<FooterProps> = ({
                   onOpenLegal('disclaimer');
                 }
               }}
-              className="hover:text-white underline underline-offset-4 transition-colors"
+              className="hover:text-white underline transition-colors"
             >
               {t('జ్యోతిష్య గమనిక (Disclaimer)', 'Disclaimer')}
             </a>
+            <span className="text-amber-600">•</span>
+            <a
+              href="/terms-and-conditions"
+              onClick={(e) => {
+                if (onOpenLegal) {
+                  e.preventDefault();
+                  onOpenLegal('terms');
+                }
+              }}
+              className="hover:text-white underline transition-colors"
+            >
+              {t('నిబంధనలు (Terms & Conditions)', 'Terms & Conditions')}
+            </a>
           </div>
 
-          <p className="text-[11px] text-amber-400/60 max-w-2xl mx-auto leading-normal">
+          <p className="text-[11px] text-amber-500/60 max-w-2xl mx-auto leading-normal pt-2">
             {t(
-              'గమనిక: ఈ సమయాలు ఆంధ్రప్రదేశ్ మరియు తెలంగాణ ప్రాంతాలకు సంబంధించిన ప్రామాణిక సూర్యోదయ గణనలు. ప్రాంతీయ అక్షాంశ, రేఖాంశాలను బట్టి కొన్ని నిమిషాల వ్యత్యాసం ఉండవచ్చు. శుభ కార్యాల కోసం శ్రీ ధీరజ్ శర్మ గారి సలహా తప్పనిసరి.',
-              'Note: Timings are computed based on standard astrological planetary calculations for AP, Telangana & worldwide coordinates. Exact planetary transit times may vary slightly by local longitude/latitude.'
+              'గమనిక: ఈ వెబ్‌సైట్‌లోని పంచాంగం మరియు జ్యోతిష్య సమాచారం సాంస్కృతిక మరియు ఆధ్యాత్మిక సమాచార అవగాహన కొరకు మాత్రమే (For informational and cultural purposes only).',
+              'Disclaimer: All astrological and panchangam information on this site is provided for informational and cultural purposes only.'
             )}
           </p>
         </div>
@@ -319,4 +367,3 @@ export const Footer: React.FC<FooterProps> = ({
     </footer>
   );
 };
-

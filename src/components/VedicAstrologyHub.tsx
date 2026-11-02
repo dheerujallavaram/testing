@@ -266,21 +266,21 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
   return (
     <section
       id="vedic-astrology-hub"
-      className="my-10 bg-gradient-to-b from-amber-50/90 via-white to-amber-50/60 border-2 border-amber-300 rounded-3xl p-4 sm:p-8 shadow-xl space-y-6 font-telugu scroll-mt-24"
+      className="my-10 bg-gradient-to-br from-[#fffaf0] via-white to-amber-50/70 border-2 border-amber-400/90 rounded-3xl p-5 sm:p-8 shadow-xl space-y-6 font-telugu scroll-mt-24"
     >
       {/* Top Section Header */}
       <div className="text-center max-w-3xl mx-auto space-y-2">
-        <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-amber-900 bg-amber-200/80 px-3.5 py-1 rounded-full border border-amber-400">
-          <BookOpen size={14} className="text-amber-800" />
-          <span>{t('సంపూర్ణ జ్యోతిష విజ్ఞాన కేంద్రం • Vedic Astrology Tools', 'Complete Vedic Astrology & Muhurtham Tools')}</span>
-        </span>
-        <h2 className="text-2xl sm:text-4xl font-bold text-amber-950">
+        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-amber-900 text-amber-200 text-xs font-bold uppercase tracking-widest border border-amber-500">
+          <BookOpen size={14} className="text-amber-400" />
+          <span>{t('సంపూర్ణ జ్యోతిష విజ్ఞాన కేంద్రం • Complete Vedic Astrology Tools', 'Complete Vedic Astrology & Muhurtham Tools')}</span>
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-amber-950">
           {t(
             'వివాహ పొంతన, నామ నక్షత్రం, ఉగాది ఆదాయ-వ్యయాలు & శుభ ముహూర్తాలు',
             'Marriage Compatibility, Name Star Finder, Yearly Horoscope & Muhurthams'
           )}
         </h2>
-        <p className="text-xs sm:text-base text-slate-600">
+        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
           {t(
             'భక్తులు తమ రాశి పొంతన, పేరు అక్షర నక్షత్రం, వార్షిక ఆదాయ-వ్యయాలు, పండుగ తిథులు మరియు దోష పరిహారాలను ఒకే చోట శాస్త్రోక్తంగా తెలుసుకోవచ్చు.',
             'Explore classical 36-point marriage matching, birth star by name syllable, Ugadi Aadayam-Vyayam, auspicious dates, and Vedic remedies.'
@@ -298,10 +298,10 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
               key={btn.id}
               type="button"
               onClick={() => handleSelectSection(btn.id)}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer border shrink-0 ${
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer border-2 shrink-0 ${
                 isActive
-                  ? 'bg-amber-900 text-white border-amber-950 shadow-md scale-[1.01]'
-                  : 'bg-white text-amber-950 border-amber-300 hover:bg-amber-100/70'
+                  ? 'bg-gradient-to-r from-amber-800 to-amber-950 text-amber-100 border-amber-500 shadow-md scale-[1.01]'
+                  : 'bg-white text-amber-950 border-amber-300 hover:bg-amber-50'
               }`}
             >
               <Icon size={15} className={isActive ? 'text-amber-300' : 'text-amber-700'} />

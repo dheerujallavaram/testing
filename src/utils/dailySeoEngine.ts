@@ -8,6 +8,7 @@ export interface HeadMetaPayload {
   title: string;
   description: string;
   canonicalUrl: string;
+  robots?: string;
   lang?: string;
 }
 
@@ -159,6 +160,9 @@ export function syncHeadMetaTags(payload: HeadMetaPayload): void {
   }
 
   upsertMeta('meta[name="description"]', 'name', 'description', payload.description);
+  if (payload.robots) {
+    upsertMeta('meta[name="robots"]', 'name', 'robots', payload.robots);
+  }
   upsertMeta('meta[property="og:title"]', 'property', 'og:title', payload.title);
   upsertMeta('meta[property="og:description"]', 'property', 'og:description', payload.description);
   upsertMeta('meta[property="og:url"]', 'property', 'og:url', payload.canonicalUrl);

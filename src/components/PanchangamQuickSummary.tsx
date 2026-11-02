@@ -7,13 +7,6 @@ export interface PanchangamQuickSummaryProps {
   day: DayData;
 }
 
-/**
- * PanchangamQuickSummary (Fast Facts & AI Generative Engine Optimization Snippet)
- * Uses semantic HTML5 <dl>, <dt>, <dd> microdata designed specifically for:
- * 1. Google Featured Snippets ("Position Zero")
- * 2. AI Overviews (Google SGE / Gemini Search)
- * 3. Conversational AI Search (ChatGPT Search, Perplexity, Bing Copilot)
- */
 export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ day }) => {
   const { t, tr } = useLanguage();
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
@@ -63,8 +56,10 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
       `శుభ సమయం, అమృత ఘడియలు: ${amruthaText}.`,
       `అశుభ సమయాలు — రాహుకాలం: ${day.ashubha.rahukalam}. యమగండం: ${day.ashubha.yamagandam}. వర్జ్యం: ${day.ashubha.varjyam}.`,
       day.specialEvent ? `నేటి విశేషం: ${day.specialEvent}.` : '',
-      `సర్వేజనా సుఖినోభవంతు.`
-    ].filter(Boolean).join(' ');
+      `సర్వేజనా సుఖినోభవంతు.`,
+    ]
+      .filter(Boolean)
+      .join(' ');
 
     const utterance = new SpeechSynthesisUtterance(teluguScript);
     utterance.lang = 'te-IN';
@@ -93,36 +88,40 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
     <section
       id="panchangam-quick-summary"
       aria-label="Panchangam Quick Summary"
-      className="mandapam-dark-frame text-white rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden font-telugu my-6"
+      className="bg-gradient-to-br from-amber-950 via-[#2d0c02] to-amber-900 text-white rounded-3xl p-5 sm:p-7 border-2 border-amber-400/80 shadow-xl relative overflow-hidden font-telugu my-6"
     >
-      {/* Header with Clean Architectural Kicker & Play Audio Button */}
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-amber-500/30">
+      {/* Decorative glow */}
+      <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-amber-600/40">
         <div>
-          <div className="text-xs font-bold uppercase tracking-widest text-amber-300 mb-1">
-            {t('నేటి పంచాంగ ముఖ్యాంశాలు · Today Panchangam At-A-Glance', 'Today Panchangam At-A-Glance')}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/50 text-amber-300 text-xs font-bold uppercase tracking-widest mb-2">
+            <Sparkles size={13} />
+            <span>{t('నేటి పంచాంగ ముఖ్యాంశాలు • Today Panchangam At-A-Glance', 'Today Panchangam At-A-Glance')}</span>
           </div>
-          <h2 className="text-xl sm:text-3xl font-black text-white">
+          <h2 className="text-xl sm:text-3xl font-extrabold text-amber-100 leading-snug">
             {t(
-              `నేటి పంచాంగం (${day.teediVaram}) — తిథి: ${cleanTithi} · నక్షత్రం: ${cleanNakshatra}`,
-              `Today Panchangam (${tr(day.teediVaram)}) — Tithi: ${tr(cleanTithi)} · Star: ${tr(cleanNakshatra)}`
+              `నేటి పంచాంగం (${day.teediVaram}) — తిథి: ${cleanTithi} • నక్షత్రం: ${cleanNakshatra}`,
+              `Today Panchangam (${tr(day.teediVaram)}) — Tithi: ${tr(cleanTithi)} • Star: ${tr(cleanNakshatra)}`
             )}
           </h2>
-          <p className="text-xs sm:text-sm text-amber-100/95 mt-1 leading-relaxed">
-            <strong>{t('శుభ సమయం (అమృత ఘడియలు):', 'Amrutha Gadiyalu:')}</strong> {tr(day.shubha.amrutha)} | <strong>{t('అభిజిత్ ముహూర్తం:', 'Abhijit Muhurtham:')}</strong> {tr(day.shubha.abhijit)}
+          <p className="text-xs sm:text-sm text-amber-200/90 mt-1 leading-relaxed">
+            <strong>{t('శుభ సమయం (అమృత ఘడియలు):', 'Amrutha Gadiyalu:')}</strong> {tr(day.shubha.amrutha)} •{' '}
+            <strong>{t('అభిజిత్ ముహూర్తం:', 'Abhijit Muhurtham:')}</strong> {tr(day.shubha.abhijit)}
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 self-start md:self-auto shrink-0">
+        <div className="flex flex-wrap items-center gap-2.5 self-start md:self-auto shrink-0">
           {speechSupported && (
             <button
               type="button"
               onClick={handleTogglePlayAudio}
               aria-pressed={isPlayingAudio}
               title={t('నేటి పంచాంగ ముఖ్యాంశాలను తెలుగు ఆడియోలో వినండి', 'Listen to Daily Panchangam Highlights in Telugu')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold border transition-all cursor-pointer shadow-md ${
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold border-2 shadow-md transition-all cursor-pointer ${
                 isPlayingAudio
-                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-300'
-                  : 'bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-amber-950 border-amber-200'
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-300 animate-pulse'
+                  : 'bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-amber-950 border-amber-200'
               }`}
             >
               {isPlayingAudio ? (
@@ -133,123 +132,124 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
               ) : (
                 <>
                   <Volume2 size={16} />
-                  <span>{t('ఆడియో వినండి (Play Audio)', 'Play Audio')}</span>
+                  <span>{t('పంచాంగం ఆడియో వినండి 🔊', 'Listen to Panchangam Audio 🔊')}</span>
                 </>
               )}
             </button>
           )}
 
-          <div className="flex items-center gap-1.5 text-xs font-bold text-amber-300">
-            <Award size={15} />
-            <span>శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</span>
+          <div className="flex items-center gap-2 bg-amber-900/70 border border-amber-500/50 rounded-2xl px-4 py-2 text-xs text-amber-200">
+            <Award size={16} className="text-amber-400" />
+            <span>
+              <strong>శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</strong> (హైదరాబాద్)
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Vibrant, Scannable 5-Column Almanac Cards (<dl>) */}
+      {/* Zero-Click Definition List (<dl>) for Google Featured Snippets */}
       <dl className="relative z-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-5 text-xs">
-        <div className="bg-white/10 rounded-xl p-3.5 border border-amber-400/30">
-          <dt className="text-amber-300 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1 mb-1">
-            <Moon size={12} />
-            <span>Tithi (తిథి)</span>
+        <div className="bg-amber-950/75 rounded-2xl p-3.5 border border-amber-600/40">
+          <dt className="text-amber-300/90 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5 mb-1">
+            <Moon size={12} className="text-amber-400" />
+            <span>తిథి • Tithi</span>
           </dt>
-          <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
+          <dd className="font-extrabold text-white text-xs sm:text-sm leading-snug">
             {tr(day.panchanga.tithi)}
           </dd>
         </div>
 
-        <div className="bg-white/10 rounded-xl p-3.5 border border-amber-400/30">
-          <dt className="text-amber-300 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1 mb-1">
-            <Sparkles size={12} />
-            <span>Nakshatram (నక్షత్రం)</span>
+        <div className="bg-amber-950/75 rounded-2xl p-3.5 border border-amber-600/40">
+          <dt className="text-amber-300/90 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5 mb-1">
+            <Sparkles size={12} className="text-amber-400" />
+            <span>నక్షత్రం • Nakshatram</span>
           </dt>
-          <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
+          <dd className="font-extrabold text-white text-xs sm:text-sm leading-snug">
             {tr(day.panchanga.nakshatram)}
           </dd>
         </div>
 
-        <div className="bg-red-950/60 rounded-xl p-3.5 border border-red-400/40">
-          <dt className="text-red-300 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1 mb-1">
-            <ShieldAlert size={12} className="text-red-400" />
-            <span>Rahu Kalam (రాహుకాలం)</span>
+        <div className="bg-rose-950/70 rounded-2xl p-3.5 border border-rose-500/50">
+          <dt className="text-rose-300 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5 mb-1">
+            <ShieldAlert size={12} className="text-rose-400" />
+            <span>రాహుకాలం • Rahu Kalam</span>
           </dt>
-          <dd className="font-bold text-red-100 text-xs sm:text-sm leading-tight">
+          <dd className="font-extrabold text-rose-100 text-xs sm:text-sm leading-snug">
             {tr(day.ashubha.rahukalam)}
           </dd>
         </div>
 
-        <div className="bg-white/10 rounded-xl p-3.5 border border-amber-400/30">
-          <dt className="text-amber-300 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1 mb-1">
-            <Clock size={12} />
-            <span>Yamagandam (యమగండం)</span>
+        <div className="bg-amber-950/75 rounded-2xl p-3.5 border border-amber-600/40">
+          <dt className="text-amber-300/90 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5 mb-1">
+            <Clock size={12} className="text-amber-400" />
+            <span>యమగండం • Yamagandam</span>
           </dt>
-          <dd className="font-bold text-amber-100 text-xs sm:text-sm leading-tight">
+          <dd className="font-extrabold text-amber-100 text-xs sm:text-sm leading-snug">
             {tr(day.ashubha.yamagandam)}
           </dd>
         </div>
 
-        <div className="bg-emerald-950/60 rounded-xl p-3.5 border border-emerald-400/40">
-          <dt className="text-emerald-300 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1 mb-1">
+        <div className="bg-emerald-950/70 rounded-2xl p-3.5 border border-emerald-500/50 col-span-2 sm:col-span-1">
+          <dt className="text-emerald-300 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5 mb-1">
             <Sun size={12} className="text-emerald-400" />
-            <span>Amrutha Gadiyalu (అమృత ఘడియలు)</span>
+            <span>అమృత ఘడియలు • Amrutha</span>
           </dt>
-          <dd className="font-bold text-emerald-100 text-xs sm:text-sm leading-tight">
+          <dd className="font-extrabold text-emerald-100 text-xs sm:text-sm leading-snug">
             {tr(day.shubha.amrutha) || 'ఉదయం 08:30 AM - 10:15 AM'}
           </dd>
         </div>
 
-        <div className="bg-white/10 rounded-xl p-3.5 border border-amber-400/30">
-          <dt className="text-amber-300 font-bold uppercase tracking-wider text-[11px] mb-1">
-            Durmuhurtham (దుర్ముహూర్తం)
+        <div className="bg-amber-950/75 rounded-2xl p-3.5 border border-amber-600/40">
+          <dt className="text-amber-300/90 font-bold uppercase tracking-wider text-[11px] mb-1">
+            దుర్ముహూర్తం • Durmuhurtham
           </dt>
-          <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
+          <dd className="font-bold text-amber-100 text-xs sm:text-sm leading-snug">
             {tr(day.ashubha.durmuhurtham)}
           </dd>
         </div>
 
-        <div className="bg-white/10 rounded-xl p-3.5 border border-amber-400/30">
-          <dt className="text-amber-300 font-bold uppercase tracking-wider text-[11px] mb-1">
-            Varjyam (వర్జ్యం)
+        <div className="bg-amber-950/75 rounded-2xl p-3.5 border border-amber-600/40">
+          <dt className="text-amber-300/90 font-bold uppercase tracking-wider text-[11px] mb-1">
+            వర్జ్యం • Varjyam
           </dt>
-          <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
+          <dd className="font-bold text-amber-100 text-xs sm:text-sm leading-snug">
             {tr(day.ashubha.varjyam)}
           </dd>
         </div>
 
-        <div className="bg-white/10 rounded-xl p-3.5 border border-amber-400/30">
-          <dt className="text-amber-300 font-bold uppercase tracking-wider text-[11px] mb-1">
-            Yogam (యోగం)
+        <div className="bg-amber-950/75 rounded-2xl p-3.5 border border-amber-600/40">
+          <dt className="text-amber-300/90 font-bold uppercase tracking-wider text-[11px] mb-1">
+            యోగం • Yogam
           </dt>
-          <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
+          <dd className="font-bold text-white text-xs sm:text-sm leading-snug">
             {day.panchanga.yogam}
           </dd>
         </div>
 
-        <div className="bg-white/10 rounded-xl p-3.5 border border-amber-400/30">
-          <dt className="text-amber-300 font-bold uppercase tracking-wider text-[11px] mb-1">
-            Karanam (కరణం)
+        <div className="bg-amber-950/75 rounded-2xl p-3.5 border border-amber-600/40">
+          <dt className="text-amber-300/90 font-bold uppercase tracking-wider text-[11px] mb-1">
+            కరణం • Karanam
           </dt>
-          <dd className="font-bold text-white text-xs sm:text-sm leading-tight">
+          <dd className="font-bold text-white text-xs sm:text-sm leading-snug">
             {day.panchanga.karanam}
           </dd>
         </div>
 
-        <div className="bg-white/10 rounded-xl p-3.5 border border-amber-400/30">
-          <dt className="text-amber-300 font-bold uppercase tracking-wider text-[11px] mb-1">
-            Masam (మాసం) &amp; Vaaram (వారం)
+        <div className="bg-amber-950/75 rounded-2xl p-3.5 border border-amber-600/40 col-span-2 sm:col-span-1">
+          <dt className="text-amber-300/90 font-bold uppercase tracking-wider text-[11px] mb-1">
+            మాసం &amp; వారం • Month &amp; Day
           </dt>
-          <dd className="font-bold text-amber-200 text-xs sm:text-sm leading-tight">
-            {tr(day.panchanga.masam)} · {tr(day.teediVaram.split('•')[1]?.trim() || day.label)}
+          <dd className="font-bold text-amber-200 text-xs sm:text-sm leading-snug">
+            {tr(day.panchanga.masam)} • {tr(day.teediVaram.split('•')[1]?.trim() || day.label)}
           </dd>
         </div>
       </dl>
 
-      {/* AI Search Entity Verification Footnote */}
-      <div className="mt-4 pt-3 border-t border-amber-500/25 text-[11px] text-amber-200/80 flex flex-wrap items-center justify-between gap-2">
+      <div className="mt-4 pt-3 border-t border-amber-700/40 text-[11px] text-amber-300/85 flex flex-wrap items-center justify-between gap-2">
         <span>
-          <strong>Neti Panchangam (నేటి పంచాంగం) | Today Panchangam in Telugu (ఈ రోజు పంచాంగం):</strong> Tithi(తిథి), Vaaram(వారం), Nakshatram(నక్షత్రం), Yogam(యోగం), Karanam(కరణం), Masam(మాసం).
+          <strong>Neti Panchangam (నేటి పంచాంగం) • Today Panchangam in Telugu:</strong> తిథి, వారం, నక్షత్రం, యోగం, కరణం, మాసం.
         </span>
-        <span className="font-mono text-amber-300">telugujyothisham.com/panchangam</span>
+        <span className="font-mono text-amber-400">www.telugujyothisham.com</span>
       </div>
     </section>
   );

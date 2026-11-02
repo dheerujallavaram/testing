@@ -367,29 +367,29 @@ export const GopuramSectionHeader: React.FC<{
 }> = ({ kicker, title, subtitle, align = 'left', light = false }) => {
   const isCenter = align === 'center';
   return (
-    <div className={`${isCenter ? 'text-center mx-auto max-w-3xl' : 'text-left'} space-y-1.5`}>
+    <div className={`${isCenter ? 'text-center mx-auto max-w-3xl' : 'text-left'} space-y-2`}>
       <div
-        className={`flex items-center gap-2 text-xs font-bold uppercase tracking-widest ${
+        className={`flex items-center gap-2 text-xs font-semibold tracking-wider ${
           isCenter ? 'justify-center' : 'justify-start'
-        } ${light ? 'text-amber-300' : 'text-amber-800'}`}
+        } ${light ? 'text-amber-300/95' : 'text-orange-900'}`}
       >
-        <svg width="18" height="14" viewBox="0 0 18 14" fill="none" className="shrink-0 text-amber-600" aria-hidden="true">
+        <svg width="16" height="12" viewBox="0 0 18 14" fill="none" className="shrink-0 text-amber-700" aria-hidden="true">
           <path d="M9 0L11.5 4H6.5L9 0ZM4.5 5H13.5V8.5H4.5V5ZM2 9.5H16V13.5H2V9.5Z" fill="currentColor" />
         </svg>
         <span>{kicker}</span>
       </div>
       <h2
-        className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${
-          light ? 'text-white' : 'text-amber-950'
+        className={`text-2xl sm:text-3xl font-bold tracking-tight leading-snug ${
+          light ? 'text-white' : 'text-stone-900'
         }`}
       >
         {title}
       </h2>
       {subtitle && (
         <p
-          className={`text-xs sm:text-sm leading-relaxed max-w-3xl ${
+          className={`text-xs sm:text-sm leading-relaxed max-w-2xl ${
             isCenter ? 'mx-auto' : ''
-          } ${light ? 'text-amber-100/90' : 'text-amber-900/80'}`}
+          } ${light ? 'text-amber-100/90' : 'text-stone-600'}`}
         >
           {subtitle}
         </p>
@@ -397,3 +397,4 @@ export const GopuramSectionHeader: React.FC<{
     </div>
   );
 };
+

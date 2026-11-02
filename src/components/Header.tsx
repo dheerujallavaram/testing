@@ -9,7 +9,6 @@ import {
   Home,
   User,
   Phone,
-  Award,
   Globe,
   Compass,
   Search,
@@ -44,6 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenBooking,
   onSelectSearchTopic,
 }) => {
+  const [isRinging, setIsRinging] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
@@ -52,7 +52,9 @@ export const Header: React.FC<HeaderProps> = ({
   const { language, setLanguage, t } = useLanguage();
 
   const handleBellRing = () => {
+    setIsRinging(true);
     playTempleBell();
+    setTimeout(() => setIsRinging(false), 1200);
   };
 
   const navItems: {
@@ -61,20 +63,18 @@ export const Header: React.FC<HeaderProps> = ({
     shortLabelTe: string;
     shortLabelEn: string;
     icon: React.ComponentType<{ size?: number; className?: string }>;
-    badge?: string;
   }[] = [
     { id: 'home', label: t('హోమ్ పేజీ', 'Home'), shortLabelTe: 'హోమ్', shortLabelEn: 'Home', icon: Home },
-    { id: 'panchangam', label: t('పంచాంగం', 'Panchangam'), shortLabelTe: 'పంచాంగం', shortLabelEn: 'Panchangam', icon: Calendar },
+    { id: 'panchangam', label: t('నేటి పంచాంగం', 'Panchangam'), shortLabelTe: 'పంచాంగం', shortLabelEn: 'Panchangam', icon: Calendar },
     {
       id: 'jathakam',
-      label: t('మీ జాతకం తెలుసుకోండి', 'Know Your Horoscope'),
-      shortLabelTe: 'మీ జాతకం తెలుసుకోండి',
-      shortLabelEn: 'Your Horoscope',
+      label: t('మీ జాతకం తెలుసుకోండి', 'Horoscope & Tools'),
+      shortLabelTe: 'మీ జాతకం',
+      shortLabelEn: 'Horoscope',
       icon: Compass,
     },
-    { id: 'awards', label: t('పొందిన సత్కారాలు', 'Honors & Awards'), shortLabelTe: 'సత్కారాలు', shortLabelEn: 'Honors', icon: Award },
-    { id: 'services', label: t('పూజా సేవలు', 'Pooja Services'), shortLabelTe: 'పూజా సేవలు', shortLabelEn: 'Pooja Services', icon: Sparkles },
-    { id: 'about', label: t('ధీరజ్ శర్మ గారి గురించి', 'About Guruji'), shortLabelTe: 'గురువు గారు', shortLabelEn: 'About Guruji', icon: User },
+    { id: 'services', label: t('పూజా సేవలు', 'Pooja Services'), shortLabelTe: 'పూజా సేవలు', shortLabelEn: 'Services', icon: Sparkles },
+    { id: 'about', label: t('గురువు గారి గురించి', 'About Guruji'), shortLabelTe: 'గురువు గారు', shortLabelEn: 'About', icon: User },
     { id: 'contact', label: t('సంప్రదించండి', 'Contact'), shortLabelTe: 'సంప్రదించండి', shortLabelEn: 'Contact', icon: Phone },
   ];
 
@@ -108,7 +108,6 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  // Close search dropdown when clicking outside or pressing Escape
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
@@ -139,37 +138,199 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       data-nosnippet
-      className="sticky top-0 z-40 bg-amber-950 text-white shadow-xl border-b border-amber-800/90 backdrop-blur-md bg-opacity-95 font-telugu"
+      className="sticky top-0 z-40 bg-gradient-to-r from-amber-950 via-[#3b1506] to-amber-950 text-white shadow-xl border-b-2 border-amber-500/80 backdrop-blur-md"
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2">
-        {/* Zone 1: Brand wordmark & Sri Dheeraj Sharma Garu subtext */}
+      {/* Top Bar: Brand + Quick Actions */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+        {/* Brand Title + Ganapathi Emblem */}
         <button
           type="button"
           onClick={() => handleTabClick('home')}
-          className="flex items-center gap-2.5 text-left group cursor-pointer"
+          className="flex items-center gap-2.5 sm:gap-3 text-left group cursor-pointer min-w-0 flex-1 overflow-hidden"
           title={t(
-            'Telugu Jyothisham (తెలుగు జ్యోతిషం) — శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం - శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ',
-            'Telugu Jyothisham (తెలుగు జ్యోతిషం) — Sreelakshmi Ganapathi Astrology - Sri Jallavaram Sai Dheeraj Sharma'
+            'Telugu Jyothisham (తెలుగు జ్యోతిషం) — శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం',
+            'Telugu Jyothisham — Sreelakshmi Ganapathi Astrology'
           )}
         >
-          <OmEmblem className="w-9 h-9 sm:w-11 sm:h-11 group-hover:scale-105 transition-transform shrink-0 drop-shadow-md" size={44} />
-          <div>
-            <span className="text-sm sm:text-lg md:text-xl font-bold tracking-tight text-white block group-hover:text-amber-200 transition-colors leading-tight">
-              {t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం', 'Telugu Jyothisham · Sreelakshmi Ganapathi')}
-            </span>
-            <span className="text-[10px] sm:text-[11px] text-amber-300 font-semibold block">
-              {t('తెలుగు జ్యోతిషం (Telugu Jyothisham) · శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు', 'Telugu Jyothisham · Sri Jallavaram Sai Dheeraj Sharma Garu')}
-            </span>
+          <div className="relative flex items-center justify-center p-0.5 rounded-full bg-gradient-to-b from-amber-200/30 to-amber-600/30 shadow-md group-hover:scale-105 transition-transform shrink-0">
+            <OmEmblem className="w-10 h-10 sm:w-12 sm:h-12 shrink-0" size={48} />
+          </div>
+          <div className="min-w-0 flex-1 overflow-hidden">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-sm sm:text-xl font-bold font-telugu tracking-wide text-amber-100 block leading-tight truncate">
+                {t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం', 'Sreelakshmi Ganapathi Astrology')}
+              </span>
+              <span className="hidden xl:inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-200 border border-amber-400/40 shrink-0">
+                Telugu Jyothisham
+              </span>
+            </div>
+            <p className="text-[11px] sm:text-xs text-amber-300/90 font-telugu tracking-wider truncate">
+              {t(
+                'తెలుగు జ్యోతిషం • శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ • హైదరాబాద్',
+                'Telugu Jyothisham • Sri Jallavaram Sai Dheeraj Sharma'
+              )}
+            </p>
           </div>
         </button>
 
-        {/* Zone 2: Interactive Astrological Search Bar + Unified Action, Language Switcher & Desktop Navigation */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Header Topic Search Bar (Vastu, Muhurtham, Pooja services, Panchangam, Jatakam, Horoscope) */}
-          <div ref={searchContainerRef} className="relative">
-            <form onSubmit={handleSearchSubmit} className="hidden sm:flex items-center">
-              <div className="relative flex items-center">
-                <Search size={14} className="absolute left-2.5 text-amber-300 pointer-events-none" />
+        {/* Right Action Buttons (Row 1 - Cleanly separated from Ganapathi Emblem) */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Language Switcher: తెలుగు / English */}
+          <div
+            role="group"
+            aria-label="Language Switcher"
+            className="inline-flex items-center bg-amber-900/90 border border-amber-400/60 rounded-full p-0.5 shadow-inner shrink-0"
+          >
+            <Globe size={13} className="text-amber-300 ml-1.5 mr-1 hidden sm:inline" />
+            <button
+              type="button"
+              onClick={() => setLanguage('te')}
+              className={`px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold font-telugu transition-all cursor-pointer ${
+                language === 'te'
+                  ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 shadow-xs'
+                  : 'text-amber-100 hover:text-white'
+              }`}
+              title="తెలుగులో చూడండి (View in Telugu)"
+              aria-pressed={language === 'te'}
+            >
+              తెలుగు
+            </button>
+            <button
+              type="button"
+              onClick={() => setLanguage('en')}
+              className={`px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold font-sans transition-all cursor-pointer ${
+                language === 'en'
+                  ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 shadow-xs'
+                  : 'text-amber-100 hover:text-white'
+              }`}
+              title="View in English"
+              aria-pressed={language === 'en'}
+            >
+              EN
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleBellRing}
+            className="hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-amber-900/80 hover:bg-amber-800 text-amber-200 border border-amber-500/50 transition-all shadow-inner text-xs font-telugu cursor-pointer shrink-0"
+            title={t('కోవెల ఘంటానాదం (Ring Temple Bell)', 'Ring Temple Bell')}
+            aria-label="Ring Temple Bell"
+          >
+            <Bell
+              size={15}
+              className={`text-amber-300 transition-transform ${
+                isRinging ? 'animate-bounce scale-125 text-yellow-300' : ''
+              }`}
+            />
+            <span className="hidden xl:inline">{t('ఘంటానాదం', 'Bell')}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onOpenBooking}
+            className="hidden md:flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-amber-950 font-bold text-xs sm:text-sm rounded-full shadow-md transition-all font-telugu cursor-pointer shrink-0"
+          >
+            <Sparkles size={15} />
+            <span>{t('పూజ బుకింగ్', 'Book Pooja')}</span>
+          </button>
+
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 sm:py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm rounded-full shadow-md transition-all font-telugu shrink-0"
+          >
+            <MessageCircle size={15} />
+            <span className="hidden lg:inline">{t('వాట్సాప్ సంప్రదింపు', 'WhatsApp')}</span>
+            <span className="lg:hidden">8977986166</span>
+          </a>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2 rounded-xl bg-amber-900/80 text-amber-200 hover:bg-amber-800 border border-amber-600/50 cursor-pointer shrink-0"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Row 2: Navigation Tabs + Dedicated Topic Search Bar */}
+      <div ref={searchContainerRef} className="relative bg-[#240a02]/95 border-t border-amber-700/50">
+        {/* Mobile & Tablet (< lg): Quick Tab Strip + Search Button */}
+        <nav
+          aria-label="Quick Mobile Navigation"
+          className="lg:hidden px-2.5 py-1.5 flex items-center justify-between gap-2"
+        >
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar min-w-0 flex-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => handleTabClick(item.id)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-telugu font-bold transition-all cursor-pointer shrink-0 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 shadow-sm'
+                      : 'bg-amber-950/80 text-amber-100/90 border border-amber-700/50 hover:bg-amber-900'
+                  }`}
+                >
+                  <Icon size={13} className={isActive ? 'text-amber-950' : 'text-amber-400'} />
+                  <span>{language === 'en' ? item.shortLabelEn : item.shortLabelTe}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setIsSearchOpen(!isSearchOpen);
+              setTimeout(() => searchInputRef.current?.focus(), 50);
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-900 hover:bg-amber-800 text-amber-100 border border-amber-400/70 text-xs font-telugu font-bold cursor-pointer shrink-0 shadow-xs"
+            title={t('వెతకండి (Search Topics)', 'Search Topics')}
+            aria-label="Search astrological topics"
+          >
+            <Search size={13} className="text-amber-300 shrink-0" />
+            <span>{t('వెతకండి', 'Search')}</span>
+          </button>
+        </nav>
+
+        {/* Desktop (lg+): Primary Navigation Tabs + Search Input */}
+        <nav aria-label="Primary Navigation" className="hidden lg:block">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 py-2">
+            <div className="flex items-center gap-1.5 xl:gap-2 flex-wrap">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => handleTabClick(item.id)}
+                    className={`flex items-center gap-2 px-3.5 xl:px-4 py-2 rounded-xl text-sm font-telugu font-semibold transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 shadow-md font-bold scale-[1.02]'
+                        : 'text-amber-100/90 hover:bg-amber-900/70 hover:text-amber-200'
+                    }`}
+                  >
+                    <Icon size={16} className={isActive ? 'text-amber-950' : 'text-amber-400'} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Desktop Search Form cleanly placed in Navigation Row */}
+            <form onSubmit={handleSearchSubmit} className="flex items-center shrink-0">
+              <div className="flex items-center gap-2 w-64 xl:w-80 px-3.5 py-1.5 rounded-full bg-amber-950/90 hover:bg-amber-900/90 focus-within:bg-amber-950 border border-amber-500/70 focus-within:border-amber-300 transition-all shadow-inner">
+                <Search size={14} className="text-amber-300 shrink-0 pointer-events-none" />
                 <input
                   ref={searchInputRef}
                   type="search"
@@ -180,14 +341,11 @@ export const Header: React.FC<HeaderProps> = ({
                     setIsSearchOpen(true);
                   }}
                   placeholder={t(
-                    'వెతకండి: Vastu, Muhurtham, Pooja, జాతకం...',
-                    'Search Vastu, Muhurtham, Pooja, Jatakam...'
+                    'వెతకండి: వాస్తు, ముహూర్తం, పూజ, పంచాంగం, జాతకం...',
+                    'Search: Vastu, Muhurtham, Pooja, Panchangam, Jatakam...'
                   )}
-                  aria-label={t(
-                    'జ్యోతిష అంశాలను వెతకండి (Search Vastu, Muhurtham, Pooja services, Panchangam, Jatakam)',
-                    'Search astrological topics like Vastu, Muhurtham, Pooja services'
-                  )}
-                  className="w-40 md:w-52 lg:w-60 pl-8 pr-7 py-1.5 rounded-xl bg-amber-900/90 hover:bg-amber-900 focus:bg-amber-950 text-xs text-white placeholder-amber-300/75 border border-amber-600/80 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 transition-all"
+                  aria-label={t('జ్యోతిష అంశాలను వెతకండి', 'Search astrological topics')}
+                  className="w-full bg-transparent text-xs font-telugu text-white placeholder-amber-200/75 focus:outline-none"
                 />
                 {searchQuery && (
                   <button
@@ -196,7 +354,7 @@ export const Header: React.FC<HeaderProps> = ({
                       setSearchQuery('');
                       searchInputRef.current?.focus();
                     }}
-                    className="absolute right-2 text-amber-300 hover:text-white cursor-pointer"
+                    className="text-amber-300 hover:text-white cursor-pointer shrink-0"
                     aria-label="Clear search"
                   >
                     <X size={13} />
@@ -204,330 +362,138 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </div>
             </form>
+          </div>
+        </nav>
 
-            {/* Mobile Search Icon Button (< sm screens) */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsSearchOpen(!isSearchOpen);
-                setTimeout(() => searchInputRef.current?.focus(), 50);
-              }}
-              className="sm:hidden flex items-center justify-center w-8 h-8 rounded-full bg-amber-900 hover:bg-amber-800 text-amber-200 hover:text-white transition-all shadow-sm cursor-pointer border border-amber-700/60 shrink-0"
-              title={t('వెతకండి (Vastu, Muhurtham, Pooja...)', 'Search Topics')}
-              aria-label="Search astrological topics"
-            >
-              <Search size={15} className="text-amber-300" />
-            </button>
-
-            {/* Instant Search Results Popover */}
-            {isSearchOpen && (
-              <div className="fixed sm:absolute left-2 right-2 sm:left-auto sm:right-0 top-16 sm:top-full sm:mt-2 sm:w-[420px] bg-[#240c03] text-white rounded-2xl shadow-2xl border-2 border-amber-500/80 z-50 overflow-hidden">
-                {/* Mobile Search Input inside Popover */}
-                <form onSubmit={handleSearchSubmit} className="sm:hidden p-2.5 border-b border-amber-800/80 bg-amber-950">
-                  <div className="relative flex items-center">
-                    <Search size={15} className="absolute left-3 text-amber-300 pointer-events-none" />
-                    <input
-                      type="search"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder={t('Vastu, Muhurtham, Pooja, Jatakam వెతకండి...', 'Search Vastu, Muhurtham, Pooja...')}
-                      className="w-full pl-9 pr-8 py-2 rounded-xl bg-amber-900/90 text-xs text-white placeholder-amber-300/80 border border-amber-600 focus:outline-none focus:border-amber-400"
-                      autoFocus
-                    />
-                    {searchQuery && (
-                      <button
-                        type="button"
-                        onClick={() => setSearchQuery('')}
-                        className="absolute right-2.5 text-amber-300 hover:text-white"
-                      >
-                        <X size={14} />
-                      </button>
+        {/* Search Dropdown Panel */}
+        {isSearchOpen && (
+          <div className="max-w-7xl mx-auto relative">
+            <div className="fixed sm:absolute left-2 right-2 sm:left-auto sm:right-4 lg:right-8 top-28 sm:top-full sm:mt-1.5 sm:w-[420px] bg-[#2a0c03] text-white rounded-2xl shadow-2xl border-2 border-amber-400/80 z-50 overflow-hidden font-telugu">
+              {/* Mobile Search Input inside Popover */}
+              <form onSubmit={handleSearchSubmit} className="lg:hidden p-3 border-b border-amber-800/80">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-950 border border-amber-500">
+                  <Search size={15} className="text-amber-300 shrink-0 pointer-events-none" />
+                  <input
+                    type="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={t(
+                      'వాస్తు, ముహూర్తం, పూజ, పంచాంగం, జాతకం వెతకండి...',
+                      'Search Vastu, Muhurtham, Pooja, Panchangam...'
                     )}
-                  </div>
-                </form>
-
-                {/* Quick Filter Chips */}
-                <div className="px-3 py-2 bg-amber-950/90 border-b border-amber-800/70">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300">
-                      {t('త్వరిత అంశాలు (Quick Topics):', 'Popular Topics:')}
-                    </span>
+                    className="w-full bg-transparent text-xs text-white placeholder-amber-200/70 focus:outline-none"
+                    autoFocus
+                  />
+                  {searchQuery && (
                     <button
                       type="button"
-                      onClick={() => setIsSearchOpen(false)}
-                      className="text-[11px] text-amber-300 hover:text-white cursor-pointer"
+                      onClick={() => setSearchQuery('')}
+                      className="text-amber-300 hover:text-white shrink-0"
                     >
-                      ✕
+                      <X size={14} />
                     </button>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {QUICK_SEARCH_CHIPS.map((chip) => (
-                      <button
-                        key={chip.query}
-                        type="button"
-                        onClick={() => {
-                          setSearchQuery(chip.query);
-                          const matches = searchAstroTopics(chip.query);
-                          if (matches.length === 1) {
-                            handleTopicSelect(matches[0]);
-                          }
-                        }}
-                        className={`px-2 py-0.5 rounded-lg text-[11px] font-semibold border transition-all cursor-pointer ${
-                          searchQuery.toLowerCase() === chip.query.toLowerCase()
-                            ? 'bg-amber-400 text-amber-950 border-amber-200 font-bold'
-                            : 'bg-amber-900/80 hover:bg-amber-800 text-amber-100 border-amber-700/70'
-                        }`}
-                      >
-                        {language === 'en' ? chip.labelEn : chip.labelTe}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Matching Results List */}
-                <div className="max-h-80 overflow-y-auto divide-y divide-amber-900/70">
-                  {filteredTopics.length > 0 ? (
-                    filteredTopics.map((topic) => (
-                      <button
-                        key={topic.id}
-                        type="button"
-                        onClick={() => handleTopicSelect(topic)}
-                        className="w-full text-left px-3.5 py-2.5 hover:bg-amber-900/70 transition-colors flex items-start justify-between gap-2.5 cursor-pointer group"
-                      >
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="inline-block px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold">
-                              {language === 'en' ? topic.categoryEn : topic.categoryTe}
-                            </span>
-                            <span className="text-xs sm:text-sm font-bold text-amber-100 group-hover:text-amber-300 transition-colors">
-                              {language === 'en' ? topic.titleEn : topic.titleTe}
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-amber-200/80 mt-0.5 line-clamp-2">
-                            {language === 'en' ? topic.descriptionEn : topic.descriptionTe}
-                          </p>
-                        </div>
-                        <ArrowRight
-                          size={15}
-                          className="text-amber-400 group-hover:translate-x-0.5 transition-transform shrink-0 mt-1"
-                        />
-                      </button>
-                    ))
-                  ) : (
-                    <div className="p-4 text-center space-y-2">
-                      <p className="text-xs text-amber-200">
-                        {t(
-                          `"${searchQuery}" కోసం ఫలితాలు కనిపించలేదు. క్రింది ప్రధాన విభాగాలను చూడండి:`,
-                          `No direct match for "${searchQuery}". Try Vastu, Muhurtham, Pooja Services, or Jatakam.`
-                        )}
-                      </p>
-                      <div className="flex justify-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleTabClick('panchangam')}
-                          className="px-3 py-1 rounded-lg bg-amber-400 text-amber-950 text-xs font-bold cursor-pointer"
-                        >
-                          {t('పంచాంగం & వాస్తు', 'Panchangam & Vastu')}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleTabClick('services')}
-                          className="px-3 py-1 rounded-lg bg-emerald-600 text-white text-xs font-bold cursor-pointer"
-                        >
-                          {t('పూజా సేవలు', 'Pooja Services')}
-                        </button>
-                      </div>
-                    </div>
                   )}
                 </div>
+              </form>
+
+              {/* Quick Filter Chips for the 6 Core Topics */}
+              <div className="px-3.5 py-2.5 bg-amber-950/90 border-b border-amber-800/70">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300">
+                    {t('ముఖ్య విభాగాలు • Popular Topics', 'Popular Astrological Topics')}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsSearchOpen(false)}
+                    className="text-[11px] text-amber-300 hover:text-white cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {QUICK_SEARCH_CHIPS.map((chip) => (
+                    <button
+                      key={chip.query}
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery(chip.query);
+                        const matches = searchAstroTopics(chip.query);
+                        if (matches.length === 1) {
+                          handleTopicSelect(matches[0]);
+                        }
+                      }}
+                      className={`px-2.5 py-1 rounded-full text-[11px] font-bold border transition-all cursor-pointer ${
+                        searchQuery.toLowerCase() === chip.query.toLowerCase()
+                          ? 'bg-amber-400 text-amber-950 border-amber-200'
+                          : 'bg-amber-900/70 hover:bg-amber-800 text-amber-100 border-amber-600/60'
+                      }`}
+                    >
+                      {language === 'en' ? chip.labelEn : chip.labelTe}
+                    </button>
+                  ))}
+                </div>
               </div>
-            )}
+
+              {/* Matching Results List */}
+              <div className="max-h-80 overflow-y-auto divide-y divide-amber-800/50">
+                {filteredTopics.length > 0 ? (
+                  filteredTopics.map((topic) => (
+                    <button
+                      key={topic.id}
+                      type="button"
+                      onClick={() => handleTopicSelect(topic)}
+                      className="w-full text-left px-4 py-3 hover:bg-amber-900/70 transition-colors flex items-start justify-between gap-3 cursor-pointer group"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            {language === 'en' ? topic.categoryEn : topic.categoryTe}
+                          </span>
+                        </div>
+                        <div className="text-xs sm:text-sm font-bold text-amber-100 group-hover:text-amber-300 mt-1">
+                          {language === 'en' ? topic.titleEn : topic.titleTe}
+                        </div>
+                        <p className="text-[11px] text-amber-200/80 mt-0.5 line-clamp-2">
+                          {language === 'en' ? topic.descriptionEn : topic.descriptionTe}
+                        </p>
+                      </div>
+                      <ArrowRight
+                        size={15}
+                        className="text-amber-400 group-hover:translate-x-1 transition-transform shrink-0 mt-2"
+                      />
+                    </button>
+                  ))
+                ) : (
+                  <div className="p-4 text-center space-y-2">
+                    <p className="text-xs text-amber-200">
+                      {t(
+                        `"${searchQuery}" కోసం ప్రత్యక్ష ఫలితాలు కనిపించలేదు. క్రింది ప్రధాన విభాగాలను చూడండి:`,
+                        `No direct match for "${searchQuery}". Explore our main sections:`
+                      )}
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-2 pt-1">
+                      {ASTRO_SEARCH_TOPICS.slice(0, 4).map((fallback) => (
+                        <button
+                          key={fallback.id}
+                          type="button"
+                          onClick={() => handleTopicSelect(fallback)}
+                          className="px-3 py-1 rounded-full bg-amber-800 hover:bg-amber-700 text-amber-100 text-xs font-bold cursor-pointer"
+                        >
+                          {language === 'en' ? fallback.categoryEn : fallback.categoryTe}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-
-          {/* State-Based Language Switcher (Telugu / English) */}
-          <div
-            role="group"
-            aria-label="Language Switcher"
-            className="inline-flex items-center bg-amber-900/95 border border-amber-600/80 rounded-xl p-0.5 shadow-inner shrink-0"
-          >
-            <Globe size={13} className="text-amber-300 ml-1.5 mr-1 hidden sm:inline shrink-0" />
-            <button
-              type="button"
-              onClick={() => setLanguage('te')}
-              className={`px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
-                language === 'te'
-                  ? 'bg-amber-400 text-amber-950 shadow-2xs'
-                  : 'text-amber-200 hover:text-white'
-              }`}
-              title="తెలుగులో చూడండి (Switch to Telugu)"
-              aria-pressed={language === 'te'}
-            >
-              తెలుగు
-            </button>
-            <button
-              type="button"
-              onClick={() => setLanguage('en')}
-              className={`px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold font-sans transition-all cursor-pointer ${
-                language === 'en'
-                  ? 'bg-amber-400 text-amber-950 shadow-2xs'
-                  : 'text-amber-200 hover:text-white'
-              }`}
-              title="View in English (Switch to English)"
-              aria-pressed={language === 'en'}
-            >
-              EN
-            </button>
-          </div>
-
-          {/* 1. Temple Bell */}
-          <button
-            type="button"
-            onClick={handleBellRing}
-            className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-amber-900 hover:bg-amber-800 text-amber-200 hover:text-white transition-all shadow-sm cursor-pointer border border-amber-700/60 shrink-0"
-            title={t('కోవెల ఘంటానాదం (Ring Temple Bell)', 'Ring Temple Bell')}
-            aria-label="Ring Temple Bell"
-          >
-            <Bell size={15} className="text-amber-300" />
-          </button>
-
-          {/* 2. Home Page Button (Desktop lg+) */}
-          <button
-            type="button"
-            onClick={() => handleTabClick('home')}
-            className={`hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all transform active:scale-95 cursor-pointer border ${
-              activeTab === 'home'
-                ? 'bg-amber-800 text-amber-100 border-amber-400 shadow-inner ring-1 ring-amber-400/50'
-                : 'bg-amber-900/80 hover:bg-amber-800 text-amber-100 hover:text-white border-amber-700/60'
-            }`}
-            title={t('హోమ్ పేజీ', 'Home')}
-          >
-            <Home size={14} className="text-amber-300 shrink-0" />
-            <span>{t('హోమ్ పేజీ', 'Home')}</span>
-          </button>
-
-          {/* 3. Panchangam Button (Desktop md+) */}
-          <button
-            type="button"
-            onClick={() => handleTabClick('panchangam')}
-            className={`hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all transform active:scale-95 cursor-pointer border ${
-              activeTab === 'panchangam'
-                ? 'bg-amber-400 text-amber-950 border-amber-200 font-bold shadow-sm'
-                : 'bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-700 hover:to-amber-600 text-white border-amber-600/60 shadow-sm'
-            }`}
-            title={t('నిత్య పంచాంగం తెరవండి', 'Open Daily Panchangam')}
-          >
-            <Calendar size={14} className={activeTab === 'panchangam' ? 'text-amber-950 shrink-0' : 'text-amber-300 shrink-0'} />
-            <span>{t('పంచాంగం', 'Panchangam')}</span>
-          </button>
-
-          {/* 4. Mee Jatakam Telusukondi Button (Desktop md+) */}
-          <button
-            type="button"
-            onClick={() => handleTabClick('jathakam')}
-            className={`hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all transform active:scale-95 cursor-pointer border ${
-              activeTab === 'jathakam'
-                ? 'bg-gradient-to-r from-amber-300 via-amber-400 to-amber-300 text-amber-950 border-white shadow-md ring-2 ring-amber-300/60'
-                : 'bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-400 text-amber-950 border-amber-300 shadow-sm'
-            }`}
-            title={t('మీ జాతకం తెలుసుకోండి (ఉచిత జన్మ కుండలి & సంపూర్ణ జాతక ఫలితాలు)', 'Know Your Horoscope (Free Janma Kundali & Report)')}
-          >
-            <Compass size={15} className="text-amber-950 shrink-0" />
-            <span>{t('మీ జాతకం తెలుసుకోండి', 'Know Your Horoscope')}</span>
-          </button>
-
-          {/* 5. Satkaralu (Awards) Button (Desktop xl+) */}
-          <button
-            type="button"
-            onClick={() => handleTabClick('awards')}
-            className={`hidden 2xl:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all transform active:scale-95 cursor-pointer border ${
-              activeTab === 'awards'
-                ? 'bg-amber-800 text-amber-100 border-amber-400 shadow-inner ring-1 ring-amber-400/50'
-                : 'bg-amber-900/70 hover:bg-amber-800 text-amber-100 border-amber-700/60'
-            }`}
-          >
-            <Award size={14} className="text-amber-300 shrink-0" />
-            <span>{t('సత్కారాలు', 'Honors')}</span>
-          </button>
-
-          {/* Additional Desktop Links (Services, Contact) */}
-          <button
-            type="button"
-            onClick={() => handleTabClick('services')}
-            className={`hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${
-              activeTab === 'services'
-                ? 'bg-amber-800 text-amber-100 border-amber-400 shadow-inner'
-                : 'bg-amber-900/60 hover:bg-amber-800 text-amber-200 hover:text-white border-amber-800'
-            }`}
-          >
-            <span>{t('పూజా సేవలు', 'Pooja Services')}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleTabClick('contact')}
-            className={`hidden 2xl:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${
-              activeTab === 'contact'
-                ? 'bg-amber-800 text-amber-100 border-amber-400 shadow-inner'
-                : 'bg-amber-900/60 hover:bg-amber-800 text-amber-200 hover:text-white border-amber-800'
-            }`}
-          >
-            <span>{t('సంప్రదించండి', 'Contact')}</span>
-          </button>
-
-          {/* Primary Pooja Booking CTA - Shown on lg+ */}
-          <button
-            type="button"
-            onClick={onOpenBooking}
-            className="hidden lg:flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all transform active:scale-95 cursor-pointer shrink-0 border border-emerald-400/50"
-          >
-            <Sparkles size={14} className="shrink-0" />
-            <span>{t('పూజ బుకింగ్', 'Book Pooja')}</span>
-          </button>
-
-          {/* Mobile / Tablet Drawer Toggle Button */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="xl:hidden p-2 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-200 hover:text-white transition-colors cursor-pointer border border-amber-700/60 shrink-0"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-        </div>
+        )}
       </div>
 
-      {/* STYLISH MOBILE & TABLET QUICK NAVIGATION RIBBON (Visible on < md screens) */}
-      <div className="md:hidden bg-[#2b0f04] border-t border-amber-800/80 px-2.5 py-2 overflow-x-auto no-scrollbar">
-        <div className="flex items-center gap-1.5 min-w-max">
-          {navItems.slice(0, 5).map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            const isJathakam = item.id === 'jathakam';
-
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => handleTabClick(item.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 border ${
-                  isActive
-                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 border-amber-200 shadow-sm'
-                    : isJathakam
-                    ? 'bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-white border-amber-400/80 shadow-2xs'
-                    : 'bg-amber-900/70 text-amber-100 border-amber-800/80 hover:bg-amber-800'
-                }`}
-              >
-                <Icon size={13} className={isActive ? 'text-amber-950 shrink-0' : 'text-amber-300 shrink-0'} />
-                <span>{language === 'en' ? item.shortLabelEn : item.shortLabelTe}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Mobile Drawer */}
+      {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="xl:hidden bg-amber-950 border-t border-amber-800 p-4 space-y-2 animate-fadeIn">
+        <div className="lg:hidden bg-[#240a02] border-t border-amber-700/60 px-4 py-4 space-y-2 shadow-2xl">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -536,60 +502,42 @@ export const Header: React.FC<HeaderProps> = ({
                 key={item.id}
                 type="button"
                 onClick={() => handleTabClick(item.id)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-base font-telugu font-semibold transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-amber-400 text-amber-950 font-bold border border-amber-200'
-                    : item.id === 'jathakam'
-                    ? 'bg-amber-900/90 text-amber-100 border border-amber-500/70'
-                    : 'text-amber-200 hover:bg-amber-900'
+                    ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 font-bold shadow-md'
+                    : 'text-amber-100 hover:bg-amber-900/60'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <Icon size={18} className={isActive ? 'text-amber-950' : 'text-amber-400'} />
                   <span>{item.label}</span>
                 </div>
-                {item.badge && (
-                  <span
-                    className={`text-[10px] px-2 py-0.5 font-bold rounded-md ${
-                      isActive ? 'bg-amber-950 text-amber-200' : 'bg-amber-400 text-amber-950'
-                    }`}
-                  >
-                    {item.badge}
-                  </span>
-                )}
+                <span className="text-xs opacity-75">→</span>
               </button>
             );
           })}
 
-          {/* Quick Pooja Booking in Mobile Drawer */}
-          <div className="pt-2">
+          <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-amber-800/60">
             <button
               type="button"
               onClick={() => {
                 onOpenBooking();
                 setMobileMenuOpen(false);
               }}
-              className="w-full flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white rounded-xl font-bold text-sm shadow-md cursor-pointer transition-transform active:scale-95"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-amber-500 to-orange-600 text-amber-950 rounded-xl font-bold font-telugu text-sm shadow-md cursor-pointer"
             >
               <Sparkles size={16} />
-              <span>{t('పూజ బుకింగ్ చేయండి', 'Book a Vedic Pooja')}</span>
+              <span>{t('ఆన్‌లైన్ పూజ బుకింగ్ చేయండి', 'Book a Vedic Pooja Online')}</span>
             </button>
-          </div>
 
-          <div className="pt-2 border-t border-amber-900">
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 p-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-sm"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-emerald-600 text-white rounded-xl font-bold font-telugu text-sm shadow-md"
             >
-              <MessageCircle size={18} />
-              <span>
-                {t(
-                  'ధీరజ్ శర్మ గారితో వాట్సాప్‌లో మాట్లాడండి (8977986166)',
-                  'Chat with Guruji on WhatsApp (8977986166)'
-                )}
-              </span>
+              <MessageCircle size={16} />
+              <span>{t('వాట్సాప్ సంప్రదింపు (8977986166)', 'WhatsApp Guruji (8977986166)')}</span>
             </a>
           </div>
         </div>

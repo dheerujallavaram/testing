@@ -63,12 +63,12 @@ export const LiveSiteAnnouncementBanner: React.FC<LiveSiteAnnouncementBannerProp
   return (
     <div
       data-nosnippet
-      className="bg-gradient-to-r from-[#2c0e04] via-amber-950 to-[#2c0e04] text-amber-100 border-b-2 border-amber-500/70 shadow-md no-print"
+      className="bg-gradient-to-r from-[#2b0902] via-[#4a1205] to-[#2b0902] text-amber-100 border-b-2 border-amber-400/80 shadow-md no-print"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3 font-telugu">
         <div className="space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-amber-400 text-amber-950 text-[11px] font-extrabold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-extrabold shadow-xs">
               <Sparkles size={12} />
               <span>{announcement.badgeTe}</span>
             </span>
@@ -76,7 +76,7 @@ export const LiveSiteAnnouncementBanner: React.FC<LiveSiteAnnouncementBannerProp
               {language === 'en' ? announcement.titleEn : announcement.titleTe}
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-amber-100/90 leading-relaxed">
+          <p className="text-xs sm:text-sm text-amber-100/95 leading-relaxed">
             {language === 'en' ? announcement.messageEn : announcement.messageTe}
           </p>
           {announcement.consultationHoursTe && (
@@ -94,7 +94,7 @@ export const LiveSiteAnnouncementBanner: React.FC<LiveSiteAnnouncementBannerProp
           <button
             type="button"
             onClick={handleAction}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 font-extrabold text-xs sm:text-sm shadow-sm transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-amber-950 font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
           >
             {announcement.ctaTarget === 'whatsapp' ? <MessageCircle size={15} /> : <Sparkles size={15} />}
             <span>{announcement.ctaLabelTe}</span>

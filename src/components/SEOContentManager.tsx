@@ -553,6 +553,7 @@ export const SEOContentManager: React.FC<SEOContentManagerProps> = ({
     };
 
     setMeta('meta[name="description"]', 'name', 'description', currentRouteEntry.metaDescription);
+    setMeta('meta[name="robots"]', 'name', 'robots', 'noindex, follow');
     setMeta('meta[name="article:description"]', 'name', 'article:description', currentRouteEntry.metaDescription);
     setMeta('meta[property="og:title"]', 'property', 'og:title', currentRouteEntry.titleTe);
     setMeta('meta[property="og:description"]', 'property', 'og:description', currentRouteEntry.metaDescription);

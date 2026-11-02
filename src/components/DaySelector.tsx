@@ -41,18 +41,16 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ days, selectedDayId, o
   };
 
   return (
-    <div className="bg-gradient-to-r from-amber-50 via-white to-amber-50 border border-amber-300/80 rounded-2xl p-3.5 sm:p-5 shadow-sm font-telugu">
+    <div className="bg-gradient-to-r from-amber-100/90 via-[#fff9ed] to-amber-100/90 border-2 border-amber-400/80 rounded-3xl p-3.5 sm:p-5 shadow-md font-telugu">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
-        {/* Left side: "నేడు" & "రేపు" quick toggle buttons - Grid on mobile, flex on desktop */}
         <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full md:w-auto shrink-0">
-          {/* నేడు (Today) button */}
           <button
             type="button"
             onClick={() => onSelectDay(todayId)}
-            className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer border ${
+            className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer border-2 min-w-0 ${
               isToday
-                ? 'bg-amber-800 text-white border-amber-900 shadow-md ring-2 ring-amber-400/80 scale-[1.01]'
-                : 'bg-white hover:bg-amber-100/70 text-amber-900 border-amber-300 hover:border-amber-400 shadow-2xs'
+                ? 'bg-gradient-to-r from-amber-800 to-amber-950 text-amber-100 border-amber-500 shadow-md'
+                : 'bg-white hover:bg-amber-50 text-amber-950 border-amber-300 shadow-2xs'
             }`}
             title={t(
               `నేటి పంచాంగానికి వెళ్లండి (${todayDay.dateNum} ${todayDay.monthName})`,
@@ -65,14 +63,13 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ days, selectedDayId, o
             </span>
           </button>
 
-          {/* రేపు (Tomorrow) button */}
           <button
             type="button"
             onClick={() => onSelectDay(tomorrowId)}
-            className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer border ${
+            className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer border-2 min-w-0 ${
               isTomorrow
-                ? 'bg-amber-800 text-white border-amber-900 shadow-md ring-2 ring-amber-400/80 scale-[1.01]'
-                : 'bg-white hover:bg-amber-100/70 text-amber-900 border-amber-300 hover:border-amber-400 shadow-2xs'
+                ? 'bg-gradient-to-r from-amber-800 to-amber-950 text-amber-100 border-amber-500 shadow-md'
+                : 'bg-white hover:bg-amber-50 text-amber-950 border-amber-300 shadow-2xs'
             }`}
             title={t(
               `రేపటి పంచాంగానికి వెళ్లండి (${tomorrowDay.dateNum} ${tomorrowDay.monthName})`,
@@ -86,17 +83,15 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ days, selectedDayId, o
           </button>
         </div>
 
-        {/* Right side: Single Dropdown Menu + Prev/Next Controls */}
         <div className="flex items-center gap-2 w-full md:w-auto">
-          {/* Previous day button */}
           <button
             type="button"
             onClick={handlePrev}
             disabled={currentIndex <= 0}
-            className={`p-2.5 rounded-xl border transition-all shrink-0 ${
+            className={`p-2.5 rounded-2xl border-2 transition-all shrink-0 ${
               currentIndex <= 0
-                ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200'
-                : 'bg-white hover:bg-amber-100 text-amber-900 border-amber-300 shadow-2xs cursor-pointer hover:scale-105 active:scale-95'
+                ? 'opacity-40 cursor-not-allowed bg-amber-100/50 text-amber-700 border-amber-200'
+                : 'bg-white hover:bg-amber-50 text-amber-900 border-amber-300 shadow-2xs cursor-pointer'
             }`}
             title={t('మునుపటి రోజు', 'Previous Day')}
             aria-label="Previous day"
@@ -104,9 +99,8 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ days, selectedDayId, o
             <ChevronLeft size={18} />
           </button>
 
-          {/* Dropdown Select for curated days */}
-          <div className="relative flex-1 md:w-72 lg:w-80">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-amber-700">
+          <div className="relative flex-1 md:w-80 lg:w-96">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-800">
               <Calendar size={16} />
             </div>
             <select
@@ -114,7 +108,7 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ days, selectedDayId, o
               onChange={(e) => {
                 if (e.target.value) onSelectDay(e.target.value);
               }}
-              className="w-full bg-white text-amber-950 font-semibold text-xs sm:text-sm pl-9 pr-8 py-2.5 rounded-xl border-2 border-amber-400/80 focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 shadow-xs cursor-pointer appearance-none transition-colors"
+              className="w-full bg-white text-amber-950 font-bold text-xs sm:text-sm pl-10 pr-8 py-2.5 rounded-2xl border-2 border-amber-400 focus:border-amber-700 focus:outline-none shadow-2xs cursor-pointer appearance-none transition-colors"
               aria-label={t('తేదీని ఎంచుకోండి', 'Select Date')}
             >
               {currentIndex < 0 && (
@@ -124,16 +118,15 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ days, selectedDayId, o
               )}
               {days.map((d) => (
                 <option key={d.id} value={d.id}>
-                  {tr(d.teediVaram)} {d.specialEvent ? `• ${tr(d.specialEvent)}` : ''}
+                  {tr(d.teediVaram)} {d.specialEvent ? `• ★ ${tr(d.specialEvent)}` : ''}
                 </option>
               ))}
             </select>
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-amber-800">
-              <span className="text-[10px] font-bold">▼</span>
+            <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-amber-800">
+              <span className="text-xs font-bold">▼</span>
             </div>
           </div>
 
-          {/* Unlimited Year Calendar Date Picker (1900 - 2100 via astronomy-engine) */}
           <input
             type="date"
             min="1900-01-01"
@@ -142,20 +135,19 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ days, selectedDayId, o
             onChange={(e) => {
               if (e.target.value) onSelectDay(e.target.value);
             }}
-            className="bg-amber-100/80 hover:bg-amber-200/70 text-amber-950 font-mono font-bold text-xs px-2.5 py-2.5 rounded-xl border border-amber-400 cursor-pointer shrink-0"
+            className="bg-amber-900 hover:bg-amber-800 text-amber-100 font-mono font-bold text-xs px-2.5 py-2.5 rounded-2xl border-2 border-amber-400 cursor-pointer shrink-0 shadow-xs"
             title={t('ఏ సంవత్సరం తేదీనైనా ఎంచుకోండి (1900–2100)', 'Pick any date across any year (1900–2100)')}
             aria-label={t('ఏ తేదీనైనా ఎంచుకోండి', 'Pick any calendar date')}
           />
 
-          {/* Next day button */}
           <button
             type="button"
             onClick={handleNext}
             disabled={currentIndex >= days.length - 1}
-            className={`p-2.5 rounded-xl border transition-all shrink-0 ${
+            className={`p-2.5 rounded-2xl border-2 transition-all shrink-0 ${
               currentIndex >= days.length - 1
-                ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200'
-                : 'bg-white hover:bg-amber-100 text-amber-900 border-amber-300 shadow-2xs cursor-pointer hover:scale-105 active:scale-95'
+                ? 'opacity-40 cursor-not-allowed bg-amber-100/50 text-amber-700 border-amber-200'
+                : 'bg-white hover:bg-amber-50 text-amber-900 border-amber-300 shadow-2xs cursor-pointer'
             }`}
             title={t('తదుపరి రోజు', 'Next Day')}
             aria-label="Next day"
