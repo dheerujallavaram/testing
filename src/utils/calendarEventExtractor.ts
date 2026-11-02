@@ -57,8 +57,8 @@ const TEMPLE_GRAND_RITUALS: DynamicCalendarEvent[] = [
     deityTe: 'శ్రీ చండీ పరమేశ్వరి, పరమశివుడు (రుద్రుడు)',
     muhurthamTe: 'కుమార షష్ఠి & అభిజిత్ ముహూర్తం (ఉదయం 11:35 AM)',
     muhurthamEn: 'Kumara Shashthi & Abhijit Muhurtham (11:35 AM IST)',
-    venueTe: 'శ్రీలక్ష్మి గణపతి వైదిక క్షేత్రం, తిరుపతి (Live Webcast for Global Devotees)',
-    venueEn: 'Sreelakshmi Ganapathi Vedic Kshetram, Tirupati (Global Live Webcast)',
+    venueTe: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం, హైదరాబాద్ (Live Webcast for Global Devotees)',
+    venueEn: 'Sreelakshmi Ganapathi Jyothishalayam, Hyderabad (Global Live Webcast)',
     descriptionTe: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్వర్యంలో 11 మంది స్మార్త వేద పండితులచే సంపూర్ణ చండీ సప్తశతి పారాయణం, మహన్యాసపూర్వక ఏకాదశ రుద్రాభిషేకం మరియు మహా పూర్ణాహుతి శాస్త్రోక్తంగా నిర్వహించబడును.',
     descriptionEn: 'Conducted under the personal auspices of Sri Jallavaram Sai Dheeraj Sharma with 11 Vedic scholars. Features complete Chandi Saptashati parayanam, Ekadasa Rudrabhishekam with Mahanyasam, and Maha Purnahuti.',
     benefitsTe: [
@@ -112,8 +112,8 @@ const TEMPLE_GRAND_RITUALS: DynamicCalendarEvent[] = [
     deityTe: 'పరమశివుడు (జ్వాలా లింగేశ్వరుడు), శ్రీమన్నారాయణుడు',
     muhurthamTe: 'ప్రదోష కాలం & జ్వాలా తోరణ ముహూర్తం (సాయంత్రం 06:15 PM)',
     muhurthamEn: 'Pradosha Sandhya & Jwala Toranam (06:15 PM IST)',
-    venueTe: 'శ్రీలక్ష్మి గణపతి క్షేత్రం, తిరుపతి (Live Streamed to Devotees)',
-    venueEn: 'Sreelakshmi Ganapathi Kshetram, Tirupati (Live Streamed)',
+    venueTe: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం, హైదరాబాద్ (Live Streamed to Devotees)',
+    venueEn: 'Sreelakshmi Ganapathi Jyothishalayam, Hyderabad (Live Streamed)',
     descriptionTe: 'సంవత్సరంలో అత్యంత మహిమాన్వితమైన కార్తీక పౌర్ణమి నాడు శివానుగ్రహం కొరకు విశేష రుద్రాభిషేకం, జ్వాలా తోరణ దర్శనం మరియు కోటి దీపారాధన సంకల్పం.',
     descriptionEn: 'Special Ekadasa Rudrabhishekam, holy Jwala Toranam crossing, and Koti Deepam illumination on the spiritually charged night of Kartika Pournami.',
     benefitsTe: [
@@ -163,8 +163,8 @@ const TEMPLE_GRAND_RITUALS: DynamicCalendarEvent[] = [
     deityTe: 'శ్రీ మహాలక్ష్మి దేవి, శ్రీ కుబేర స్వామి',
     muhurthamTe: 'కనకధార యోగం & ధన ముహూర్తం (ఉదయం 09:15 AM)',
     muhurthamEn: 'Kanakadhara Yoga Auspicious Hour (09:15 AM IST)',
-    venueTe: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం యాగశాల, తిరుపతి',
-    venueEn: 'Sreelakshmi Ganapathi Yagashala, Tirupati (Global Live Stream)',
+    venueTe: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం యాగశాల, హైదరాబాద్',
+    venueEn: 'Sreelakshmi Ganapathi Yagashala, Hyderabad (Global Live Stream)',
     descriptionTe: 'ఆర్థిక ఇబ్బందుల నుండి విముక్తి, వ్యాపార విస్తరణ మరియు స్థిర లక్ష్మీ కటాక్షం కోసం నిర్వహించబడే పరమ పవిత్రమైన కుబేర పాశుపత లక్ష్మీ యజ్ఞం.',
     descriptionEn: 'Vedic rite invoking Goddess Mahalakshmi and Lord Kubera for elimination of financial blockages, steady prosperity, and sustainable wealth.',
     benefitsTe: [

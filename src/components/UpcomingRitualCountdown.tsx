@@ -152,14 +152,19 @@ export const UpcomingRitualCountdown: React.FC<UpcomingRitualCountdownProps> = (
       endDate: new Date(new Date(currentEvent.targetDateISO).getTime() + 6 * 60 * 60 * 1000).toISOString(),
       eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
       eventStatus: 'https://schema.org/EventScheduled',
+      image: [
+        'https://www.telugujyothisham.com/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg',
+        'https://www.telugujyothisham.com/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg',
+        'https://www.telugujyothisham.com/favicon-512x512.png',
+      ],
       location: [
         {
           '@type': 'Place',
-          name: language === 'en' ? (currentEvent.venueEn || 'Tirupati Vedic Kshetram') : (currentEvent.venueTe || 'శ్రీలక్ష్మి గణపతి క్షేత్రం, తిరుపతి'),
+          name: language === 'en' ? (currentEvent.venueEn || 'Sreelakshmi Ganapathi Jyothishalayam, Hyderabad') : (currentEvent.venueTe || 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం, హైదరాబాద్'),
           address: {
             '@type': 'PostalAddress',
-            addressLocality: 'Tirupati',
-            addressRegion: 'Andhra Pradesh',
+            addressLocality: 'Hyderabad',
+            addressRegion: 'Telangana',
             addressCountry: 'IN',
           },
         },
@@ -169,9 +174,24 @@ export const UpcomingRitualCountdown: React.FC<UpcomingRitualCountdownProps> = (
         },
       ],
       description: language === 'en' ? currentEvent.descriptionEn : currentEvent.descriptionTe,
+      performer: {
+        '@type': 'Person',
+        name: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (Brahmasri Jallavaram Sai Dheeraj Sharma)',
+        url: 'https://www.telugujyothisham.com/about',
+        jobTitle: 'Vedic Astrologer & Smartha Purohit',
+      },
+      offers: {
+        '@type': 'Offer',
+        name: language === 'en' ? `${currentEvent.titleEn} — Sankalpam Registration` : `${currentEvent.titleTe} — సంకల్పం నమోదు`,
+        url: 'https://www.telugujyothisham.com/services',
+        price: '0',
+        priceCurrency: 'INR',
+        availability: 'https://schema.org/InStock',
+        validFrom: `${currentEvent.isoDate}T00:00:00+05:30`,
+      },
       organizer: {
         '@type': 'Person',
-        name: 'శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ (Sri Jallavaram Sai Dheeraj Sharma)',
+        name: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (Brahmasri Jallavaram Sai Dheeraj Sharma)',
         url: 'https://www.telugujyothisham.com/about',
         jobTitle: 'Vedic Astrologer & Smartha Purohit',
       },
@@ -540,7 +560,7 @@ export const UpcomingRitualCountdown: React.FC<UpcomingRitualCountdownProps> = (
                   {t('వేదిక & లైవ్ ప్రసారం', 'Venue & Webcast')}
                 </span>
                 <span className="font-semibold text-xs leading-snug">
-                  {language === 'en' ? (currentEvent.venueEn || 'Tirupati Vedic Kshetram') : (currentEvent.venueTe || 'శ్రీలక్ష్మి గణపతి వైదిక క్షేత్రం, తిరుపతి')}
+                  {language === 'en' ? (currentEvent.venueEn || 'Sreelakshmi Ganapathi Jyothishalayam, Hyderabad') : (currentEvent.venueTe || 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం, హైదరాబాద్')}
                 </span>
               </div>
             </div>

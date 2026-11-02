@@ -857,15 +857,35 @@ export function syncAutomatedDailySeoSchema(
       eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
       eventStatus: 'https://schema.org/EventScheduled',
       description: `${day.teediVaram} విశేషం: ${day.specialEvent}. ${day.phalitham}`,
+      image: [
+        `${baseUrl}/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg`,
+        `${baseUrl}/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg`,
+        `${baseUrl}/favicon-512x512.png`,
+      ],
       location: {
         '@type': 'Place',
-        name: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (Telugu Jyothisham)',
+        name: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం, హైదరాబాద్ (Telugu Jyothisham)',
         address: {
           '@type': 'PostalAddress',
           addressLocality: 'Hyderabad',
           addressRegion: 'Telangana',
           addressCountry: 'IN',
         },
+      },
+      performer: {
+        '@type': 'Person',
+        '@id': `${baseUrl}/#guruji-eeat`,
+        name: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (Brahmasri Jallavaram Sai Dheeraj Sharma)',
+        url: `${baseUrl}/about`,
+      },
+      offers: {
+        '@type': 'Offer',
+        name: `${day.specialEvent} — పంచాంగ విశేషాలు & ఉచిత సంకల్పం`,
+        url: fullUrl,
+        price: '0',
+        priceCurrency: 'INR',
+        availability: 'https://schema.org/InStock',
+        validFrom: `${day.isoDate}T00:00:00+05:30`,
       },
       organizer: {
         '@id': `${baseUrl}/#organization`,

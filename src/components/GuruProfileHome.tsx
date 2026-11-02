@@ -198,7 +198,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
               <OmEmblem className="w-6 h-6 text-amber-400" size={24} />
               <span className="text-amber-300 text-xs font-bold uppercase tracking-widest font-display">
-                {t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం · తిరుపతి క్షేత్రం', 'Sri Lakshmi Ganapathi Jyothishalayam · Tirupati')}
+                {t('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం · హైదరాబాద్', 'Sri Lakshmi Ganapathi Jyothishalayam · Hyderabad')}
               </span>
             </div>
 
