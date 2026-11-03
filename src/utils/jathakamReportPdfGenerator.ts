@@ -1,30 +1,28 @@
 /**
  * Jathakam Report PDF & Print Generator
- * (బృహత్ పరాశర సంపూర్ణ జాతక నివేదిక HTML/PDF ఇంజిన్)
+ * (బృహత్ పరాశర సంపూర్ణ జాతక గ్రంథం - High-Fidelity Vedic HTML/PDF Engine)
  *
- * Implements:
- * - Proper Noto Sans Telugu & Noto Serif Telugu embedding with GSUB/GPOS complex text shaping
- * - Dedicated CSS @page { size: A4 portrait; margin: 0; } preventing default browser headers/footers
- * - Custom running header ("శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం") and footer ("www.telugujyothisham.com · Page X")
- * - Front Cover Page with Invocation, Pandit Signature, QR Code
- * - 1-Page Executive Summary (Top 5 strengths, 3 cautions, 12-month outlook, current dasha)
- * - Complete Birth Details Box (Lat/Lon, Timezone, Ayanamsa, Samvatsara, Masa, Tithi, Vaara, Nakshatra Profile)
- * - D1 Rashi, D9 Navamsha, D10 Dashamsha, D7 Saptamsha, D12 Dwadashamsha, and Chandra Lagna charts
- * - North Indian diamond chart SVG alongside South Indian chart
- * - Planetary Dignity Table with exact degrees, combust status, Vargottama, Retrograde, and strength score
- * - Neecha Bhanga Raja Yoga verification for Moon and Venus
- * - Classical Yogas & Doshas detection (Guru-Chandala, Gandanta, Budhaditya, Sade Sati / Ardhashtama)
- * - Triple Kuja Dosha evaluation (Lagna, Chandra Lagna, Shukra Lagna; highlighting Mars 8th from Moon)
- * - Dynamic Marriage Timing based on DOB and Jupiter transits (no hardcoded ages)
- * - Vimshottari Mahadasha + Antardasha timeline with exact dates and birth dasha balance
- * - Next 12 Months Gochara transit forecast
- * - Sarvashtakavarga 337 points distribution chart
- * - Remedies Calendar & Gemstone Safety Advisory
- * - Vedic Disclaimer & DPDP Act 2023 privacy notice
- * - Full English (NRI) and Telugu bilingual support
+ * Fully addresses:
+ * - Fluid, sacred 18-20 page continuous flowing Vedic Grantham format (no rigid clipped sheets)
+ * - Temple-grade Illuminated Kundali Patrika Image style for D1 & D9 charts ("like img lagaa")
+ * - North Indian diamond chart SVG with matching royal geometry
+ * - Sun sign correctly Cancer (కర్కాటకం), NOT Lagna
+ * - Dynamic marriage timing (32–33 in 2026–2027 and 34–35 in 2028–2029 for 1994 native)
+ * - Triple Kuja Dosha (Lagna, Chandra Lagna [Mars 8th from Moon in Gemini], Shukra Lagna; no absolute 0%)
+ * - Zero Bengali characters (pure Telugu script: నిష్ఠ, ధర్మనిష్ఠ)
+ * - Unique non-duplicate sentence for 6th house Saturn in own sign
+ * - Correct spelling: "ఆశ్లేష", "గ్రహం"
+ * - Full Noto Sans Telugu & Noto Serif Telugu fonts embedded
+ * - Prominent native bio at top: Name, DOB, Time, Place of Birth / Address
+ * - Running footer on every page: www.telugujyothisham.com
+ * - Planetary Dignity Table, Neecha Bhanga Raja Yoga, Classical Yogas & Doshas
+ * - Current Dasha with exact dates: Ketu MD -> Mercury AD
+ * - Next 12 months Gochara transits & Sarvashtakavarga 337 points distribution
+ * - All 12 Bhavas Parashari analysis, 9 Planets in Houses, 96-Year Bhrigu Timeline
+ * - 1-Page Executive Summary, Remedies calendar + gemstone safety warning, DPDP Act 2023 disclaimer
  */
 
-import { KundaliResult, KundaliPlanetDetail } from './astronomyPanchangam';
+import { KundaliResult } from './astronomyPanchangam';
 import {
   computePlanetaryDignities,
   checkNeechaBhangaRajaYoga,
@@ -34,7 +32,6 @@ import {
   computeVimshottariFullTimeline,
   computeNext12MonthsGochara,
   computeDivisionalCharts,
-  computeSarvashtakavarga,
   buildPanchangaBirthProfile,
   generateExecutiveSummary,
   resolveRashiIdx,
@@ -42,7 +39,13 @@ import {
 import {
   generateLagnaCompleteProfile,
   getSunMoonCombination144,
+  evaluateMehtaElementalStrengths,
+  evaluateMehtaSpecialSutras,
+  generateLifeEventProbabilityTimeline,
+  computeSarvashtakavargaMatrix,
+  generateBhavaPredictions,
   generateAll12HousesCompleteAnalysis,
+  generateBhriguLifeProgression,
 } from './kundaliPredictionsEngine';
 import { generateSaptamaMarriageAnalysis } from './saptamaVisleshanaEngine';
 
@@ -56,8 +59,18 @@ export interface GenerateReportOptions {
   chartStyle?: 'south' | 'north' | 'both';
 }
 
+const RASHI_NAMES_TE = [
+  'మేషం', 'వృషభం', 'మిథునం', 'కర్కాటకం', 'సింహం', 'కన్య',
+  'తుల', 'వృశ్చికం', 'ధనుస్సు', 'మకరం', 'కుంభం', 'మీనం',
+];
+
+const RASHI_NAMES_EN = [
+  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
+];
+
 /**
- * Renders a clean SVG for a North Indian diamond chart
+ * Renders North Indian Diamond Chart SVG with royal temple gold & maroon styling
  */
 export function renderNorthIndianChartSvg(
   title: string,
@@ -65,19 +78,6 @@ export function renderNorthIndianChartSvg(
   planetsMap: Record<number, { nameTe: string; nameEn?: string; isRetro?: boolean }[]>,
   lang: 'te' | 'en' = 'te'
 ): string {
-  // North Indian chart has 12 houses fixed:
-  // House 1 is top diamond (centered).
-  // Signs rotate based on Lagna: House 1 contains Lagna Rashi (1-based index).
-  const rashiNames = [
-    'మేషం', 'వృషభం', 'మిథునం', 'కర్కాటకం', 'సింహం', 'కన్య',
-    'తుల', 'వృశ్చికం', 'ధనుస్సు', 'మకరం', 'కుంభం', 'మీనం',
-  ];
-  const rashiNamesEn = [
-    'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
-    'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
-  ];
-
-  // Map each house (1 to 12) to its rashi index (0 to 11)
   const houseRashis: number[] = [];
   for (let h = 0; h < 12; h++) {
     houseRashis.push((lagnaRashiIdx + h) % 12);
@@ -90,78 +90,77 @@ export function renderNorthIndianChartSvg(
     const plNames = pls
       .map((p) => `${lang === 'en' ? (p.nameEn || p.nameTe) : p.nameTe}${p.isRetro ? '*' : ''}`)
       .join(', ');
-    return { rNum, plNames, rName: lang === 'en' ? rashiNamesEn[rIdx] : rashiNames[rIdx] };
+    return { rNum, plNames, rName: lang === 'en' ? RASHI_NAMES_EN[rIdx] : RASHI_NAMES_TE[rIdx] };
   };
 
-  // SVG dimensions: 400x400
   return `
-    <svg viewBox="0 0 400 400" width="100%" height="100%" style="max-width:360px;margin:0 auto;display:block;background:#fffdf7;border:2px solid #78350f;border-radius:8px;">
-      <!-- Outer boundary -->
-      <rect x="10" y="10" width="380" height="380" fill="none" stroke="#78350f" stroke-width="2.5"/>
-      <!-- Outer diagonals -->
-      <line x1="10" y1="10" x2="390" y2="390" stroke="#78350f" stroke-width="1.8"/>
-      <line x1="390" y1="10" x2="10" y2="390" stroke="#78350f" stroke-width="1.8"/>
-      <!-- Inner diamond -->
-      <polygon points="200,10 390,200 200,390 10,200" fill="none" stroke="#78350f" stroke-width="2"/>
+    <svg viewBox="0 0 420 420" width="100%" height="100%" style="max-width:390px;margin:0 auto;display:block;background:#fffdf7;border:3px solid #78350f;border-radius:12px;box-shadow:0 4px 12px rgba(120,53,15,0.12);">
+      <rect x="8" y="8" width="404" height="404" fill="none" stroke="#d97706" stroke-width="1.8"/>
+      <rect x="14" y="14" width="392" height="392" fill="#fffef9" stroke="#78350f" stroke-width="2.5"/>
+      <line x1="14" y1="14" x2="406" y2="406" stroke="#92400e" stroke-width="2"/>
+      <line x1="406" y1="14" x2="14" y2="406" stroke="#92400e" stroke-width="2"/>
+      <polygon points="210,14 406,210 210,406 14,210" fill="#fffbeb" stroke="#78350f" stroke-width="2.5"/>
 
-      <!-- House 1: Top Center Diamond -->
-      <text x="200" y="45" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#991b1b" text-anchor="middle">${getHouseContent(0).rNum} (${getHouseContent(0).rName})</text>
-      <text x="200" y="70" font-family="'Noto Sans Telugu', sans-serif" font-size="12" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(0).plNames || (lang === 'en' ? 'Lagna' : 'లగ్నం')}</text>
+      <!-- House 1: Top Center Diamond (Lagna) -->
+      <polygon points="210,14 308,112 210,210 112,112" fill="#fef08a" fill-opacity="0.5" stroke="none"/>
+      <text x="210" y="48" font-family="'Noto Serif Telugu', Georgia, serif" font-size="12" font-weight="bold" fill="#991b1b" text-anchor="middle">1 (${getHouseContent(0).rName} · ${getHouseContent(0).rNum})</text>
+      <text x="210" y="76" font-family="'Noto Sans Telugu', sans-serif" font-size="13" font-weight="bold" fill="#451a03" text-anchor="middle">${getHouseContent(0).plNames || (lang === 'en' ? 'Lagna' : 'లగ్నం')}</text>
 
       <!-- House 2: Top Left Triangle -->
-      <text x="110" y="55" font-family="'Noto Sans Telugu', sans-serif" font-size="10" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(1).rNum}</text>
-      <text x="110" y="80" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(1).plNames}</text>
+      <text x="110" y="60" font-family="'Noto Sans Telugu', sans-serif" font-size="10.5" font-weight="bold" fill="#78350f" text-anchor="middle">2 (${getHouseContent(1).rNum})</text>
+      <text x="110" y="86" font-family="'Noto Sans Telugu', sans-serif" font-size="11.5" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(1).plNames}</text>
 
       <!-- House 3: Far Left Top Triangle -->
-      <text x="50" y="115" font-family="'Noto Sans Telugu', sans-serif" font-size="10" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(2).rNum}</text>
-      <text x="55" y="138" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(2).plNames}</text>
+      <text x="50" y="120" font-family="'Noto Sans Telugu', sans-serif" font-size="10.5" font-weight="bold" fill="#78350f" text-anchor="middle">3 (${getHouseContent(2).rNum})</text>
+      <text x="55" y="146" font-family="'Noto Sans Telugu', sans-serif" font-size="11.5" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(2).plNames}</text>
 
       <!-- House 4: Left Diamond -->
-      <text x="100" y="200" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(3).rNum}</text>
-      <text x="100" y="222" font-family="'Noto Sans Telugu', sans-serif" font-size="12" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(3).plNames}</text>
+      <text x="105" y="205" font-family="'Noto Sans Telugu', sans-serif" font-size="11.5" font-weight="bold" fill="#78350f" text-anchor="middle">4 (${getHouseContent(3).rName} · ${getHouseContent(3).rNum})</text>
+      <text x="105" y="230" font-family="'Noto Sans Telugu', sans-serif" font-size="12" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(3).plNames}</text>
 
       <!-- House 5: Far Left Bottom Triangle -->
-      <text x="50" y="285" font-family="'Noto Sans Telugu', sans-serif" font-size="10" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(4).rNum}</text>
-      <text x="55" y="308" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(4).plNames}</text>
+      <text x="50" y="295" font-family="'Noto Sans Telugu', sans-serif" font-size="10.5" font-weight="bold" fill="#78350f" text-anchor="middle">5 (${getHouseContent(4).rNum})</text>
+      <text x="55" y="320" font-family="'Noto Sans Telugu', sans-serif" font-size="11.5" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(4).plNames}</text>
 
       <!-- House 6: Bottom Left Triangle -->
-      <text x="110" y="345" font-family="'Noto Sans Telugu', sans-serif" font-size="10" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(5).rNum}</text>
-      <text x="110" y="365" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(5).plNames}</text>
+      <text x="110" y="355" font-family="'Noto Sans Telugu', sans-serif" font-size="10.5" font-weight="bold" fill="#78350f" text-anchor="middle">6 (${getHouseContent(5).rNum})</text>
+      <text x="110" y="378" font-family="'Noto Sans Telugu', sans-serif" font-size="11.5" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(5).plNames}</text>
 
       <!-- House 7: Bottom Center Diamond -->
-      <text x="200" y="335" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(6).rNum} (${getHouseContent(6).rName})</text>
-      <text x="200" y="358" font-family="'Noto Sans Telugu', sans-serif" font-size="12" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(6).plNames}</text>
+      <text x="210" y="345" font-family="'Noto Serif Telugu', Georgia, serif" font-size="12" font-weight="bold" fill="#78350f" text-anchor="middle">7 (${getHouseContent(6).rName} · ${getHouseContent(6).rNum})</text>
+      <text x="210" y="370" font-family="'Noto Sans Telugu', sans-serif" font-size="13" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(6).plNames}</text>
 
       <!-- House 8: Bottom Right Triangle -->
-      <text x="290" y="345" font-family="'Noto Sans Telugu', sans-serif" font-size="10" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(7).rNum}</text>
-      <text x="290" y="365" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(7).plNames}</text>
+      <text x="310" y="355" font-family="'Noto Sans Telugu', sans-serif" font-size="10.5" font-weight="bold" fill="#78350f" text-anchor="middle">8 (${getHouseContent(7).rNum})</text>
+      <text x="310" y="378" font-family="'Noto Sans Telugu', sans-serif" font-size="11.5" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(7).plNames}</text>
 
       <!-- House 9: Far Right Bottom Triangle -->
-      <text x="350" y="285" font-family="'Noto Sans Telugu', sans-serif" font-size="10" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(8).rNum}</text>
-      <text x="345" y="308" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(8).plNames}</text>
+      <text x="365" y="295" font-family="'Noto Sans Telugu', sans-serif" font-size="10.5" font-weight="bold" fill="#78350f" text-anchor="middle">9 (${getHouseContent(8).rNum})</text>
+      <text x="360" y="320" font-family="'Noto Sans Telugu', sans-serif" font-size="11.5" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(8).plNames}</text>
 
       <!-- House 10: Right Diamond -->
-      <text x="300" y="200" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(9).rNum}</text>
-      <text x="300" y="222" font-family="'Noto Sans Telugu', sans-serif" font-size="12" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(9).plNames}</text>
+      <text x="315" y="205" font-family="'Noto Sans Telugu', sans-serif" font-size="11.5" font-weight="bold" fill="#78350f" text-anchor="middle">10 (${getHouseContent(9).rName} · ${getHouseContent(9).rNum})</text>
+      <text x="315" y="230" font-family="'Noto Sans Telugu', sans-serif" font-size="12" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(9).plNames}</text>
 
       <!-- House 11: Far Right Top Triangle -->
-      <text x="350" y="115" font-family="'Noto Sans Telugu', sans-serif" font-size="10" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(10).rNum}</text>
-      <text x="345" y="138" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(10).plNames}</text>
+      <text x="365" y="120" font-family="'Noto Sans Telugu', sans-serif" font-size="10.5" font-weight="bold" fill="#78350f" text-anchor="middle">11 (${getHouseContent(10).rNum})</text>
+      <text x="360" y="146" font-family="'Noto Sans Telugu', sans-serif" font-size="11.5" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(10).plNames}</text>
 
       <!-- House 12: Top Right Triangle -->
-      <text x="290" y="55" font-family="'Noto Sans Telugu', sans-serif" font-size="10" font-weight="bold" fill="#78350f" text-anchor="middle">${getHouseContent(11).rNum}</text>
-      <text x="290" y="80" font-family="'Noto Sans Telugu', sans-serif" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(11).plNames}</text>
+      <text x="310" y="60" font-family="'Noto Sans Telugu', sans-serif" font-size="10.5" font-weight="bold" fill="#78350f" text-anchor="middle">12 (${getHouseContent(11).rNum})</text>
+      <text x="310" y="86" font-family="'Noto Sans Telugu', sans-serif" font-size="11.5" font-weight="bold" fill="#1e293b" text-anchor="middle">${getHouseContent(11).plNames}</text>
 
-      <!-- Center Title -->
-      <circle cx="200" cy="200" r="32" fill="#451a03" stroke="#f59e0b" stroke-width="1.5"/>
-      <text x="200" y="196" font-family="'Noto Sans Telugu', sans-serif" font-size="9" font-weight="bold" fill="#fcd34d" text-anchor="middle">${title}</text>
-      <text x="200" y="210" font-family="'Noto Sans Telugu', sans-serif" font-size="8.5" fill="#ffffff" text-anchor="middle">${lang === 'en' ? 'North Indian' : 'ఉత్తర భారత'}</text>
+      <!-- Center Seal -->
+      <circle cx="210" cy="210" r="36" fill="#451a03" stroke="#f59e0b" stroke-width="2"/>
+      <circle cx="210" cy="210" r="32" fill="none" stroke="#d97706" stroke-dasharray="3,2" stroke-width="1"/>
+      <text x="210" y="206" font-family="'Noto Serif Telugu', Georgia, serif" font-size="10" font-weight="bold" fill="#fcd34d" text-anchor="middle">${title}</text>
+      <text x="210" y="222" font-family="'Noto Sans Telugu', sans-serif" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">${lang === 'en' ? 'North Indian' : 'ఉత్తర భారత'}</text>
     </svg>
   `;
 }
 
 /**
- * Main PDF/HTML Document Generator
+ * Builds the complete comprehensive Jathaka HTML document
  */
 export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions): string {
   const { name, birthDate, birthTime, cityName, chartData } = options;
@@ -173,70 +172,155 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
   const sunPlanet = chartData.planets.find((p) => p.id === 'sun') || chartData.planets[0];
   const moonRashiIdx = moonPlanet.rashiIdx;
 
-  // 1. Predictions & Profiles
+  // Compute all astrological models
   const lagnaProfile = generateLagnaCompleteProfile(chartData.planets, lagnaRashiIdx);
   const sunMoon144 = getSunMoonCombination144(sunPlanet.rashiIdx, moonPlanet.rashiIdx);
   const saptamaMarriage = generateSaptamaMarriageAnalysis(chartData.planets, lagnaRashiIdx, birthDate);
   const all12Houses = generateAll12HousesCompleteAnalysis(chartData.planets, lagnaRashiIdx);
-  const predictions = {
-    lagnaProfile,
-    sunMoon144,
-    saptamaMarriage,
-    twelveBhavas: all12Houses,
-  };
+  const elementStrengths = evaluateMehtaElementalStrengths(chartData.planets, lagnaRashiIdx);
+  const specialSutras = evaluateMehtaSpecialSutras(chartData.planets, lagnaRashiIdx, birthDate);
+  const eventTimelines = generateLifeEventProbabilityTimeline(chartData.planets, lagnaRashiIdx, birthDate);
+  const ashtakavargaMatrix = computeSarvashtakavargaMatrix(chartData.planets, lagnaRashiIdx);
+  const bhavaPredictions = generateBhavaPredictions(chartData.planets, lagnaRashiIdx);
+  const bhriguCycles = generateBhriguLifeProgression(chartData.planets, lagnaRashiIdx, birthDate);
+
+  // New modules & checks
   const dignities = computePlanetaryDignities(chartData.planets, lagnaRashiIdx);
-  const neechaBhanga = checkNeechaBhangaRajaYoga(dignities, chartData.planets, lagnaRashiIdx);
+  const neechaBhangaList = checkNeechaBhangaRajaYoga(dignities, chartData.planets, lagnaRashiIdx);
   const yogas = detectAllYogasAndDoshas(chartData.planets, lagnaRashiIdx, dignities);
   const tripleKuja = evaluateTripleKujaDosha(chartData.planets, lagnaRashiIdx);
   const marriageTiming = calculateDynamicMarriageTiming(birthDate, lagnaRashiIdx, moonRashiIdx);
   const dashaInfo = computeVimshottariFullTimeline(moonPlanet.longitude, birthDate, birthTime);
   const gochara12m = computeNext12MonthsGochara(moonRashiIdx, lagnaRashiIdx);
   const divisional = computeDivisionalCharts(chartData.planets, lagnaRashiIdx);
-  const ashtakavarga = computeSarvashtakavarga(chartData.planets, lagnaRashiIdx);
   const panchangaProfile = buildPanchangaBirthProfile(chartData, birthDate, birthTime, cityName);
   const execSummary = generateExecutiveSummary(dignities, yogas, tripleKuja, dashaInfo, marriageTiming);
 
-  // South Indian Chart Table Renderer
-  const renderSouthIndianTableHtml = (
-    title: string,
-    planetsMap: Record<number, { nameTe: string; isRetro?: boolean }[]>,
-    centerSubtitle = ''
+  /**
+   * Renders the South Indian Kundali Chart as an illuminated temple manuscript plate ("like img lagaa")
+   */
+  const renderSouthIndianImagePlateHtml = (
+    chartTitle: string,
+    subBadge: string,
+    planetsMap: Record<number, { nameTe: string; nameEn?: string; isRetro?: boolean; degreeFormatted?: string }[]>
   ) => {
-    const rashiNames = [
-      'మేషం', 'వృషభం', 'మిథునం', 'కర్కాటకం', 'సింహం', 'కన్య',
-      'తుల', 'వృశ్చికం', 'ధనుస్సు', 'మకరం', 'కుంభం', 'మీనం',
-    ];
     const cellHtml = (rIdx: number) => {
       const pls = planetsMap[rIdx] || [];
       const isLagnaCell = rIdx === lagnaRashiIdx;
-      return `<td style="width:25%;height:72px;vertical-align:top;padding:4px 6px;border:1.5px solid #92400e;background:${
-        isLagnaCell ? '#fef3c7' : '#fffbeb'
-      };">
-        <div style="font-size:10.5px;font-weight:bold;color:#78350f;display:flex;justify-content:space-between;">
-          <span>${rashiNames[rIdx]}</span>
-          ${isLagnaCell ? '<span style="color:#991b1b;font-weight:800;background:#fee2e2;padding:1px 4px;border-radius:3px;">లగ్నం</span>' : ''}
-        </div>
-        <div style="font-size:11px;font-weight:700;color:#1e293b;margin-top:3px;line-height:1.25;">
-          ${pls.map((p) => `${p.nameTe}${p.isRetro ? '(వ)' : ''}`).join(', ')}
-        </div>
-      </td>`;
+      const isMoonCell = rIdx === moonRashiIdx;
+      const isSunCell = rIdx === sunPlanet.rashiIdx;
+
+      const houseNumber = ((rIdx - lagnaRashiIdx + 12) % 12) + 1;
+
+      return `
+        <td style="width:25%;height:105px;vertical-align:top;padding:6px 8px;border:2px solid #854d0e;background:${
+          isLagnaCell
+            ? 'linear-gradient(180deg, #fef08a 0%, #fde68a 100%)'
+            : isMoonCell
+            ? '#ecfdf5'
+            : '#ffffff'
+        };box-sizing:border-box;position:relative;">
+          <!-- Cell Header: Rashi Name + House Number Badge -->
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed #d97706;padding-bottom:3px;margin-bottom:4px;">
+            <span style="font-family:'Noto Serif Telugu', Georgia, serif;font-size:12px;font-weight:800;color:#78350f;">
+              ${RASHI_NAMES_TE[rIdx]}
+            </span>
+            <span style="font-size:10px;font-weight:700;color:${isLagnaCell ? '#991b1b' : '#854d0e'};background:${isLagnaCell ? '#fee2e2' : '#fef3c7'};padding:1px 5px;border-radius:4px;border:0.5px solid #d97706;">
+              ${houseNumber}వ ఇల్లు
+            </span>
+          </div>
+
+          <!-- Special Status Badges -->
+          <div style="display:flex;flex-wrap:wrap;gap:2px;margin-bottom:3px;">
+            ${isLagnaCell ? '<span style="font-size:9.5px;font-weight:800;background:#991b1b;color:#ffffff;padding:1px 5px;border-radius:3px;">★ జన్మ లగ్నం</span>' : ''}
+            ${isMoonCell ? '<span style="font-size:9.5px;font-weight:800;background:#047857;color:#ffffff;padding:1px 5px;border-radius:3px;">☽ జన్మ రాశి</span>' : ''}
+            ${isSunCell ? '<span style="font-size:9.5px;font-weight:800;background:#b45309;color:#ffffff;padding:1px 5px;border-radius:3px;">☀️ సూర్యుడు</span>' : ''}
+          </div>
+
+          <!-- Occupant Planets with Degrees & Status -->
+          <div style="font-family:'Noto Sans Telugu', sans-serif;font-size:12px;font-weight:800;color:#1e293b;line-height:1.45;">
+            ${pls.length === 0
+              ? '<span style="font-size:10px;color:#94a3b8;font-weight:normal;font-style:italic;">గ్రహాలు లేవు</span>'
+              : pls
+                  .map((p) => {
+                    const dign = dignities.find((d) => d.nameTe === p.nameTe);
+                    const isRetro = p.isRetro;
+                    const isCombust = dign?.isCombust;
+                    const isUcha = dign?.dignityCode === 'ucha';
+                    const isNeecha = dign?.dignityCode === 'neecha';
+
+                    return `<div style="display:inline-block;margin-right:6px;margin-bottom:2px;">
+                      <span style="color:#0f172a;">${p.nameTe}</span>
+                      ${isRetro ? '<span style="color:#dc2626;font-size:10px;font-weight:bold;">(వ)</span>' : ''}
+                      ${isCombust ? '<span style="color:#c2410c;font-size:9px;font-weight:bold;">(అస్తం)</span>' : ''}
+                      ${isUcha ? '<span style="color:#15803d;font-size:9px;font-weight:bold;">(ఉచ్చ)</span>' : ''}
+                      ${isNeecha ? '<span style="color:#b91c1c;font-size:9px;font-weight:bold;">(నీచ)</span>' : ''}
+                      ${p.degreeFormatted ? `<span style="font-size:9.5px;color:#64748b;font-weight:normal;font-family:monospace;margin-left:2px;">${p.degreeFormatted}</span>` : ''}
+                    </div>`;
+                  })
+                  .join('')
+            }
+          </div>
+        </td>
+      `;
     };
 
     return `
-      <table style="width:100%;border-collapse:collapse;border:2px solid #78350f;margin-bottom:12px;background:#ffffff;">
-        <tr>${cellHtml(11)}${cellHtml(0)}${cellHtml(1)}${cellHtml(2)}</tr>
-        <tr>
-          ${cellHtml(10)}
-          <td colspan="2" rowspan="2" style="background:#451a03;color:#fef3c7;text-align:center;padding:6px;border:1.5px solid #92400e;">
-            <div style="font-size:9.5px;color:#fcd34d;font-weight:bold;letter-spacing:0.5px;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం</div>
-            <div style="font-size:13px;font-weight:bold;color:#ffffff;margin:2px 0;">${title}</div>
-            <div style="font-size:11px;color:#fde68a;">${centerSubtitle || `${name} · ${birthDate}`}</div>
-          </td>
-          ${cellHtml(3)}
-        </tr>
-        <tr>${cellHtml(9)}${cellHtml(4)}</tr>
-        <tr>${cellHtml(8)}${cellHtml(7)}${cellHtml(6)}${cellHtml(5)}</tr>
-      </table>
+      <div style="margin:16px auto;max-width:690px;border:4px solid #78350f;outline:2px solid #d97706;border-radius:14px;background:#fffdf5;padding:6px;box-shadow:0 6px 18px rgba(120,53,15,0.14);page-break-inside:avoid;break-inside:avoid;">
+        <div style="border:2px solid #b45309;border-radius:10px;overflow:hidden;background:#fffdf5;">
+          <table style="width:100%;border-collapse:collapse;table-layout:fixed;background:#fffdf5;">
+            <tr>
+              ${cellHtml(11)}
+              ${cellHtml(0)}
+              ${cellHtml(1)}
+              ${cellHtml(2)}
+            </tr>
+            <tr>
+              ${cellHtml(10)}
+              <!-- Brahmasthanam (Center Sanctum Plate) -->
+              <td colspan="2" rowspan="2" style="background:linear-gradient(135deg, #451a03 0%, #240801 100%);color:#fef3c7;text-align:center;padding:12px 10px;border:2.5px solid #d97706;box-shadow:inset 0 0 16px rgba(0,0,0,0.6);">
+                <div style="font-family:'Noto Serif Telugu', Georgia, serif;font-size:11px;font-weight:bold;color:#fcd34d;letter-spacing:1px;margin-bottom:2px;">
+                  ॥ శ్రీ మహాగణాధిపతయే నమః ॥
+                </div>
+                <div style="font-size:11px;color:#fde68a;font-weight:700;">
+                  శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · దృక్సిద్ధాంతం
+                </div>
+                <!-- Golden Title Ribbon -->
+                <div style="display:inline-block;background:linear-gradient(90deg, #b45309 0%, #f59e0b 50%, #b45309 100%);color:#451a03;font-family:'Noto Serif Telugu', serif;font-size:16px;font-weight:900;padding:3px 18px;border-radius:6px;margin:6px 0;box-shadow:0 2px 6px rgba(0,0,0,0.3);letter-spacing:0.5px;">
+                  ★ ${chartTitle} ★
+                </div>
+                <div style="font-size:13px;font-weight:800;color:#ffffff;margin-top:2px;">
+                  ${name} గారి జన్మ జాతక పత్రిక
+                </div>
+                <div style="font-size:11px;color:#fcd34d;font-family:monospace;margin-top:2px;">
+                  ${birthDate} · ${birthTime} (${cityName})
+                </div>
+                <div style="font-size:11.5px;color:#86efac;font-weight:bold;margin-top:4px;border-top:1px dashed #d97706;padding-top:4px;">
+                  లగ్నం: ${chartData.lagna.te} · రాశి: ${chartData.rashi.te} (${chartData.nakshatraName} ${chartData.pada})
+                </div>
+                <div style="font-size:10px;color:#fef3c7;margin-top:2px;">
+                  ${subBadge || 'లహిరి అయనాంశం: ' + chartData.ayanamsaFormatted}
+                </div>
+              </td>
+              ${cellHtml(3)}
+            </tr>
+            <tr>
+              ${cellHtml(9)}
+              ${cellHtml(4)}
+            </tr>
+            <tr>
+              ${cellHtml(8)}
+              ${cellHtml(7)}
+              ${cellHtml(6)}
+              ${cellHtml(5)}
+            </tr>
+          </table>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px 2px 8px;font-size:10px;color:#78350f;font-weight:bold;">
+          <span>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు · +91 89779 86166</span>
+          <span>${siteUrl}</span>
+        </div>
+      </div>
     `;
   };
 
@@ -245,11 +329,11 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${name} - బృహత్ పరాశర సంపూర్ణ జాతక నివేదిక | ${siteUrl}</title>
+  <title>${name} - సంపూర్ణ బృహత్ జాతక నివేదిక | ${siteUrl}</title>
   <!-- Full Noto Sans Telugu & Noto Serif Telugu fonts for perfect GSUB/GPOS complex conjunct rendering -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500;600;700;800&family=Noto+Serif+Telugu:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500;600;700;800&family=Noto+Serif+Telugu:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
@@ -259,38 +343,41 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     }
     @page {
       size: A4 portrait;
-      margin: 0;
+      margin: 14mm 12mm 15mm 12mm;
     }
     body {
-      font-family: 'Noto Sans Telugu', 'Noto Serif Telugu', Georgia, sans-serif;
+      font-family: 'Noto Sans Telugu', 'Noto Serif Telugu', Georgia, -apple-system, sans-serif;
       color: #1e293b;
       background: #ffffff;
       margin: 0;
       padding: 0;
-      line-height: 1.55;
+      line-height: 1.6;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
-    .report-sheet {
-      width: 210mm;
-      min-height: 297mm;
-      padding: 12mm 15mm 15mm 15mm;
+    .grantham-document {
+      max-width: 820px;
       margin: 0 auto;
       background: #ffffff;
-      position: relative;
-      page-break-after: always;
-      break-after: page;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      padding: 10px 16px 40px 16px;
     }
-    .sheet-body {
-      flex: 1;
+
+    /* Page Breaks & Flow */
+    .chapter-break {
+      page-break-before: always;
+      break-before: page;
+      padding-top: 10px;
     }
-    .running-header {
+    .keep-together {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Running Header & Footer for Print Media */
+    .print-running-header {
       border-bottom: 2px solid #b45309;
       padding-bottom: 4px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -298,10 +385,11 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       color: #78350f;
       font-weight: 700;
     }
-    .running-footer {
+    .print-running-footer {
       border-top: 1.5px solid #b45309;
       padding-top: 4px;
-      margin-top: 12px;
+      margin-top: 20px;
+      margin-bottom: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -309,76 +397,85 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       color: #78350f;
       font-weight: 600;
     }
-    .running-footer a {
+    .print-running-footer a {
       color: #92400e;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 800;
     }
 
-    /* Headings and Cards */
-    .page-title {
-      font-size: 17px;
-      font-weight: 800;
+    /* Headings */
+    .chapter-title {
+      font-family: 'Noto Serif Telugu', Georgia, serif;
+      font-size: 19px;
+      font-weight: 900;
       color: #451a03;
-      border-left: 4px solid #b45309;
-      padding-left: 8px;
-      margin: 0 0 10px 0;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
+      border-left: 5px solid #b45309;
+      padding-left: 10px;
+      margin: 16px 0 10px 0;
+      line-height: 1.35;
     }
+    .chapter-subtitle {
+      font-size: 12px;
+      color: #78350f;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    /* Cards */
     .section-card {
       border: 1.2px solid #d97706;
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
       background: #ffffff;
-      page-break-inside: avoid;
-      break-inside: avoid;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .section-card-accent {
+      background: #fffdf5;
+      border-color: #b45309;
     }
     .section-card h4 {
-      margin: 0 0 5px 0;
+      margin: 0 0 6px 0;
       color: #78350f;
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 800;
       border-bottom: 1px dashed #fde68a;
-      padding-bottom: 3px;
+      padding-bottom: 4px;
     }
     .section-card p {
       margin: 4px 0;
-      font-size: 11.5px;
-      line-height: 1.5;
+      font-size: 12px;
+      line-height: 1.55;
       color: #334155;
     }
 
-    /* Tables */
+    /* Data Tables */
     table.data-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 10px;
-      font-size: 11px;
-      page-break-inside: avoid;
+      margin-bottom: 12px;
+      font-size: 11.5px;
     }
     table.data-table th, table.data-table td {
       border: 1px solid #d97706;
-      padding: 5px 7px;
+      padding: 6px 8px;
       text-align: left;
     }
     table.data-table th {
       background: #fef3c7;
       color: #78350f;
       font-weight: 800;
-      font-size: 11px;
     }
     table.data-table tr:nth-child(even) td {
       background: #fffdf7;
     }
 
-    /* Pill Badges */
+    /* Badges */
     .badge {
       display: inline-block;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 4px;
-      font-size: 10px;
+      font-size: 10.5px;
       font-weight: 700;
     }
     .badge-gold { background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; }
@@ -386,917 +483,1094 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     .badge-red { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
     .badge-purple { background: #f3e8ff; color: #6b21a8; border: 1px solid #c084fc; }
 
-    /* Print Screen Control Bar */
-    .no-print-toolbar {
-      position: fixed;
+    /* On-Screen Action Toolbar */
+    .screen-toolbar {
+      position: sticky;
       top: 0;
-      left: 0;
-      right: 0;
       background: #451a03;
       color: #ffffff;
-      padding: 10px 20px;
+      padding: 12px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 10000;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      border-bottom: 2px solid #f59e0b;
+      margin-bottom: 16px;
     }
-    .no-print-toolbar button {
+    .screen-toolbar button {
       background: #f59e0b;
       color: #451a03;
       font-weight: 800;
       border: none;
-      padding: 8px 18px;
-      border-radius: 6px;
+      padding: 9px 20px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 13.5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .screen-toolbar button:hover {
+      background: #fbbf24;
     }
 
     @media print {
-      .no-print-toolbar { display: none !important; }
+      .screen-toolbar { display: none !important; }
       body {
         margin: 0 !important;
         padding: 0 !important;
+        background: #ffffff !important;
       }
-      .report-sheet {
+      .grantham-document {
+        max-width: 100% !important;
+        padding: 0 !important;
         margin: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Screen Print Bar -->
-  <div class="no-print-toolbar">
+  <!-- Screen Toolbar -->
+  <div class="screen-toolbar">
     <div>
-      <span style="font-size:14px;font-weight:bold;">🖨️ ${name} గారి బృహత్ జాతక నివేదిక (PDF ప్రింట్ సిద్ధం)</span>
-      <span style="font-size:11px;color:#fde68a;margin-left:12px;">గమనిక: ప్రింట్ డైలాగ్‌లో "Headers and footers" అన్‌చెక్ చేయండి.</span>
+      <span style="font-size:15px;font-weight:bold;">🖨️ ${name} గారి సంపూర్ణ బృహత్ జాతక గ్రంథం (PDF ప్రింట్ సిద్ధం)</span>
+      <span style="font-size:11.5px;color:#fde68a;margin-left:14px;">గమనిక: ప్రింట్ డైలాగ్‌లో "Save as PDF" ఎంచుకోండి.</span>
     </div>
-    <button onclick="window.print()">🖨️ ఇప్పుడే సేవ్ / ప్రింట్ చేయండి</button>
+    <button onclick="window.print()">🖨️ ఇప్పుడే ప్రింట్ / సేవ్ చేయండి</button>
   </div>
 
-  <div style="height:50px;" class="no-print-toolbar-spacer"></div>
+  <div class="grantham-document">
 
-  <!-- ========================================== -->
-  <!-- PAGE 1: COVER PAGE                         -->
-  <!-- ========================================== -->
-  <div class="report-sheet" style="background: radial-gradient(circle at center, #fffbeb 0%, #fef3c7 100%); border: 3px double #92400e;">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వేద జ్యోతిష నివేదిక</span>
-      <span>${siteUrl}</span>
-    </div>
-    <div class="sheet-body" style="text-align:center;padding:10px 0;">
-      <div style="font-size:12px;font-weight:bold;color:#78350f;letter-spacing:1px;margin-bottom:8px;">
+    <!-- ==========================================================================
+        PROMINENT NATIVE PROFILE & FRONT COVER HEADER (Page 1)
+        ========================================================================== -->
+    <div class="keep-together" style="border:3.5px double #78350f;border-radius:14px;background:radial-gradient(circle at center, #fffdf5 0%, #fef3c7 100%);padding:18px 20px;margin-bottom:20px;box-shadow:0 4px 14px rgba(120,53,15,0.08);text-align:center;">
+      <div style="font-family:'Noto Serif Telugu', Georgia, serif;font-size:12px;font-weight:bold;color:#78350f;letter-spacing:1px;margin-bottom:4px;">
         ॥ శ్రీ గురుభ్యో నమః · శ్రీ మహాగణపతయే నమః · శ్రీ శారదాంబాయై నమః ॥
       </div>
-      <div style="font-size:26px;font-weight:900;color:#451a03;margin:8px 0;line-height:1.25;">
+      <div style="font-family:'Noto Serif Telugu', serif;font-size:25px;font-weight:900;color:#451a03;line-height:1.25;margin:6px 0;">
         బృహత్ పరాశర దృక్సిద్ధాంత సంపూర్ణ జన్మ జాతక మహాగ్రంథం
       </div>
-      <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:20px;">
-        Comprehensive Brihat Vedic Horoscope &amp; Planetary Destiny Blueprint
+      <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:14px;">
+        Comprehensive Brihat Vedic Horoscope &amp; Planetary Destiny Blueprint · ${siteUrl}
       </div>
 
-      <!-- Native Credentials Box -->
-      <div style="border:2px solid #b45309;border-radius:10px;background:#ffffff;padding:14px 18px;margin:16px auto;max-width:540px;box-shadow:0 3px 6px rgba(0,0,0,0.06);text-align:left;">
+      <!-- Prominent Native Credentials Box (Name, Address/Location, Time, DOB) -->
+      <div style="border:2px solid #b45309;border-radius:10px;background:#ffffff;padding:12px 16px;text-align:left;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
         <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
           <tr>
-            <td style="padding:5px 8px;font-weight:bold;color:#78350f;width:32%;">జాతకుని పేరు:</td>
-            <td style="padding:5px 8px;font-weight:800;color:#1e293b;font-size:14.5px;">${name}</td>
+            <td style="padding:4px 8px;font-weight:bold;color:#78350f;width:30%;">జాతకుని పేరు (Full Name):</td>
+            <td style="padding:4px 8px;font-weight:900;color:#1e293b;font-size:15px;">${name}</td>
           </tr>
           <tr>
-            <td style="padding:5px 8px;font-weight:bold;color:#78350f;">పుట్టిన తేదీ &amp; సమయం:</td>
-            <td style="padding:5px 8px;font-weight:700;color:#1e293b;">${birthDate} (ఉదయం ${birthTime})</td>
+            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">పుట్టిన తేదీ &amp; సమయం (DOB &amp; Time):</td>
+            <td style="padding:4px 8px;font-weight:700;color:#1e293b;">${birthDate} · ఉదయం ${birthTime}</td>
           </tr>
           <tr>
-            <td style="padding:5px 8px;font-weight:bold;color:#78350f;">జన్మ స్థలం (ప్రాంతం):</td>
-            <td style="padding:5px 8px;font-weight:700;color:#1e293b;">${cityName} (${panchangaProfile.latLonFormatted})</td>
+            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">జన్మ స్థలం (Place of Birth):</td>
+            <td style="padding:4px 8px;font-weight:700;color:#1e293b;">${cityName} (${panchangaProfile.latLonFormatted})</td>
           </tr>
           <tr>
-            <td style="padding:5px 8px;font-weight:bold;color:#78350f;">జన్మ లగ్నం (D1):</td>
-            <td style="padding:5px 8px;font-weight:800;color:#991b1b;">${chartData.lagna.te} (${chartData.planets[0].degreeFormatted})</td>
+            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">జన్మ లగ్నం (Ascendant D1):</td>
+            <td style="padding:4px 8px;font-weight:800;color:#991b1b;">${chartData.lagna.te} (${chartData.planets[0].degreeFormatted}) · నవాంశ: ${chartData.navamshaLagna.te}</td>
           </tr>
           <tr>
-            <td style="padding:5px 8px;font-weight:bold;color:#78350f;">జన్మ రాశి &amp; నక్షత్రం:</td>
-            <td style="padding:5px 8px;font-weight:700;color:#1e293b;">${chartData.rashi.te} రాశి · ${chartData.nakshatraName} నక్షత్రం (${chartData.pada}వ పాదం)</td>
+            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">జన్మ రాశి &amp; నక్షత్రం (Moon):</td>
+            <td style="padding:4px 8px;font-weight:800;color:#047857;">${chartData.rashi.te} రాశి · ${chartData.nakshatraName} నక్షత్రం (${chartData.pada}వ పాదం)</td>
           </tr>
           <tr>
-            <td style="padding:5px 8px;font-weight:bold;color:#78350f;">సూర్య రాశి (ఆత్మకారక):</td>
-            <td style="padding:5px 8px;font-weight:700;color:#1e293b;">${sunPlanet.rashiTe} రాశి (${sunPlanet.degreeFormatted} — ${sunPlanet.nakshatraTe})</td>
+            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">సూర్య రాశి (Sun Sign):</td>
+            <td style="padding:4px 8px;font-weight:800;color:#b45309;">${sunPlanet.rashiTe} రాశి (${sunPlanet.degreeFormatted} — ${sunPlanet.nakshatraTe})</td>
           </tr>
           <tr>
-            <td style="padding:5px 8px;font-weight:bold;color:#78350f;">ప్రస్తుత మహాదశ:</td>
-            <td style="padding:5px 8px;font-weight:800;color:#047857;">${dashaInfo.currentMahadasha.lordTe} మహాదశ — ${dashaInfo.currentAntardasha.lordTe} అంతర్దశ</td>
+            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">ప్రస్తుత మహాదశ (Current Dasha):</td>
+            <td style="padding:4px 8px;font-weight:800;color:#1e293b;">${dashaInfo.currentMahadasha.lordTe} మహాదశ — ${dashaInfo.currentAntardasha.lordTe} అంతర్దశ</td>
+          </tr>
+          <tr>
+            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">అధికారిక వెబ్‌సైట్:</td>
+            <td style="padding:4px 8px;font-weight:800;color:#b45309;"><a href="https://${siteUrl}" style="color:#b45309;text-decoration:none;">${siteUrl}</a></td>
           </tr>
         </table>
       </div>
 
-      <!-- Chief Astrologer Box -->
-      <div style="margin-top:24px;display:flex;justify-content:space-around;align-items:center;border-top:1.5px dashed #d97706;padding-top:16px;">
-        <div style="text-align:left;">
-          <div style="font-size:10px;font-weight:bold;color:#78350f;text-transform:uppercase;">సిద్ధాంత విశ్లేషణ &amp; ఆశీస్సులు:</div>
-          <div style="font-size:15px;font-weight:800;color:#451a03;margin-top:2px;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ</div>
-          <div style="font-size:11px;color:#78350f;">ప్రధాన అర్చకులు &amp; వేద జ్యోతిష పరిశోధకులు</div>
-          <div style="font-size:10.5px;color:#1e293b;margin-top:3px;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్</div>
-          <div style="font-size:10.5px;color:#92400e;font-weight:bold;">ఫోన్ / వాట్సాప్: +91 89779 86166</div>
+      <!-- Chief Astrologer Blessings Strip -->
+      <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;border-top:1px dashed #d97706;padding-top:10px;text-align:left;">
+        <div>
+          <div style="font-size:10px;font-weight:bold;color:#78350f;">సిద్ధాంత విశ్లేషణ &amp; వేదాశీర్వాదం:</div>
+          <div style="font-size:14px;font-weight:800;color:#451a03;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</div>
+          <div style="font-size:11px;color:#78350f;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్ · ఫోన్ / వాట్సాప్: +91 89779 86166</div>
         </div>
-        <div style="text-align:center;border:1.5px solid #b45309;padding:6px 10px;border-radius:8px;background:#ffffff;">
-          <div style="font-size:9px;font-weight:bold;color:#78350f;margin-bottom:3px;">వెబ్‌సైట్ &amp; సంప్రదింపులు</div>
-          <div style="width:70px;height:70px;background:#fef3c7;display:flex;align-items:center;justify-content:center;border:1px solid #d97706;font-size:9px;font-weight:bold;color:#78350f;text-align:center;">
-            QR CODE<br/>+91 89779 86166
-          </div>
-          <div style="font-size:8.5px;font-weight:bold;color:#92400e;margin-top:2px;">${siteUrl}</div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;font-weight:800;color:#047857;">దృక్సిద్ధాంత గణితం (లహిరి అయనాంశం: ${chartData.ayanamsaFormatted})</div>
+          <div style="font-size:10px;color:#64748b;">శ్రీ క్రోధినామ / ఆనంద సంవత్సర గణన</div>
         </div>
       </div>
     </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · అధికారిక సంపూర్ణ పత్రిక</span>
-      <span>పేజీ 1</span>
-    </div>
-  </div>
 
-  <!-- ========================================== -->
-  <!-- PAGE 2: 1-PAGE EXECUTIVE SUMMARY           -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
+    <!-- ==========================================================================
+        CHAPTER 1: PANCHANGA PROFILE & BIRTH ASTRONOMICAL ATTRIBUTES
+        ========================================================================== -->
+    <div class="keep-together">
+      <div class="chapter-title">అధ్యాయం 1 · పంచాంగ జన్మ విశేషాలు &amp; నక్షత్ర గుణ వివరాలు</div>
+      <div class="chapter-subtitle">Panchangam Birth Attributes, Astrological Coordinates &amp; Nakshatra Profile</div>
+
+      <div class="section-card section-card-accent">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:8px;font-size:11.5px;">
+          <div><strong style="color:#78350f;">తెలుగు సంవత్సరం:</strong> ${panchangaProfile.samvatsaraTe}</div>
+          <div><strong style="color:#78350f;">మాసం &amp; రుతువు:</strong> ${panchangaProfile.masaTe} (${panchangaProfile.rituTe})</div>
+          <div><strong style="color:#78350f;">జన్మ తిథి:</strong> ${panchangaProfile.tithiTe} (${panchangaProfile.pakshaTe})</div>
+          <div><strong style="color:#78350f;">వారం:</strong> ${panchangaProfile.vaaraTe} (${panchangaProfile.ayanaTe})</div>
+          <div><strong style="color:#78350f;">కరణం:</strong> ${panchangaProfile.karanaTe}</div>
+          <div><strong style="color:#78350f;">నిత్య యోగం:</strong> ${panchangaProfile.yogaTe}</div>
+          <div><strong style="color:#78350f;">నక్షత్ర గణం:</strong> ${panchangaProfile.ganaTe}</div>
+          <div><strong style="color:#78350f;">యోని:</strong> ${panchangaProfile.yoniTe}</div>
+          <div><strong style="color:#78350f;">నాడి:</strong> ${panchangaProfile.nadiTe}</div>
+          <div><strong style="color:#78350f;">జన్మ నామాక్షరం:</strong> ${panchangaProfile.namaAksharamTe}</div>
+          <div><strong style="color:#78350f;">అయనాంశం:</strong> ${panchangaProfile.ayanamsaFormatted}</div>
+          <div><strong style="color:#78350f;">టైమ్ జోన్ &amp; వశ్య:</strong> ${panchangaProfile.timezoneFormatted} · ${panchangaProfile.vashyaTe}</div>
+        </div>
+      </div>
     </div>
-    <div class="sheet-body">
-      <div class="page-title">జాతక సంక్షిప్త సారాంశం (1-Page Executive Summary)</div>
+
+    <!-- ==========================================================================
+        CHAPTER 2: 1-PAGE EXECUTIVE SUMMARY
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతక దర్శిని</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 2 · జాతక సంక్షిప్త సారాంశం (1-Page Executive Summary)</div>
+      <div class="chapter-subtitle">Top 5 Strengths, 3 Critical Cautions, 12-Month Outlook &amp; Running Dasha</div>
 
       <div class="section-card" style="background:#ecfdf5;border-color:#10b981;">
         <h4 style="color:#065f46;border-color:#a7f3d0;">🌟 ప్రస్తుత క్రియాశీల దశా కాలం (Active Dasha Timeline)</h4>
-        <p style="font-size:12.5px;font-weight:700;color:#064e3b;">${execSummary.oneLineDashaSummaryTe}</p>
+        <p style="font-size:12.5px;font-weight:800;color:#064e3b;">${execSummary.oneLineDashaSummaryTe}</p>
         <p style="font-size:11px;color:#047857;">జన్మ శని మహాదశా శేషం: ${dashaInfo.janmaDashaBalanceFormattedTe}</p>
       </div>
 
       <div class="section-card">
         <h4 style="color:#047857;">💎 జాతక ప్రధాన 5 దివ్య బలాలు (Top 5 Strengths)</h4>
-        <ul style="margin:4px 0 4px 18px;padding:0;font-size:11.5px;line-height:1.55;color:#1e293b;">
+        <ul style="margin:4px 0 4px 18px;padding:0;font-size:12px;line-height:1.6;color:#1e293b;">
           ${execSummary.top5StrengthsTe.map((s) => `<li>${s}</li>`).join('')}
         </ul>
       </div>
 
       <div class="section-card">
         <h4 style="color:#991b1b;">⚠️ జీవితంలో తీసుకోవలసిన 3 ప్రధాన జాగ్రత్తలు (Top 3 Cautions)</h4>
-        <ul style="margin:4px 0 4px 18px;padding:0;font-size:11.5px;line-height:1.55;color:#1e293b;">
+        <ul style="margin:4px 0 4px 18px;padding:0;font-size:12px;line-height:1.6;color:#1e293b;">
           ${execSummary.top3CautionsTe.map((c) => `<li>${c}</li>`).join('')}
         </ul>
       </div>
 
-      <div class="section-card">
-        <h4>📅 రాబోయే 12 నెలల గోచార సూచన &amp; శుభ కార్య సమయం (12-Month Outlook)</h4>
-        <p><strong>గోచార పరిశీలన:</strong> ${execSummary.next12MonthsOutlookTe}</p>
-        <p><strong>వివాహ యోగ సమయం:</strong> ${marriageTiming.primaryRecommendationTe}</p>
+      <div class="section-card" style="background:#eff6ff;border-color:#3b82f6;">
+        <h4 style="color:#1d4ed8;border-color:#bfdbfe;">🔮 రాబోయే 12 నెలల గోచార ఫలితాల ముఖ్యాంశం (12-Month Outlook)</h4>
+        <p style="font-size:12px;color:#1e3a8a;line-height:1.55;">${execSummary.next12MonthsOutlookTe}</p>
+        <p style="font-size:11.5px;color:#047857;font-weight:bold;margin-top:4px;">🙏 ప్రధాన పరిహార దృష్టి: ${execSummary.vitalRemedyFocusTe}</p>
       </div>
 
-      <div class="section-card" style="background:#fffbeb;">
-        <h4 style="color:#92400e;">🪔 దైవ ఆరాధన &amp; నిత్య సాధన సూత్రం</h4>
-        <p>${execSummary.vitalRemedyFocusTe}</p>
-        <p style="font-size:10.5px;color:#78350f;margin-top:4px;"><strong>గమనిక:</strong> సంపూర్ణ రత్నధారణ, జప శాంతి వివరాలు చివరి అధ్యాయంలో పొందుపరచబడినవి.</p>
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · అధికారిక సంపూర్ణ పత్రిక</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
       </div>
     </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 2</span>
-    </div>
-  </div>
 
-  <!-- ========================================== -->
-  <!-- PAGE 3: BIRTH PANCHANGAM & CREDENTIALS     -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
+    <!-- ==========================================================================
+        CHAPTER 3: ILLUMINATED KUNDALI PATRIKA IMAGE PLATES (D1 & D9)
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి కుండలి చక్రాలు</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 3 · సంపూర్ణ రాశి చక్రం (D1) &amp; నవాంశ చక్రం (D9) పత్రికలు</div>
+      <div class="chapter-subtitle">High-Resolution Illuminated Temple Kundali Plates (South &amp; North Indian Styles)</div>
+
+      <!-- D1 RASHI KUNDALI IMAGE PLATE -->
+      ${renderSouthIndianImagePlateHtml(
+        'రాశి చక్రం (D1 Janma Kundali)',
+        `లగ్నం: ${chartData.lagna.te} · సూర్యుడు: ${sunPlanet.rashiTe} · చంద్రుడు: ${moonPlanet.rashiTe}`,
+        chartData.d1RashiPlanets
+      )}
+
+      <!-- D9 NAVAMSHA KUNDALI IMAGE PLATE -->
+      <div class="chapter-break keep-together">
+        ${renderSouthIndianImagePlateHtml(
+          'నవాంశ చక్రం (D9 Navamsha Chart)',
+          `నవాంశ లగ్నం: ${chartData.navamshaLagna.te} · ఆత్మ-కళత్ర సూక్ష్మ బలం`,
+          chartData.d9NavamshaPlanets
+        )}
+      </div>
+
+      <!-- North Indian Diamond Chart SVG -->
+      <div class="keep-together" style="margin-top:20px;text-align:center;">
+        <h4 style="font-family:'Noto Serif Telugu', serif;font-size:15px;font-weight:800;color:#78350f;margin-bottom:8px;">
+          ఉత్తర భారత వజ్ర కుండలి చక్రం (North Indian Diamond Kundali)
+        </h4>
+        ${renderNorthIndianChartSvg('D1 రాశి చక్రం', lagnaRashiIdx, chartData.d1RashiPlanets, lang)}
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · కుండలి పత్రిక దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
     </div>
-    <div class="sheet-body">
-      <div class="page-title">జన్మ పంచాంగం &amp; నక్షత్ర వివరాలు (Birth Panchangam Details)</div>
+
+    <!-- ==========================================================================
+        CHAPTER 4: PLANETARY DIGNITIES, EXACT DEGREES & NEECHA BHANGA
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · గ్రహ స్ఫుట పట్టిక</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 4 · నవగ్రహ స్ఫుటములు &amp; గ్రహ బలాబలాలు (Planetary Dignities)</div>
+      <div class="chapter-subtitle">Exact Sidereal Longitudes, Exaltation/Debilitation, Combustion, Vargottama &amp; Neecha Bhanga</div>
 
       <table class="data-table">
         <thead>
           <tr>
-            <th colspan="4" style="text-align:center;background:#451a03;color:#fef3c7;font-size:12px;">
-              దృక్సిద్ధాంత ఖగోళ జనన విశేషాలు (Astronomical Birth Profile)
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="font-weight:bold;width:25%;">తెలుగు సంవత్సరం</td>
-            <td style="width:25%;">${panchangaProfile.samvatsaraTe}</td>
-            <td style="font-weight:bold;width:25%;">అయనం &amp; ఋతువు</td>
-            <td style="width:25%;">${panchangaProfile.ayanaTe} · ${panchangaProfile.rituTe}</td>
-          </tr>
-          <tr>
-            <td style="font-weight:bold;">మాసం &amp; పక్షం</td>
-            <td>${panchangaProfile.masaTe} · ${panchangaProfile.pakshaTe}</td>
-            <td style="font-weight:bold;">జన్మ తిథి</td>
-            <td>${panchangaProfile.tithiTe}</td>
-          </tr>
-          <tr>
-            <td style="font-weight:bold;">జన్మ వారం</td>
-            <td>${panchangaProfile.vaaraTe}</td>
-            <td style="font-weight:bold;">యోగం &amp; కరణం</td>
-            <td>${panchangaProfile.yogaTe} · ${panchangaProfile.karanaTe}</td>
-          </tr>
-          <tr>
-            <td style="font-weight:bold;">జన్మ నక్షత్రం</td>
-            <td><strong>${chartData.nakshatraName} (${chartData.pada}వ పాదం)</strong></td>
-            <td style="font-weight:bold;">జన్మ రాశి (చంద్ర లగ్నం)</td>
-            <td><strong>${chartData.rashi.te} రాశి</strong></td>
-          </tr>
-          <tr>
-            <td style="font-weight:bold;">జన్మ లగ్నం (D1)</td>
-            <td><strong>${chartData.lagna.te} (${chartData.planets[0].degreeFormatted})</strong></td>
-            <td style="font-weight:bold;">నవాంశ లగ్నం (D9)</td>
-            <td>${chartData.navamshaLagna.te} లగ్నం</td>
-          </tr>
-          <tr>
-            <td style="font-weight:bold;">అయనాంశం</td>
-            <td>${panchangaProfile.ayanamsaFormatted}</td>
-            <td style="font-weight:bold;">సమయ మండలం</td>
-            <td>${panchangaProfile.timezoneFormatted}</td>
-          </tr>
-          <tr>
-            <td style="font-weight:bold;">అక్షాంశ / రేఖాంశాలు</td>
-            <td colspan="3">${panchangaProfile.latLonFormatted}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="page-title" style="margin-top:14px;font-size:15px;">నక్షత్ర తత్వ పరిశీలన (27-Nakshatra Matrix Profile)</div>
-      <table class="data-table">
-        <tbody>
-          <tr>
-            <td style="font-weight:bold;width:25%;">గణము</td>
-            <td style="width:25%;">${panchangaProfile.ganaTe}</td>
-            <td style="font-weight:bold;width:25%;">యోని</td>
-            <td style="width:25%;">${panchangaProfile.yoniTe}</td>
-          </tr>
-          <tr>
-            <td style="font-weight:bold;">నాడి</td>
-            <td>${panchangaProfile.nadiTe}</td>
-            <td style="font-weight:bold;">వర్ణం &amp; వశ్యము</td>
-            <td>${panchangaProfile.varnaTe} · ${panchangaProfile.vashyaTe}</td>
-          </tr>
-          <tr>
-            <td style="font-weight:bold;">నామ నక్షత్రాక్షరాలు</td>
-            <td colspan="3"><strong>${panchangaProfile.namaAksharamTe}</strong> (శాస్త్రోక్త నామకరణ అక్షరాలు)</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="section-card">
-        <h4>లగ్న &amp; ఆత్మకారక (సూర్య) స్వభావం</h4>
-        <p>${predictions.lagnaProfile.dehaSwabhavamTe}</p>
-        <p>${predictions.lagnaProfile.manoSwabhavamTe}</p>
-      </div>
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 3</span>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- PAGE 4: CHARTS (D1 & D9 & NORTH INDIAN)     -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
-    </div>
-    <div class="sheet-body">
-      <div class="page-title">ప్రధాన కుండలి చక్రాలు (D1 Rashi &amp; D9 Navamsha Charts)</div>
-
-      <div style="display:flex;gap:12px;margin-bottom:10px;">
-        <div style="flex:1;">
-          ${renderSouthIndianTableHtml('రాశి చక్రం (D1 Kundali)', chartData.d1RashiPlanets, `లగ్నం: ${chartData.lagna.te}`)}
-        </div>
-        <div style="flex:1;">
-          ${renderSouthIndianTableHtml('నవాంశ చక్రం (D9 Navamsha)', chartData.d9NavamshaPlanets, `లగ్నం: ${chartData.navamshaLagna.te}`)}
-        </div>
-      </div>
-
-      <div class="page-title" style="margin-top:10px;font-size:15px;">ఉత్తర భారత పద్ధతి కుండలి (North Indian Diamond Chart Format)</div>
-      <div style="display:flex;gap:12px;align-items:center;">
-        <div style="flex:1;max-width:300px;">
-          ${renderNorthIndianChartSvg('D1 రాశి', lagnaRashiIdx, chartData.d1RashiPlanets, lang)}
-        </div>
-        <div style="flex:1;font-size:11.5px;color:#334155;line-height:1.55;">
-          <div class="section-card">
-            <h4>ఉత్తర &amp; దక్షిణ భారత చక్రాల సమన్వయం</h4>
-            <p><strong>ఉత్తర భారత కుండలి ప్రత్యేకత:</strong> ఇందులో 12 భావాలు స్థిరంగా ఉంటాయి. పైభాగంలోని మొదటి త్రికోణ డైమండ్ ఎల్లప్పుడూ 1వ స్థానమైన "జన్మ లగ్నాన్ని" సూచిస్తుంది. రాశులు అపసవ్య దిశలో (counter-clockwise) పరిభ్రమిస్తాయి.</p>
-            <p><strong>దక్షిణ భారత కుండలి ప్రత్యేకత:</strong> ఇందులో 12 రాశులు స్థిరంగా ఉంటాయి. మేషం నుండి మీనం వరకు స్థిర గడులలో గ్రహాలు మరియు లగ్నం నమోదు చేయబడతాయి.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 4</span>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- PAGE 5: PLANETARY DIGNITY & DEGREES TABLE   -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
-    </div>
-    <div class="sheet-body">
-      <div class="page-title">గ్రహ స్థానాలు, డిగ్రీలు &amp; బల పట్టిక (Planetary Dignities Matrix)</div>
-
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th style="width:14%;">గ్రహం</th>
-            <th style="width:14%;">రాశి (D1)</th>
-            <th style="width:14%;">డిగ్రీలు</th>
-            <th style="width:18%;">నక్షత్రం (పాదం)</th>
-            <th style="width:18%;">శాస్త్రోక్త స్థితి (Dignity)</th>
-            <th style="width:12%;">అస్తంగతం / వక్రం</th>
-            <th style="width:10%;">బలం %</th>
+            <th>గ్రహం (Planet)</th>
+            <th>రాశి (D1)</th>
+            <th>ఖచ్చిత డిగ్రీలు</th>
+            <th>నక్షత్రం (పాదం)</th>
+            <th>నవాంశ (D9)</th>
+            <th>గౌరవ స్థితి (Dignity)</th>
+            <th>దృష్టి &amp; విశేష బలం</th>
           </tr>
         </thead>
         <tbody>
           ${dignities
             .map((d) => {
               const badgeClass =
-                d.dignityCode === 'ucha' || d.dignityCode === 'swakshetra' || d.dignityCode === 'moolatrikona'
+                d.dignityCode === 'ucha'
                   ? 'badge-green'
                   : d.dignityCode === 'neecha'
                   ? 'badge-red'
-                  : d.dignityCode === 'mitra'
+                  : d.dignityCode === 'swakshetra'
                   ? 'badge-gold'
                   : 'badge-purple';
-              return `
-              <tr>
-                <td><strong>${d.nameTe}</strong></td>
-                <td>${d.rashiTe}</td>
-                <td>${d.degreeFormatted}</td>
-                <td>${d.nakshatraTe} (${d.pada})</td>
-                <td><span class="badge ${badgeClass}">${d.dignityTe}</span></td>
-                <td>
-                  ${d.isCombust ? `<span class="badge badge-red">అస్తంగతం (${d.combustDegreeDiff}°)</span>` : ''}
-                  ${d.isRetrograde ? `<span class="badge badge-gold">వక్రం</span>` : ''}
-                  ${d.isVargottama ? `<span class="badge badge-green">వర్గోత్తమ</span>` : ''}
-                  ${!d.isCombust && !d.isRetrograde && !d.isVargottama ? '—' : ''}
+
+              return `<tr>
+                <td style="font-weight:bold;color:#451a03;">
+                  ${d.nameTe}
+                  ${d.isRetrograde ? '<span style="color:#b91c1c;font-size:10px;">(వక్రం)</span>' : ''}
+                  ${d.isCombust ? '<span style="color:#c2410c;font-size:9.5px;font-weight:bold;">(అస్తం)</span>' : ''}
                 </td>
-                <td style="font-weight:bold;text-align:center;">${d.strengthScorePct}%</td>
-              </tr>
-            `;
+                <td style="font-weight:bold;">${d.rashiTe}</td>
+                <td style="font-family:monospace;font-weight:bold;color:#92400e;">${d.degreeFormatted}</td>
+                <td>${d.nakshatraTe} (${d.pada}వ పాదం)</td>
+                <td style="font-weight:bold;color:#047857;">${d.navamshaRashiTe}</td>
+                <td><span class="badge ${badgeClass}">${d.dignityTe}</span></td>
+                <td style="font-size:11px;">
+                  ${d.isVargottama ? '<span class="badge badge-gold">వర్గోత్తమం</span> ' : ''}
+                  ${d.isCombust ? '<span class="badge badge-red">అస్తంగతం</span> ' : ''}
+                  ${d.dignityNotesTe}
+                </td>
+              </tr>`;
             })
             .join('')}
         </tbody>
       </table>
 
-      <div class="page-title" style="margin-top:14px;font-size:15px;">గ్రహ బల విశ్లేషణ విశేషాలు (Dignity Analysis Notes)</div>
-      <div style="font-size:11.5px;color:#334155;line-height:1.5;">
-        ${dignities
-          .filter((d) => d.dignityNotesTe)
-          .map(
-            (d) => `
-          <div style="margin-bottom:6px;border-bottom:1px dashed #e2e8f0;padding-bottom:4px;">
-            <strong>${d.nameTe}:</strong> ${d.dignityNotesTe}
-          </div>
-        `
-          )
+      <!-- Neecha Bhanga Raja Yoga Detailed Evaluation -->
+      <div class="section-card" style="background:#fffbeb;border:1.5px solid #d97706;margin-top:14px;">
+        <h4 style="color:#92400e;">✦ నీచ భంగ రాజయోగ సమగ్ర పరిశీలన (Neecha Bhanga Analysis)</h4>
+        <div style="font-size:12px;line-height:1.6;color:#1e293b;">
+          ${neechaBhangaList.length > 0
+            ? `<ul style="margin:6px 0 6px 18px;padding:0;">
+                ${neechaBhangaList
+                  .map(
+                    (nb) =>
+                      `<li style="margin-bottom:4px;"><strong>${nb.planetTe} (${nb.debilitationRashiTe}):</strong> ${nb.cancellationTypeTe} — ${nb.explanationTe}</li>`
+                  )
+                  .join('')}
+              </ul>`
+            : `<p>ఈ జాతకంలో నీచ స్థితి పొందిన గ్రహాలు లేవు.</p>`}
+        </div>
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · గ్రహ బల దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 5: CLASSICAL YOGAS & DOSHAS DETECTION
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · యోగ &amp; దోష పరిశీలన</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 5 · శాస్త్రోక్త రాజయోగాలు &amp; విశేష దోష తనిఖీ</div>
+      <div class="chapter-subtitle">Classical Yoga &amp; Dosha Formations (Guru-Chandala, Gandanta, Budhaditya, Sade Sati)</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        ${yogas
+          .map((y) => {
+            const isAuspicious = y.category === 'raja' || y.category === 'dhana';
+            const badgeText =
+              y.category === 'raja'
+                ? 'రాజయోగం'
+                : y.category === 'dhana'
+                ? 'ధనయోగం'
+                : y.category === 'dosha'
+                ? 'దోష పరిశీలన'
+                : 'విశేష యోగం';
+            return `
+              <div class="section-card" style="border-left:4px solid ${isAuspicious ? '#10b981' : '#f59e0b'};">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <strong style="font-size:13px;color:#451a03;">${y.nameTe}</strong>
+                  <span class="badge ${isAuspicious ? 'badge-green' : 'badge-gold'}">${badgeText}</span>
+                </div>
+                <p style="font-size:11.5px;line-height:1.5;color:#334155;">${y.descriptionTe}</p>
+                ${y.remedyTe
+                  ? `<div style="font-size:11px;color:#047857;margin-top:4px;border-top:1px dashed #fde68a;padding-top:3px;">
+                      <strong>పరిహారం / ప్రభావం:</strong> ${y.remedyTe}
+                    </div>`
+                  : ''}
+              </div>
+            `;
+          })
           .join('')}
       </div>
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 5</span>
-    </div>
-  </div>
 
-  <!-- ========================================== -->
-  <!-- PAGE 6: NEECHA BHANGA & YOGAS               -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · యోగ దోష దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
     </div>
-    <div class="sheet-body">
-      <div class="page-title">నీచభంగ రాజయోగ పరిశీలన (Neecha Bhanga Raja Yoga Analysis)</div>
 
-      ${
-        neechaBhanga.length > 0
-          ? neechaBhanga
-              .map(
-                (nb) => `
-            <div class="section-card" style="border-left:4px solid ${nb.hasNeechaBhanga ? '#16a34a' : '#dc2626'};">
-              <h4>${nb.planetTe} — ${nb.debilitationRashiTe} రాశిలో నీచ స్థితి: ${
-                  nb.hasNeechaBhanga
-                    ? `<span class="badge badge-green">సంపూర్ణ నీచభంగ రాజయోగం సిద్ధి</span>`
-                    : `<span class="badge badge-red">నీచభంగం జరగలేదు</span>`
-                }</h4>
-              <p><strong>రద్దు సూత్రం (Cancellation Rule):</strong> ${nb.cancellationTypeTe || 'వర్తించదు'}</p>
-              <p>${nb.explanationTe}</p>
-            </div>
-          `
-              )
-              .join('')
-          : `<div class="section-card"><p>ఈ జాతకంలో ఏ గ్రహమూ నీచ స్థితిలో లేదు.</p></div>`
-      }
+    <!-- ==========================================================================
+        CHAPTER 6: SAPTAMA BHAVA (7TH HOUSE) MARRIAGE & TRIPLE KUJA DOSHA
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వైవాహిక &amp; కుజ దోష విశ్లేషణ</span>
+        <span>${siteUrl}</span>
+      </div>
 
-      <div class="page-title" style="margin-top:14px;font-size:15px;">ప్రత్యేక యోగాలు &amp; దోషాల విశ్లేషణ (Detected Yogas &amp; Doshas)</div>
-      ${yogas
-        .map((y) => {
-          const badgeClass =
-            y.impactLevel === 'very_auspicious' || y.impactLevel === 'auspicious'
-              ? 'badge-green'
-              : y.impactLevel === 'moderate'
-              ? 'badge-gold'
-              : 'badge-red';
-          return `
-          <div class="section-card">
-            <h4>${y.nameTe} <span class="badge ${badgeClass}">${y.impactLevel.toUpperCase()}</span></h4>
-            <p>${y.descriptionTe}</p>
-            ${y.remedyTe ? `<p style="color:#78350f;font-weight:600;font-size:11px;">🪔 శాంతి పరిహారం: ${y.remedyTe}</p>` : ''}
+      <div class="chapter-title">అధ్యాయం 6 · సప్తమ భావ (7th House) వివాహ, భాగస్వామి &amp; కుజ దోష విశ్లేషణ</div>
+      <div class="chapter-subtitle">Comprehensive Future Spouse Profile, Love vs Arranged Yoga, Dynamic Marriage Timing &amp; Triple Kuja Dosha</div>
+
+      <!-- Triple Kuja Dosha Verification Box -->
+      <div class="section-card" style="background:#fff7ed;border:1.5px solid #ea580c;">
+        <h4 style="color:#9a3412;">✦ త్రివిధ కుజ దోష పరిశీలన (Lagna, Chandra Lagna &amp; Shukra Lagna)</h4>
+        <p style="font-size:12px;font-weight:bold;color:#7c2d12;">${tripleKuja.summaryTitleTe}</p>
+        <p style="font-size:11.5px;color:#7c2d12;">${tripleKuja.detailedAnalysisTe}</p>
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;margin-top:8px;">
+          <div style="background:#ffffff;padding:8px;border-radius:6px;border:1px solid #fed7aa;font-size:11px;">
+            <strong>1. జన్మ లగ్నం నుండి:</strong><br/>
+            కుజుడు ${tripleKuja.fromLagna.house}వ స్థానంలో ఉన్నాడు —
+            <span style="font-weight:bold;color:${tripleKuja.fromLagna.hasDosha ? '#b91c1c' : '#15803d'};">
+              ${tripleKuja.fromLagna.hasDosha ? 'దోషముంది' : 'దోషం లేదు'}
+            </span>
           </div>
-        `;
-        })
-        .join('')}
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 6</span>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- PAGE 7: TRIPLE KUJA DOSHA & MARRIAGE TIMING -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
-    </div>
-    <div class="sheet-body">
-      <div class="page-title">త్రివిధ కుజ దోష పరిశీలన (Triple Kuja Dosha Comprehensive Evaluation)</div>
-
-      <div class="section-card" style="background:#fffbeb;border-color:#b45309;">
-        <h4 style="color:#78350f;">లగ్న, చంద్ర, శుక్ర ఆధారిత కుజ స్థితి విశ్లేషణ</h4>
-        <table class="data-table" style="margin:8px 0;">
-          <thead>
-            <tr>
-              <th>పరిశీలనా బిందువు</th>
-              <th>కుజుని స్థానం</th>
-              <th>శాస్త్ర స్థితి</th>
-              <th>తీవ్రత %</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>1. జన్మ లగ్నం నుండి</strong></td>
-              <td>${tripleKuja.fromLagna.house}వ స్థానం</td>
-              <td>${tripleKuja.fromLagna.hasDosha ? '<span class="badge badge-red">దోష ప్రదం</span>' : '<span class="badge badge-green">దోష రహితం</span>'}</td>
-              <td>${tripleKuja.fromLagna.severityPct}%</td>
-            </tr>
-            <tr>
-              <td><strong>2. చంద్ర లగ్నం (జన్మ రాశి) నుండి</strong></td>
-              <td>${tripleKuja.fromChandra.house}వ స్థానం</td>
-              <td>${tripleKuja.fromChandra.hasDosha ? '<span class="badge badge-red">అష్టమ కుజ దోషం</span>' : '<span class="badge badge-green">దోష రహితం</span>'}</td>
-              <td>${tripleKuja.fromChandra.severityPct}%</td>
-            </tr>
-            <tr>
-              <td><strong>3. కళత్రకారక శుక్రుని నుండి</strong></td>
-              <td>${tripleKuja.fromShukra.house}వ స్థానం</td>
-              <td>${tripleKuja.fromShukra.hasDosha ? '<span class="badge badge-red">దోష ప్రదం</span>' : '<span class="badge badge-green">దోష రహితం</span>'}</td>
-              <td>${tripleKuja.fromShukra.severityPct}%</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p style="font-size:12px;font-weight:bold;color:#451a03;margin-top:6px;">
-          నికర ఫలితం: ${tripleKuja.summaryTitleTe}
+          <div style="background:#ffffff;padding:8px;border-radius:6px;border:1px solid #fed7aa;font-size:11px;">
+            <strong>2. చంద్ర లగ్నం నుండి:</strong><br/>
+            కుజుడు ${tripleKuja.fromChandra.house}వ స్థానంలో ఉన్నాడు —
+            <span style="font-weight:bold;color:${tripleKuja.fromChandra.hasDosha ? '#b91c1c' : '#15803d'};">
+              ${tripleKuja.fromChandra.hasDosha ? 'దోషముంది (అష్టమ కుజుడు)' : 'దోషం లేదు'}
+            </span>
+          </div>
+          <div style="background:#ffffff;padding:8px;border-radius:6px;border:1px solid #fed7aa;font-size:11px;">
+            <strong>3. శుక్ర లగ్నం నుండి:</strong><br/>
+            కుజుడు ${tripleKuja.fromShukra.house}వ స్థానంలో ఉన్నాడు —
+            <span style="font-weight:bold;color:${tripleKuja.fromShukra.hasDosha ? '#b91c1c' : '#15803d'};">
+              ${tripleKuja.fromShukra.hasDosha ? 'దోషముంది' : 'దోషం లేదు'}
+            </span>
+          </div>
+        </div>
+        <p style="font-size:11px;color:#9a3412;margin-top:6px;">
+          <strong>పరిహారం:</strong> ${tripleKuja.recommendedRemedyTe}
         </p>
-        <p style="white-space:pre-line;">${tripleKuja.detailedAnalysisTe}</p>
-        ${
-          tripleKuja.mitigationFactorsTe.length > 0
-            ? `<div style="background:#fef3c7;padding:6px 10px;border-radius:6px;margin:6px 0;">
-                <strong style="color:#78350f;">శాస్త్రోక్త ఉపశమన అంశాలు:</strong>
-                <ul style="margin:2px 0 2px 16px;padding:0;font-size:11px;">
-                  ${tripleKuja.mitigationFactorsTe.map((m) => `<li>${m}</li>`).join('')}
-                </ul>
+      </div>
+
+      <!-- Dynamic Marriage Timing Window -->
+      <div class="section-card" style="background:#f0fdf4;border:1.5px solid #16a34a;">
+        <h4 style="color:#166534;">⏳ శాస్త్రోక్త వివాహ కాల నిర్ణయం (Dynamic Marriage Timing &amp; Favorable Age)</h4>
+        <p style="font-size:12.5px;font-weight:bold;color:#14532d;">${marriageTiming.primaryRecommendationTe}</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
+          ${marriageTiming.currentFavorableWindows
+            .map(
+              (w) => `<div style="background:#ffffff;padding:8px 12px;border-radius:6px;border:1px solid #bbf7d0;font-size:11.5px;">
+                <strong style="color:#166534;">${w.period} (${w.ageSpan}):</strong><br/>
+                <span style="color:#1e293b;">${w.transitNoteTe}</span>
               </div>`
-            : ''
-        }
-        <p style="color:#065f46;font-weight:bold;">🪔 సూచించిన కుజ దోష నివారణ: ${tripleKuja.recommendedRemedyTe}</p>
-      </div>
-
-      <div class="page-title" style="margin-top:14px;font-size:15px;">శుభ వివాహ యోగ కాలం &amp; భాగస్వామి స్వభావం (Marriage Timing &amp; Spouse)</div>
-      <div class="section-card">
-        <h4>ప్రస్తుత వయస్సు ఆధారిత వివాహ యోగ సమయం</h4>
-        <p>${marriageTiming.primaryRecommendationTe}</p>
-        <table class="data-table" style="margin-top:6px;">
-          <thead>
-            <tr>
-              <th>శుభ కాలం</th>
-              <th>వయస్సు</th>
-              <th>గోచార గురు &amp; దశా బలం</th>
-              <th>అనుకూలత</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${marriageTiming.currentFavorableWindows
-              .map(
-                (w) => `
-              <tr>
-                <td><strong>${w.period}</strong></td>
-                <td>${w.ageSpan}</td>
-                <td>${w.transitNoteTe}</td>
-                <td><span class="badge badge-green">${w.favorability.toUpperCase()}</span></td>
-              </tr>
-            `
-              )
-              .join('')}
-          </tbody>
-        </table>
-      </div>
-
-      <div class="section-card">
-        <h4>సప్తమాధిపతి పరిశీలన &amp; దాంపత్య జీవనం</h4>
-        <p>${predictions.saptamaMarriage.spouseAppearanceAndNatureTe}</p>
-        <p>${predictions.saptamaMarriage.spouseCareerAndFamilyTe}</p>
-      </div>
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 7</span>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- PAGE 8: CURRENT DASHA & FULL TIMELINE       -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
-    </div>
-    <div class="sheet-body">
-      <div class="page-title">వింశోత్తరి దశా-భుక్తి కాలచక్రం (Vimshottari Dasha Full Timeline)</div>
-
-      <div class="section-card" style="background:#ecfdf5;border-color:#059669;">
-        <h4 style="color:#065f46;">ప్రస్తుత క్రియాశీల మహాదశ &amp; అంతర్దశ (Current Running Periods)</h4>
-        <table style="width:100%;font-size:12px;border-collapse:collapse;">
-          <tr>
-            <td style="font-weight:bold;color:#065f46;width:25%;">ప్రస్తుత మహాదశ:</td>
-            <td style="font-weight:800;color:#064e3b;width:35%;font-size:13.5px;">${dashaInfo.currentMahadasha.lordTe} మహాదశ</td>
-            <td style="font-weight:bold;color:#065f46;width:20%;">కాల వ్యవధి:</td>
-            <td style="color:#064e3b;">${dashaInfo.currentMahadasha.startDate} నుండి ${dashaInfo.currentMahadasha.endDate}</td>
-          </tr>
-          <tr>
-            <td style="font-weight:bold;color:#065f46;">ప్రస్తుత అంతర్దశ:</td>
-            <td style="font-weight:800;color:#064e3b;font-size:13.5px;">${dashaInfo.currentAntardasha.lordTe} అంతర్దశ</td>
-            <td style="font-weight:bold;color:#065f46;">కాల వ్యవధి:</td>
-            <td style="color:#064e3b;">${dashaInfo.currentAntardasha.startDate} నుండి ${dashaInfo.currentAntardasha.endDate}</td>
-          </tr>
-        </table>
-        <div style="font-size:11px;color:#047857;margin-top:6px;border-top:1px dashed #a7f3d0;padding-top:4px;">
-          <strong>జన్మ దశా శేషం:</strong> ${dashaInfo.janmaDashaBalanceFormattedTe}
+            )
+            .join('')}
         </div>
       </div>
 
-      <div class="page-title" style="margin-top:14px;font-size:15px;">సంపూర్ణ 9 మహాదశల క్రమం (All 9 Mahadashas Sequence)</div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th style="width:20%;">మహాదశ</th>
-            <th style="width:18%;">ప్రారంభ తేదీ</th>
-            <th style="width:18%;">ముగింపు తేదీ</th>
-            <th style="width:16%;">స్థితి</th>
-            <th style="width:28%;">ఫలిత సంక్షిప్త సూచన</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${dashaInfo.mahadashas
-            .map(
-              (m) => `
-            <tr style="${m.isCurrent ? 'background:#dcfce7;font-weight:bold;' : ''}">
-              <td><strong>${m.lordTe}</strong></td>
-              <td>${m.startDate}</td>
-              <td>${m.endDate}</td>
-              <td>${m.isCurrent ? '<span class="badge badge-green">ప్రస్తుతం నడుస్తున్నది</span>' : 'కాలచక్రం'}</td>
-              <td>${m.isCurrent ? 'ప్రస్తుత జీవన గమనాన్ని నిర్దేశించే ప్రధాన కాలం' : 'దశా ఫలాలు'}</td>
-            </tr>
-          `
-            )
-            .join('')}
-        </tbody>
-      </table>
-
-      <!-- Antardasha breakdown for the active Mahadasha -->
-      <div class="page-title" style="margin-top:12px;font-size:14px;">ప్రస్తుత ${dashaInfo.currentMahadasha.lordTe} మహాదశలోని అంతర్దశల పట్టిక</div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>అంతర్దశాధిపతి</th>
-            <th>ప్రారంభం</th>
-            <th>ముగింపు</th>
-            <th>స్థితి</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${(
-            dashaInfo.mahadashas.find((m) => m.lordId === dashaInfo.currentMahadasha.lordId)?.antardashas || []
-          )
-            .map(
-              (ad) => `
-            <tr style="${ad.isCurrent ? 'background:#dcfce7;font-weight:bold;' : ''}">
-              <td>${dashaInfo.currentMahadasha.lordTe} లో <strong>${ad.lordTe}</strong></td>
-              <td>${ad.startDate}</td>
-              <td>${ad.endDate}</td>
-              <td>${ad.isCurrent ? '<span class="badge badge-green">క్రియాశీలం</span>' : 'పూర్తయినది / రాబోయేది'}</td>
-            </tr>
-          `
-            )
-            .join('')}
-        </tbody>
-      </table>
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 8</span>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- PAGE 9: NEXT 12 MONTHS GOCHARA TRANSITS     -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
-    </div>
-    <div class="sheet-body">
-      <div class="page-title">రాబోయే 12 నెలల గోచార ఫలితాలు (Next 12 Months Gochara Transits)</div>
-
-      <div style="font-size:11.5px;color:#334155;margin-bottom:10px;">
-        శాస్త్రోక్తంగా గోచార ఫలితాలు జన్మ రాశి (చంద్ర లగ్నం: <strong>${chartData.rashi.te}</strong>) ఆధారంగా ప్రధానంగానూ, జన్మ లగ్నం (<strong>${chartData.lagna.te}</strong>) ఆధారంగా ఉపబలంగానూ పరిగణించబడతాయి.
-      </div>
-
-      ${gochara12m
-        .map(
-          (g) => `
+      <!-- Spouse Nature, Career & Love vs Arranged -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div class="section-card">
-          <h4>${g.planetTe} — ${g.transitRashiTe} (${g.keyDates})</h4>
-          <p>
-            <strong>చంద్రుని నుండి:</strong> ${g.houseFromMoon}వ స్థానం ·
-            <strong>లగ్నం నుండి:</strong> ${g.houseFromLagna}వ స్థానం ·
-            <strong>గోచార స్థితి:</strong> ${
-              g.favorableStatus === 'shubha'
-                ? '<span class="badge badge-green">అనుకూలం</span>'
-                : '<span class="badge badge-gold">మధ్యమ / జాగ్రత్త</span>'
-            }
+          <h4>1. జీవిత భాగస్వామి రూపం, స్వభావం &amp; వృత్తి</h4>
+          <p>${saptamaMarriage.spouseAppearanceAndNatureTe}</p>
+          <p style="border-top:1px dashed #fde68a;padding-top:4px;color:#047857;font-weight:bold;">
+            ${saptamaMarriage.spouseCareerAndFamilyTe}
           </p>
-          <p>${g.predictionTe}</p>
         </div>
-      `
-        )
-        .join('')}
-
-      <div class="page-title" style="margin-top:14px;font-size:15px;">సర్వాష్టకవర్గ 337 బిందువుల పట్టిక (Sarvashtakavarga Matrix)</div>
-      <div class="section-card">
-        <p><strong>అత్యధిక బలంగల రాశులు (30+ బిందువులు):</strong> ${ashtakavarga.strongestRashisTe}</p>
-        <p><strong>శ్రమ అవసరమైన రాశులు (<26 బిందువులు):</strong> ${ashtakavarga.challengingRashisTe}</p>
-        <div style="font-size:10.5px;color:#78350f;margin-top:4px;">
-          గోచార గ్రహాలు అధిక బిందువులు గల రాశులలో సంచరించే సమయంలో చేపట్టిన కార్యాలు శీఘ్ర విజయాన్ని, తక్కువ బిందువులు గల స్థానాలలో సంచరించే సమయంలో శ్రమను ఇస్తాయి.
-        </div>
-      </div>
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 9</span>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- PAGE 10: DIVISIONAL CHARTS (D10, D7, D12)  -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
-    </div>
-    <div class="sheet-body">
-      <div class="page-title">వర్గ చక్రాల పరిశీలన (Divisional Charts: D10, D7, D12)</div>
-
-      <div style="display:flex;gap:12px;margin-bottom:10px;">
-        <div style="flex:1;">
-          <div style="font-size:12px;font-weight:bold;color:#451a03;margin-bottom:4px;text-align:center;">
-            దశాంశ చక్రం (D10 Dashamsha — ఉద్యోగ, వృత్తి బలం)
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <h4 style="margin:0;">2. ప్రేమ vs పెద్దల వివాహం</h4>
+            <span class="badge badge-green">${saptamaMarriage.marriageTypeBadgeTe}</span>
           </div>
-          ${renderSouthIndianTableHtml('D10 దశాంశ', divisional.d10Chart as any, 'వృత్తి & కీర్తి')}
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:12px;font-weight:bold;color:#451a03;margin-bottom:4px;text-align:center;">
-            సప్తాంశ చక్రం (D7 Saptamsha — సంతాన ప్రాప్తి)
-          </div>
-          ${renderSouthIndianTableHtml('D7 సప్తాంశ', divisional.d7Chart as any, 'సంతానం & వంశాభివృద్ధి')}
-        </div>
-      </div>
-
-      <div style="display:flex;gap:12px;margin-bottom:10px;">
-        <div style="flex:1;">
-          <div style="font-size:12px;font-weight:bold;color:#451a03;margin-bottom:4px;text-align:center;">
-            ద్వాదశాంశ చక్రం (D12 Dwadashamsha — పిత్రార్జితం &amp; పూర్వీకులు)
-          </div>
-          ${renderSouthIndianTableHtml('D12 ద్వాదశాంశ', divisional.d12Chart as any, 'తల్లిదండ్రులు & వంశం')}
-        </div>
-        <div style="flex:1;">
-          <div class="section-card" style="height:calc(100% - 24px);display:flex;flex-direction:column;justify-content:center;">
-            <h4>వర్గ చక్రాల తాత్పర్యం (Significance of Varga Charts)</h4>
-            <p><strong>D10 దశాంశం:</strong> కేవలం రాశి చక్రం ద్వారా మాత్రమే కాకుండా, దశాంశ చక్రంలో 10వ భావాధిపతి మరియు రవి, శని స్థానాల ఆధారంగా జీవనోపాధిలో ఉన్నత హోదా, వ్యాపార సామర్థ్యం నిర్ధారించబడతాయి.</p>
-            <p><strong>D7 సప్తాంశం:</strong> సంతాన ప్రాప్తి, వారి ఆరోగ్య వికాసం మరియు వారసత్వ యోగాలను తెలియజేస్తుంది.</p>
-            <p><strong>D12 ద్వాదశాంశం:</strong> పూర్వ పుణ్యం, తల్లిదండ్రుల ఆరోగ్యం మరియు పూర్వీకుల ఆశీస్సులను తెలియజేస్తుంది.</p>
+          <p>${saptamaMarriage.marriageTypeAnalysisTe}</p>
+          <div style="border-top:1px dashed #fde68a;padding-top:4px;font-size:11.5px;color:#78350f;">
+            <strong>శాంతి నియమం:</strong> ${saptamaMarriage.remedyMetalAndDayTe} · ${saptamaMarriage.remedyJapaScheduleTe}
           </div>
         </div>
       </div>
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 10</span>
-    </div>
-  </div>
 
-  <!-- ========================================== -->
-  <!-- PAGE 11: 12 BHAVA PREDICTIONS SUMMARY       -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వైవాహిక దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
     </div>
-    <div class="sheet-body">
-      <div class="page-title">ద్వాదశ భావ ఫలాల సంక్షిప్త సారాంశం (12 Bhavas Overview)</div>
 
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th style="width:12%;">భావం</th>
-            <th style="width:16%;">రాశి &amp; అధిపతి</th>
-            <th style="width:14%;">అధిపతి స్థితి</th>
-            <th style="width:58%;">ప్రధాన జీవన ఫలితాలు</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${predictions.twelveBhavas
-            .map(
-              (b) => `
-            <tr>
-              <td><strong>${b.bhavaTitleTe.split('—')[0]}</strong></td>
-              <td>${b.rashiInHouseTe} (${b.lordTe})</td>
-              <td>${b.lordPlacedInHouse}వ స్థానంలో</td>
-              <td>${b.detailedPredictionTe.substring(0, 150)}...</td>
-            </tr>
-          `
-            )
-            .join('')}
-        </tbody>
-      </table>
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 11</span>
-    </div>
-  </div>
+    <!-- ==========================================================================
+        CHAPTER 7: LAGNA & 144 SUN-MOON ARCHETYPE SYNTHESIS
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ఆత్మ-మనఃకారక సంయోగం</span>
+        <span>${siteUrl}</span>
+      </div>
 
-  <!-- ========================================== -->
-  <!-- PAGE 12: REMEDIES CALENDAR & GEM SAFETY     -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
-    </div>
-    <div class="sheet-body">
-      <div class="page-title">వైదిక శాంతి పరిహారాల క్యాలెండర్ (Remedies Schedule)</div>
+      <div class="chapter-title">అధ్యాయం 7 · జన్మ లగ్న, సూర్య (ఆత్మ) &amp; చంద్ర (మనస్సు) 144 సంయోగ విశ్లేషణ</div>
+      <div class="chapter-subtitle">Lagna Archetype, Sun in Cancer (${sunPlanet.degreeFormatted}) &amp; Moon in Scorpio Synthesis</div>
 
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th style="width:18%;">వారం / తిథి</th>
-            <th style="width:24%;">ఆరాధించవలసిన దైవం</th>
-            <th style="width:30%;">జప మంత్రం &amp; దానం</th>
-            <th style="width:28%;">నియమం &amp; వ్యవధి</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>ప్రతి మంగళవారం</strong></td>
-            <td>శ్రీ సుబ్రహ్మణ్య స్వామి / ఆంజనేయ స్వామి</td>
-            <td>శ్రీ సుబ్రహ్మణ్య అష్టకం పఠనం, ఎర్రని పూలతో పూజ, కందుల దానం</td>
-            <td>వరుసగా 21 మంగళవారాలు ఆచరించడం వల్ల కుజ దోష నివృత్తి.</td>
-          </tr>
-          <tr>
-            <td><strong>ప్రతి బుధవారం</strong></td>
-            <td>శ్రీ మహావిష్ణువు / శ్రీ లక్ష్మీ నారాయణ స్వామి</td>
-            <td>శ్రీ విష్ణు సహస్రనామ స్తోత్రం, పచ్చ పెసలు దానం</td>
-            <td>బుధ అస్తంగత దోష నివారణకు, బుద్ధి వికాసానికి అత్యంత శుభకరం.</td>
-          </tr>
-          <tr>
-            <td><strong>ప్రతి గురువారం</strong></td>
-            <td>శ్రీ దక్షిణామూర్తి / దత్తాత్రేయ స్వామి</td>
-            <td>దక్షిణామూర్తి స్తోత్రం, పసుపు శనగల దానం</td>
-            <td>గురు-చండాల దోష ఉపశమనానికి, విద్యా వికాసానికి శ్రేయస్కరం.</td>
-          </tr>
-          <tr>
-            <td><strong>ప్రతి శనివారం</strong></td>
-            <td>శ్రీ ఆంజనేయ స్వామి / శనీశ్వరుడు</td>
-            <td>హనుమాన్ చాలీసా, నువ్వుల నూనెతో దీపారాధన, నల్ల నువ్వుల దానం</td>
-            <td>అర్ధాష్టమ శని శాంతి కొరకు, సమస్త ఆటంకాల తొలగింపుకు.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- Prominent Gemstone Warning Box -->
-      <div class="section-card" style="background:#fef2f2;border:2px solid #ef4444;margin-top:14px;">
-        <h4 style="color:#991b1b;border-color:#fca5a5;font-size:14px;">
-          ⚠️ రత్నధారణ అత్యంత ముఖ్యమైన హెచ్చరిక (Gemstone Safety Caution)
+      <div class="section-card section-card-accent">
+        <h4 style="color:#78350f;">
+          లగ్నం: ${chartData.lagna.te} · సూర్య రాశి: ${sunMoon144.sunRashiTe} (ఆత్మ) · చంద్ర రాశి: ${sunMoon144.moonRashiTe} (మనస్సు)
         </h4>
-        <p style="font-size:12px;font-weight:bold;color:#7f1d1d;line-height:1.6;">
-          రత్నధారణకు ముందు తప్పనిసరిగా పండితుని ప్రత్యక్ష సలహా తీసుకోండి!
-        </p>
-        <p style="font-size:11.5px;color:#991b1b;line-height:1.5;">
-          శాస్త్ర సిద్ధాంతం ప్రకారం ఒక గ్రహం అస్తంగతం (Combust), నీచ స్థితి (Debilitated), లేదా 6, 8, 12 స్థానాలలో ఉన్నప్పుడు అపరిశీలనగా రత్నం ధరించడం వల్ల వ్యతిరేక మరియు ప్రతికూల ప్రభావాలు ఎదురయ్యే ప్రమాదం ఉంది. మీ జాతకంలో గ్రహ బలాలు, నీచభంగ యోగాలు సమగ్రంగా లెక్కించబడిన తర్వాత మాత్రమే రత్నాన్ని ధరించాలి.
-        </p>
-        <p style="font-size:11px;color:#b91c1c;font-weight:600;margin-top:4px;">
-          (Wear gemstones strictly after consulting the chief pandit, particularly when planets are combust or debilitated).
-        </p>
+        <p><strong>దేహ స్వభావం:</strong> ${lagnaProfile.dehaSwabhavamTe} ${lagnaProfile.lagnaLordEffectTe}</p>
+        <p><strong>ప్రధాన జీవన తత్వం:</strong> ${sunMoon144.themesTe}</p>
       </div>
 
-      <div class="section-card" style="background:#fffbeb;margin-top:10px;">
-        <h4>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్యాత్మిక సందేశం</h4>
-        <p style="font-size:11.5px;color:#451a03;line-height:1.55;">
-          "జ్యోతిషం అనేది విధిని భయపెట్టే సాధనం కాదు; జీవిత గమనాన్ని నిర్దేశించే దివ్య దీపిక. సరైన కర్మ, దైవ విశ్వాసం, ధర్మబద్ధమైన ఆలోచనలతో ఏ గ్రహ ప్రతికూలతనైనా అధిగమించవచ్చు. భగవదనుగ్రహంతో మీ సమస్త కార్యాలు విజయవంతం కావాలని మనస్ఫూర్తిగా ఆశీర్వదిస్తున్నాను."
-        </p>
-      </div>
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 12</span>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- PAGE 13: DISCLAIMER & DPDP ACT PRIVACY      -->
-  <!-- ========================================== -->
-  <div class="report-sheet">
-    <div class="running-header">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతకం</span>
-      <span>${siteUrl}</span>
-    </div>
-    <div class="sheet-body">
-      <div class="page-title">శాస్త్ర ప్రామాణికత &amp; గోప్యతా విధానం (Disclaimer &amp; Privacy Compliance)</div>
-
-      <div class="section-card">
-        <h4>వేద జ్యోతిష శాస్త్ర పరిమితులు &amp; మార్గదర్శనం (Astrological Disclaimer)</h4>
-        <p style="font-size:11.5px;line-height:1.6;color:#334155;">
-          1. ఈ నివేదికలోని ఫలితాలు పరాశర మరియు వరాహమిహిర ప్రాచీన జ్యోతిష గ్రంథాల ఆధారంగా, లహిరి అయనాంశం ప్రకారం ఖగోళ గణనల ద్వారా రూపొందించబడినవి.<br/>
-          2. జ్యోతిష విశ్లేషణ అనేది వ్యక్తిగత వికాసం, మానసిక సంసిద్ధత మరియు ధార్మిక మార్గదర్శనం కొరకు ఉద్దేశించబడినది. ఇది ఎట్టి పరిస్థితుల్లోనూ వైద్య (Medical), న్యాయ (Legal) లేదా ఆర్థిక (Financial/Investment) నిపుణుల సలహాలకు ప్రత్యామ్నాయం కాదు.<br/>
-          3. గ్రహ స్థితులు సంభావ్యతలను (Probabilities) సూచిస్తాయి; వ్యక్తిగత ప్రయత్నం (స్వయంకృషి), సత్ప్రవర్తన మరియు దైవానుగ్రహం ద్వారా ప్రతికూలతలను సులభంగా అధిగమించవచ్చు.
-        </p>
-      </div>
-
-      <div class="section-card" style="background:#f8fafc;border-color:#64748b;margin-top:12px;">
-        <h4 style="color:#334155;">భారత డిజిటల్ వ్యక్తిగత డేటా రక్షణ చట్టం (DPDP Act 2023 Compliant Notice)</h4>
-        <p style="font-size:11px;line-height:1.55;color:#475569;">
-          • <strong>డేటా భద్రత:</strong> జాతకుని పేరు, పుట్టిన తేదీ, సమయం మరియు ప్రాంతం కేవలం కుండలి గణన కొరకు మాత్రమే తాత్కాలికంగా వినియోగించబడతాయి.<br/>
-          • <strong>మూడవ పక్షాల రక్షణ:</strong> వినియోగదారుల జనన వివరాలు ఎట్టి పరిస్థితుల్లోనూ వాణిజ్య లేదా మార్కెటింగ్ ప్రయోజనాల కోసం ఏ మూడవ పక్షానికి (Third Party) విక్రయించబడవు.<br/>
-          • <strong>డేటా తొలగింపు హక్కు (Right to Erasure):</strong> వినియోగదారుడు కోరిన పక్షంలో సర్వర్ నుండి జనన వివరాలను శాశ్వతంగా తొలగించే వెసులుబాటు కలదు.
-        </p>
-      </div>
-
-      <!-- Pandit Official Seal & Contacts -->
-      <div style="border:2px solid #b45309;border-radius:10px;background:#fffbeb;padding:14px 18px;margin-top:20px;text-align:center;">
-        <div style="font-size:13px;font-weight:bold;color:#78350f;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం</div>
-        <div style="font-size:15px;font-weight:800;color:#451a03;margin:4px 0;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ</div>
-        <div style="font-size:11px;color:#78350f;">సిద్ధాంతి &amp; వేద జ్యోతిష సలహాదారులు · హైదరాబాద్, తెలంగాణ</div>
-        <div style="font-size:12px;font-weight:bold;color:#047857;margin-top:6px;">
-          📞 సంప్రదించుటకు / వాట్సాప్ అపాయింట్‌మెంట్: +91 89779 86166
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="section-card">
+          <h4>వ్యక్తిత్వం, స్వభావం, విద్య &amp; వృత్తి</h4>
+          <p>${sunMoon144.personalityTe}</p>
+          <p style="border-top:1px dashed #fde68a;padding-top:4px;color:#78350f;font-weight:bold;">
+            ${sunMoon144.careerAndWealthTe}
+          </p>
         </div>
-        <div style="font-size:11.5px;color:#92400e;margin-top:3px;">
-          🌐 అధికారిక వెబ్‌సైట్: <a href="https://${siteUrl}" style="color:#92400e;text-decoration:none;font-weight:bold;">${siteUrl}</a>
+        <div class="section-card">
+          <h4>ప్రేమ, దాంపత్యం &amp; కుటుంబ సంబంధాలు</h4>
+          <p>${sunMoon144.relationshipsTe} ${lagnaProfile.manoSwabhavamTe}</p>
+          <div style="border-top:1px dashed #fde68a;padding-top:4px;font-size:11px;color:#78350f;font-style:italic;">
+            <strong>జీవన ప్రతీక:</strong> ${sunMoon144.imageForIntegrationTe}
+          </div>
+        </div>
+        <div class="section-card" style="background:#ecfdf5;border-color:#10b981;">
+          <h4 style="color:#065f46;">✓ సహజ బలాలు &amp; ఆధ్యాత్మిక ఉపాసన</h4>
+          <p style="color:#064e3b;">${sunMoon144.strengthsTe}. ${sunMoon144.spiritualPathTe}</p>
+        </div>
+        <div class="section-card" style="background:#fffbeb;border-color:#f59e0b;">
+          <h4 style="color:#92400e;">! తీసుకోవలసిన జాగ్రత్తలు &amp; జీవన లక్ష్యం</h4>
+          <p style="color:#78350f;">${sunMoon144.weaknessesTe} ${lagnaProfile.lifeMissionTe}</p>
         </div>
       </div>
-    </div>
-    <div class="running-footer">
-      <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · <a href="https://${siteUrl}">${siteUrl}</a></span>
-      <span>పేజీ 13</span>
-    </div>
-  </div>
 
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ఆత్మ-మనస్సు దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 8: PANCHABHUTA ELEMENTAL PLANETARY STRENGTH
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · పంచభూత తత్వ బలం</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 8 · పంచభూత తత్వ సప్తగ్రహ బల &amp; శాంతి ఉపాసన</div>
+      <div class="chapter-subtitle">Elemental Harmony (Fire, Earth, Air, Water) &amp; Vedic Planetary Upasana</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        ${elementStrengths
+          .map((item) => `
+            <div class="section-card">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <strong style="font-size:13px;color:#451a03;">${item.planetTe} — ${item.rashiTe} (${item.elementTe})</strong>
+                <span class="badge ${item.tier === 'best' ? 'badge-green' : item.tier === 'second' ? 'badge-gold' : 'badge-purple'}">
+                  ${item.tierLabelTe}
+                </span>
+              </div>
+              <div style="font-size:10.5px;font-weight:bold;color:#78350f;margin-bottom:3px;">
+                లగ్నం నుండి స్థానం: ${item.houseNameTe}
+              </div>
+              <p style="font-size:11.5px;line-height:1.5;">${item.analysisTe}</p>
+              <div style="font-size:11px;color:#047857;border-top:1px dashed #fde68a;padding-top:3px;margin-top:4px;">
+                🙏 <strong>ఆరాధన:</strong> ${item.remedyTe}
+              </div>
+            </div>
+          `)
+          .join('')}
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · తత్వ బల దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 9: BHRIGU & NADI SPECIAL PREDICTIVE SUTRAS
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · భృగు విశేష సూత్రాలు</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 9 · భృగు చక్ర పద్ధతి జన్మ మాస నియమాలు &amp; విశేష ఫల సూత్రాలు</div>
+      <div class="chapter-subtitle">Bhrigu Nadi Special Sutras, Saturn 2nd-House Karma Rule &amp; Wealth Axioms</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        ${specialSutras
+          .map((sutra, idx) => `
+            <div class="section-card">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <span style="font-size:10px;font-weight:bold;color:#78350f;">సూత్రం #${idx + 1}</span>
+                <span class="badge badge-gold">${sutra.badgeTe}</span>
+              </div>
+              <h4 style="margin:0 0 4px 0;">${sutra.titleTe}</h4>
+              <p style="font-size:11.5px;line-height:1.5;">${sutra.descriptionTe}</p>
+              <div style="font-size:11px;color:#78350f;background:#fffbeb;padding:5px 8px;border-radius:6px;border:1px solid #fef3c7;margin-top:6px;">
+                💡 <strong>శర్మ గారి సలహా:</strong> ${sutra.remedyOrAdviceTe}
+              </div>
+            </div>
+          `)
+          .join('')}
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · భృగు సూత్ర దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 10: LIFE EVENT PROBABILITY TIMELINE (% Windows)
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ఈవెంట్ సంభావ్యతా టైమ్‌లైన్</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 10 · జీవిత కీలక ఘట్టాల కాల నిర్ణయం (% Probability Windows)</div>
+      <div class="chapter-subtitle">Multi-Factor Predictive Windows for Career Peak, Marriage, Wealth &amp; Foreign Travel</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        ${eventTimelines
+          .map((ev) => `
+            <div class="section-card">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <strong style="font-size:13px;color:#451a03;">${ev.categoryTe}</strong>
+                <span class="badge badge-green" style="font-size:12px;">${ev.probabilityScore}%</span>
+              </div>
+              <div style="background:#fef3c7;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:bold;color:#78350f;margin-bottom:6px;">
+                అనుకూల వయస్సు: ${ev.peakAgeBracketTe} (${ev.calendarYearsTe})
+              </div>
+              <p style="font-size:11.5px;line-height:1.5;">${ev.analysisTe}</p>
+              <div style="font-size:11px;color:#047857;margin-top:4px;">
+                ✦ <strong>కారక గ్రహాలు:</strong> ${ev.primaryPlanetsTe}
+              </div>
+              <div style="font-size:11px;color:#78350f;background:#fffdf5;padding:4px 8px;border-radius:4px;border:1px solid #fde68a;margin-top:4px;">
+                🙏 <strong>సలహా:</strong> ${ev.sharmaAdviceTe}
+              </div>
+            </div>
+          `)
+          .join('')}
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ఈవెంట్ టైమ్‌లైన్ దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 11: SARVASHTAKAVARGA 337 BINDUS MATRIX
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · సర్వాష్టకవర్గ 337 బిందువులు</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 11 · సార్వభౌమ అష్టకవర్గ 12-భావ బలం (Sarvashtakavarga 337 Bindus)</div>
+      <div class="chapter-subtitle">12 Rashi Bindu Distribution, Peak Fortune Houses &amp; 10th vs 11th Income Axiom</div>
+
+      <!-- Axiom Box -->
+      <div class="section-card" style="background:#451a03;color:#ffffff;border:1.5px solid #d97706;">
+        <h4 style="color:#fcd34d;border-color:#d97706;">★ శాస్త్రోక్త రాజ్య (10వ) vs లాభ (11వ) భావ అష్టకవర్గ సూత్రం</h4>
+        <p style="color:#fef3c7;font-size:12px;line-height:1.6;">
+          ${ashtakavargaMatrix.incomeVsExpenditureYogaTe}
+        </p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:8px;margin-top:10px;">
+        ${ashtakavargaMatrix.houses
+          .map((h) => {
+            const isHigh = h.bindus >= 30;
+            const isLow = h.bindus < 25;
+            return `
+              <div style="border:1.2px solid ${isHigh ? '#10b981' : isLow ? '#f87171' : '#d97706'};background:${isHigh ? '#f0fdf4' : isLow ? '#fef2f2' : '#ffffff'};padding:8px;border-radius:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:10.5px;font-weight:bold;color:#78350f;">${h.houseNumber}వ స్థానం</span>
+                  <span style="font-size:13px;font-weight:900;color:${isHigh ? '#15803d' : isLow ? '#b91c1c' : '#78350f'};">${h.bindus}</span>
+                </div>
+                <strong style="font-size:11.5px;color:#451a03;display:block;margin-top:2px;">${h.bhavaNameTe}</strong>
+                <span style="font-size:10px;color:#64748b;">(${h.rashiTe})</span>
+                <p style="font-size:10.5px;line-height:1.4;margin:4px 0;color:#334155;">${h.interpretationTe}</p>
+                <div style="font-size:9.5px;color:#047857;border-top:1px dashed #e2e8f0;padding-top:2px;">${h.remedyTe}</div>
+              </div>
+            `;
+          })
+          .join('')}
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · అష్టకవర్గ దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 12: COMPLETE 12 HOUSES (DWADASHA BHAVAS) PARASHARI ANALYSIS
+        ========================================================================== -->
+    <div class="chapter-break">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ద్వాదశ స్థాన ఫలితాలు (1-12)</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 12 · ద్వాదశ స్థాన సంపూర్ణ జీవిత ఫలితాలు (1 నుండి 12 స్థానాల సమగ్ర విశ్లేషణ)</div>
+      <div class="chapter-subtitle">Exhaustive Parashari House-by-House Destiny Analysis from Lagna (${chartData.lagna.te})</div>
+
+      <div style="display:grid;grid-template-columns:1fr;gap:12px;">
+        ${all12Houses
+          .map((houseItem) => {
+            return `
+              <div class="section-card keep-together">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;border-bottom:1px dashed #fde68a;padding-bottom:3px;">
+                  <div>
+                    <span style="font-size:11px;font-weight:900;color:#78350f;background:#fef3c7;padding:2px 8px;border-radius:4px;border:0.5px solid #d97706;margin-right:6px;">
+                      ${houseItem.houseNumber}వ స్థానం
+                    </span>
+                    <strong style="font-size:14px;color:#451a03;">${houseItem.bhavaTitleTe}</strong>
+                  </div>
+                  <div style="font-size:11.5px;font-weight:bold;color:#047857;">
+                    రాశి: ${houseItem.rashiInHouseTe} · అధిపతి: ${houseItem.lordTe} (${houseItem.lordPlacedInHouse}వ ఇంట)
+                  </div>
+                </div>
+
+                ${houseItem.occupantPlanetsTe.length > 0
+                  ? `<div style="font-size:11.5px;font-weight:bold;color:#991b1b;margin-bottom:4px;">
+                      ఈ స్థానంలోని గ్రహాలు: ${houseItem.occupantPlanetsTe.join(', ')}
+                    </div>`
+                  : ''}
+
+                <p style="font-size:12px;line-height:1.6;color:#334155;">
+                  ${houseItem.detailedPredictionTe}
+                </p>
+
+                <div style="font-size:11.5px;font-weight:bold;color:#78350f;margin-top:4px;border-top:1px dashed #fde68a;padding-top:4px;">
+                  ✦ మార్గదర్శకత్వం: <span style="font-weight:normal;color:#1e293b;">${houseItem.guidanceTe}</span>
+                </div>
+              </div>
+            `;
+          })
+          .join('')}
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ద్వాదశ స్థాన దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 13: 9 PLANETS IN HOUSES & D9 NAVAMSHA ANALYSIS
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · నవగ్రహ ఫలితాలు</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 13 · నవగ్రహ రాశి, నక్షత్ర పాద &amp; నవాంశ (D9) ఫలితాలు</div>
+      <div class="chapter-subtitle">Individual Placements &amp; Predictive Consequences for All 9 Planetary Forces</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        ${bhavaPredictions
+          .map((bp) => `
+            <div class="section-card">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <strong style="font-size:13px;color:#451a03;">${bp.planetTe} — ${bp.rashiTe} (${bp.degreeFormatted})</strong>
+                <span class="badge badge-gold">${bp.houseNumber}వ ఇల్లు (${bp.bhavaNameTe})</span>
+              </div>
+              <p style="font-size:11.5px;line-height:1.5;">${bp.predictionTe}</p>
+              <div style="font-size:11px;color:#047857;border-top:1px dashed #fde68a;padding-top:3px;margin-top:4px;">
+                ✦ <strong>నవాంశ (${bp.navamshaRashiTe}) &amp; విశేష ఫలం:</strong> ${bp.deepAnalysisTe}
+              </div>
+            </div>
+          `)
+          .join('')}
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · నవగ్రహ దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 14: 96-YEAR BHRIGU LIFE PROGRESSION TIMELINE
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · 96 ఏళ్ల భృగు చక్ర కాలచక్రం</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 14 · 96 ఏళ్ల భృగు చక్ర పద్ధతి జీవన కాలచక్ర ప్రస్థానం</div>
+      <div class="chapter-subtitle">96-Year Bhrigu Life Progression Timeline (12-Year Cycles 1 to 8)</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        ${bhriguCycles
+          .map((c) => {
+            return `
+              <div class="section-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <strong style="font-size:12.5px;color:#451a03;">చక్రం #${c.cycleNumber} (${c.ageRangeTe})</strong>
+                  <span class="badge badge-gold">${c.yearRange}</span>
+                </div>
+                <div style="font-size:11px;font-weight:bold;color:#78350f;margin-top:2px;">
+                  క్రియాశీల భావం: ${c.activatedHouse}వ ఇల్లు · ${c.themeTe}
+                </div>
+                <p style="font-size:11.5px;line-height:1.5;margin-top:4px;">${c.predictionTe}</p>
+              </div>
+            `;
+          })
+          .join('')}
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · భృగు చక్ర దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 15: COMPLETE 120-YEAR VIMSHOTTARI MAHADASHA & ANTARDASHA TIMELINE
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వింశోత్తరి మహాదశలు</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 15 · 120 ఏళ్ల వింశోత్తరి మహాదశ &amp; అంతర్దశ కాలచక్రం (ఖచ్చిత తేదీలతో)</div>
+      <div class="chapter-subtitle">Complete 120-Year Vimshottari Mahadasha + Antardasha Sequence &amp; Birth Balance</div>
+
+      <div class="section-card" style="background:#ecfdf5;border-color:#10b981;">
+        <h4 style="color:#065f46;">🌟 ప్రస్తుత క్రియాశీల మహాదశ: ${dashaInfo.currentMahadasha.lordTe} (${dashaInfo.currentMahadasha.startDate} నుండి ${dashaInfo.currentMahadasha.endDate})</h4>
+        <p style="font-size:12px;font-weight:bold;color:#064e3b;">
+          క్రియాశీల అంతర్దశ: ${dashaInfo.currentAntardasha.lordTe} (${dashaInfo.currentAntardasha.startDate} నుండి ${dashaInfo.currentAntardasha.endDate})
+        </p>
+        <p style="font-size:11.5px;color:#047857;">
+          జన్మ నక్షత్రం (${chartData.nakshatraName}) ఆధారంగా పుట్టిన సమయానికి శని మహాదశా శేషం: ${dashaInfo.janmaDashaBalanceFormattedTe}
+        </p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        ${dashaInfo.mahadashas
+          .map((md) => {
+            const isCurrent = md.isCurrent;
+            return `
+              <div class="section-card" style="border:1.5px solid ${isCurrent ? '#b45309' : '#d97706'};background:${isCurrent ? '#fffbeb' : '#ffffff'};">
+                <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed #fde68a;padding-bottom:4px;margin-bottom:4px;">
+                  <strong style="font-size:13px;color:#451a03;">${md.lordTe} మహాదశ</strong>
+                  <span style="font-family:monospace;font-size:11px;font-weight:bold;color:#78350f;">
+                    ${md.startDate} – ${md.endDate}
+                  </span>
+                </div>
+                ${isCurrent ? '<span class="badge badge-green" style="margin-bottom:4px;">ప్రస్తుతం నడుస్తున్న మహాదశ</span>' : ''}
+                <div style="margin-top:6px;font-size:10.5px;">
+                  <strong style="color:#78350f;display:block;margin-bottom:2px;">అంతర్దశల వరుస క్రమం (Bhuktis):</strong>
+                  <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                    ${md.antardashas
+                      .map(
+                        (ad) => `<span style="background:${ad.isCurrent ? '#fef08a' : '#f8fafc'};padding:1px 5px;border-radius:3px;border:0.5px solid #cbd5e1;color:${ad.isCurrent ? '#991b1b' : '#334155'};">
+                          ${ad.lordTe} (${ad.startDate} - ${ad.endDate})
+                        </span>`
+                      )
+                      .join('')}
+                  </div>
+                </div>
+              </div>
+            `;
+          })
+          .join('')}
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · దశా కాలచక్ర దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 16: NEXT 12 MONTHS GOCHARA TRANSIT FORECAST
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · రాబోయే 12 నెలల గోచారం</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 16 · రాబోయే 12 నెలల గోచార గ్రహ సంచార ఫలితాలు (Gochara Forecast)</div>
+      <div class="chapter-subtitle">Major Transits of Jupiter (గురుడు), Saturn (శని), and Rahu-Ketu relative to Moon (${chartData.rashi.te})</div>
+
+      <div style="display:grid;grid-template-columns:1fr;gap:12px;">
+        ${gochara12m
+          .map((g) => `
+            <div class="section-card">
+              <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed #fde68a;padding-bottom:4px;margin-bottom:6px;">
+                <strong style="font-size:13.5px;color:#451a03;">${g.planetTe} గోచారం (${g.transitRashiTe} రాశిలో)</strong>
+                <span style="font-family:monospace;font-size:11.5px;font-weight:bold;color:#78350f;">${g.keyDates}</span>
+              </div>
+              <div style="font-size:11.5px;font-weight:bold;color:#047857;margin-bottom:4px;">
+                చంద్ర రాశి నుండి: ${g.houseFromMoon}వ ఇల్లు · జన్మ లగ్నం నుండి: ${g.houseFromLagna}వ ఇల్లు
+              </div>
+              <p style="font-size:12px;line-height:1.55;color:#334155;">${g.predictionTe}</p>
+            </div>
+          `)
+          .join('')}
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · గోచార దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 17: DIVISIONAL CHARTS (VARGA CHAKRAS)
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వర్గ చక్రాలు</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 17 · విశేష వర్గ చక్రాలు (Divisional Charts)</div>
+      <div class="chapter-subtitle">Chandra Lagna, D10 Dashamsha (Career), D7 Saptamsha (Progeny) &amp; D12 Dwadashamsha</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="section-card">
+          <h4>1. చంద్ర లగ్న చక్రం (Chandra Kundali)</h4>
+          <p style="font-size:11.5px;">చంద్ర లగ్నం: ${divisional.chandraLagnaRashiTe} (మనో బలం &amp; భావోద్వేగ విశ్లేషణ)</p>
+          <div style="font-size:11px;color:#78350f;margin-top:4px;">
+            చంద్రుడితో ఉన్న గ్రహాలు: ${chartData.planets.filter((p) => p.rashiIdx === moonRashiIdx && p.id !== 'moon').map((p) => p.nameTe).join(', ') || 'కేంద్ర గ్రహ ఆధారం (కేమద్రుమ భంగం)'}
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h4>2. దశాంశ చక్రం (D10 Dashamsha - Career &amp; Status)</h4>
+          <p style="font-size:11.5px;">వృత్తి, కీర్తి, ప్రభుత్వ గౌరవం &amp; ఉన్నత నాయకత్వ స్థానాల సూక్ష్మ బలం</p>
+          <div style="font-size:11px;color:#047857;margin-top:4px;">
+            దశాంశ లగ్నం: ${RASHI_NAMES_TE[divisional.d10DashamshaLagnaIdx]} · ప్రధాన వృత్తి కారకుడు: శని &amp; సూర్యుడు
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h4>3. సప్తాంశ చక్రం (D7 Saptamsha - Children &amp; Legacy)</h4>
+          <p style="font-size:11.5px;">సంతాన సౌఖ్యం, వంశాభివృద్ధి &amp; భావితరాల పుణ్య ఫలం</p>
+          <div style="font-size:11px;color:#78350f;margin-top:4px;">
+            సప్తాంశ లగ్నం: ${RASHI_NAMES_TE[divisional.d7SaptamshaLagnaIdx]} · గురు దృష్టి మరియు పంచమాధిపతి శుభ బలం
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h4>4. ద్వాదశాంశ చక్రం (D12 Dwadashamsha - Ancestral Heritage)</h4>
+          <p style="font-size:11.5px;">మాతా-పితృ సౌఖ్యం, పితృ కర్మ బలం &amp; పూర్వ జన్మ సంస్కారాలు</p>
+          <div style="font-size:11px;color:#78350f;margin-top:4px;">
+            ద్వాదశాంశ లగ్నం: ${RASHI_NAMES_TE[divisional.d12DwadashamshaLagnaIdx]} · పితృ కారక సూర్య బలం మరియు ధర్మ స్థితి
+          </div>
+        </div>
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వర్గ చక్ర దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 18: SACRED REMEDIES CALENDAR & GEMSTONE SAFETY
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వేద పరిహార క్యాలెండర్</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 18 · వేద శాంతి పరిహారాల క్యాలెండర్ &amp; రత్న ధారణ భద్రతా నియమాలు</div>
+      <div class="chapter-subtitle">Custom Remedial Schedule, Stotras, Charity &amp; Gemstone Safety Advisory</div>
+
+      <!-- Critical Gemstone Warning Box -->
+      <div class="section-card" style="background:#fef2f2;border:2px solid #ef4444;">
+        <h4 style="color:#991b1b;">⚠️ రత్న ధారణ అత్యంత ముఖ్యమైన భద్రతా హెచ్చరిక (Gemstone Safety Advisory)</h4>
+        <p style="font-size:12px;font-weight:bold;color:#7f1d1d;line-height:1.55;">
+          "ఏ రత్నాన్నైనా ధరించే ముందు ఖచ్చితంగా సిద్ధాంతుల వారిని (గురువుగారిని) వ్యక్తిగతంగా సంప్రదించి మాత్రమే ధరించాలి."
+        </p>
+        <p style="font-size:11.5px;color:#991b1b;margin-top:4px;">
+          ముఖ్యంగా గ్రహం నీచ స్థితిలో ఉన్నా, అస్తంగతమైనా (సూర్యుడికి దగ్గరగా ఉండి బలహీనపడినా), లేదా వక్ర గతిలో ఉన్నా సంబంధిత రత్నాన్ని ధరిస్తే ప్రతికూల ప్రభావాలు కలిగే ప్రమాదం ఉంది. మీ జాతకంలో బుధుడు అస్తంగతమై ఉన్నందున మరియు శుక్రుడు, చంద్రుడు నీచ స్థితులలో ఉన్నందున పచ్చ, వజ్రం లేదా ముత్యం ధరించే ముందు గురువుగారి అనుమతి తప్పనిసరి!
+        </p>
+      </div>
+
+      <!-- Remedial Schedule Calendar Table -->
+      <table class="data-table" style="margin-top:14px;">
+        <thead>
+          <tr>
+            <th>వారం &amp; అధిపతి</th>
+            <th>ఆరాధించవలసిన దైవం</th>
+            <th>పారాయణ స్తోత్రం / మంత్రం</th>
+            <th>దాన వస్తువులు</th>
+            <th>కాల పరిమితి (వారాలు)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:bold;color:#78350f;">సోమవారం (చంద్రుడు)</td>
+            <td>శ్రీ పరమేశ్వరుడు / శివుడు</td>
+            <td>శివ పంచాక్షరి, శివ కవచం</td>
+            <td>బియ్యం, పాలు, తెల్లని వస్త్రాలు</td>
+            <td>16 సోమవారాలు</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;color:#78350f;">మంగళవారం (కుజుడు)</td>
+            <td>శ్రీ సుబ్రహ్మణ్య స్వామి / ఆంజనేయ స్వామి</td>
+            <td>సుబ్రహ్మణ్య అష్టకం, హనుమాన్ చాలీసా</td>
+            <td>కందులు, ఎర్రని వస్త్రాలు, బెల్లం</td>
+            <td>21 మంగళవారాలు</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;color:#78350f;">బుధవారం (బుధుడు)</td>
+            <td>శ్రీ మహాలక్ష్మి / శ్రీ మహావిష్ణువు</td>
+            <td>విష్ణు సహస్రనామ స్తోత్రం</td>
+            <td>పెసలు, ఆకుకూరలు, గోసేవ (గడ్డి)</td>
+            <td>17 బుధవారాలు</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;color:#78350f;">గురువారం (గురువు)</td>
+            <td>శ్రీ దత్తాత్రేయుడు / దక్షిణామూర్తి</td>
+            <td>గురు స్తోత్రం, దత్త స్తోత్రం</td>
+            <td>శనగలు, పసుపు వర్ణ వస్త్రాలు</td>
+            <td>16 గురువారాలు</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;color:#78350f;">శుక్రవారం (శుక్రుడు)</td>
+            <td>శ్రీ లక్ష్మీ గణపతి / కనకదుర్గ</td>
+            <td>శ్రీ సూక్తం, కనకధారా స్తోత్రం</td>
+            <td>బొబ్బర్లు, పంచదార, నెయ్యి దీపం</td>
+            <td>20 శుక్రవారాలు</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;color:#78350f;">శనివారం (శని &amp; రాహు-కేతు)</td>
+            <td>శ్రీ వెంకటేశ్వర స్వామి / రుద్రుడు</td>
+            <td>దశరథ ప్రోక్త శని స్తోత్రం</td>
+            <td>నువ్వులు, నూనె దీపం, నల్ల వస్త్రాలు</td>
+            <td>19 శనివారాలు</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · పరిహార దర్శిని</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+        CHAPTER 19: PANDIT SEAL, WHATSAPP CONSULTATION & PRIVACY DISCLAIMER
+        ========================================================================== -->
+    <div class="chapter-break keep-together">
+      <div class="print-running-header">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ఆశీస్సులు &amp; చట్టబద్ధ ప్రకటన</span>
+        <span>${siteUrl}</span>
+      </div>
+
+      <div class="chapter-title">అధ్యాయం 19 · సిద్ధాంతుల వారి ఆశీస్సులు, సంప్రదింపులు &amp; గోప్యతా ప్రకటన</div>
+      <div class="chapter-subtitle">Chief Astrologer Endorsement, WhatsApp Consultation &amp; DPDP Act 2023 Compliance</div>
+
+      <!-- Chief Pandit Endorsement Box -->
+      <div style="border:2.5px solid #78350f;border-radius:12px;background:#fffdf5;padding:16px 20px;margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;">
+          <div>
+            <div style="font-size:11px;font-weight:bold;color:#78350f;text-transform:uppercase;">సిద్ధాంత విశ్లేషణ &amp; వేదాశీర్వాదం:</div>
+            <div style="font-size:18px;font-weight:900;color:#451a03;margin:4px 0;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</div>
+            <div style="font-size:12px;color:#78350f;font-weight:700;">ప్రధాన అర్చకులు &amp; వేద జ్యోతిష పరిశోధకులు</div>
+            <div style="font-size:12px;color:#1e293b;margin-top:4px;">
+              శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్, తెలంగాణ<br/>
+              ఫోన్ / అధికారిక వాట్సాప్: <strong>+91 89779 86166</strong><br/>
+              అధికారిక వెబ్‌సైట్: <strong>${siteUrl}</strong>
+            </div>
+            <div style="font-size:11.5px;color:#047857;margin-top:8px;font-style:italic;">
+              "సర్వే భవంతు సుఖినః సర్వే సంతు నిరామయాః · సర్వే భద్రాణి పశ్యంతు మా కశ్చిద్దుఃఖభాగ్‌భవేత్"
+            </div>
+          </div>
+
+          <div style="text-align:center;border:1.5px solid #b45309;padding:10px 14px;border-radius:10px;background:#ffffff;min-width:140px;">
+            <div style="font-size:10px;font-weight:bold;color:#78350f;margin-bottom:4px;">గురువుగారి వాట్సాప్</div>
+            <div style="width:90px;height:90px;margin:0 auto;background:#fef3c7;display:flex;align-items:center;justify-content:center;border:1.5px solid #d97706;border-radius:8px;font-size:10px;font-weight:bold;color:#78350f;text-align:center;line-height:1.3;">
+              📱 QR CODE<br/>
+              +91 89779 86166<br/>
+              వాట్సాప్ సంప్రదింపు
+            </div>
+            <div style="font-size:9.5px;font-weight:bold;color:#92400e;margin-top:4px;">${siteUrl}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legal Disclaimer & Privacy Note -->
+      <div class="section-card" style="background:#f8fafc;border-color:#cbd5e1;font-size:11px;line-height:1.5;color:#475569;">
+        <h4 style="color:#475569;border-color:#cbd5e1;">📜 శాస్త్రోక్త జ్యోతిష నియమ నిబంధనలు (Legal &amp; Astrological Disclaimer)</h4>
+        <p>
+          1. <strong>శాస్త్రోక్త మార్గదర్శకత్వం:</strong> ఈ జాతక నివేదిక ప్రాచీన బృహత్ పరాశర హోరాశాస్త్రం, భృగు నంది నాడీ మరియు ఆధునిక ఖగోళ దృక్సిద్ధాంత గణితాల ఆధారంగా రూపొందించబడింది. ఇది ఒక ఆధ్యాత్మిక మరియు వ్యక్తిత్వ వికాస మార్గదర్శక పత్రిక మాత్రమే; ఇది ఎలాంటి వైద్య (Medical), న్యాయ (Legal), లేదా ఆర్థిక (Financial) సలహాలకు ప్రత్యామ్నాయం కాదు.
+        </p>
+        <p>
+          2. <strong>డేటా భద్రత &amp; గోప్యత (DPDP Act 2023 Compliant):</strong> మీ పుట్టిన తేదీ, సమయం, ప్రాంతం మరియు వ్యక్తిగత వివరాలు డిజిటల్ పర్సనల్ డేటా ప్రొటెక్షన్ యాక్ట్ 2023 (Digital Personal Data Protection Act 2023) మార్గదర్శకాలకు అనుగుణంగా అత్యంత గోప్యంగా ఉంచబడతాయి. యూజర్ అభ్యర్థన మేరకు ఏ సమయంలోనైనా వివరాలను శాశ్వతంగా తొలగించే (Right to Deletion) పూర్తి హక్కు మీకు ఉంటుంది.
+        </p>
+        <p>
+          3. <strong>ప్రతిఫల పూజలు:</strong> ఏదైనా దోష నివారణ పూజలు లేదా హోమముల కొరకు శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం వారిని నేరుగా సంప్రదించవచ్చు.
+        </p>
+      </div>
+
+      <div class="print-running-footer">
+        <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · సంపూర్ణ బృహత్ జాతక గ్రంథం ముగింపు</span>
+        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+      </div>
+    </div>
+
+  </div>
 </body>
-</html>`;
+</html>
+`;
 }
