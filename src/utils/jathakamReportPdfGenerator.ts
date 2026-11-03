@@ -432,6 +432,8 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       margin-bottom: 12px;
       background: #ffffff;
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
     .section-card-accent {
       background: #fffdf5;
@@ -543,6 +545,32 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
   </div>
 
   <div class="grantham-document">
+    <table style="width:100%;border-collapse:collapse;">
+      <thead style="display:table-header-group;">
+        <tr>
+          <td style="padding-bottom:8px;">
+            <div style="border-bottom:2px solid #b45309;padding-bottom:4px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:10px;color:#78350f;font-weight:700;">
+              <div style="text-align:left;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్</div>
+              <div style="text-align:center;font-size:11px;font-weight:900;color:#451a03;padding:0 8px;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు · జాతకులు: ${name}</div>
+              <div style="text-align:right;color:#92400e;">జన్మ తేదీ: ${birthDate} (${birthTime})</div>
+            </div>
+          </td>
+        </tr>
+      </thead>
+      <tfoot style="display:table-footer-group;">
+        <tr>
+          <td style="padding-top:8px;">
+            <div style="border-top:2px solid #b45309;padding-top:4px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:10px;color:#78350f;font-weight:700;">
+              <div style="text-align:left;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · +91 89779 86166</div>
+              <div style="text-align:center;font-size:11px;font-weight:900;color:#451a03;background:#fef3c7;padding:2px 12px;border-radius:999px;border:1px solid #d97706;">🌐 ${siteUrl}</div>
+              <div style="text-align:right;color:#92400e;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+      <tbody>
+        <tr>
+          <td>
 
     <!-- ==========================================================================
         PROMINENT NATIVE PROFILE & FRONT COVER HEADER (Page 1)
@@ -551,8 +579,14 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       <div style="font-family:'Noto Serif Telugu', Georgia, serif;font-size:12px;font-weight:bold;color:#78350f;letter-spacing:1px;margin-bottom:4px;">
         ॥ శ్రీ గురుభ్యో నమః · శ్రీ మహాగణపతయే నమః · శ్రీ శారదాంబాయై నమః ॥
       </div>
-      <div style="font-family:'Noto Serif Telugu', serif;font-size:25px;font-weight:900;color:#451a03;line-height:1.25;margin:6px 0;">
-        బృహత్ పరాశర దృక్సిద్ధాంత సంపూర్ణ జన్మ జాతక మహాగ్రంథం
+      <div style="font-family:'Noto Serif Telugu', serif;font-size:24px;font-weight:900;color:#451a03;line-height:1.25;margin:4px 0;">
+        బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు
+      </div>
+      <div style="font-size:13px;font-weight:800;color:#78350f;margin-bottom:6px;">
+        శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్ · ఫోన్ / వాట్సాప్: +91 89779 86166
+      </div>
+      <div style="display:inline-block;background:#451a03;color:#fde68a;padding:6px 20px;border-radius:999px;font-size:18px;font-weight:900;margin:6px 0;border:1.5px solid #f59e0b;">
+        🌟 ${name} గారి సంపూర్ణ బృహత్ జాతక మహాగ్రంథం
       </div>
       <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:14px;">
         Comprehensive Brihat Vedic Horoscope &amp; Planetary Destiny Blueprint · ${siteUrl}
@@ -1568,10 +1602,15 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
 
       <div class="print-running-footer">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · సంపూర్ణ బృహత్ జాతక గ్రంథం ముగింపు</span>
-        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+        <span style="font-weight:900;"><a href="https://${siteUrl}">🌐 ${siteUrl}</a></span>
+        <span>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</span>
       </div>
     </div>
 
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </body>
 </html>

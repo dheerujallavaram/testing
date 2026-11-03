@@ -79,13 +79,16 @@
   background: #b45309;
 }
 
-.print-only {
+.print-only,
+.print-only-flex,
+.print-only-thead,
+.print-only-tfoot {
   display: none;
 }
 
 @page {
   size: A4 portrait;
-  margin: 10mm 10mm 18mm 10mm;
+  margin: 9mm 9mm 10mm 9mm;
 }
 
 @media print {
@@ -93,6 +96,12 @@
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
   }
 
   header,
@@ -110,15 +119,39 @@
     display: flex !important;
   }
 
+  .print-master-table {
+    display: table !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .print-only-thead {
+    display: table-header-group !important;
+  }
+
+  .print-only-tfoot {
+    display: table-footer-group !important;
+  }
+
+  .print-master-tbody {
+    display: table-row-group !important;
+  }
+
   html,
   body,
   #root,
   #top,
   main {
+    display: block !important;
+    flex: none !important;
+    position: static !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
     background: #ffffff !important;
     color: #1e293b !important;
     margin: 0 !important;
-    padding: 0 0 12mm 0 !important;
+    padding: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
   }
@@ -128,32 +161,23 @@
     break-before: page !important;
   }
 
-  .print-keep-together {
+  .print-keep-together,
+  .print-card {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    margin-bottom: 6mm !important;
   }
 
-  .print-fixed-footer {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    height: 22px !important;
-    background: #fffdf5 !important;
-    border-top: 1.5px solid #b45309 !important;
-    padding: 2px 12px !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    gap: 8px !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    font-size: 9px !important;
-    line-height: 1 !important;
-    font-weight: 700 !important;
-    color: #78350f !important;
-    z-index: 99999 !important;
+  .print-chapter-banner {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 }
+
 
