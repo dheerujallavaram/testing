@@ -12,6 +12,7 @@ import {
   computeGocharaForRashi,
   findRashiBySlug,
 } from '../utils/gocharaEngine';
+import { DAILY_SUBHASHITHALU } from '../components/DailySubhashithamCard';
 
 export const SITE_URL = 'https://www.telugujyothisham.com';
 export const ISR_REVALIDATE_SECONDS = 86400;
@@ -1829,9 +1830,9 @@ function renderRichToolGuideHtml(pathname: string): string {
         <h2 style="margin:0 0 10px;font-size:21px;color:#451a03;">${escapeHtml(guide.howItWorksTitle)}</h2>
         <p style="margin:0 0 14px;font-size:15px;color:#1e293b;">${escapeHtml(guide.introTe)}</p>
         <p style="margin:0 0 14px;font-size:15px;color:#1e293b;">${escapeHtml(guide.howItWorksTe)}</p>
-        <p style="margin:0 0 18px;padding:8px 12px;background:#fffbeb;border:1px dashed #d97706;border-radius:8px;font-size:13px;font-family:monospace;color:#78350f;">
-          Author Verified Commentary Slot: ${escapeHtml(guide.authorPlaceholderTag)} (బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి స్వీయ అనుభవ వివరణ స్థానం)
-        </p>
+        <div style="margin:0 0 18px;padding:12px 14px;background:#fffbeb;border:1px solid #d97706;border-radius:10px;font-size:14px;color:#451a03;">
+          <strong>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి అనుభవ సూచన:</strong> వైదిక జ్యోతిష్య గణనలను భయానికి కాకుండా ఆత్మపరిశీలనకు, సకాలంలో సరైన నిర్ణయాలు తీసుకోవడానికి మరియు ధర్మబద్ధమైన జీవనశైలికి మార్గదర్శిగా ఉపయోగించుకోవాలి. (<em>Practical Guidance: Classical Vedic calculations are meant to empower mindful planning, personal discipline, and harmonious decision-making.</em>)
+        </div>
 
         <h3 style="margin:0 0 10px;font-size:18px;color:#78350f;">${escapeHtml(guide.termsTitle)}</h3>
         <dl style="margin:0 0 18px;">
@@ -1916,10 +1917,10 @@ function renderGocharaServerSection(pathname: string): string {
   return `
     <section aria-label="Gochara Phalalu Server Rendered Transit Analysis" style="background:#ffffff;border:2px solid #f59e0b;border-radius:18px;padding:22px;margin-bottom:24px;">
       <h2 style="margin:0 0 12px;font-size:21px;color:#451a03;">
-        ${escapeHtml(report.rashi.nameTe)} గోచార ఫలాలు – నవగ్రహ సంచార స్థితి (${escapeHtml(report.computedAtIstIso)} IST)
+        ${escapeHtml(report.rashi.nameTe)} గోచార ఫలాలు – నవగ్రహ సంచార &amp; వేధ స్థితి (${escapeHtml(report.computedAtIstIso)} IST)
       </h2>
       <p style="margin:0 0 14px;font-size:15px;color:#1e293b;">
-        దృక్సిద్ధాంత గణిత ఆధారంగా (NASA JPL DE440 Ephemeris, Lahiri Chitrapaksha Ayanamsa) Asia/Kolkata (IST) కాలమానంలో లెక్కించిన ప్రస్తుత గ్రహ సంచార పట్టిక. క్రింది జాబితా నుండి మీ జన్మ రాశిని ఎంచుకుని శని గోచారం, గురు గోచారం మరియు రాహు కేతు గోచారం ఫలితాలను చూడవచ్చు.
+        దృక్సిద్ధాంత గణిత ఆధారంగా (NASA JPL DE440 Ephemeris, Lahiri Chitrapaksha Ayanamsa) Asia/Kolkata (IST) కాలమానంలో లెక్కించిన ప్రస్తుత గ్రహ సంచార పట్టిక. క్రింది జాబితా నుండి మీ జన్మ రాశిని ఎంచుకుని శని గోచారం, గురు గోచారం, రాహు కేతు గోచారం మరియు 9 గ్రహాల సూత్ర ఫలితాలను చూడవచ్చు.
       </p>
 
       <div style="margin-bottom:16px;display:flex;flex-wrap:wrap;gap:8px;">
@@ -1934,8 +1935,9 @@ function renderGocharaServerSection(pathname: string): string {
           <tr style="background:#fef3c7;color:#451a03;text-align:left;">
             <th style="padding:10px;border:1px solid #fde68a;">గ్రహం (Planet)</th>
             <th style="padding:10px;border:1px solid #fde68a;">ప్రస్తుత గోచార రాశి</th>
-            <th style="padding:10px;border:1px solid #fde68a;">డిగ్రీలు &amp; నక్షత్రం</th>
+            <th style="padding:10px;border:1px solid #fde68a;">డిగ్రీలు, నక్షత్రం &amp; గతి</th>
             <th style="padding:10px;border:1px solid #fde68a;">${escapeHtml(report.rashi.nameTe)} నుండి స్థానం</th>
+            <th style="padding:10px;border:1px solid #fde68a;">గోచార &amp; వేధ స్థితి</th>
           </tr>
         </thead>
         <tbody>
@@ -1945,8 +1947,9 @@ function renderGocharaServerSection(pathname: string): string {
             <tr>
               <td style="padding:8px 10px;border:1px solid #fde68a;font-weight:700;color:#451a03;">${escapeHtml(p.nameTe)}</td>
               <td style="padding:8px 10px;border:1px solid #fde68a;">${escapeHtml(p.rashiNameTe)}</td>
-              <td style="padding:8px 10px;border:1px solid #fde68a;">${escapeHtml(p.degreeInRashi)} • ${escapeHtml(p.nakshatraTe)} (${p.pada}వ పాదం)</td>
+              <td style="padding:8px 10px;border:1px solid #fde68a;">${escapeHtml(p.degreeInRashi)} • ${escapeHtml(p.nakshatraTe)} (${p.pada}వ పాదం) • ${p.isRetrograde ? 'వక్ర గతి' : 'ఋజు గతి'}</td>
               <td style="padding:8px 10px;border:1px solid #fde68a;font-weight:700;color:#9a3412;">${p.houseFromMoon}వ స్థానం</td>
+              <td style="padding:8px 10px;border:1px solid #fde68a;">${p.isAuspiciousFromMoon ? (p.hasVedha ? `శుభ స్థానం (${p.vedhaHouseFromMoon}వ ఇంట ${escapeHtml(p.vedhaByPlanetTe || '')} వల్ల వేధ)` : `నిర్వేధ శుభ గోచారం (వేధ స్థానం: ${p.vedhaHouseFromMoon})`) : 'మిశ్రమ / సంయమన కాలం'}</td>
             </tr>`
             )
             .join('\n')}
@@ -1954,19 +1957,40 @@ function renderGocharaServerSection(pathname: string): string {
       </table>
 
       <div style="padding:14px;background:#fffbeb;border:1px solid #fde68a;border-radius:14px;margin-bottom:12px;">
-        <h3 style="margin:0 0 6px;font-size:17px;color:#451a03;">శని గోచారం &amp; ఏలినాటి శని స్థితి: ${escapeHtml(report.sadeSatiStatusTe)}</h3>
+        <h3 style="margin:0 0 6px;font-size:17px;color:#451a03;">శని గోచార సూత్ర ఫలితం &amp; ఏలినాటి శని స్థితి: ${escapeHtml(report.sadeSatiStatusTe)}</h3>
+        ${report.saturn.guidance.sutraTe ? `<p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#78350f;">${escapeHtml(report.saturn.guidance.sutraTe)}</p>` : ''}
         <p style="margin:0 0 6px;font-size:14.5px;color:#1e293b;">${escapeHtml(report.saturn.guidance.summaryTe)}</p>
+        ${report.saturn.guidance.sharmaNoteTe ? `<p style="margin:0 0 6px;font-size:14px;color:#334155;"><strong>శర్మ గారి అనుభవ విశ్లేషణ:</strong> ${escapeHtml(report.saturn.guidance.sharmaNoteTe)}</p>` : ''}
+        ${report.saturn.guidance.summaryEn ? `<p style="margin:0 0 6px;font-size:13.5px;color:#475569;"><strong>English Guidance:</strong> ${escapeHtml(report.saturn.guidance.summaryEn)}</p>` : ''}
         <p style="margin:0 0 6px;font-size:14px;color:#991b1b;"><strong>జాగ్రత్త వహించవలసినవి:</strong> ${escapeHtml(report.saturn.guidance.carefulTe)}</p>
-        <p style="margin:0 0 6px;font-size:14px;color:#065f46;"><strong>ఆచరించవలసిన ధర్మ కార్యాలు:</strong> ${escapeHtml(report.saturn.guidance.doTe)}</p>
-        <p style="margin:0;font-size:12.5px;font-family:monospace;color:#78350f;">Author Placeholder: ${escapeHtml(report.saturn.guidance.placeholder)}</p>
+        <p style="margin:0;font-size:14px;color:#065f46;"><strong>ఆచరించవలసిన ధర్మ కార్యాలు:</strong> ${escapeHtml(report.saturn.guidance.doTe)}</p>
       </div>
 
       <div style="padding:14px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:14px;margin-bottom:12px;">
-        <h3 style="margin:0 0 6px;font-size:17px;color:#065f46;">గురు గోచారం (${escapeHtml(report.jupiter.guidance.phaseTe)})</h3>
+        <h3 style="margin:0 0 6px;font-size:17px;color:#065f46;">గురు గోచార సూత్ర ఫలితం (${escapeHtml(report.jupiter.guidance.phaseTe)})</h3>
+        ${report.jupiter.guidance.sutraTe ? `<p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#065f46;">${escapeHtml(report.jupiter.guidance.sutraTe)}</p>` : ''}
         <p style="margin:0 0 6px;font-size:14.5px;color:#1e293b;">${escapeHtml(report.jupiter.guidance.summaryTe)}</p>
+        ${report.jupiter.guidance.sharmaNoteTe ? `<p style="margin:0 0 6px;font-size:14px;color:#334155;"><strong>శర్మ గారి అనుభవ విశ్లేషణ:</strong> ${escapeHtml(report.jupiter.guidance.sharmaNoteTe)}</p>` : ''}
+        ${report.jupiter.guidance.summaryEn ? `<p style="margin:0 0 6px;font-size:13.5px;color:#475569;"><strong>English Guidance:</strong> ${escapeHtml(report.jupiter.guidance.summaryEn)}</p>` : ''}
         <p style="margin:0 0 6px;font-size:14px;color:#991b1b;"><strong>జాగ్రత్త వహించవలసినవి:</strong> ${escapeHtml(report.jupiter.guidance.carefulTe)}</p>
-        <p style="margin:0 0 6px;font-size:14px;color:#065f46;"><strong>ఆచరించవలసిన ధర్మ కార్యాలు:</strong> ${escapeHtml(report.jupiter.guidance.doTe)}</p>
-        <p style="margin:0;font-size:12.5px;font-family:monospace;color:#065f46;">Author Placeholder: ${escapeHtml(report.jupiter.guidance.placeholder)}</p>
+        <p style="margin:0;font-size:14px;color:#065f46;"><strong>ఆచరించవలసిన ధర్మ కార్యాలు:</strong> ${escapeHtml(report.jupiter.guidance.doTe)}</p>
+      </div>
+
+      <div style="padding:14px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:14px;margin-bottom:12px;">
+        <h3 style="margin:0 0 6px;font-size:17px;color:#1e293b;">రాహు-కేతు గోచార సూత్ర ఫలితం (${escapeHtml(report.rahu.guidance.phaseTe)})</h3>
+        ${report.rahu.guidance.sutraTe ? `<p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#334155;">${escapeHtml(report.rahu.guidance.sutraTe)}</p>` : ''}
+        <p style="margin:0 0 6px;font-size:14.5px;color:#1e293b;">${escapeHtml(report.rahu.guidance.summaryTe)}</p>
+        ${report.rahu.guidance.sharmaNoteTe ? `<p style="margin:0 0 6px;font-size:14px;color:#334155;"><strong>శర్మ గారి అనుభవ విశ్లేషణ:</strong> ${escapeHtml(report.rahu.guidance.sharmaNoteTe)}</p>` : ''}
+        ${report.rahu.guidance.summaryEn ? `<p style="margin:0 0 6px;font-size:13.5px;color:#475569;"><strong>English Guidance:</strong> ${escapeHtml(report.rahu.guidance.summaryEn)}</p>` : ''}
+        <p style="margin:0 0 6px;font-size:14px;color:#991b1b;"><strong>జాగ్రత్త వహించవలసినవి:</strong> ${escapeHtml(report.rahu.guidance.carefulTe)}</p>
+        <p style="margin:0;font-size:14px;color:#065f46;"><strong>ఆచరించవలసిన ధర్మ కార్యాలు:</strong> ${escapeHtml(report.rahu.guidance.doTe)}</p>
+      </div>
+
+      <div style="padding:14px;background:#fffbeb;border:1px solid #fde68a;border-radius:14px;margin-bottom:12px;">
+        <h3 style="margin:0 0 8px;font-size:17px;color:#451a03;">నవగ్రహ గోచార సూత్ర నియమాలు (రవి, చంద్ర, కుజ, బుధ, శుక్ర &amp; వేధ-వక్ర గతి)</h3>
+        <p style="margin:0 0 6px;font-size:14px;color:#1e293b;"><strong>వేధ సూత్రం:</strong> చంద్ర రాశి నుండి గ్రహం శుభ స్థానంలో ఉన్నప్పుడు వేధ స్థానంలో మరొక గ్రహం ఉంటే శుభ ఫలితం మిశ్రమమవుతుంది. రవి-శనులకు, చంద్ర-బుధులకు పరస్పర వేధ దోషం ఉండదు.</p>
+        <p style="margin:0 0 6px;font-size:14px;color:#1e293b;"><strong>రవి (3, 6, 10, 11):</strong> ఉద్యోగ ఉన్నతి, ఆరోగ్యం, అధికారుల మద్దతు. <strong>చంద్రుడు (1, 3, 6, 7, 10, 11):</strong> మనోబలం, శుభప్రయాణాలు, కార్యసిద్ధి. <strong>కుజుడు (3, 6, 11):</strong> ధైర్యం, భూలాభం, పోటీలలో విజయం. <strong>బుధుడు (2, 4, 6, 8, 10, 11):</strong> వాణిజ్య, విద్యా, కమ్యూనికేషన్ లాభాలు. <strong>శుక్రుడు (1, 2, 3, 4, 5, 8, 9, 11, 12):</strong> గృహ సౌఖ్యం, శుభకార్యాలు, ఆర్థిక ప్రవాహం.</p>
+        <p style="margin:0;font-size:14px;color:#1e293b;"><strong>వక్ర గతి (Retrograde) సూత్రం:</strong> గ్రహాలు వక్ర గతిలో ఉన్నప్పుడు తొందరపాటు కొత్త ఒప్పందాల కంటే పాత పనుల సమీక్ష, అంతర్ముఖ ప్రణాళిక మరియు ఓర్పు అత్యుత్తమ ఫలితాలను ఇస్తాయి.</p>
       </div>
 
       <p style="margin:8px 0 0;font-size:13px;color:#78350f;">
@@ -2217,6 +2241,25 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
           <h2 style="margin:0 0 8px;font-size:19px;color:#451a03;">నేటి దిన ఫలితం &amp; విశేషం (Daily Vedic Guidance)</h2>
           <p style="margin:0;font-size:15px;color:#1e293b;"><strong>${escapeHtml(dayData.specialEvent || dayData.deity)}:</strong> ${escapeHtml(dayData.phalitham)}</p>
         </section>
+
+        ${(() => {
+          let hash = 0;
+          for (let i = 0; i < targetIsoDate.length; i++) {
+            hash = (hash * 31 + targetIsoDate.charCodeAt(i)) % DAILY_SUBHASHITHALU.length;
+          }
+          const sloka = DAILY_SUBHASHITHALU[Math.abs(hash) % DAILY_SUBHASHITHALU.length] || DAILY_SUBHASHITHALU[0];
+          return `
+        <section aria-label="Daily Sanskrit Subhashitham and Modern Practical Quote" style="background:#ffffff;border:2px solid #f59e0b;border-radius:16px;padding:18px;margin-bottom:24px;">
+          <h2 style="margin:0 0 8px;font-size:19px;color:#451a03;">నేటి సుభాషిత శ్లోకం &amp; నేటి తరానికి లౌకిక జీవన సందేశం (${escapeHtml(sloka.themeTe)})</h2>
+          <p style="margin:0 0 6px;font-size:16px;font-weight:700;color:#78350f;">${escapeHtml(sloka.slokamTe)}</p>
+          <p style="margin:0 0 8px;font-size:14px;font-style:italic;color:#475569;">${escapeHtml(sloka.slokamEn)}</p>
+          <p style="margin:0 0 8px;font-size:14.5px;color:#1e293b;"><strong>సరళ భావం:</strong> ${escapeHtml(sloka.meaningTe)} (${escapeHtml(sloka.meaningEn)})</p>
+          <div style="padding:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;">
+            <p style="margin:0 0 6px;font-size:14.5px;font-weight:700;color:#9a3412;">🌟 నేటి తరానికి లౌకిక జీవన సూత్రం: ${escapeHtml(sloka.loukikaQuoteTe)}</p>
+            <p style="margin:0;font-size:13.5px;color:#334155;"><strong>Modern Life Quote:</strong> ${escapeHtml(sloka.loukikaQuoteEn)}</p>
+          </div>
+        </section>`;
+        })()}
 
         <section aria-label="Internal Links to Telugu Astrology Tools" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:18px;margin-bottom:24px;">
           <h2 style="margin:0 0 12px;font-size:18px;color:#451a03;">ముఖ్యమైన తెలుగు జ్యోతిష విభాగాలు (Descriptive Telugu Internal Links)</h2>

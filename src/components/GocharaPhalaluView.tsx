@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Compass, Sparkles, ShieldAlert, CheckCircle2, Info, Calendar, ArrowRight } from 'lucide-react';
+import { Compass, Sparkles, ShieldAlert, CheckCircle2, Info, Calendar, ArrowRight, BookOpen } from 'lucide-react';
 import {
   RASHI_LIST,
   RashiSlug,
   computeGocharaForRashi,
-  findRashiBySlug,
 } from '../utils/gocharaEngine';
 import gocharaAuthorContent from '../data/gocharaAuthorContent.json';
 import { useLanguage } from '../context/LanguageContext';
@@ -47,6 +46,8 @@ export const GocharaPhalaluView: React.FC<GocharaPhalaluViewProps> = ({
   }, [initialPathname]);
 
   const report = computeGocharaForRashi(selectedRashi);
+  const otherSutras = gocharaAuthorContent.otherPlanetsSutra;
+  const classicalSutras = gocharaAuthorContent.classicalSutras;
 
   const handleRashiSelect = (slug: RashiSlug, updateUrl = false) => {
     setSelectedRashi(slug);
@@ -154,24 +155,24 @@ export const GocharaPhalaluView: React.FC<GocharaPhalaluViewProps> = ({
       >
         {[
           {
-            titleTe: 'శని గోచారం (Saturn Transit)',
+            titleTe: 'శని గోచార సూత్ర ఫలితం (Saturn Transit)',
             planet: report.saturn,
             extraBadge: report.sadeSatiStatusTe,
           },
           {
-            titleTe: 'గురు గోచారం (Jupiter Transit)',
+            titleTe: 'గురు గోచార సూత్ర ఫలితం (Jupiter Transit)',
             planet: report.jupiter,
             extraBadge: [2, 5, 7, 9, 11].includes(report.jupiter.houseFromMoon)
               ? 'శుభ గురు బలం ఉన్నది (Auspicious Guru Balam)'
               : `గురువు ${report.jupiter.houseFromMoon}వ స్థానంలో సంచారం`,
           },
           {
-            titleTe: 'రాహు గోచారం (Rahu Transit)',
+            titleTe: 'రాహు గోచార సూత్ర ఫలితం (Rahu Transit)',
             planet: report.rahu,
             extraBadge: `రాహువు ${report.rahu.houseFromMoon}వ స్థానంలో సంచారం`,
           },
           {
-            titleTe: 'కేతు గోచారం (Ketu Transit)',
+            titleTe: 'కేతు గోచార సూత్ర ఫలితం (Ketu Transit)',
             planet: report.ketu,
             extraBadge: `కేతువు ${report.ketu.houseFromMoon}వ స్థానంలో సంచారం`,
           },
@@ -187,7 +188,8 @@ export const GocharaPhalaluView: React.FC<GocharaPhalaluViewProps> = ({
                 <div>
                   <h3 className="text-lg sm:text-xl font-extrabold text-amber-950">{titleTe}</h3>
                   <p className="text-xs sm:text-sm text-amber-900 font-bold mt-0.5">
-                    ప్రస్తుత సంచారం: <span className="text-orange-900">{planet.rashiNameTe}</span> ({planet.degreeInRashi}, {planet.nakshatraTe} - {planet.pada}వ పాదం)
+                    ప్రస్తుత సంచారం: <span className="text-orange-900">{planet.rashiNameTe}</span> ({planet.degreeInRashi}, {planet.nakshatraTe} - {planet.pada}వ పాదం •{' '}
+                    <span>{planet.isRetrograde ? 'వక్ర గతి / Retrograde' : 'ఋజు గతి / Direct'}</span>)
                   </p>
                 </div>
                 <span
@@ -203,15 +205,35 @@ export const GocharaPhalaluView: React.FC<GocharaPhalaluViewProps> = ({
                 </span>
               </div>
 
-              <div className="bg-amber-50/80 rounded-2xl p-3.5 border border-amber-200 space-y-1.5">
-                <div className="text-xs font-extrabold text-amber-900 flex items-center gap-1.5">
+              <div className="bg-amber-50/80 rounded-2xl p-4 border border-amber-200 space-y-2.5">
+                <div className="text-xs font-extrabold text-amber-900 flex flex-wrap items-center gap-1.5">
                   <Sparkles size={14} className="text-amber-700" />
                   <span>{planet.guidance.phaseTe} • {extraBadge}</span>
                 </div>
+
+                {planet.guidance.sutraTe && (
+                  <p className="text-xs sm:text-sm font-bold text-amber-950 bg-amber-100/80 px-3 py-2 rounded-xl border border-amber-300">
+                    {planet.guidance.sutraTe}
+                  </p>
+                )}
+
                 <p className="text-sm text-slate-800 leading-relaxed">{planet.guidance.summaryTe}</p>
-                <p className="text-xs font-mono text-amber-800/90 bg-white/80 px-2.5 py-1 rounded border border-amber-200">
-                  Author Interpretation Slot: {planet.guidance.placeholder} (బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి స్వీయ వివరణ స్థానం)
-                </p>
+
+                {planet.guidance.sharmaNoteTe && (
+                  <div className="bg-white/95 rounded-xl p-3 border border-amber-200 space-y-1.5">
+                    <strong className="text-xs font-extrabold text-amber-950 block">
+                      బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి అనుభవ విశ్లేషణ:
+                    </strong>
+                    <p className="text-xs sm:text-sm text-slate-800 leading-relaxed">
+                      {planet.guidance.sharmaNoteTe}
+                    </p>
+                    {planet.guidance.summaryEn && (
+                      <p className="text-xs text-slate-600 leading-relaxed border-t border-amber-100 pt-1.5">
+                        <strong>English Guidance:</strong> {planet.guidance.summaryEn}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
@@ -235,14 +257,14 @@ export const GocharaPhalaluView: React.FC<GocharaPhalaluViewProps> = ({
         })}
       </section>
 
-      {/* Complete 9-Planet Gochara Table */}
+      {/* Complete 9-Planet Gochara Table with Vedha & Retrograde */}
       <section
         aria-label="All 9 Navagraha Current Transit Positions"
         className="bg-white rounded-3xl p-5 sm:p-7 border-2 border-amber-300 shadow-sm space-y-4"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <h2 className="text-lg sm:text-2xl font-extrabold text-amber-950">
-            నవగ్రహాల ప్రస్తుత గోచార స్థితి పట్టిక ({report.rashi.nameTe} నుండి భావ గణన)
+            నవగ్రహాల ప్రస్తుత గోచార స్థితి &amp; వేధ పట్టిక ({report.rashi.nameTe} నుండి భావ గణన)
           </h2>
           <span className="text-xs font-semibold text-amber-900 flex items-center gap-1">
             <Calendar size={14} />
@@ -256,9 +278,9 @@ export const GocharaPhalaluView: React.FC<GocharaPhalaluViewProps> = ({
               <tr className="bg-amber-100 text-amber-950 font-bold">
                 <th className="p-3 border border-amber-200">గ్రహం (Planet)</th>
                 <th className="p-3 border border-amber-200">ప్రస్తుత గోచార రాశి (Transit Sign)</th>
-                <th className="p-3 border border-amber-200">డిగ్రీలు &amp; నక్షత్ర పాదం</th>
+                <th className="p-3 border border-amber-200">డిగ్రీలు, నక్షత్రం &amp; గతి</th>
                 <th className="p-3 border border-amber-200">{report.rashi.nameTe} నుండి స్థానం</th>
-                <th className="p-3 border border-amber-200">గోచార స్థితి (Transit Nature)</th>
+                <th className="p-3 border border-amber-200">గోచార &amp; వేధ స్థితి (Sutra &amp; Vedha Status)</th>
               </tr>
             </thead>
             <tbody>
@@ -271,21 +293,33 @@ export const GocharaPhalaluView: React.FC<GocharaPhalaluViewProps> = ({
                     {p.rashiNameTe} ({p.rashiNameEn.split(' ')[0]})
                   </td>
                   <td className="p-3 border border-amber-200 font-mono text-slate-700">
-                    {p.degreeInRashi} • {p.nakshatraTe} ({p.pada}వ పాదం)
+                    {p.degreeInRashi} • {p.nakshatraTe} ({p.pada}వ పాదం) •{' '}
+                    <span className="font-sans font-semibold text-amber-900">
+                      {p.isRetrograde ? 'వక్ర గతి (R)' : 'ఋజు గతి (D)'}
+                    </span>
                   </td>
                   <td className="p-3 border border-amber-200 font-bold text-amber-900">
                     {p.houseFromMoon}వ స్థానం ({p.houseFromMoon}th House)
                   </td>
                   <td className="p-3 border border-amber-200">
-                    <span
-                      className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                        p.isAuspiciousFromMoon
-                          ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
-                          : 'bg-amber-100 text-amber-950 border border-amber-300'
-                      }`}
-                    >
-                      {p.isAuspiciousFromMoon ? 'శుభ గోచారం (Favorable)' : 'మిశ్రమ / సంయమన కాలం (Balanced)'}
-                    </span>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span
+                        className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                          p.isAuspiciousFromMoon
+                            ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                            : 'bg-amber-100 text-amber-950 border border-amber-300'
+                        }`}
+                      >
+                        {p.isAuspiciousFromMoon ? 'శుభ గోచారం (Favorable)' : 'మిశ్రమ / సంయమన కాలం (Balanced)'}
+                      </span>
+                      {p.isAuspiciousFromMoon && (
+                        <span className="text-[11px] font-semibold text-slate-700">
+                          {p.hasVedha
+                            ? `(వేధ స్థానం ${p.vedhaHouseFromMoon}లో ${p.vedhaByPlanetTe} వల్ల వేధ)`
+                            : `(నిర్వేధ శుభ స్థితి • వేధ స్థానం: ${p.vedhaHouseFromMoon})`}
+                        </span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -299,6 +333,87 @@ export const GocharaPhalaluView: React.FC<GocharaPhalaluViewProps> = ({
           <p className="leading-relaxed">
             <strong>{gocharaAuthorContent.metadata.disclaimerTe}</strong> ({gocharaAuthorContent.metadata.disclaimerEn})
           </p>
+        </div>
+      </section>
+
+      {/* Classical Sutra Phalithalu for Sun, Moon, Mars, Mercury, Venus + Vedha & Retrograde Rules */}
+      <section
+        aria-label="Classical Vedic Gochara Sutra Rules and Practical Guidance"
+        className="bg-white rounded-3xl p-5 sm:p-7 border-2 border-amber-300 shadow-sm space-y-5"
+      >
+        <div className="border-b border-amber-200 pb-3">
+          <span className="text-xs font-extrabold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+            <BookOpen size={14} className="text-amber-700" />
+            <span>సాంప్రదాయ గోచార శాస్త్ర సూత్రాలు • Classical Jyotish Transit Principles</span>
+          </span>
+          <h2 className="text-lg sm:text-2xl font-extrabold text-amber-950 mt-1">
+            రవి, చంద్ర, కుజ, బుధ, శుక్ర గోచార సూత్ర ఫలితాలు &amp; వేధ-వక్ర గతి నియమాలు
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200 space-y-2">
+            <h3 className="text-sm sm:text-base font-extrabold text-amber-950">
+              1. గోచార వేధ స్థాన సూత్రం (Vedha Rule)
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-800 leading-relaxed">
+              {classicalSutras.vedhaPrincipleTe}
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              {classicalSutras.vedhaPrincipleEn}
+            </p>
+          </div>
+
+          <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200 space-y-2">
+            <h3 className="text-sm sm:text-base font-extrabold text-amber-950">
+              2. గ్రహ వక్ర గతి సూత్రం (Retrograde Motion)
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-800 leading-relaxed">
+              {classicalSutras.retrogradePrincipleTe}
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              {classicalSutras.retrogradePrincipleEn}
+            </p>
+          </div>
+
+          <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200 space-y-2">
+            <h3 className="text-sm sm:text-base font-extrabold text-amber-950">
+              3. ఏలినాటి శని వాస్తవ విశ్లేషణ (Sade Sati Perspective)
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-800 leading-relaxed">
+              {classicalSutras.sadeSatiRealismTe}
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              {classicalSutras.sadeSatiRealismEn}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          {Object.entries(otherSutras).map(([key, item]) => (
+            <div
+              key={key}
+              className="bg-white rounded-2xl p-4 border border-amber-200 shadow-2xs space-y-2"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h3 className="text-sm sm:text-base font-extrabold text-amber-950">
+                  {item.nameTe}
+                </h3>
+                <span className="text-xs font-bold text-emerald-900 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                  శుభ స్థానాలు: {item.favorableHouses.join(', ')}
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-800 leading-relaxed">
+                {item.sutraSummaryTe}
+              </p>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                <strong>English Summary:</strong> {item.sutraSummaryEn}
+              </p>
+              <p className="text-[11px] font-semibold text-amber-900">
+                వేధ నియమం: {item.vedhaExceptionTe}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 

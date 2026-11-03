@@ -77,15 +77,17 @@ export default defineConfig(() => {
       {
         name: 'telegram-bot-auto-daemon',
         configureServer() {
-          import('./scripts/telegramBot')
-            .then((m) => {
-              if (typeof m.startTelegramBotDaemon === 'function') {
-                m.startTelegramBotDaemon().catch((err: unknown) =>
-                  console.error('[Telegram Bot Daemon Error]:', err)
-                );
-              }
-            })
-            .catch((err) => console.error('[Failed to load Telegram Bot Daemon]:', err));
+          if (process.env.ENABLE_TELEGRAM_POLLING === 'true') {
+            import('./scripts/telegramBot')
+              .then((m) => {
+                if (typeof m.startTelegramBotDaemon === 'function') {
+                  m.startTelegramBotDaemon().catch((err: unknown) =>
+                    console.error('[Telegram Bot Daemon Error]:', err)
+                  );
+                }
+              })
+              .catch((err) => console.error('[Failed to load Telegram Bot Daemon]:', err));
+          }
         },
       },
     ],

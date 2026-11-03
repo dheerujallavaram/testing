@@ -34,6 +34,7 @@ import {
   buildCleanJsonLdSchema,
   generatePageMetadata,
 } from './seo/panchangamSsrEngine';
+import { DailySubhashithamCard } from './components/DailySubhashithamCard';
 
 export type PanchangamSubTab = 'main' | 'gowri-hora' | 'tarabalam' | 'sankalpam';
 
@@ -994,6 +995,9 @@ function AppContent() {
                 <>
                   {/* సంపూర్ణ నిత్య పంచాంగం (PANCHANGAM FIRST) */}
                   <PanchangamQuickSummary day={currentDay} />
+
+                  {/* నేటి సుభాషిత శ్లోకం & నేటి తరానికి లౌకిక జీవన సందేశం (Image Download in Telugu & English) */}
+                  <DailySubhashithamCard isoDate={currentDay.isoDate || selectedDayId} />
 
                   <section id="panchangam" className="scroll-mt-24">
                     <div className="grid lg:grid-cols-2 gap-8 items-stretch">

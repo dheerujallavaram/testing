@@ -35,6 +35,7 @@ import {
   computeCityLocalPanchangam,
   getTodayIsoDateIST,
 } from '../seo/panchangamSsrEngine';
+import { DailySubhashithamCard } from './DailySubhashithamCard';
 
 const ShaniDoshaChecker = lazy(() =>
   import('./ShaniDoshaChecker').then((m) => ({ default: m.ShaniDoshaChecker }))
@@ -452,6 +453,11 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
           </a>
         </div>
       </section>
+
+      {/* ============================================================== */}
+      {/* 2B. DAILY SUBHASHITHA SLOKAM & MODERN LOUKIKA QUOTE CARD       */}
+      {/* ============================================================== */}
+      <DailySubhashithamCard isoDate={todayIso} />
 
       {/* ============================================================== */}
       {/* 3. PILLARS OF TRADITION (4 COMPACT CREDENTIAL CARDS)           */}

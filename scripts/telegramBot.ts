@@ -1375,6 +1375,9 @@ let isDaemonRunning = false;
  */
 export async function startTelegramBotDaemon() {
   if (isDaemonRunning) return;
+  if (process.env.ENABLE_TELEGRAM_POLLING !== 'true') {
+    return;
+  }
   isDaemonRunning = true;
 
   console.log('🕉️ Starting @telugujyothisham_bot (Telugu Jyothisham Daily Panchangam Bot)...');
@@ -1383,6 +1386,7 @@ export async function startTelegramBotDaemon() {
 
   let offset = 0;
   let lastAutoBroadcastDate = '';
+  let consecutiveErrors = 0;
 
   // Daily 06:00 AM IST automatic broadcast check every 60 seconds
   setInterval(async () => {
@@ -1411,9 +1415,15 @@ export async function startTelegramBotDaemon() {
   // Long-polling loop for instant Telegram responses
   while (true) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 35000);
+
       const res = await fetch(
-        `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${offset}&timeout=25`
+        `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${offset}&timeout=25`,
+        { signal: controller.signal }
       );
+      clearTimeout(timeoutId);
+
       const data = (await res.json()) as {
         ok: boolean;
         result?: Array<{
@@ -1427,6 +1437,8 @@ export async function startTelegramBotDaemon() {
           };
         }>;
       };
+
+      consecutiveErrors = 0;
 
       if (data.ok && Array.isArray(data.result)) {
         for (const update of data.result) {
@@ -1465,9 +1477,11 @@ export async function startTelegramBotDaemon() {
           }
         }
       }
-    } catch (err) {
-      console.error('Telegram polling error, retrying in 3s:', err);
-      await new Promise((r) => setTimeout(r, 3000));
+    } catch (err: unknown) {
+      consecutiveErrors++;
+      const waitTimeSec = Math.min(60, 5 * Math.pow(1.5, Math.min(consecutiveErrors, 6)));
+      console.warn(`[Telegram] Polling connection paused (${(err as { message?: string })?.message || 'timeout'}). Retrying in ${Math.round(waitTimeSec)}s...`);
+      await new Promise((r) => setTimeout(r, waitTimeSec * 1000));
     }
   }
 }
