@@ -472,21 +472,19 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       margin: 0 auto;
       background: linear-gradient(180deg, #fffbeb 0%, #fffdf7 55%, #fef9c3 100%);
       padding: 10px 16px 40px 16px;
-      -webkit-box-decoration-break: clone;
-      box-decoration-break: clone;
     }
 
-    /* Page Breaks & Flow with Split Background Cloning */
+    /* Page Breaks & Flow with Split Background */
     .chapter-break {
       page-break-before: always;
       break-before: page;
+      page-break-inside: avoid;
+      break-inside: avoid;
       padding: 12px 14px;
       background: linear-gradient(180deg, #fffbeb 0%, #fffdf7 55%, #fef9c3 100%);
       border: 2px solid #d97706;
       border-radius: 14px;
       margin-bottom: 14px;
-      -webkit-box-decoration-break: clone;
-      box-decoration-break: clone;
     }
     .chapter-break:nth-of-type(even) {
       background: linear-gradient(180deg, #fefce8 0%, #fffbeb 55%, #ffedd5 100%);
@@ -495,8 +493,6 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     .keep-together {
       page-break-inside: avoid;
       break-inside: avoid;
-      -webkit-box-decoration-break: clone;
-      box-decoration-break: clone;
     }
 
     /* Running Header & Footer for Print Media */
@@ -562,8 +558,6 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
       page-break-inside: avoid;
       break-inside: avoid;
-      -webkit-box-decoration-break: clone;
-      box-decoration-break: clone;
     }
     .section-card-accent {
       background: #fef9c3;
@@ -676,34 +670,6 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
   </div>
 
   <div class="grantham-document">
-    <table style="width:100%;border-collapse:collapse;">
-      <thead style="display:table-header-group;">
-        <tr>
-          <td style="padding-bottom:6px;">
-            <div style="border-bottom:2px solid #b45309;background:linear-gradient(90deg,#fffbeb,#fef3c7,#fffbeb);padding:4px 8px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:10px;color:#78350f;font-weight:700;">
-              <div style="text-align:left;"><a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="color:#78350f;text-decoration:underline;">🪷 శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${siteUrl}</a></div>
-              <div style="text-align:center;font-size:11px;font-weight:900;color:#451a03;padding:0 8px;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు · జాతకులు: ${name}</div>
-              <div style="text-align:right;color:#92400e;">జన్మ తేదీ: ${birthDate} (${birthTime})</div>
-            </div>
-          </td>
-        </tr>
-      </thead>
-      <tfoot style="display:table-footer-group;">
-        <tr>
-          <td style="padding-top:6px;">
-            <div style="border-top:2px solid #b45309;background:linear-gradient(90deg,#fffbeb,#fef3c7,#fffbeb);padding:4px 8px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:10px;color:#78350f;font-weight:700;">
-              <div style="text-align:left;"><a href="${whatsappHref}" target="_blank" rel="noopener noreferrer" style="color:#78350f;text-decoration:underline;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · +91 89779 86166</a></div>
-              <div style="text-align:center;font-size:10.5px;font-weight:900;color:#991b1b;background:#fef08a;padding:2px 12px;border-radius:999px;border:1px solid #d97706;">
-                <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="color:#991b1b;text-decoration:underline;">🌐 ${fullSiteHref}</a>
-              </div>
-              <div style="text-align:right;color:#92400e;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</div>
-            </div>
-          </td>
-        </tr>
-      </tfoot>
-      <tbody>
-        <tr>
-          <td>
 
     <!-- ==========================================================================
         PROMINENT FRONT COVER PAGE 1: GURUJI HERO PHOTO + FULL BIO + HYPERLINKS +
@@ -1771,10 +1737,6 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       </div>
     </div>
 
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </body>
 </html>
