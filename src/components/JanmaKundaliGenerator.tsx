@@ -43,7 +43,7 @@ import {
 import { generateSaptamaMarriageAnalysis } from '../utils/saptamaVisleshanaEngine';
 import {
   buildComprehensiveJathakaPdfHtml,
-  renderNorthIndianChartSvg,
+  JathakaReportVariant,
 } from '../utils/jathakamReportPdfGenerator';
 import {
   computePlanetaryDignities,
@@ -163,6 +163,9 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
   const [predictionTab, setPredictionTab] = useState<'sunmoon' | 'elements' | 'sutras' | 'timeline' | 'ashtakavarga' | 'bhavas'>('sunmoon');
   const [showFullGrantham, setShowFullGrantham] = useState<boolean>(true);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState<boolean>(Boolean(prefillClient?.autoOpenPrint));
+  const [pdfPreviewVariant, setPdfPreviewVariant] = useState<JathakaReportVariant>('sample');
+  const [useTemplatePlaceholders, setUseTemplatePlaceholders] = useState<boolean>(false);
+  const previewIframeRef = React.useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     if (prefillClient) {
@@ -291,7 +294,10 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
   };
 
   // Build self-contained printable HTML document for reliable printing & offline saving
-  const buildPrintableHtmlDocument = (): string => {
+  const buildPrintableHtmlDocument = (
+    overrideVariant?: JathakaReportVariant,
+    overridePlaceholders?: boolean
+  ): string => {
     return buildComprehensiveJathakaPdfHtml({
       name: name.trim() || "జాతకుడు",
       birthDate,
@@ -299,42 +305,79 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       cityName: selectedCity.labelTe,
       chartData,
       language: language === "en" ? "en" : "te",
+      variant: overrideVariant ?? pdfPreviewVariant,
+      usePlaceholders: overridePlaceholders ?? useTemplatePlaceholders,
     });
+  };
+
+  // Memoized HTML for the interactive live A4/Mobile Template Preview
+  const liveTemplateHtml = useMemo(
+    () =>
+      buildComprehensiveJathakaPdfHtml({
+        name: name.trim() || "జాతకుడు",
+        birthDate,
+        birthTime,
+        cityName: selectedCity.labelTe,
+        chartData,
+        language: language === "en" ? "en" : "te",
+        variant: pdfPreviewVariant,
+        usePlaceholders: useTemplatePlaceholders,
+      }),
+    [name, birthDate, birthTime, selectedCity, chartData, language, pdfPreviewVariant, useTemplatePlaceholders]
+  );
+
+  // Print the clean A4 / Mobile PDF template directly via the embedded iframe
+  const handlePrintCleanTemplate = (targetVariant?: JathakaReportVariant) => {
+    if (targetVariant && targetVariant !== pdfPreviewVariant) {
+      setPdfPreviewVariant(targetVariant);
+    }
+    setTimeout(() => {
+      try {
+        if (previewIframeRef.current?.contentWindow) {
+          previewIframeRef.current.contentWindow.focus();
+          previewIframeRef.current.contentWindow.print();
+          return;
+        }
+        window.print();
+      } catch {
+        setIsPrintModalOpen(true);
+      }
+    }, 120);
   };
 
   // Trigger native print immediately during user gesture + open Print/Download Modal
   const handlePrintHoroscope = () => {
-    setShowFullGrantham(true);
-    try {
-      window.print();
-    } catch {
-      // Fallback modal
-    }
-    setIsPrintModalOpen(true);
+    handlePrintCleanTemplate(pdfPreviewVariant);
   };
 
   // Trigger print directly from inside the modal by closing modal first
   const handleTriggerDirectPrint = () => {
-    setShowFullGrantham(true);
     setIsPrintModalOpen(false);
-    setTimeout(() => {
-      try {
-        window.print();
-      } catch {
-        handleDownloadPrintableFile();
-      }
-    }, 60);
+    handlePrintCleanTemplate('a4-full');
   };
 
   // Direct 1-click download of the complete printable Horoscope file (.html)
-  const handleDownloadPrintableFile = () => {
-    const htmlContent = buildPrintableHtmlDocument();
+  const handleDownloadPrintableFile = (
+    overrideVariant?: JathakaReportVariant,
+    overridePlaceholders?: boolean
+  ) => {
+    const chosenVariant = overrideVariant ?? pdfPreviewVariant;
+    const chosenPlaceholders = overridePlaceholders ?? useTemplatePlaceholders;
+    const htmlContent = buildPrintableHtmlDocument(chosenVariant, chosenPlaceholders);
     const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     const safeName = name.trim().replace(/\s+/g, '_') || 'Janma_Kundali';
+    const suffix =
+      chosenPlaceholders
+        ? 'Placeholder_Template'
+        : chosenVariant === 'sample'
+        ? 'Sample_Cover_Top3_A4'
+        : chosenVariant === 'mobile'
+        ? 'Mobile_WhatsApp_Edition'
+        : 'Full_A4_Jathakam_Report';
     link.href = url;
-    link.download = `${safeName}_Sampoorna_Jathaka_Phalithalu.html`;
+    link.download = `${safeName}_${suffix}.html`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -870,23 +913,34 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
           <div className="flex flex-wrap items-center gap-2.5">
             <button
               type="button"
-              onClick={handlePrintHoroscope}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-[#78350f] via-[#9a3412] to-[#78350f] hover:from-[#451a03] hover:to-[#78350f] text-[#fef08a] border-2 border-amber-400 shadow-md transition-all cursor-pointer"
+              onClick={() => handlePrintCleanTemplate(pdfPreviewVariant)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-[#4A1D0A] via-[#6b2a0f] to-[#4A1D0A] hover:from-[#2C1005] hover:to-[#4A1D0A] text-[#FFF8E7] border-2 border-[#E8A317] shadow-md transition-all cursor-pointer"
             >
-              <Printer size={16} />
+              <Printer size={16} className="text-[#E8A317]" />
               <span>
-                {t('🖨️ బృహత్ జాతకం PDF ప్రింట్ / సేవ్ (Sample PDF)', '🖨️ Print / Save Sample Jathakam PDF')}
+                {t('🖨️ ప్రీమియం A4 జాతకం PDF ప్రింట్ / సేవ్', '🖨️ Print / Save Premium A4 PDF')}
               </span>
             </button>
 
             <button
               type="button"
-              onClick={handleDownloadPrintableFile}
+              onClick={() => handleDownloadPrintableFile('a4-full', false)}
               className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs transition-all cursor-pointer"
             >
               <Download size={15} />
               <span>
-                {t('📥 పూర్తి జాతక ఫైల్ డౌన్‌లోడ్ (.html)', '📥 Download Full Report (.html)')}
+                {t('📥 పూర్తి A4 జాతక ఫైల్ (.html)', '📥 Download Full A4 Report (.html)')}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleDownloadPrintableFile('mobile', false)}
+              className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FFF8E7] hover:bg-amber-100 text-[#4A1D0A] border border-[#E8A317] transition-all cursor-pointer"
+            >
+              <Download size={15} className="text-[#4A1D0A]" />
+              <span>
+                {t('📱 వాట్సాప్ మొబైల్ వెర్షన్ (.html)', '📱 WhatsApp Mobile Variant')}
               </span>
             </button>
 
@@ -901,6 +955,116 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
               </span>
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* ==========================================================================
+          REDESIGNED PREMIUM A4 PDF TEMPLATE LIVE PREVIEW
+          Starts with Sample Preview (Page 1 Cover + Page 2 "Your Top 3 Insights")
+          ========================================================================== */}
+      <div className="rounded-3xl border-2 border-[#E8A317] bg-[#FFF8E7] shadow-xl overflow-hidden no-print">
+        <div className="bg-[#4A1D0A] text-[#FFF8E7] px-4 sm:px-6 py-4 border-b-2 border-[#E8A317] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div>
+            <div className="text-[11px] font-bold text-[#FDE68A] tracking-wider uppercase">
+              శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · PREMIUM A4 PRINT-READY PDF TEMPLATE (#4A1D0A · #E8A317 · #FFF8E7)
+            </div>
+            <h3 className="text-base sm:text-lg font-extrabold text-white mt-0.5">
+              {pdfPreviewVariant === 'sample'
+                ? '1. Sample Preview: Cover Page (Page 1) + "Your Top 3 Insights" (Page 2)'
+                : pdfPreviewVariant === 'mobile'
+                ? '3. Mobile Single-Column Variant (WhatsApp Sharing · Larger 13pt Fonts)'
+                : '2. Complete 12-Page A4 Horoscope Report (Chapters 1–10, D1/D9 Charts, Dasha Bar & QR)'}
+            </h3>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPdfPreviewVariant('sample')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer border ${
+                pdfPreviewVariant === 'sample'
+                  ? 'bg-[#E8A317] text-[#2C1005] border-white shadow-sm'
+                  : 'bg-[#2C1005]/70 text-[#FFF8E7] border-[#E8A317]/50 hover:bg-[#2C1005]'
+              }`}
+            >
+              ✨ Sample (Cover + Top 3 Insights)
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPdfPreviewVariant('a4-full')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer border ${
+                pdfPreviewVariant === 'a4-full'
+                  ? 'bg-[#E8A317] text-[#2C1005] border-white shadow-sm'
+                  : 'bg-[#2C1005]/70 text-[#FFF8E7] border-[#E8A317]/50 hover:bg-[#2C1005]'
+              }`}
+            >
+              📄 Full A4 Report (All 12 Pages)
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPdfPreviewVariant('mobile')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer border ${
+                pdfPreviewVariant === 'mobile'
+                  ? 'bg-[#E8A317] text-[#2C1005] border-white shadow-sm'
+                  : 'bg-[#2C1005]/70 text-[#FFF8E7] border-[#E8A317]/50 hover:bg-[#2C1005]'
+              }`}
+            >
+              📱 Mobile Variant (WhatsApp)
+            </button>
+
+            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-[#2C1005]/80 text-[#FDE68A] border border-[#E8A317]/60 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={useTemplatePlaceholders}
+                onChange={(e) => setUseTemplatePlaceholders(e.target.checked)}
+                className="accent-[#E8A317] rounded cursor-pointer"
+              />
+              <span translate="no">{'{{placeholders}}'} Mode</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Sub-toolbar with Print & Export Actions for Current Preview */}
+        <div className="bg-[#FDF0C9] px-4 sm:px-6 py-2.5 border-b border-[#E8A317] flex flex-wrap items-center justify-between gap-2 text-xs text-[#4A1D0A]">
+          <div className="font-bold">
+            <span>✓ 15mm A4 Margins &nbsp;·&nbsp; ✓ 8.5mm Card Gaps &nbsp;·&nbsp; ✓ Local Noto Sans/Serif Telugu &nbsp;·&nbsp; ✓ WCAG AA Contrast</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => handlePrintCleanTemplate(pdfPreviewVariant)}
+              className="px-3 py-1 rounded-md bg-[#4A1D0A] hover:bg-[#2C1005] text-[#FDE68A] font-bold cursor-pointer"
+            >
+              🖨️ Print Current View as PDF
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDownloadPrintableFile(pdfPreviewVariant, useTemplatePlaceholders)}
+              className="px-3 py-1 rounded-md bg-white hover:bg-amber-50 text-[#4A1D0A] border border-[#4A1D0A]/40 font-bold cursor-pointer"
+            >
+              📥 Download Current HTML ({pdfPreviewVariant})
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDownloadPrintableFile('a4-full', true)}
+              className="px-3 py-1 rounded-md bg-white hover:bg-amber-50 text-[#4A1D0A] border border-[#4A1D0A]/40 font-bold cursor-pointer"
+              translate="no"
+            >
+              🧩 Export {'{{placeholder}}'} Template
+            </button>
+          </div>
+        </div>
+
+        {/* Live Embedded A4 / Mobile Preview Iframe */}
+        <div className="bg-[#D9CDB8] p-2 sm:p-4">
+          <iframe
+            ref={previewIframeRef}
+            title="Telugu Jathakam Premium A4 PDF Preview"
+            srcDoc={liveTemplateHtml}
+            className="w-full h-[860px] rounded-xl border border-[#4A1D0A]/30 bg-[#EBE2D0] shadow-inner"
+          />
         </div>
       </div>
 
@@ -2523,7 +2687,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
 
               <button
                 type="button"
-                onClick={handleDownloadPrintableFile}
+                onClick={() => handleDownloadPrintableFile('a4-full', false)}
                 className="flex flex-col items-start gap-1.5 p-3.5 rounded-2xl bg-amber-900 hover:bg-amber-800 text-white text-left transition-colors cursor-pointer shadow-sm"
               >
                 <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-amber-200">
