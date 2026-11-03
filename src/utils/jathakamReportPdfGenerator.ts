@@ -474,17 +474,13 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       padding: 10px 16px 40px 16px;
     }
 
-    /* Page Breaks & Flow with Split Background */
+    /* Continuous Chapter Flow with Alternating Sacred Background (Zero Empty Pages!) */
     .chapter-break {
-      page-break-before: always;
-      break-before: page;
-      page-break-inside: avoid;
-      break-inside: avoid;
       padding: 12px 14px;
       background: linear-gradient(180deg, #fffbeb 0%, #fffdf7 55%, #fef9c3 100%);
       border: 2px solid #d97706;
       border-radius: 14px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .chapter-break:nth-of-type(even) {
       background: linear-gradient(180deg, #fefce8 0%, #fffbeb 55%, #ffedd5 100%);
@@ -540,12 +536,16 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       padding-left: 10px;
       margin: 10px 0 8px 0;
       line-height: 1.35;
+      page-break-after: avoid;
+      break-after: avoid;
     }
     .chapter-subtitle {
       font-size: 11.5px;
       color: #78350f;
       font-weight: 700;
       margin-bottom: 10px;
+      page-break-after: avoid;
+      break-after: avoid;
     }
 
     /* Cards */
@@ -675,9 +675,9 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
         PROMINENT FRONT COVER PAGE 1: GURUJI HERO PHOTO + FULL BIO + HYPERLINKS +
         NATIVE PROFILE + SIDE-BY-SIDE D1 & D9 KUNDALI CHAKRAS
         ========================================================================== -->
-    <div class="keep-together" style="border:3.5px double #78350f;border-radius:14px;background:radial-gradient(circle at center, #fffdf5 0%, #fef3c7 100%);padding:12px 14px;margin-bottom:14px;box-shadow:0 4px 14px rgba(120,53,15,0.08);">
+    <div style="border:3.5px double #78350f;border-radius:14px;background:radial-gradient(circle at center, #fffdf5 0%, #fef3c7 100%);padding:12px 14px;margin-bottom:14px;box-shadow:0 4px 14px rgba(120,53,15,0.08);">
       <!-- Guruji Hero Banner Card -->
-      <div style="background:linear-gradient(135deg, #2b0902 0%, #451a03 55%, #2b0902 100%);border:2px solid #f59e0b;border-radius:12px;padding:10px 14px;color:#fef3c7;margin-bottom:10px;">
+      <div class="keep-together" style="background:linear-gradient(135deg, #2b0902 0%, #451a03 55%, #2b0902 100%);border:2px solid #f59e0b;border-radius:12px;padding:10px 14px;color:#fef3c7;margin-bottom:10px;">
         <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(245,158,11,0.35);padding-bottom:4px;margin-bottom:8px;font-size:9.5px;font-weight:bold;color:#fcd34d;">
           <span>॥ శ్రీ గురుభ్యో నమః · శ్రీ మహాగణపతయే నమః ॥</span>
           <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్</span>
@@ -730,7 +730,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
         </div>
       </div>
 
-      <div style="border:2px solid #b45309;border-radius:10px;background:#ffffff;padding:8px 12px;text-align:left;margin-bottom:10px;">
+      <div class="keep-together" style="border:2px solid #b45309;border-radius:10px;background:#ffffff;padding:8px 12px;text-align:left;margin-bottom:10px;">
         <table style="width:100%;border-collapse:collapse;font-size:11px;">
           <tr>
             <td style="padding:2px 6px;font-weight:bold;color:#78350f;width:22%;">జాతకుని పేరు:</td>
@@ -760,7 +760,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       </div>
 
       <!-- FRONT PAGE SIDE-BY-SIDE D1 RASI CHAKRA & D9 NAVAMSA CHAKRA -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;">
+      <div class="keep-together" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;">
         ${renderFrontPageCompactKundaliHtml('రాశి చక్రం (D1)', lagnaRashiIdx, chartData.d1RashiPlanets, true)}
         ${renderFrontPageCompactKundaliHtml('నవాంశ చక్రం (D9)', navamshaLagnaRashiIdx, chartData.d9NavamshaPlanets, false)}
       </div>
@@ -794,7 +794,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 2: 1-PAGE EXECUTIVE SUMMARY
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతక దర్శిని</span>
         <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">${siteUrl}</a>
@@ -838,7 +838,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 3: ILLUMINATED KUNDALI PATRIKA IMAGE PLATES (D1 & D9)
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి కుండలి చక్రాలు</span>
         <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">${siteUrl}</a>
@@ -855,7 +855,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       )}
 
       <!-- D9 NAVAMSHA KUNDALI IMAGE PLATE -->
-      <div class="chapter-break keep-together">
+      <div class="chapter-break">
         ${renderSouthIndianImagePlateHtml(
           'నవాంశ చక్రం (D9 Navamsha Chart)',
           `నవాంశ లగ్నం: ${chartData.navamshaLagna.te} · ఆత్మ-కళత్ర సూక్ష్మ బలం`,
@@ -880,7 +880,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 4: PLANETARY DIGNITIES, EXACT DEGREES & NEECHA BHANGA
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · గ్రహ స్ఫుట పట్టిక</span>
         <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">${siteUrl}</a>
@@ -961,7 +961,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 5: CLASSICAL YOGAS & DOSHAS DETECTION
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · యోగ &amp; దోష పరిశీలన</span>
         <span>${siteUrl}</span>
@@ -1009,7 +1009,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 6: SAPTAMA BHAVA (7TH HOUSE) MARRIAGE & TRIPLE KUJA DOSHA
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వైవాహిక &amp; కుజ దోష విశ్లేషణ</span>
         <span>${siteUrl}</span>
@@ -1097,7 +1097,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 7: LAGNA & 144 SUN-MOON ARCHETYPE SYNTHESIS
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ఆత్మ-మనఃకారక సంయోగం</span>
         <span>${siteUrl}</span>
@@ -1148,7 +1148,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 8: PANCHABHUTA ELEMENTAL PLANETARY STRENGTH
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · పంచభూత తత్వ బలం</span>
         <span>${siteUrl}</span>
@@ -1188,7 +1188,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 9: BHRIGU & NADI SPECIAL PREDICTIVE SUTRAS
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · భృగు విశేష సూత్రాలు</span>
         <span>${siteUrl}</span>
@@ -1224,7 +1224,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 10: LIFE EVENT PROBABILITY TIMELINE (% Windows)
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ఈవెంట్ సంభావ్యతా టైమ్‌లైన్</span>
         <span>${siteUrl}</span>
@@ -1265,7 +1265,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 11: SARVASHTAKAVARGA 337 BINDUS MATRIX
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · సర్వాష్టకవర్గ 337 బిందువులు</span>
         <span>${siteUrl}</span>
@@ -1366,7 +1366,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 13: 9 PLANETS IN HOUSES & D9 NAVAMSHA ANALYSIS
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · నవగ్రహ ఫలితాలు</span>
         <span>${siteUrl}</span>
@@ -1401,7 +1401,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 14: 96-YEAR BHRIGU LIFE PROGRESSION TIMELINE
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · 96 ఏళ్ల భృగు చక్ర కాలచక్రం</span>
         <span>${siteUrl}</span>
@@ -1438,7 +1438,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 15: COMPLETE 120-YEAR VIMSHOTTARI MAHADASHA & ANTARDASHA TIMELINE
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వింశోత్తరి మహాదశలు</span>
         <span>${siteUrl}</span>
@@ -1497,7 +1497,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 16: NEXT 12 MONTHS GOCHARA TRANSIT FORECAST
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · రాబోయే 12 నెలల గోచారం</span>
         <span>${siteUrl}</span>
@@ -1532,7 +1532,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 17: DIVISIONAL CHARTS (VARGA CHAKRAS)
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వర్గ చక్రాలు</span>
         <span>${siteUrl}</span>
@@ -1584,7 +1584,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 18: SACRED REMEDIES CALENDAR & GEMSTONE SAFETY
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · వేద పరిహార క్యాలెండర్</span>
         <span>${siteUrl}</span>
@@ -1670,7 +1670,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <!-- ==========================================================================
         CHAPTER 19: PANDIT SEAL, WHATSAPP CONSULTATION & PRIVACY DISCLAIMER
         ========================================================================== -->
-    <div class="chapter-break keep-together">
+    <div class="chapter-break">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ఆశీస్సులు &amp; చట్టబద్ధ ప్రకటన</span>
         <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">${siteUrl}</a>

@@ -1068,7 +1068,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
           </div>
 
           {/* Illuminated D1 Rashi & D9 Navamsha Royal Kundali Image Plates Side-by-Side (Fits on Page 1!) */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 print:grid-cols-2 gap-4 print:gap-2 items-start print-card">
+          <div className="grid grid-cols-1 lg:grid-cols-2 print:grid-cols-2 gap-4 print:gap-2 items-start">
             {renderRoyalKundaliImagePlate('D1')}
             {renderRoyalKundaliImagePlate('D9')}
           </div>
@@ -1488,8 +1488,8 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
             <div className="print-page-break print-page-sheet space-y-3">
               {renderPrintPageHeader()}
 
-              <div className="bg-gradient-to-br from-amber-950 via-[#3b1506] to-amber-900 text-white rounded-3xl p-5 sm:p-7 print:p-4 border-2 border-amber-500/80 shadow-xl space-y-4 print:space-y-3 print-card">
-                <div className="flex flex-col md:flex-row print:flex-row md:items-center print:items-center justify-between gap-3 border-b border-amber-700/70 pb-3 print:pb-2.5">
+              <div className="bg-gradient-to-br from-amber-950 via-[#3b1506] to-amber-900 text-white rounded-3xl p-5 sm:p-7 print:p-4 border-2 border-amber-500/80 shadow-xl space-y-4 print:space-y-3">
+                <div className="flex flex-col md:flex-row print:flex-row md:items-center print:items-center justify-between gap-3 border-b border-amber-700/70 pb-3 print:pb-2.5 print-chapter-banner">
                   <div>
                     <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-950 bg-amber-300 px-3 py-1 rounded-full mb-1.5">
                       <Sparkles size={13} />
@@ -2186,8 +2186,8 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
             <div className="print-page-break print-page-sheet space-y-3">
               {renderPrintPageHeader()}
 
-              <div className="bg-gradient-to-br from-[#2b0902] via-[#3d1305] to-[#230701] text-white rounded-3xl p-5 sm:p-7 print:p-4 border-2 border-[#f59e0b] shadow-xl space-y-4 print:space-y-3 print-card">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-500/40 pb-3 print:pb-2">
+              <div className="bg-gradient-to-br from-[#2b0902] via-[#3d1305] to-[#230701] text-white rounded-3xl p-5 sm:p-7 print:p-4 border-2 border-[#f59e0b] shadow-xl space-y-4 print:space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-500/40 pb-3 print:pb-2 print-chapter-banner">
                   <div>
                     <div className="text-xs font-bold text-amber-300 mb-1 flex items-center gap-1.5">
                       <Gem size={14} className="text-amber-300" />
@@ -2354,7 +2354,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 print:grid-cols-3 gap-3.5 print:gap-2">
+          <div className="grid md:grid-cols-3 print:grid-cols-2 gap-3.5 print:gap-2.5">
             {chartData.dashaList.map((d) => (
               <div
                 key={d.lordTe}

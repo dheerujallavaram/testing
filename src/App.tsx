@@ -857,7 +857,7 @@ function AppContent() {
 
           {/* TAB: MEE JATAKAM TELUSUKONDI / JANMA KUNDALI */}
           {activeTab === 'jathakam' && (
-            <div className="space-y-8">
+            <div className="space-y-8 print:space-y-0">
               <div className="bg-gradient-to-r from-[#2c0902] via-amber-950 to-[#2c0902] text-white rounded-3xl p-6 sm:p-8 border-2 border-amber-500/80 shadow-xl no-print">
                 <div className="max-w-4xl space-y-2">
                   <span className="text-xs font-bold uppercase tracking-widest text-amber-300 block">

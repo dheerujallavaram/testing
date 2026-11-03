@@ -138,8 +138,7 @@
   }
 
   .print-page-break {
-    page-break-before: always !important;
-    break-before: page !important;
+    margin-top: 10px !important;
   }
 
   .print-page-sheet {
@@ -147,11 +146,15 @@
     width: 100% !important;
     background: linear-gradient(180deg, #fffbeb 0%, #fffdf7 50%, #fefce8 100%) !important;
     border: 2px solid #d97706 !important;
-    border-radius: 16px !important;
+    border-radius: 14px !important;
     padding: 8px 10px !important;
+    margin-bottom: 10px !important;
     box-sizing: border-box !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+  }
+
+  .print-page-sheet:nth-of-type(even) {
+    background: linear-gradient(180deg, #fefce8 0%, #fffbeb 55%, #ffedd5 100%) !important;
+    border-color: #b45309 !important;
   }
 
   .print-keep-together,
