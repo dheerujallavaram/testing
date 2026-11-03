@@ -166,8 +166,17 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
   const { name, birthDate, birthTime, cityName, chartData } = options;
   const lang = options.language || 'te';
   const siteUrl = 'www.telugujyothisham.com';
+  const fullSiteHref = 'https://www.telugujyothisham.com';
+  const heroPhotoUrl =
+    typeof window !== 'undefined' && window.location?.origin
+      ? `${window.location.origin}/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg`
+      : '/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg';
+  const whatsappHref = `https://wa.me/918977986166?text=${encodeURIComponent(
+    `నమస్కారం బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు, ${name} (${birthDate}, ${birthTime}, ${cityName}) జాతక పరిశీలన కొరకు సంప్రదిస్తున్నాను.`
+  )}`;
 
   const lagnaRashiIdx = resolveRashiIdx(chartData.lagna.id);
+  const navamshaLagnaRashiIdx = resolveRashiIdx(chartData.navamshaLagna.id);
   const moonPlanet = chartData.planets.find((p) => p.id === 'moon') || chartData.planets[1];
   const sunPlanet = chartData.planets.find((p) => p.id === 'sun') || chartData.planets[0];
   const moonRashiIdx = moonPlanet.rashiIdx;
@@ -195,6 +204,103 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
   const divisional = computeDivisionalCharts(chartData.planets, lagnaRashiIdx);
   const panchangaProfile = buildPanchangaBirthProfile(chartData, birthDate, birthTime, cityName);
   const execSummary = generateExecutiveSummary(dignities, yogas, tripleKuja, dashaInfo, marriageTiming);
+
+  /**
+   * Renders a compact 1:1 Square South Indian Kundali Plate for Page 1 Front Cover (side-by-side D1 & D9)
+   */
+  const renderFrontPageCompactKundaliHtml = (
+    chartTitle: string,
+    activeLagnaIdx: number,
+    planetsMap: Record<number, { nameTe: string; nameEn?: string; isRetro?: boolean; degreeFormatted?: string }[]>,
+    isD1: boolean
+  ) => {
+    const compactCellHtml = (rIdx: number) => {
+      const pls = (planetsMap[rIdx] || []).filter((p) => p.nameTe !== 'లగ్నం');
+      const isLagnaCell = rIdx === activeLagnaIdx;
+      const isMoonCell = isD1 && rIdx === moonRashiIdx;
+      const houseNum = ((rIdx - activeLagnaIdx + 12) % 12) + 1;
+
+      return `
+        <td style="width:25%;height:62px;vertical-align:top;padding:3px 4px;border:1.5px solid #78350f;background:${
+          isLagnaCell
+            ? 'linear-gradient(135deg, #fef08a 0%, #fde68a 100%)'
+            : isMoonCell
+            ? '#ecfdf5'
+            : '#fffdf7'
+        };box-sizing:border-box;">
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed rgba(180,83,9,0.4);padding-bottom:1px;margin-bottom:2px;">
+            <span style="font-size:8.5px;font-weight:800;color:#78350f;">${RASHI_NAMES_TE[rIdx]}</span>
+            <span style="font-size:7px;font-weight:700;color:#9a3412;background:#ffedd5;padding:0 3px;border-radius:3px;border:0.5px solid #fdba74;">${houseNum}వ</span>
+          </div>
+          ${isLagnaCell ? '<div style="font-size:7px;font-weight:800;background:#991b1b;color:#fff;display:inline-block;padding:0 3px;border-radius:2px;margin-bottom:1px;">★ లగ్నం</div>' : ''}
+          ${!isLagnaCell && isMoonCell ? '<div style="font-size:7px;font-weight:800;background:#065f46;color:#fff;display:inline-block;padding:0 3px;border-radius:2px;margin-bottom:1px;">☽ రాశి</div>' : ''}
+          <div style="font-size:8.5px;font-weight:800;color:#0f172a;line-height:1.25;">
+            ${pls
+              .map(
+                (p) =>
+                  `<span style="display:inline-block;margin-right:3px;">${p.nameTe}${
+                    p.isRetro && p.nameTe !== 'రాహువు' && p.nameTe !== 'కేతువు' ? '<span style="color:#dc2626;font-size:7.5px;">(వ)</span>' : ''
+                  }</span>`
+              )
+              .join('')}
+          </div>
+        </td>
+      `;
+    };
+
+    return `
+      <div style="border:3px solid #78350f;border-radius:12px;background:linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);padding:6px;box-shadow:0 3px 10px rgba(120,53,15,0.1);">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:9px;font-weight:800;color:#78350f;border-bottom:1.5px solid #b45309;padding-bottom:3px;margin-bottom:4px;">
+          <span>🪷 శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం</span>
+          <span style="background:#78350f;color:#fef08a;padding:1px 8px;border-radius:999px;">${chartTitle}</span>
+          <span>దృక్సిద్ధాంతం 🪷</span>
+        </div>
+        <table style="width:248px;height:248px;aspect-ratio:1/1;margin:0 auto;border-collapse:collapse;table-layout:fixed;background:#fffdf7;border:2px solid #78350f;">
+          <tr>
+            ${compactCellHtml(11)}
+            ${compactCellHtml(0)}
+            ${compactCellHtml(1)}
+            ${compactCellHtml(2)}
+          </tr>
+          <tr>
+            ${compactCellHtml(10)}
+            <td colspan="2" rowspan="2" style="background:linear-gradient(135deg, #451a03 0%, #240801 100%);color:#fef3c7;text-align:center;padding:4px;border:2px solid #d97706;">
+              <div style="font-size:7.5px;font-weight:bold;color:#fcd34d;">|| ఓం శ్రీ మహాగణాధిపతయే నమః ||</div>
+              <div style="display:inline-block;background:linear-gradient(90deg, #f59e0b, #fde047, #f59e0b);color:#451a03;font-size:9px;font-weight:900;padding:1px 7px;border-radius:999px;margin:2px 0;">
+                ${chartTitle}
+              </div>
+              <div style="font-size:9.5px;font-weight:800;color:#ffffff;">${name}</div>
+              <div style="font-size:7.5px;color:#fcd34d;font-family:monospace;">${birthDate} · ${birthTime}</div>
+              <div style="font-size:8px;color:#86efac;font-weight:bold;margin-top:1px;">
+                ${isD1 ? `లగ్నం: ${chartData.lagna.te} | రాశి: ${chartData.rashi.te}` : `నవాంశ లగ్నం: ${chartData.navamshaLagna.te}`}
+              </div>
+              <div style="margin-top:2px;padding-top:2px;border-top:1px solid rgba(245,158,11,0.35);">
+                <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" translate="no" class="notranslate" style="font-size:7.5px;color:#fde047;font-family:monospace;font-weight:bold;text-decoration:underline;">
+                  ${siteUrl}
+                </a>
+              </div>
+            </td>
+            ${compactCellHtml(3)}
+          </tr>
+          <tr>
+            ${compactCellHtml(9)}
+            ${compactCellHtml(4)}
+          </tr>
+          <tr>
+            ${compactCellHtml(8)}
+            ${compactCellHtml(7)}
+            ${compactCellHtml(6)}
+            ${compactCellHtml(5)}
+          </tr>
+        </table>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:8px;font-weight:bold;color:#78350f;padding-top:3px;margin-top:3px;border-top:1px solid #d97706;">
+          <span>★ లగ్నం: ${isD1 ? chartData.lagna.te : chartData.navamshaLagna.te}</span>
+          <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" translate="no" class="notranslate" style="color:#991b1b;font-family:monospace;font-weight:900;text-decoration:underline;">${siteUrl}</a>
+          <span>☽ ${chartData.rashi.te}</span>
+        </div>
+      </div>
+    `;
+  };
 
   /**
    * Renders the South Indian Kundali Chart as an illuminated temple manuscript plate ("like img lagaa")
@@ -302,7 +408,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
                   ${subBadge || 'లహిరి అయనాంశం: ' + chartData.ayanamsaFormatted}
                 </div>
                 <div translate="no" class="notranslate" style="font-size:9px;color:#fde68a;font-family:monospace;font-weight:bold;margin-top:3px;padding-top:2px;border-top:1px solid rgba(245,158,11,0.3);overflow:visible;white-space:nowrap;">
-                  ${siteUrl}
+                  <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="color:#fde047;text-decoration:underline;">${siteUrl}</a>
                 </div>
               </td>
               ${cellHtml(3)}
@@ -320,8 +426,8 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
           </table>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px 2px 8px;font-size:10px;color:#78350f;font-weight:bold;">
-          <span>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు · +91 89779 86166</span>
-          <span translate="no" class="notranslate">${siteUrl}</span>
+          <span>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు · <a href="${whatsappHref}" target="_blank" rel="noopener noreferrer" style="color:#78350f;text-decoration:underline;">+91 89779 86166</a></span>
+          <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" translate="no" class="notranslate" style="color:#991b1b;text-decoration:underline;font-weight:900;">${siteUrl}</a>
         </div>
       </div>
     `;
@@ -343,44 +449,61 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
     @page {
       size: A4 portrait;
-      margin: 14mm 12mm 15mm 12mm;
+      margin: 10mm 10mm 11mm 10mm;
+      background-color: #fffdf5;
     }
     body {
       font-family: 'Noto Sans Telugu', 'Noto Serif Telugu', Georgia, -apple-system, sans-serif;
       color: #1e293b;
-      background: #ffffff;
+      background: linear-gradient(180deg, #fffbeb 0%, #fffdf5 50%, #fefce8 100%);
       margin: 0;
       padding: 0;
-      line-height: 1.6;
+      line-height: 1.58;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
     .grantham-document {
       max-width: 820px;
       margin: 0 auto;
-      background: #ffffff;
+      background: linear-gradient(180deg, #fffbeb 0%, #fffdf7 55%, #fef9c3 100%);
       padding: 10px 16px 40px 16px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
     }
 
-    /* Page Breaks & Flow */
+    /* Page Breaks & Flow with Split Background Cloning */
     .chapter-break {
       page-break-before: always;
       break-before: page;
-      padding-top: 10px;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #fffbeb 0%, #fffdf7 55%, #fef9c3 100%);
+      border: 2px solid #d97706;
+      border-radius: 14px;
+      margin-bottom: 14px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+    }
+    .chapter-break:nth-of-type(even) {
+      background: linear-gradient(180deg, #fefce8 0%, #fffbeb 55%, #ffedd5 100%);
+      border-color: #b45309;
     }
     .keep-together {
       page-break-inside: avoid;
       break-inside: avoid;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
     }
 
     /* Running Header & Footer for Print Media */
     .print-running-header {
       border-bottom: 2px solid #b45309;
       padding-bottom: 4px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -388,11 +511,16 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       color: #78350f;
       font-weight: 700;
     }
+    .print-running-header a {
+      color: #991b1b;
+      text-decoration: underline;
+      font-weight: 800;
+    }
     .print-running-footer {
       border-top: 1.5px solid #b45309;
       padding-top: 4px;
-      margin-top: 20px;
-      margin-bottom: 14px;
+      margin-top: 16px;
+      margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -401,42 +529,44 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       font-weight: 600;
     }
     .print-running-footer a {
-      color: #92400e;
-      text-decoration: none;
+      color: #991b1b;
+      text-decoration: underline;
       font-weight: 800;
     }
 
     /* Headings */
     .chapter-title {
       font-family: 'Noto Serif Telugu', Georgia, serif;
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 900;
       color: #451a03;
       border-left: 5px solid #b45309;
       padding-left: 10px;
-      margin: 16px 0 10px 0;
+      margin: 10px 0 8px 0;
       line-height: 1.35;
     }
     .chapter-subtitle {
-      font-size: 12px;
+      font-size: 11.5px;
       color: #78350f;
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     /* Cards */
     .section-card {
-      border: 1.2px solid #d97706;
+      border: 1.5px solid #d97706;
       border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      background: #ffffff;
+      padding: 11px 14px;
+      margin-bottom: 11px;
+      background: #fffdf9;
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
       page-break-inside: avoid;
       break-inside: avoid;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
     }
     .section-card-accent {
-      background: #fffdf5;
+      background: #fef9c3;
       border-color: #b45309;
     }
     .section-card h4 {
@@ -523,12 +653,13 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       body {
         margin: 0 !important;
         padding: 0 !important;
-        background: #ffffff !important;
+        background: #fffdf5 !important;
       }
       .grantham-document {
         max-width: 100% !important;
         padding: 0 !important;
         margin: 0 !important;
+        background: #fffdf5 !important;
       }
     }
   </style>
@@ -548,9 +679,9 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <table style="width:100%;border-collapse:collapse;">
       <thead style="display:table-header-group;">
         <tr>
-          <td style="padding-bottom:8px;">
-            <div style="border-bottom:2px solid #b45309;padding-bottom:4px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:10px;color:#78350f;font-weight:700;">
-              <div style="text-align:left;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్</div>
+          <td style="padding-bottom:6px;">
+            <div style="border-bottom:2px solid #b45309;background:linear-gradient(90deg,#fffbeb,#fef3c7,#fffbeb);padding:4px 8px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:10px;color:#78350f;font-weight:700;">
+              <div style="text-align:left;"><a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="color:#78350f;text-decoration:underline;">🪷 శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${siteUrl}</a></div>
               <div style="text-align:center;font-size:11px;font-weight:900;color:#451a03;padding:0 8px;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు · జాతకులు: ${name}</div>
               <div style="text-align:right;color:#92400e;">జన్మ తేదీ: ${birthDate} (${birthTime})</div>
             </div>
@@ -559,10 +690,12 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       </thead>
       <tfoot style="display:table-footer-group;">
         <tr>
-          <td style="padding-top:8px;">
-            <div style="border-top:2px solid #b45309;padding-top:4px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:10px;color:#78350f;font-weight:700;">
-              <div style="text-align:left;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · +91 89779 86166</div>
-              <div style="text-align:center;font-size:11px;font-weight:900;color:#451a03;background:#fef3c7;padding:2px 12px;border-radius:999px;border:1px solid #d97706;">🌐 ${siteUrl}</div>
+          <td style="padding-top:6px;">
+            <div style="border-top:2px solid #b45309;background:linear-gradient(90deg,#fffbeb,#fef3c7,#fffbeb);padding:4px 8px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:10px;color:#78350f;font-weight:700;">
+              <div style="text-align:left;"><a href="${whatsappHref}" target="_blank" rel="noopener noreferrer" style="color:#78350f;text-decoration:underline;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · +91 89779 86166</a></div>
+              <div style="text-align:center;font-size:10.5px;font-weight:900;color:#991b1b;background:#fef08a;padding:2px 12px;border-radius:999px;border:1px solid #d97706;">
+                <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="color:#991b1b;text-decoration:underline;">🌐 ${fullSiteHref}</a>
+              </div>
               <div style="text-align:right;color:#92400e;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</div>
             </div>
           </td>
@@ -573,74 +706,97 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
           <td>
 
     <!-- ==========================================================================
-        PROMINENT NATIVE PROFILE & FRONT COVER HEADER (Page 1)
+        PROMINENT FRONT COVER PAGE 1: GURUJI HERO PHOTO + FULL BIO + HYPERLINKS +
+        NATIVE PROFILE + SIDE-BY-SIDE D1 & D9 KUNDALI CHAKRAS
         ========================================================================== -->
-    <div class="keep-together" style="border:3.5px double #78350f;border-radius:14px;background:radial-gradient(circle at center, #fffdf5 0%, #fef3c7 100%);padding:18px 20px;margin-bottom:20px;box-shadow:0 4px 14px rgba(120,53,15,0.08);text-align:center;">
-      <div style="font-family:'Noto Serif Telugu', Georgia, serif;font-size:12px;font-weight:bold;color:#78350f;letter-spacing:1px;margin-bottom:4px;">
-        ॥ శ్రీ గురుభ్యో నమః · శ్రీ మహాగణపతయే నమః · శ్రీ శారదాంబాయై నమః ॥
-      </div>
-      <div style="font-family:'Noto Serif Telugu', serif;font-size:24px;font-weight:900;color:#451a03;line-height:1.25;margin:4px 0;">
-        బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు
-      </div>
-      <div style="font-size:13px;font-weight:800;color:#78350f;margin-bottom:6px;">
-        శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్ · ఫోన్ / వాట్సాప్: +91 89779 86166
-      </div>
-      <div style="display:inline-block;background:#451a03;color:#fde68a;padding:6px 20px;border-radius:999px;font-size:18px;font-weight:900;margin:6px 0;border:1.5px solid #f59e0b;">
-        🌟 ${name} గారి సంపూర్ణ బృహత్ జాతక మహాగ్రంథం
-      </div>
-      <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:14px;">
-        Comprehensive Brihat Vedic Horoscope &amp; Planetary Destiny Blueprint · ${siteUrl}
+    <div class="keep-together" style="border:3.5px double #78350f;border-radius:14px;background:radial-gradient(circle at center, #fffdf5 0%, #fef3c7 100%);padding:12px 14px;margin-bottom:14px;box-shadow:0 4px 14px rgba(120,53,15,0.08);">
+      <!-- Guruji Hero Banner Card -->
+      <div style="background:linear-gradient(135deg, #2b0902 0%, #451a03 55%, #2b0902 100%);border:2px solid #f59e0b;border-radius:12px;padding:10px 14px;color:#fef3c7;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(245,158,11,0.35);padding-bottom:4px;margin-bottom:8px;font-size:9.5px;font-weight:bold;color:#fcd34d;">
+          <span>॥ శ్రీ గురుభ్యో నమః · శ్రీ మహాగణపతయే నమః ॥</span>
+          <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్</span>
+          <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="background:#f59e0b;color:#2b0902;padding:1px 8px;border-radius:999px;font-weight:900;text-decoration:underline;">🌐 ${siteUrl}</a>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:14px;">
+          <!-- Hero Photo -->
+          <div style="text-align:center;flex-shrink:0;">
+            <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="display:block;width:78px;height:78px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#f59e0b,#fef08a,#d97706);margin:0 auto;">
+              <img src="${heroPhotoUrl}" alt="బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు" width="72" height="72" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:top;border:1.5px solid #fff;" />
+            </a>
+            <span style="display:inline-block;margin-top:3px;background:#f59e0b;color:#2b0902;font-size:8px;font-weight:900;padding:1px 6px;border-radius:999px;">
+              స్మార్త వైదిక &amp; జ్యోతిష్య విద్వాంసులు
+            </span>
+          </div>
+
+          <!-- Guruji Complete Credentials & Clickable Hyperlinks -->
+          <div style="flex:1;text-align:left;">
+            <div style="font-size:9px;font-weight:bold;color:#fcd34d;text-transform:uppercase;letter-spacing:0.4px;">
+              స్మార్త వైదిక &amp; దృక్సిద్ధాంత జ్యోతిష్య నిపుణులు · 15+ ఏళ్ల గురుపరంపర వేద సంప్రదాయం
+            </div>
+            <div style="font-family:'Noto Serif Telugu', serif;font-size:18px;font-weight:900;color:#fde047;line-height:1.2;margin:2px 0;">
+              <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="color:#fde047;text-decoration:none;">
+                బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (Brahmasri Jallavaram Sai Dheeraj Sharma)
+              </a>
+            </div>
+            <div style="font-size:10px;color:#fef3c7;line-height:1.35;margin-bottom:6px;">
+              <strong>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం, హైదరాబాద్:</strong> దృక్సిద్ధాంత ఖగోళ గణిత సంపూర్ణ జాతక పరిశీలన, 36 గుణాల వివాహ పొంతన, వివాహ-గృహప్రవేశ సిద్ధ ముహూర్త నిర్ణయం మరియు శ్రీ చండీ, లక్ష్మీ గణపతి, సుదర్శన, రుద్ర మహా హోమ క్రతువుల నిర్వహణ.
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:9.5px;font-weight:900;">
+              <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="background:#fbbf24;color:#2b0902;padding:3px 9px;border-radius:6px;text-decoration:underline;">
+                🌐 వెబ్‌సైట్: ${fullSiteHref}
+              </a>
+              <a href="${whatsappHref}" target="_blank" rel="noopener noreferrer" style="background:#10b981;color:#ffffff;padding:3px 9px;border-radius:6px;text-decoration:underline;">
+                💬 వాట్సాప్: +91 89779 86166
+              </a>
+              <a href="tel:+918977986166" style="background:#78350f;color:#fef08a;border:1px solid #f59e0b;padding:3px 9px;border-radius:6px;text-decoration:underline;">
+                📞 కాల్: +91 89779 86166
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Prominent Native Credentials Box (Name, Address/Location, Time, DOB) -->
-      <div style="border:2px solid #b45309;border-radius:10px;background:#ffffff;padding:12px 16px;text-align:left;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
-        <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+      <!-- Native Title & Birth Credentials Compact Table -->
+      <div style="text-align:center;margin-bottom:8px;">
+        <div style="display:inline-block;background:#451a03;color:#fde68a;padding:4px 16px;border-radius:999px;font-size:15px;font-weight:900;border:1.5px solid #f59e0b;">
+          🌟 ${name} గారి సంపూర్ణ బృహత్ జాతక &amp; కుండలి మహాగ్రంథం
+        </div>
+      </div>
+
+      <div style="border:2px solid #b45309;border-radius:10px;background:#ffffff;padding:8px 12px;text-align:left;margin-bottom:10px;">
+        <table style="width:100%;border-collapse:collapse;font-size:11px;">
           <tr>
-            <td style="padding:4px 8px;font-weight:bold;color:#78350f;width:30%;">జాతకుని పేరు (Full Name):</td>
-            <td style="padding:4px 8px;font-weight:900;color:#1e293b;font-size:15px;">${name}</td>
+            <td style="padding:2px 6px;font-weight:bold;color:#78350f;width:22%;">జాతకుని పేరు:</td>
+            <td style="padding:2px 6px;font-weight:900;color:#1e293b;font-size:13px;width:28%;">${name}</td>
+            <td style="padding:2px 6px;font-weight:bold;color:#78350f;width:22%;">పుట్టిన తేదీ &amp; సమయం:</td>
+            <td style="padding:2px 6px;font-weight:800;color:#1e293b;width:28%;">${birthDate} · ${birthTime}</td>
           </tr>
           <tr>
-            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">పుట్టిన తేదీ &amp; సమయం (DOB &amp; Time):</td>
-            <td style="padding:4px 8px;font-weight:700;color:#1e293b;">${birthDate} · ఉదయం ${birthTime}</td>
+            <td style="padding:2px 6px;font-weight:bold;color:#78350f;">జన్మ స్థలం:</td>
+            <td style="padding:2px 6px;font-weight:700;color:#1e293b;">${cityName} (${panchangaProfile.latLonFormatted})</td>
+            <td style="padding:2px 6px;font-weight:bold;color:#78350f;">లగ్నం &amp; నవాంశ:</td>
+            <td style="padding:2px 6px;font-weight:800;color:#991b1b;">${chartData.lagna.te} / ${chartData.navamshaLagna.te}</td>
           </tr>
           <tr>
-            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">జన్మ స్థలం (Place of Birth):</td>
-            <td style="padding:4px 8px;font-weight:700;color:#1e293b;">${cityName} (${panchangaProfile.latLonFormatted})</td>
+            <td style="padding:2px 6px;font-weight:bold;color:#78350f;">జన్మ రాశి &amp; నక్షత్రం:</td>
+            <td style="padding:2px 6px;font-weight:800;color:#047857;">${chartData.rashi.te} · ${chartData.nakshatraName} (${chartData.pada}వ పాదం)</td>
+            <td style="padding:2px 6px;font-weight:bold;color:#78350f;">సూర్య రాశి (Sun Sign):</td>
+            <td style="padding:2px 6px;font-weight:800;color:#b45309;">${sunPlanet.rashiTe} (${sunPlanet.degreeFormatted})</td>
           </tr>
           <tr>
-            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">జన్మ లగ్నం (Ascendant D1):</td>
-            <td style="padding:4px 8px;font-weight:800;color:#991b1b;">${chartData.lagna.te} (${chartData.planets[0].degreeFormatted}) · నవాంశ: ${chartData.navamshaLagna.te}</td>
-          </tr>
-          <tr>
-            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">జన్మ రాశి &amp; నక్షత్రం (Moon):</td>
-            <td style="padding:4px 8px;font-weight:800;color:#047857;">${chartData.rashi.te} రాశి · ${chartData.nakshatraName} నక్షత్రం (${chartData.pada}వ పాదం)</td>
-          </tr>
-          <tr>
-            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">సూర్య రాశి (Sun Sign):</td>
-            <td style="padding:4px 8px;font-weight:800;color:#b45309;">${sunPlanet.rashiTe} రాశి (${sunPlanet.degreeFormatted} — ${sunPlanet.nakshatraTe})</td>
-          </tr>
-          <tr>
-            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">ప్రస్తుత మహాదశ (Current Dasha):</td>
-            <td style="padding:4px 8px;font-weight:800;color:#1e293b;">${dashaInfo.currentMahadasha.lordTe} మహాదశ — ${dashaInfo.currentAntardasha.lordTe} అంతర్దశ</td>
-          </tr>
-          <tr>
-            <td style="padding:4px 8px;font-weight:bold;color:#78350f;">అధికారిక వెబ్‌సైట్:</td>
-            <td style="padding:4px 8px;font-weight:800;color:#b45309;"><a href="https://${siteUrl}" style="color:#b45309;text-decoration:none;">${siteUrl}</a></td>
+            <td style="padding:2px 6px;font-weight:bold;color:#78350f;">ప్రస్తుత మహాదశ:</td>
+            <td style="padding:2px 6px;font-weight:800;color:#1e293b;">${dashaInfo.currentMahadasha.lordTe} – ${dashaInfo.currentAntardasha.lordTe}</td>
+            <td style="padding:2px 6px;font-weight:bold;color:#78350f;">అధికారిక వెబ్‌సైట్:</td>
+            <td style="padding:2px 6px;font-weight:900;"><a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="color:#991b1b;text-decoration:underline;">🌐 ${fullSiteHref}</a></td>
           </tr>
         </table>
       </div>
 
-      <!-- Chief Astrologer Blessings Strip -->
-      <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;border-top:1px dashed #d97706;padding-top:10px;text-align:left;">
-        <div>
-          <div style="font-size:10px;font-weight:bold;color:#78350f;">సిద్ధాంత విశ్లేషణ &amp; వేదాశీర్వాదం:</div>
-          <div style="font-size:14px;font-weight:800;color:#451a03;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</div>
-          <div style="font-size:11px;color:#78350f;">శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్ · ఫోన్ / వాట్సాప్: +91 89779 86166</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:11px;font-weight:800;color:#047857;">దృక్సిద్ధాంత గణితం (లహిరి అయనాంశం: ${chartData.ayanamsaFormatted})</div>
-          <div style="font-size:10px;color:#64748b;">శ్రీ క్రోధినామ / ఆనంద సంవత్సర గణన</div>
-        </div>
+      <!-- FRONT PAGE SIDE-BY-SIDE D1 RASI CHAKRA & D9 NAVAMSA CHAKRA -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;">
+        ${renderFrontPageCompactKundaliHtml('రాశి చక్రం (D1)', lagnaRashiIdx, chartData.d1RashiPlanets, true)}
+        ${renderFrontPageCompactKundaliHtml('నవాంశ చక్రం (D9)', navamshaLagnaRashiIdx, chartData.d9NavamshaPlanets, false)}
       </div>
     </div>
 
@@ -675,7 +831,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <div class="chapter-break keep-together">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి జాతక దర్శిని</span>
-        <span>${siteUrl}</span>
+        <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">${siteUrl}</a>
       </div>
 
       <div class="chapter-title">అధ్యాయం 2 · జాతక సంక్షిప్త సారాంశం (1-Page Executive Summary)</div>
@@ -709,7 +865,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
 
       <div class="print-running-footer">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · అధికారిక సంపూర్ణ పత్రిక</span>
-        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+        <span><a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">${siteUrl}</a></span>
       </div>
     </div>
 
@@ -719,7 +875,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <div class="chapter-break keep-together">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ${name} గారి కుండలి చక్రాలు</span>
-        <span>${siteUrl}</span>
+        <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">${siteUrl}</a>
       </div>
 
       <div class="chapter-title">అధ్యాయం 3 · సంపూర్ణ రాశి చక్రం (D1) &amp; నవాంశ చక్రం (D9) పత్రికలు</div>
@@ -751,7 +907,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
 
       <div class="print-running-footer">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · కుండలి పత్రిక దర్శిని</span>
-        <span><a href="https://${siteUrl}">${siteUrl}</a></span>
+        <span><a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">${siteUrl}</a></span>
       </div>
     </div>
 
@@ -761,7 +917,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <div class="chapter-break keep-together">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · గ్రహ స్ఫుట పట్టిక</span>
-        <span>${siteUrl}</span>
+        <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">${siteUrl}</a>
       </div>
 
       <div class="chapter-title">అధ్యాయం 4 · నవగ్రహ స్ఫుటములు &amp; గ్రహ బలాబలాలు (Planetary Dignities)</div>
@@ -1551,7 +1707,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     <div class="chapter-break keep-together">
       <div class="print-running-header">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · ఆశీస్సులు &amp; చట్టబద్ధ ప్రకటన</span>
-        <span>${siteUrl}</span>
+        <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">${siteUrl}</a>
       </div>
 
       <div class="chapter-title">అధ్యాయం 19 · సిద్ధాంతుల వారి ఆశీస్సులు, సంప్రదింపులు &amp; గోప్యతా ప్రకటన</div>
@@ -1559,29 +1715,37 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
 
       <!-- Chief Pandit Endorsement Box -->
       <div style="border:2.5px solid #78350f;border-radius:12px;background:#fffdf5;padding:16px 20px;margin-bottom:16px;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;">
-          <div>
-            <div style="font-size:11px;font-weight:bold;color:#78350f;text-transform:uppercase;">సిద్ధాంత విశ్లేషణ &amp; వేదాశీర్వాదం:</div>
-            <div style="font-size:18px;font-weight:900;color:#451a03;margin:4px 0;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</div>
-            <div style="font-size:12px;color:#78350f;font-weight:700;">ప్రధాన అర్చకులు &amp; వేద జ్యోతిష పరిశోధకులు</div>
-            <div style="font-size:12px;color:#1e293b;margin-top:4px;">
-              శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్, తెలంగాణ<br/>
-              ఫోన్ / అధికారిక వాట్సాప్: <strong>+91 89779 86166</strong><br/>
-              అధికారిక వెబ్‌సైట్: <strong>${siteUrl}</strong>
-            </div>
-            <div style="font-size:11.5px;color:#047857;margin-top:8px;font-style:italic;">
-              "సర్వే భవంతు సుఖినః సర్వే సంతు నిరామయాః · సర్వే భద్రాణి పశ్యంతు మా కశ్చిద్దుఃఖభాగ్‌భవేత్"
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="display:block;width:72px;height:72px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#f59e0b,#fef08a,#d97706);flex-shrink:0;">
+              <img src="${heroPhotoUrl}" alt="బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు" width="68" height="68" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:top;border:1.5px solid #78350f;" />
+            </a>
+            <div>
+              <div style="font-size:11px;font-weight:bold;color:#78350f;text-transform:uppercase;">సిద్ధాంత విశ్లేషణ &amp; వేదాశీర్వాదం:</div>
+              <div style="font-size:18px;font-weight:900;color:#451a03;margin:3px 0;">
+                <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="color:#451a03;text-decoration:underline;">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</a>
+              </div>
+              <div style="font-size:12px;color:#78350f;font-weight:700;">స్మార్త వైదిక &amp; వేద జ్యోతిష పరిశోధకులు</div>
+              <div style="font-size:12px;color:#1e293b;margin-top:4px;">
+                శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · హైదరాబాద్, తెలంగాణ<br/>
+                ఫోన్ / అధికారిక వాట్సాప్: <a href="${whatsappHref}" target="_blank" rel="noopener noreferrer" style="color:#047857;font-weight:900;text-decoration:underline;">+91 89779 86166</a><br/>
+                అధికారిక వెబ్‌సైట్: <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="color:#991b1b;font-weight:900;text-decoration:underline;">🌐 ${fullSiteHref}</a>
+              </div>
+              <div style="font-size:11.5px;color:#047857;margin-top:6px;font-style:italic;">
+                "సర్వే భవంతు సుఖినః సర్వే సంతు నిరామయాః · సర్వే భద్రాణి పశ్యంతు మా కశ్చిద్దుఃఖభాగ్‌భవేత్"
+              </div>
             </div>
           </div>
 
-          <div style="text-align:center;border:1.5px solid #b45309;padding:10px 14px;border-radius:10px;background:#ffffff;min-width:140px;">
-            <div style="font-size:10px;font-weight:bold;color:#78350f;margin-bottom:4px;">గురువుగారి వాట్సాప్</div>
-            <div style="width:90px;height:90px;margin:0 auto;background:#fef3c7;display:flex;align-items:center;justify-content:center;border:1.5px solid #d97706;border-radius:8px;font-size:10px;font-weight:bold;color:#78350f;text-align:center;line-height:1.3;">
-              📱 QR CODE<br/>
-              +91 89779 86166<br/>
-              వాట్సాప్ సంప్రదింపు
-            </div>
-            <div style="font-size:9.5px;font-weight:bold;color:#92400e;margin-top:4px;">${siteUrl}</div>
+          <div style="text-align:center;border:1.5px solid #b45309;padding:10px 14px;border-radius:10px;background:#ffffff;min-width:150px;">
+            <div style="font-size:10px;font-weight:bold;color:#78350f;margin-bottom:4px;">గురువుగారి వాట్సాప్ &amp; సైట్</div>
+            <a href="${whatsappHref}" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px;background:#ecfdf5;border:1.5px solid #10b981;border-radius:8px;font-size:10.5px;font-weight:900;color:#065f46;text-decoration:underline;line-height:1.4;margin-bottom:6px;">
+              💬 వాట్సాప్ సంప్రదింపు<br/>
+              +91 89779 86166
+            </a>
+            <a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer" style="display:block;padding:5px 8px;background:#fef3c7;border:1px solid #d97706;border-radius:6px;font-size:9.5px;font-weight:900;color:#991b1b;text-decoration:underline;">
+              🌐 ${siteUrl}
+            </a>
           </div>
         </div>
       </div>
@@ -1602,7 +1766,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
 
       <div class="print-running-footer">
         <span>శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · సంపూర్ణ బృహత్ జాతక గ్రంథం ముగింపు</span>
-        <span style="font-weight:900;"><a href="https://${siteUrl}">🌐 ${siteUrl}</a></span>
+        <span style="font-weight:900;"><a href="${fullSiteHref}" target="_blank" rel="noopener noreferrer">🌐 ${fullSiteHref}</a></span>
         <span>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు</span>
       </div>
     </div>

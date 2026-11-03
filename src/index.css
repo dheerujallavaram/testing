@@ -86,9 +86,18 @@
   display: none;
 }
 
+/* Ensure any container that splits across PDF pages clones its border, padding, and background cleanly */
+.print-split-bg,
+.print-card,
+.print-chapter-banner {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
 @page {
   size: A4 portrait;
-  margin: 9mm 9mm 10mm 9mm;
+  margin: 8mm 8mm 9mm 8mm;
+  background-color: #fffdf5;
 }
 
 @media print {
@@ -123,6 +132,7 @@
     display: table !important;
     width: 100% !important;
     border-collapse: collapse !important;
+    background: linear-gradient(180deg, #fffbeb 0%, #fffdf5 50%, #fefce8 100%) !important;
   }
 
   .print-only-thead {
@@ -148,12 +158,31 @@
     overflow: visible !important;
     height: auto !important;
     min-height: 0 !important;
-    background: #ffffff !important;
+    background: #fffdf5 !important;
     color: #1e293b !important;
     margin: 0 !important;
     padding: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
+  }
+
+  /* When a multi-page section splits across pages, clone its borders, rounded corners, and warm parchment bg */
+  .print-split-bg {
+    background: linear-gradient(180deg, #fffbeb 0%, #fffdf7 55%, #fef9c3 100%) !important;
+    border: 2px solid #d97706 !important;
+    border-radius: 16px !important;
+    padding: 10px 12px !important;
+    -webkit-box-decoration-break: clone !important;
+    box-decoration-break: clone !important;
+  }
+
+  .print-split-bg-alt {
+    background: linear-gradient(180deg, #fefce8 0%, #fffbeb 55%, #ffedd5 100%) !important;
+    border: 2px solid #b45309 !important;
+    border-radius: 16px !important;
+    padding: 10px 12px !important;
+    -webkit-box-decoration-break: clone !important;
+    box-decoration-break: clone !important;
   }
 
   .print-page-break {
@@ -165,6 +194,8 @@
   .print-card {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    -webkit-box-decoration-break: clone !important;
+    box-decoration-break: clone !important;
   }
 
   .print-chapter-banner {
@@ -172,12 +203,20 @@
     break-inside: avoid !important;
     page-break-after: avoid !important;
     break-after: avoid !important;
+    -webkit-box-decoration-break: clone !important;
+    box-decoration-break: clone !important;
   }
 
   tr {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
+
+  a[href] {
+    text-decoration: underline !important;
+    cursor: pointer !important;
+  }
 }
+
 
 

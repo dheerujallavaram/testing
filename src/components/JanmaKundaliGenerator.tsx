@@ -670,12 +670,15 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
               <div className="text-[7.5px] sm:text-[9px] print:text-[7.2px] font-bold text-amber-300 mt-0.5 leading-tight">
                 నక్షత్రం: {chartData.nakshatraName} ({chartData.pada}వ పాదం)
               </div>
-              <div
+              <a
+                href="https://www.telugujyothisham.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 translate="no"
-                className="notranslate text-[7.5px] sm:text-[8.5px] print:text-[7px] text-amber-200 font-bold mt-0.5 pt-0.5 border-t border-amber-500/30 font-mono leading-none overflow-visible whitespace-nowrap"
+                className="notranslate text-[7.5px] sm:text-[8.5px] print:text-[7px] text-[#fde047] hover:text-white underline font-bold mt-0.5 pt-0.5 border-t border-amber-500/30 font-mono leading-none overflow-visible whitespace-nowrap block"
               >
                 www.telugujyothisham.com
-              </div>
+              </a>
             </div>
           </div>
         </div>
@@ -684,9 +687,15 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
           <span className="text-left truncate">
             ★ లగ్నం: {plateMode === 'D1' ? chartData.lagna.te : chartData.navamshaLagna.te}
           </span>
-          <span translate="no" className="notranslate font-mono font-extrabold text-[#991b1b] text-center">
+          <a
+            href="https://www.telugujyothisham.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            translate="no"
+            className="notranslate font-mono font-extrabold text-[#991b1b] hover:text-[#78350f] underline text-center"
+          >
             www.telugujyothisham.com
-          </span>
+          </a>
           <span className="text-right truncate">
             ☽ రాశి: {chartData.rashi.te} · ☉ {chartData.planets[1]?.rashiTe || 'కర్కాటకం'}
           </span>
@@ -795,14 +804,19 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
           MASTER PRINT TABLE WITH NATIVE REPEATING THEAD & TFOOT ON EVERY PAGE
           ========================================================================== */}
       <table className="w-full border-collapse print-master-table">
-        {/* REPEATING RUNNING HEADER ON EVERY PRINTED PAGE (Name Centered in Head Section) */}
+        {/* REPEATING RUNNING HEADER ON EVERY PRINTED PAGE (Name Centered in Head Section + Direct Site Link) */}
         <thead className="print-only-thead">
           <tr>
-            <td className="pb-2">
-              <div className="grid grid-cols-3 items-center w-full border-b-2 border-[#b45309] bg-[#fffdf5] px-3 py-1.5 text-[9.5px] font-bold text-[#78350f]">
-                <span className="text-left truncate">
-                  🪷 శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం
-                </span>
+            <td className="pb-1.5">
+              <div className="grid grid-cols-3 items-center w-full border-b-2 border-[#b45309] bg-gradient-to-r from-[#fffbeb] via-[#fef3c7] to-[#fffbeb] px-3 py-1 text-[9.5px] font-bold text-[#78350f]">
+                <a
+                  href="https://www.telugujyothisham.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-left truncate text-[#78350f] underline"
+                >
+                  🪷 శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · telugujyothisham.com
+                </a>
                 <span className="text-center font-extrabold text-[#451a03] text-[10.5px] truncate">
                   బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు · జాతకులు: {name}
                 </span>
@@ -814,17 +828,30 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
           </tr>
         </thead>
 
-        {/* REPEATING RUNNING FOOTER ON EVERY PRINTED PAGE (Site Name Centered in Footer) */}
+        {/* REPEATING RUNNING FOOTER ON EVERY PRINTED PAGE (Clickable Site Link Centered in Footer) */}
         <tfoot className="print-only-tfoot">
           <tr>
-            <td className="pt-2">
-              <div className="grid grid-cols-3 items-center w-full border-t-2 border-[#b45309] bg-[#fffdf5] px-3 py-1.5 text-[9.5px] font-bold text-[#78350f]">
-                <span className="text-left truncate">
-                  శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · +91 89779 86166
-                </span>
-                <span translate="no" className="notranslate text-center font-extrabold text-[#991b1b] text-[10.5px] font-mono">
-                  🌐 www.telugujyothisham.com
-                </span>
+            <td className="pt-1.5">
+              <div className="grid grid-cols-3 items-center w-full border-t-2 border-[#b45309] bg-gradient-to-r from-[#fffbeb] via-[#fef3c7] to-[#fffbeb] px-3 py-1 text-[9.5px] font-bold text-[#78350f]">
+                <a
+                  href="https://wa.me/918977986166"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-left truncate text-[#78350f] underline"
+                >
+                  శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · వాట్సాప్: +91 89779 86166
+                </a>
+                <div className="text-center">
+                  <a
+                    href="https://www.telugujyothisham.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    translate="no"
+                    className="notranslate inline-block font-extrabold text-[#991b1b] bg-[#fef08a] px-2.5 py-0.5 rounded-full border border-[#d97706] text-[10px] font-mono underline"
+                  >
+                    🌐 https://www.telugujyothisham.com
+                  </a>
+                </div>
                 <span className="text-right truncate">
                   బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు · జాతకులు: {name}
                 </span>
@@ -836,83 +863,158 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
         <tbody className="print-master-tbody">
           <tr>
             <td className="align-top">
-              <div className="space-y-6 print:space-y-3.5">
+              <div className="space-y-6 print:space-y-2.5">
                 {/* ==========================================================================
-                    PAGE 1 MASTERPIECE: ROYAL TEMPLE JATHAKA PATRIKA BANNER + D1 & D9 KUNDALI PLATES + KUJA DOSHA
-                    (All fitted onto Page 1 with zero blank half-page gap!)
+                    PAGE 1 MASTERPIECE: GURUJI HERO PHOTO & FULL BIO + DIRECT HYPERLINKS +
+                    NATIVE DETAILS + D1 & D9 KUNDALI CHAKRAS + TRIPLE KUJA DOSHA
                     ========================================================================== */}
-                <div className="space-y-4 print:space-y-2.5">
-                  {/* Royal Temple Header Banner with Centered Name, DOB, Time, Place & Website */}
-                  <div className="rounded-3xl border-4 border-[#78350f] ring-2 ring-[#d97706] bg-gradient-to-r from-[#451a03] via-[#78350f] to-[#451a03] text-amber-100 p-4 sm:p-5 print:p-3 shadow-md print-card">
-                    {/* Top Row with Centered Astrologer / Peetham Name */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 items-center gap-1 border-b border-amber-400/40 pb-2 mb-2 text-[11px] print:text-[9.5px] font-bold text-amber-300">
+                <div className="space-y-3.5 print:space-y-2">
+                  {/* Royal Temple Header Banner with Hero Portrait, Full Guruji Details, Direct Links & Native Profile */}
+                  <div className="rounded-3xl border-4 border-[#78350f] ring-2 ring-[#d97706] bg-gradient-to-br from-[#2b0902] via-[#451a03] to-[#2b0902] text-amber-100 p-4 sm:p-5 print:p-2.5 shadow-md print-card">
+                    {/* Top Auspicious Invocation Row + Direct Clickable Site Link */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 items-center gap-1 border-b border-amber-400/40 pb-1.5 mb-2 text-[10.5px] print:text-[8.5px] font-bold text-amber-300">
                       <span className="text-center sm:text-left print:text-left truncate">
-                        || శ్రీ మహాగణాధిపతయే నమః · శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం ||
+                        || ఓం శ్రీ మహాగణాధిపతయే నమః · శ్రీ విరూపాక్ష ఆశీస్సులతో ||
                       </span>
-                      <span className="text-center font-extrabold text-[#fde047] text-xs print:text-[10.5px] truncate">
-                        బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు
+                      <span className="text-center font-extrabold text-[#fde047] text-xs print:text-[9.5px] truncate">
+                        శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · హైదరాబాద్
                       </span>
                       <div className="text-center sm:text-right print:text-right">
-                        <span translate="no" className="notranslate inline-block bg-amber-400 text-[#451a03] px-2.5 py-0.5 rounded-full font-extrabold text-[10.5px] print:text-[9px]">
-                          🌐 www.telugujyothisham.com
-                        </span>
+                        <a
+                          href="https://www.telugujyothisham.com"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          translate="no"
+                          className="notranslate inline-block bg-gradient-to-r from-amber-400 to-yellow-300 text-[#451a03] px-2.5 py-0.5 rounded-full font-extrabold text-[10px] print:text-[8.5px] underline shadow-xs"
+                        >
+                          🌐 www.telugujyothisham.com (Click to Visit)
+                        </a>
                       </div>
                     </div>
 
-                    {/* Strictly Centered Main Head Section (Astrologer Name & User Name in Center) */}
-                    <div className="text-center space-y-1 print:space-y-0.5 mb-3 print:mb-2">
-                      <div className="inline-block bg-amber-500/20 border border-amber-400/50 text-amber-200 text-xs print:text-[10px] font-bold px-3.5 py-0.5 rounded-full">
-                        బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి దృక్సిద్ధాంత జ్యోతిష విశ్లేషణ (లహిరి అయనాంశం: {chartData.ayanamsaFormatted})
+                    {/* GURUJI HERO PORTRAIT + COMPLETE CREDENTIALS + DIRECT CLICKABLE HYPERLINKS */}
+                    <div className="flex flex-col sm:flex-row print:flex-row items-center gap-3.5 print:gap-2.5 bg-black/30 border border-amber-400/50 rounded-2xl p-3 print:p-2 mb-2.5 print:mb-1.5">
+                      {/* Hero Photo */}
+                      <div className="shrink-0 text-center">
+                        <a
+                          href="https://www.telugujyothisham.com"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-24 h-24 sm:w-28 sm:h-28 print:w-18 print:h-18 rounded-full p-1 bg-gradient-to-tr from-amber-500 via-yellow-200 to-amber-600 shadow-xl mx-auto ring-2 ring-amber-300"
+                        >
+                          <img
+                            src="/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg"
+                            alt="బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు"
+                            width={112}
+                            height={112}
+                            loading="eager"
+                            decoding="sync"
+                            className="w-full h-full rounded-full object-cover object-top border border-amber-100 bg-amber-950 block"
+                          />
+                        </a>
+                        <span className="inline-block mt-1 bg-gradient-to-r from-amber-400 to-orange-400 text-[#2b0902] font-extrabold text-[9.5px] print:text-[7.5px] px-2 py-0.5 rounded-full">
+                          స్మార్త వైదిక & జ్యోతిష్య విద్వాంసులు
+                        </span>
                       </div>
-                      <h1 className="text-2xl sm:text-3xl print:text-xl font-extrabold text-[#fde047] tracking-wide leading-tight">
-                        {name} గారి సంపూర్ణ బృహత్ జాతక పత్రిక
+
+                      {/* Complete Guruji Details & Clickable Hyperlinks */}
+                      <div className="flex-1 text-center sm:text-left print:text-left space-y-1 print:space-y-0.5">
+                        <div className="text-[10.5px] print:text-[8px] font-bold text-amber-300 uppercase tracking-wider">
+                          స్మార్త వైదిక & దృక్సిద్ధాంత జ్యోతిష్య నిపుణులు · 15+ ఏళ్ల గురుపరంపర వేద సంప్రదాయం
+                        </div>
+                        <h2 className="text-lg sm:text-2xl print:text-base font-extrabold text-[#fde047] leading-tight">
+                          <a
+                            href="https://www.telugujyothisham.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:underline text-[#fde047]"
+                          >
+                            బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (Brahmasri Jallavaram Sai Dheeraj Sharma)
+                          </a>
+                        </h2>
+                        <p className="text-[11px] sm:text-xs print:text-[8.5px] text-amber-100/95 leading-snug">
+                          <strong>శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం, హైదరాబాద్:</strong> దృక్సిద్ధాంత ఖగోళ గణిత సంపూర్ణ జాతక పరిశీలన, 36 గుణాల వధూవరుల వివాహ పొంతన, వివాహ-గృహప్రవేశ సిద్ధ ముహూర్త నిర్ణయం మరియు శ్రీ చండీ, లక్ష్మీ గణపతి, సుదర్శన, రుద్ర మహా హోమ క్రతువుల నిర్వహణ.
+                        </p>
+
+                        {/* Clickable Action Links inside PDF & Screen */}
+                        <div className="pt-1 flex flex-wrap items-center justify-center sm:justify-start print:justify-start gap-2 print:gap-1.5 text-[10.5px] print:text-[8px] font-extrabold">
+                          <a
+                            href="https://www.telugujyothisham.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 print:px-2 print:py-0.5 rounded-lg bg-amber-400 text-[#2b0902] underline shadow-2xs"
+                          >
+                            🌐 వెబ్‌సైట్: https://www.telugujyothisham.com
+                          </a>
+                          <a
+                            href={whatsappConsultUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 print:px-2 print:py-0.5 rounded-lg bg-emerald-500 text-white underline shadow-2xs"
+                          >
+                            💬 వాట్సాప్: +91 89779 86166
+                          </a>
+                          <a
+                            href="tel:+918977986166"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 print:px-2 print:py-0.5 rounded-lg bg-amber-800 text-amber-100 border border-amber-400/60 underline"
+                          >
+                            📞 కాల్: +91 89779 86166
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Strictly Centered Native Horoscope Title */}
+                    <div className="text-center space-y-0.5 mb-2 print:mb-1.5">
+                      <h1 className="text-xl sm:text-2xl print:text-base font-extrabold text-[#fde047] tracking-wide leading-tight">
+                        🌟 {name} గారి సంపూర్ణ బృహత్ జాతక & కుండలి మహాగ్రంథం 🌟
                       </h1>
-                      <p className="text-xs sm:text-sm print:text-[10.5px] text-amber-200 font-semibold">
-                        జాతకుని పేరు: <strong className="text-white">{name}</strong> · పుట్టిన తేదీ: <strong className="text-white">{birthDate}</strong> · సమయం: <strong className="text-white">{birthTime}</strong> · ప్రాంతం: <strong className="text-white">{selectedCity.labelTe}</strong>
+                      <p className="text-[11px] sm:text-xs print:text-[9px] text-amber-200 font-semibold">
+                        జాతకుని పేరు: <strong className="text-white">{name}</strong> · పుట్టిన తేదీ: <strong className="text-white">{birthDate}</strong> · సమయం: <strong className="text-white">{birthTime}</strong> · జన్మ స్థలం: <strong className="text-white">{selectedCity.labelTe}</strong> · లహిరి అయనాంశం: <strong className="text-emerald-300">{chartData.ayanamsaFormatted}</strong>
                       </p>
                     </div>
 
                     {/* 8-Box Native Birth & Astrological Highlights Grid (4x2 in print) */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 print:grid-cols-4 gap-2 print:gap-1.5 text-xs">
-                      <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2 print:p-1.5 text-center">
-                        <span className="text-amber-300/90 block text-[10px] print:text-[8.5px] font-bold">👤 జాతకుని పేరు (Full Name)</span>
-                        <strong className="text-white text-sm print:text-xs font-extrabold block mt-0.5 truncate">{name}</strong>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 print:grid-cols-4 gap-1.5 print:gap-1 text-xs">
+                      <div className="bg-black/30 border border-amber-400/40 rounded-xl p-1.5 print:p-1 text-center">
+                        <span className="text-amber-300/90 block text-[9.5px] print:text-[7.5px] font-bold">👤 జాతకుని పేరు (Full Name)</span>
+                        <strong className="text-white text-xs sm:text-sm print:text-[10.5px] font-extrabold block truncate">{name}</strong>
                       </div>
-                      <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2 print:p-1.5 text-center">
-                        <span className="text-amber-300/90 block text-[10px] print:text-[8.5px] font-bold">📅 పుట్టిన తేదీ & సమయం</span>
-                        <strong className="text-white text-sm print:text-xs font-mono font-extrabold block mt-0.5">{birthDate} · {birthTime}</strong>
+                      <div className="bg-black/30 border border-amber-400/40 rounded-xl p-1.5 print:p-1 text-center">
+                        <span className="text-amber-300/90 block text-[9.5px] print:text-[7.5px] font-bold">📅 పుట్టిన తేదీ & సమయం</span>
+                        <strong className="text-white text-xs sm:text-sm print:text-[10.5px] font-mono font-extrabold block">{birthDate} · {birthTime}</strong>
                       </div>
-                      <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2 print:p-1.5 text-center">
-                        <span className="text-amber-300/90 block text-[10px] print:text-[8.5px] font-bold">📍 జన్మ స్థలం (Place)</span>
-                        <strong className="text-white text-sm print:text-xs font-extrabold block mt-0.5 truncate">{selectedCity.labelTe.split(' (')[0]}</strong>
+                      <div className="bg-black/30 border border-amber-400/40 rounded-xl p-1.5 print:p-1 text-center">
+                        <span className="text-amber-300/90 block text-[9.5px] print:text-[7.5px] font-bold">📍 జన్మ స్థలం (Place)</span>
+                        <strong className="text-white text-xs sm:text-sm print:text-[10.5px] font-extrabold block truncate">{selectedCity.labelTe.split(' (')[0]}</strong>
                       </div>
-                      <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2 print:p-1.5 text-center">
-                        <span className="text-amber-300/90 block text-[10px] print:text-[8.5px] font-bold">🌅 లగ్నం & నవాంశ (D1/D9)</span>
-                        <strong className="text-[#fde047] text-sm print:text-xs font-extrabold block mt-0.5 truncate">
+                      <div className="bg-black/30 border border-amber-400/40 rounded-xl p-1.5 print:p-1 text-center">
+                        <span className="text-amber-300/90 block text-[9.5px] print:text-[7.5px] font-bold">🌅 లగ్నం & నవాంశ (D1/D9)</span>
+                        <strong className="text-[#fde047] text-xs sm:text-sm print:text-[10.5px] font-extrabold block truncate">
                           {chartData.lagna.te} / {chartData.navamshaLagna.te}
                         </strong>
                       </div>
-                      <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2 print:p-1.5 text-center">
-                        <span className="text-amber-300/90 block text-[10px] print:text-[8.5px] font-bold">☽ జన్మ రాశి (Moon Sign)</span>
-                        <strong className="text-emerald-300 text-sm print:text-xs font-extrabold block mt-0.5 truncate">
+                      <div className="bg-black/30 border border-amber-400/40 rounded-xl p-1.5 print:p-1 text-center">
+                        <span className="text-amber-300/90 block text-[9.5px] print:text-[7.5px] font-bold">☽ జన్మ రాశి (Moon Sign)</span>
+                        <strong className="text-emerald-300 text-xs sm:text-sm print:text-[10.5px] font-extrabold block truncate">
                           {chartData.rashi.te} ({chartData.rashi.en})
                         </strong>
                       </div>
-                      <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2 print:p-1.5 text-center">
-                        <span className="text-amber-300/90 block text-[10px] print:text-[8.5px] font-bold">☉ సూర్య రాశి (Sun Sign)</span>
-                        <strong className="text-orange-300 text-sm print:text-xs font-extrabold block mt-0.5 truncate">
+                      <div className="bg-black/30 border border-amber-400/40 rounded-xl p-1.5 print:p-1 text-center">
+                        <span className="text-amber-300/90 block text-[9.5px] print:text-[7.5px] font-bold">☉ సూర్య రాశి (Sun Sign)</span>
+                        <strong className="text-orange-300 text-xs sm:text-sm print:text-[10.5px] font-extrabold block truncate">
                           {chartData.planets[1]?.rashiTe || 'కర్కాటకం'} ({chartData.planets[1]?.rashiEn || 'Cancer'})
                         </strong>
                       </div>
-                      <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2 print:p-1.5 text-center">
-                        <span className="text-amber-300/90 block text-[10px] print:text-[8.5px] font-bold">⭐ జన్మ నక్షత్రం & పాదం</span>
-                        <strong className="text-white text-sm print:text-xs font-extrabold block mt-0.5 truncate">
+                      <div className="bg-black/30 border border-amber-400/40 rounded-xl p-1.5 print:p-1 text-center">
+                        <span className="text-amber-300/90 block text-[9.5px] print:text-[7.5px] font-bold">⭐ జన్మ నక్షత్రం & పాదం</span>
+                        <strong className="text-white text-xs sm:text-sm print:text-[10.5px] font-extrabold block truncate">
                           {chartData.nakshatraName} — {chartData.pada}వ పాదం
                         </strong>
                       </div>
-                      <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2 print:p-1.5 text-center">
-                        <span className="text-amber-300/90 block text-[10px] print:text-[8.5px] font-bold">⏳ ప్రస్తుత దశ (Current Dasha)</span>
-                        <strong className="text-[#fde047] text-xs print:text-[10.5px] font-extrabold block mt-0.5 truncate">
+                      <div className="bg-black/30 border border-amber-400/40 rounded-xl p-1.5 print:p-1 text-center">
+                        <span className="text-amber-300/90 block text-[9.5px] print:text-[7.5px] font-bold">⏳ ప్రస్తుత దశ (Current Dasha)</span>
+                        <strong className="text-[#fde047] text-[11px] print:text-[9.5px] font-extrabold block truncate">
                           {predictions.dashaInfo.currentMahadasha.lordTe} – {predictions.dashaInfo.currentAntardasha.lordTe}
                         </strong>
                       </div>
@@ -920,36 +1022,33 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
                   </div>
 
                   {/* Illuminated D1 Rashi & D9 Navamsha Royal Kundali Image Plates Side-by-Side (Fits on Page 1!) */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 print:grid-cols-2 gap-4 print:gap-3 items-start print-card">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 print:grid-cols-2 gap-4 print:gap-2.5 items-start print-card">
                     {renderRoyalKundaliImagePlate('D1')}
                     {renderRoyalKundaliImagePlate('D9')}
                   </div>
 
                   {/* Triple Reference Kuja Dosha Verification (Lagna, Moon, Venus) (Fits at bottom of Page 1!) */}
-                  <div className="bg-amber-50/95 rounded-2xl p-3.5 print:p-2.5 border-2 border-amber-400 shadow-2xs print-card">
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-                      <strong className="text-sm sm:text-base print:text-xs font-extrabold text-amber-950 flex items-center gap-1.5">
-                        <ShieldCheck size={16} className="text-amber-800" />
+                  <div className="bg-amber-50/95 rounded-2xl p-3 print:p-2 border-2 border-amber-400 shadow-2xs print-card">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+                      <strong className="text-xs sm:text-sm print:text-[10.5px] font-extrabold text-amber-950 flex items-center gap-1.5">
+                        <ShieldCheck size={15} className="text-amber-800" />
                         <span>త్రివిధ కుజ దోష సమగ్ర పరిశీలన (Lagna · Chandra Lagna · Shukra Lagna):</span>
                       </strong>
-                      <span className="text-xs print:text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-900 text-amber-100">
+                      <span className="text-[11px] print:text-[9.5px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-900 text-amber-100">
                         {predictions.tripleKuja.summaryTitleTe}
                       </span>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-2 print:gap-1.5 text-xs print:text-[10px] mt-1">
-                      <div className={`p-2 print:p-1.5 rounded-xl border font-bold ${predictions.tripleKuja.fromLagna.hasDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-2 print:gap-1.5 text-xs print:text-[9.5px]">
+                      <div className={`p-1.5 print:p-1 rounded-xl border font-bold ${predictions.tripleKuja.fromLagna.hasDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
                         1. లగ్నం నుండి: {predictions.tripleKuja.fromLagna.house}వ స్థానం — {predictions.tripleKuja.fromLagna.hasDosha ? 'కుజ దోష స్థానం' : 'కుజ దోషం లేదు'}
                       </div>
-                      <div className={`p-2 print:p-1.5 rounded-xl border font-bold ${predictions.tripleKuja.fromChandra.hasDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
+                      <div className={`p-1.5 print:p-1 rounded-xl border font-bold ${predictions.tripleKuja.fromChandra.hasDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
                         2. చంద్ర లగ్నం నుండి: {predictions.tripleKuja.fromChandra.house}వ స్థానం — {predictions.tripleKuja.fromChandra.hasDosha ? 'పాక్షిక కుజ దోష స్థితి' : 'కుజ దోషం లేదు'}
                       </div>
-                      <div className={`p-2 print:p-1.5 rounded-xl border font-bold ${predictions.tripleKuja.fromShukra.hasDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
+                      <div className={`p-1.5 print:p-1 rounded-xl border font-bold ${predictions.tripleKuja.fromShukra.hasDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
                         3. శుక్ర లగ్నం నుండి: {predictions.tripleKuja.fromShukra.house}వ స్థానం — {predictions.tripleKuja.fromShukra.hasDosha ? 'పాక్షిక కుజ దోష స్థితి' : 'కుజ దోషం లేదు'}
                       </div>
                     </div>
-                    <p className="text-xs print:text-[10px] text-slate-700 mt-1.5 leading-snug">
-                      {predictions.tripleKuja.recommendedRemedyTe}
-                    </p>
                   </div>
                 </div>
 
@@ -1066,7 +1165,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       {/* ==========================================================================
           BRIHAT JATHAKA GRANTHAM (COMPLETE 10-CHAPTER HOROSCOPE REPORT)
           ========================================================================== */}
-      <div className="bg-white rounded-3xl p-4 sm:p-7 print:p-4 border-2 border-amber-300/90 shadow-xs space-y-6 print:space-y-4">
+      <div className="bg-white rounded-3xl p-4 sm:p-7 print:p-4 border-2 border-amber-300/90 shadow-xs space-y-6 print:space-y-4 print-split-bg">
         {/* Header Bar (Centered in Print with Astrologer Name & User Name) */}
         <div className="flex flex-col lg:flex-row print:flex-col lg:items-center print:items-center justify-between gap-4 border-b border-amber-200 pb-5 print:pb-3 print:text-center print-chapter-banner">
           <div className="print:w-full print:text-center">
@@ -1999,9 +2098,14 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
                       <p className="text-xs text-emerald-100 mt-1">
                         {t('తెలుగు జ్యోతిషం (Telugu Jyothisham)', 'Telugu Jyothisham · Vedic Astrology')}
                       </p>
-                      <p className="text-[11px] font-mono text-amber-300 mt-1 font-bold">
-                        🌐 www.telugujyothisham.com
-                      </p>
+                      <a
+                        href="https://www.telugujyothisham.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-mono text-amber-300 hover:text-white underline mt-1 font-bold block"
+                      >
+                        🌐 https://www.telugujyothisham.com
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -2022,7 +2126,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       </div>
 
       {/* Full-Width 120-Year Vimshottari Mahadasha & Antardasha Breakdown */}
-      <div className="bg-white rounded-3xl p-4 sm:p-6 print:p-4 border-2 border-amber-300 shadow-2xs space-y-4">
+      <div className="bg-white rounded-3xl p-4 sm:p-6 print:p-4 border-2 border-amber-300 shadow-2xs space-y-4 print-split-bg-alt">
         <div className="flex flex-wrap items-center justify-between gap-2 print-chapter-banner">
           <div>
             <h4 className="text-base sm:text-lg font-extrabold text-amber-950 flex items-center gap-2">
@@ -2085,37 +2189,57 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
               || శుభం భూయాత్ · సర్వే జనాః సుఖినో భవంతు ||
             </span>
             <h5 className="text-base sm:text-lg font-extrabold text-[#451a03]">
-              బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు
+              <a
+                href="https://www.telugujyothisham.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#451a03] hover:underline"
+              >
+                బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు
+              </a>
             </h5>
             <p className="text-xs font-bold text-[#78350f]">
-              శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · సంప్రదింపులకు: +91 89779 86166
+              శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · సంప్రదింపులకు:{' '}
+              <a
+                href={whatsappConsultUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-[#991b1b]"
+              >
+                వాట్సాప్ / ఫోన్: +91 89779 86166
+              </a>
             </p>
             <p className="text-[11px] text-slate-700">
               సాంప్రదాయ దృక్సిద్ధాంత జ్యోతిష విశ్లేషణ · వ్యక్తిగత గోప్యతా నిబంధనలకు (DPDP Act 2023) లోబడి రూపొందించబడింది.
             </p>
           </div>
-          <div className="text-center shrink-0 bg-[#451a03] text-amber-100 px-4 py-3 rounded-xl border border-amber-400">
-            <span className="text-[10px] text-amber-300 font-bold block">అధికారిక వెబ్‌సైట్</span>
-            <strong translate="no" className="notranslate text-sm sm:text-base font-mono font-extrabold text-[#fde047] block mt-0.5">
-              🌐 www.telugujyothisham.com
+          <a
+            href="https://www.telugujyothisham.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-center shrink-0 bg-[#451a03] hover:bg-[#5c2305] text-amber-100 px-4 py-3 rounded-xl border border-amber-400 block transition-colors"
+          >
+            <span className="text-[10px] text-amber-300 font-bold block">అధికారిక వెబ్‌సైట్ (Click to Open)</span>
+            <strong translate="no" className="notranslate text-sm sm:text-base font-mono font-extrabold text-[#fde047] underline block mt-0.5">
+              🌐 https://www.telugujyothisham.com
             </strong>
             <span className="text-[10px] text-emerald-300 font-bold block mt-0.5">
               ఉచిత తెలుగు జాతకం & పంచాంగం
             </span>
-          </div>
+          </a>
         </div>
 
         <a
           href={whatsappConsultUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-sm shadow-sm transition-colors no-print"
+          className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 print:py-2 rounded-2xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-sm print:text-xs shadow-sm transition-colors underline print-card"
         >
           <MessageCircle size={18} />
           <span>
             {t(
-              'ఈ జన్మ కుండలిని ధీరజ్ శర్మ గారికి వాట్సాప్ పంపి వ్యక్తిగత జాతక పరిశీలన పొందండి',
-              'Send Kundali to Sri Dheeraj Sharma on WhatsApp for Personal Consultation'
+              'ఈ జన్మ కుండలిని ధీరజ్ శర్మ గారికి వాట్సాప్ పంపి వ్యక్తిగత జాతక పరిశీలన పొందండి (+91 89779 86166)',
+              'Send Kundali to Sri Dheeraj Sharma on WhatsApp for Personal Consultation (+91 89779 86166)'
             )}
           </span>
         </a>
