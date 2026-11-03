@@ -417,10 +417,25 @@ export function generateSaptamaMarriageAnalysis(
     [0, 4, 6, 8].includes((mars.rashiIdx - jupiter.rashiIdx + 12) % 12);
   const marsInGemini = mars && mars.rashiIdx === 2;
 
-  let kujaDoshaPercentage = 0;
-  if (hasLagnaKuja) kujaDoshaPercentage += 40;
-  if (hasMoonKuja) kujaDoshaPercentage += 40;
-  if (hasVenusKuja) kujaDoshaPercentage += 20;
+  const getDoshaSeverity = (house: number) => {
+    if (!doshaHouses.includes(house)) return 0;
+    if (house === 7 || house === 8) return 100;
+    if (house === 4) return 85;
+    if (house === 2) return 75;
+    if (house === 1) return 60;
+    if (house === 12) return 50;
+    return 0;
+  };
+
+  const lagnaSev = getDoshaSeverity(marsHouseFromLagna);
+  const chandraSev = getDoshaSeverity(marsHouseFromMoon);
+  const shukraSev = getDoshaSeverity(marsHouseFromVenus);
+
+  let rawKujaScore = lagnaSev * 0.4 + chandraSev * 0.4 + shukraSev * 0.2;
+  if (jupiterAspectsMars || marsInGemini) {
+    rawKujaScore *= 0.6;
+  }
+  let kujaDoshaPercentage = Math.round(rawKujaScore);
 
   let kujaDoshaTitleTe = '';
   let kujaDoshaTitleEn = '';
@@ -433,11 +448,7 @@ export function generateSaptamaMarriageAnalysis(
     kujaDoshaExplanationTe = `లగ్నం (${marsHouseFromLagna}వ ఇల్లు), చంద్రుడు (${marsHouseFromMoon}వ ఇల్లు) మరియు శుక్రుని నుండి కుజుడు దోష స్థానాలలో లేనందున కుజ దోషం లేదు.`;
     kujaDoshaExplanationEn = 'Mars occupies non-afflicting houses from Lagna, Moon, and Venus.';
   } else {
-    // Apply classical mitigations
-    let finalPct = kujaDoshaPercentage;
-    if (jupiterAspectsMars || marsInGemini) {
-      finalPct = Math.round(finalPct * 0.6);
-    }
+    const finalPct = kujaDoshaPercentage;
 
     kujaDoshaTitleTe = hasMoonKuja && !hasLagnaKuja
       ? `చంద్ర లగ్న కుజ ప్రభావం (${finalPct}% — అష్టమ కుజుడు / పరిహార సహితం)`

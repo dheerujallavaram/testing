@@ -213,7 +213,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
       const houseNumber = ((rIdx - lagnaRashiIdx + 12) % 12) + 1;
 
       return `
-        <td style="width:25%;height:105px;vertical-align:top;padding:6px 8px;border:2px solid #854d0e;background:${
+        <td style="width:25%;height:110px;vertical-align:top;padding:5px 6px;border:2px solid #854d0e;background:${
           isLagnaCell
             ? 'linear-gradient(180deg, #fef08a 0%, #fde68a 100%)'
             : isMoonCell
@@ -221,26 +221,26 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
             : '#ffffff'
         };box-sizing:border-box;position:relative;">
           <!-- Cell Header: Rashi Name + House Number Badge -->
-          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed #d97706;padding-bottom:3px;margin-bottom:4px;">
-            <span style="font-family:'Noto Serif Telugu', Georgia, serif;font-size:12px;font-weight:800;color:#78350f;">
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed #d97706;padding-bottom:2px;margin-bottom:3px;">
+            <span style="font-family:'Noto Serif Telugu', Georgia, serif;font-size:11px;font-weight:800;color:#78350f;">
               ${RASHI_NAMES_TE[rIdx]}
             </span>
-            <span style="font-size:10px;font-weight:700;color:${isLagnaCell ? '#991b1b' : '#854d0e'};background:${isLagnaCell ? '#fee2e2' : '#fef3c7'};padding:1px 5px;border-radius:4px;border:0.5px solid #d97706;">
+            <span style="font-size:9px;font-weight:700;color:${isLagnaCell ? '#991b1b' : '#854d0e'};background:${isLagnaCell ? '#fee2e2' : '#fef3c7'};padding:1px 4px;border-radius:4px;border:0.5px solid #d97706;">
               ${houseNumber}వ ఇల్లు
             </span>
           </div>
 
           <!-- Special Status Badges -->
-          <div style="display:flex;flex-wrap:wrap;gap:2px;margin-bottom:3px;">
-            ${isLagnaCell ? '<span style="font-size:9.5px;font-weight:800;background:#991b1b;color:#ffffff;padding:1px 5px;border-radius:3px;">★ జన్మ లగ్నం</span>' : ''}
-            ${isMoonCell ? '<span style="font-size:9.5px;font-weight:800;background:#047857;color:#ffffff;padding:1px 5px;border-radius:3px;">☽ జన్మ రాశి</span>' : ''}
-            ${isSunCell ? '<span style="font-size:9.5px;font-weight:800;background:#b45309;color:#ffffff;padding:1px 5px;border-radius:3px;">☀️ సూర్యుడు</span>' : ''}
+          <div style="display:flex;flex-wrap:wrap;gap:2px;margin-bottom:2px;">
+            ${isLagnaCell ? '<span style="font-size:8.5px;font-weight:800;background:#991b1b;color:#ffffff;padding:1px 4px;border-radius:3px;">★ జన్మ లగ్నం</span>' : ''}
+            ${isMoonCell ? '<span style="font-size:8.5px;font-weight:800;background:#047857;color:#ffffff;padding:1px 4px;border-radius:3px;">☽ జన్మ రాశి</span>' : ''}
+            ${isSunCell ? '<span style="font-size:8.5px;font-weight:800;background:#b45309;color:#ffffff;padding:1px 4px;border-radius:3px;">☀️ సూర్యుడు</span>' : ''}
           </div>
 
           <!-- Occupant Planets with Degrees & Status -->
-          <div style="font-family:'Noto Sans Telugu', sans-serif;font-size:12px;font-weight:800;color:#1e293b;line-height:1.45;">
+          <div style="font-family:'Noto Sans Telugu', sans-serif;font-size:11px;font-weight:800;color:#1e293b;line-height:1.35;">
             ${pls.length === 0
-              ? '<span style="font-size:10px;color:#94a3b8;font-weight:normal;font-style:italic;">గ్రహాలు లేవు</span>'
+              ? '<span style="font-size:9.5px;color:#94a3b8;font-weight:normal;font-style:italic;">గ్రహాలు లేవు</span>'
               : pls
                   .map((p) => {
                     const dign = dignities.find((d) => d.nameTe === p.nameTe);
@@ -249,13 +249,13 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
                     const isUcha = dign?.dignityCode === 'ucha';
                     const isNeecha = dign?.dignityCode === 'neecha';
 
-                    return `<div style="display:inline-block;margin-right:6px;margin-bottom:2px;">
+                    return `<div style="display:inline-block;margin-right:5px;margin-bottom:2px;">
                       <span style="color:#0f172a;">${p.nameTe}</span>
-                      ${isRetro ? '<span style="color:#dc2626;font-size:10px;font-weight:bold;">(వ)</span>' : ''}
-                      ${isCombust ? '<span style="color:#c2410c;font-size:9px;font-weight:bold;">(అస్తం)</span>' : ''}
-                      ${isUcha ? '<span style="color:#15803d;font-size:9px;font-weight:bold;">(ఉచ్చ)</span>' : ''}
-                      ${isNeecha ? '<span style="color:#b91c1c;font-size:9px;font-weight:bold;">(నీచ)</span>' : ''}
-                      ${p.degreeFormatted ? `<span style="font-size:9.5px;color:#64748b;font-weight:normal;font-family:monospace;margin-left:2px;">${p.degreeFormatted}</span>` : ''}
+                      ${isRetro ? '<span style="color:#dc2626;font-size:9.5px;font-weight:bold;">(వ)</span>' : ''}
+                      ${isCombust ? '<span style="color:#c2410c;font-size:8.5px;font-weight:bold;">(అస్తం)</span>' : ''}
+                      ${isUcha ? '<span style="color:#15803d;font-size:8.5px;font-weight:bold;">(ఉచ్చ)</span>' : ''}
+                      ${isNeecha ? '<span style="color:#b91c1c;font-size:8.5px;font-weight:bold;">(నీచ)</span>' : ''}
+                      ${p.degreeFormatted ? `<span translate="no" class="notranslate" style="font-size:9px;color:#64748b;font-weight:normal;font-family:monospace;margin-left:2px;">${p.degreeFormatted}</span>` : ''}
                     </div>`;
                   })
                   .join('')
@@ -266,9 +266,9 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
     };
 
     return `
-      <div style="margin:16px auto;max-width:690px;border:4px solid #78350f;outline:2px solid #d97706;border-radius:14px;background:#fffdf5;padding:6px;box-shadow:0 6px 18px rgba(120,53,15,0.14);page-break-inside:avoid;break-inside:avoid;">
-        <div style="border:2px solid #b45309;border-radius:10px;overflow:hidden;background:#fffdf5;">
-          <table style="width:100%;border-collapse:collapse;table-layout:fixed;background:#fffdf5;">
+      <div style="margin:14px auto;width:456px;max-width:100%;border:4px solid #78350f;outline:2px solid #d97706;border-radius:14px;background:#fffdf5;padding:6px;box-shadow:0 6px 18px rgba(120,53,15,0.14);page-break-inside:avoid;break-inside:avoid;">
+        <div style="border:2px solid #b45309;border-radius:10px;overflow:visible;background:#fffdf5;">
+          <table style="width:440px;height:440px;aspect-ratio:1/1;margin:0 auto;border-collapse:collapse;table-layout:fixed;background:#fffdf5;">
             <tr>
               ${cellHtml(11)}
               ${cellHtml(0)}
@@ -278,28 +278,31 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
             <tr>
               ${cellHtml(10)}
               <!-- Brahmasthanam (Center Sanctum Plate) -->
-              <td colspan="2" rowspan="2" style="background:linear-gradient(135deg, #451a03 0%, #240801 100%);color:#fef3c7;text-align:center;padding:12px 10px;border:2.5px solid #d97706;box-shadow:inset 0 0 16px rgba(0,0,0,0.6);">
-                <div style="font-family:'Noto Serif Telugu', Georgia, serif;font-size:11px;font-weight:bold;color:#fcd34d;letter-spacing:1px;margin-bottom:2px;">
+              <td colspan="2" rowspan="2" style="background:linear-gradient(135deg, #451a03 0%, #240801 100%);color:#fef3c7;text-align:center;padding:8px 6px;border:2.5px solid #d97706;box-shadow:inset 0 0 16px rgba(0,0,0,0.6);overflow:visible;">
+                <div style="font-family:'Noto Serif Telugu', Georgia, serif;font-size:10px;font-weight:bold;color:#fcd34d;letter-spacing:0.5px;margin-bottom:2px;">
                   ॥ శ్రీ మహాగణాధిపతయే నమః ॥
                 </div>
-                <div style="font-size:11px;color:#fde68a;font-weight:700;">
+                <div style="font-size:10px;color:#fde68a;font-weight:700;">
                   శ్రీ లక్ష్మీ గణపతి జ్యోతిషాలయం · దృక్సిద్ధాంతం
                 </div>
                 <!-- Golden Title Ribbon -->
-                <div style="display:inline-block;background:linear-gradient(90deg, #b45309 0%, #f59e0b 50%, #b45309 100%);color:#451a03;font-family:'Noto Serif Telugu', serif;font-size:16px;font-weight:900;padding:3px 18px;border-radius:6px;margin:6px 0;box-shadow:0 2px 6px rgba(0,0,0,0.3);letter-spacing:0.5px;">
+                <div style="display:inline-block;background:linear-gradient(90deg, #b45309 0%, #f59e0b 50%, #b45309 100%);color:#451a03;font-family:'Noto Serif Telugu', serif;font-size:13px;font-weight:900;padding:2px 12px;border-radius:6px;margin:4px 0;box-shadow:0 2px 6px rgba(0,0,0,0.3);">
                   ★ ${chartTitle} ★
                 </div>
-                <div style="font-size:13px;font-weight:800;color:#ffffff;margin-top:2px;">
+                <div style="font-size:12px;font-weight:800;color:#ffffff;margin-top:2px;">
                   ${name} గారి జన్మ జాతక పత్రిక
                 </div>
-                <div style="font-size:11px;color:#fcd34d;font-family:monospace;margin-top:2px;">
+                <div style="font-size:10px;color:#fcd34d;font-family:monospace;margin-top:2px;">
                   ${birthDate} · ${birthTime} (${cityName})
                 </div>
-                <div style="font-size:11.5px;color:#86efac;font-weight:bold;margin-top:4px;border-top:1px dashed #d97706;padding-top:4px;">
+                <div style="font-size:10.5px;color:#86efac;font-weight:bold;margin-top:3px;border-top:1px dashed #d97706;padding-top:3px;">
                   లగ్నం: ${chartData.lagna.te} · రాశి: ${chartData.rashi.te} (${chartData.nakshatraName} ${chartData.pada})
                 </div>
-                <div style="font-size:10px;color:#fef3c7;margin-top:2px;">
+                <div style="font-size:9.5px;color:#fef3c7;margin-top:2px;">
                   ${subBadge || 'లహిరి అయనాంశం: ' + chartData.ayanamsaFormatted}
+                </div>
+                <div translate="no" class="notranslate" style="font-size:9px;color:#fde68a;font-family:monospace;font-weight:bold;margin-top:3px;padding-top:2px;border-top:1px solid rgba(245,158,11,0.3);overflow:visible;white-space:nowrap;">
+                  ${siteUrl}
                 </div>
               </td>
               ${cellHtml(3)}
@@ -318,7 +321,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px 2px 8px;font-size:10px;color:#78350f;font-weight:bold;">
           <span>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు · +91 89779 86166</span>
-          <span>${siteUrl}</span>
+          <span translate="no" class="notranslate">${siteUrl}</span>
         </div>
       </div>
     `;
@@ -761,7 +764,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
                   ${d.isCombust ? '<span style="color:#c2410c;font-size:9.5px;font-weight:bold;">(అస్తం)</span>' : ''}
                 </td>
                 <td style="font-weight:bold;">${d.rashiTe}</td>
-                <td style="font-family:monospace;font-weight:bold;color:#92400e;">${d.degreeFormatted}</td>
+                <td translate="no" dir="ltr" class="notranslate" style="font-family:monospace;font-weight:bold;color:#92400e;white-space:nowrap;">${d.degreeFormatted}</td>
                 <td>${d.nakshatraTe} (${d.pada}వ పాదం)</td>
                 <td style="font-weight:bold;color:#047857;">${d.navamshaRashiTe}</td>
                 <td><span class="badge ${badgeClass}">${d.dignityTe}</span></td>
@@ -1003,7 +1006,7 @@ export function buildComprehensiveJathakaPdfHtml(options: GenerateReportOptions)
           .map((item) => `
             <div class="section-card">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                <strong style="font-size:13px;color:#451a03;">${item.planetTe} — ${item.rashiTe} (${item.elementTe})</strong>
+                <strong style="font-size:13px;color:#451a03;">${item.planetTe} — ${item.rashiTe} · ${item.elementTe}</strong>
                 <span class="badge ${item.tier === 'best' ? 'badge-green' : item.tier === 'second' ? 'badge-gold' : 'badge-purple'}">
                   ${item.tierLabelTe}
                 </span>

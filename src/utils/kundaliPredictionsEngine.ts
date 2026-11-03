@@ -602,6 +602,27 @@ const ELEMENT_PAIR_DYNAMICS: Record<string, {
   },
 };
 
+function stripTrailingPeriod(str: string): string {
+  return str.trim().replace(/\.+$/, '');
+}
+
+export function toPlanetStemTe(planetTe: string): string {
+  const clean = planetTe.trim();
+  const map: Record<string, string> = {
+    'సూర్యుడు': 'సూర్య',
+    'చంద్రుడు': 'చంద్ర',
+    'కుజుడు': 'కుజ',
+    'బుధుడు': 'బుధ',
+    'గురువు': 'గురు',
+    'గురుడు': 'గురు',
+    'శుక్రుడు': 'శుక్ర',
+    'శని': 'శని',
+    'రాహువు': 'రాహు',
+    'కేతువు': 'కేతు',
+  };
+  return map[clean] || clean.replace(/(డు|వు)$/, '');
+}
+
 export function generateLagnaCompleteProfile(
   planets: KundaliPlanetDetail[],
   lagnaRashiIdx: number
@@ -621,6 +642,11 @@ export function generateLagnaCompleteProfile(
   const lagnaLordHouse = ((lagnaLord.rashiIdx - idx + 12) % 12) + 1;
   const bhavaMeta = BHAVA_NAMES_12[lagnaLordHouse - 1];
 
+  const cleanMoonStrengthTe = stripTrailingPeriod(moonCore.strengthTe);
+  const cleanMoonWeaknessTe = stripTrailingPeriod(moonCore.weaknessTe);
+  const cleanMoonStrengthEn = stripTrailingPeriod(moonCore.strengthEn);
+  const cleanMoonWeaknessEn = stripTrailingPeriod(moonCore.weaknessEn);
+
   return {
     lagnaRashiTe: meta.te,
     lagnaRashiEn: meta.en,
@@ -631,12 +657,12 @@ export function generateLagnaCompleteProfile(
     lagnaLordRashiEn: lagnaLord.rashiEn,
     elementTe: ELEMENT_META[element].te,
     elementEn: ELEMENT_META[element].en,
-    dehaSwabhavamTe: `మీ జన్మ లగ్నం ${meta.te} (${ELEMENT_META[element].te}). లగ్నాధిపతి అయిన ${meta.lordTe} ప్రభావం వల్ల మీ భౌతిక వర్చస్సులో ఆకర్షణ, నడవడికలో హుందాతనం మరియు కార్యదీక్ష స్పష్టంగా కనిపిస్తాయి. ${sunCore.consciousDriveTe}`,
-    dehaSwabhavamEn: `Your Ascendant (Lagna) is ${meta.en} (${ELEMENT_META[element].en}), ruled by ${meta.lordEn}. This endows your physical constitution and outward bearing with dignity and purpose. ${sunCore.consciousDriveEn}`,
-    manoSwabhavamTe: `జన్మ రాశి ${moonPlanet.rashiTe} స్వభావం రీత్యా మీరు ${moonCore.strengthTe} కలిగి ఉంటారు. అయితే ${moonCore.weaknessTe} విషయంలో జాగ్రత్త వహించడం వల్ల జీవితంలో ప్రతి అడుగులోనూ విజయం లభిస్తుంది.`,
-    manoSwabhavamEn: `With natal Moon in ${moonPlanet.rashiEn}, your natural strengths include ${moonCore.strengthEn.toLowerCase()}, while mindfulness around ${moonCore.weaknessEn.toLowerCase()} ensures smooth progress.`,
-    lagnaLordEffectTe: `మీ లగ్నాధిపతి అయిన ${meta.lordTe} కుండలిలో ${lagnaLordHouse}వ స్థానంలో (${bhavaMeta.te} — ${lagnaLord.rashiTe} రాశిలో) స్థితి పొంది ఉన్నాడు. దీనివల్ల మీ జీవిత శక్తి, ఆలోచనలు మరియు అదృష్టం ప్రధానంగా "${bhavaMeta.signifTe}" రంగాల చుట్టూ కేంద్రీకృతమై ఉంటాయి. స్వశక్తితో ఈ రంగాలలో ఉన్నత స్థానానికి చేరుకుంటారు.`,
-    lagnaLordEffectEn: `Your Ascendant Lord ${meta.lordEn} is placed in the ${lagnaLordHouse}th House (${bhavaMeta.en} in ${lagnaLord.rashiEn}). Consequently, your life force and destiny strongly revolve around ${bhavaMeta.signifEn.toLowerCase()}, bringing distinction in these areas.`,
+    dehaSwabhavamTe: `మీ జన్మ లగ్నం ${meta.te} — ${ELEMENT_META[element].te}. లగ్నాధిపతి అయిన ${meta.lordTe} ప్రభావం వల్ల మీ భౌతిక వర్చస్సులో ఆకర్షణ, నడవడికలో హుందాతనం మరియు కార్యదీక్ష స్పష్టంగా కనిపిస్తాయి. ${sunCore.consciousDriveTe}`,
+    dehaSwabhavamEn: `Your Ascendant (Lagna) is ${meta.en} — ${ELEMENT_META[element].en}, ruled by ${meta.lordEn}. This endows your physical constitution and outward bearing with dignity and purpose. ${sunCore.consciousDriveEn}`,
+    manoSwabhavamTe: `జన్మ రాశి ${moonPlanet.rashiTe} స్వభావం రీత్యా మీరు ${cleanMoonStrengthTe} కలిగి ఉంటారు. అయితే ${cleanMoonWeaknessTe} విషయంలో జాగ్రత్త వహించడం వల్ల జీవితంలో ప్రతి అడుగులోనూ విజయం లభిస్తుంది.`,
+    manoSwabhavamEn: `With natal Moon in ${moonPlanet.rashiEn}, your natural strengths include ${cleanMoonStrengthEn.toLowerCase()}, while mindfulness around ${cleanMoonWeaknessEn.toLowerCase()} ensures smooth progress.`,
+    lagnaLordEffectTe: `మీ లగ్నాధిపతి అయిన ${meta.lordTe} కుండలిలో ${bhavaMeta.te}లో (${lagnaLord.rashiTe} రాశిలో) స్థితి పొంది ఉన్నాడు. దీనివల్ల మీ జీవిత శక్తి, ఆలోచనలు మరియు అదృష్టం ప్రధానంగా "${bhavaMeta.signifTe}" రంగాల చుట్టూ కేంద్రీకృతమై ఉంటాయి. స్వశక్తితో ఈ రంగాలలో ఉన్నత స్థానానికి చేరుకుంటారు.`,
+    lagnaLordEffectEn: `Your Ascendant Lord ${meta.lordEn} is placed in the ${bhavaMeta.en} (in ${lagnaLord.rashiEn}). Consequently, your life force and destiny strongly revolve around ${bhavaMeta.signifEn.toLowerCase()}, bringing distinction in these areas.`,
     lifeMissionTe: `జీవిత లక్ష్యం & అనుకూల మార్గాలు: ${sunCore.vocationTe} ${moonCore.spiritualPathTe}`,
     lifeMissionEn: `Life Vocation & Spiritual Alignment: ${sunCore.vocationEn} ${moonCore.spiritualPathEn}`,
   };
@@ -662,6 +688,11 @@ export function getSunMoonCombination144(
     ELEMENT_PAIR_DYNAMICS[pairKey2] ||
     ELEMENT_PAIR_DYNAMICS['fire-earth'];
 
+  const cleanStrengthTe = stripTrailingPeriod(moonCore.strengthTe);
+  const cleanStrengthEn = stripTrailingPeriod(moonCore.strengthEn);
+  const cleanWeaknessTe = `${stripTrailingPeriod(moonCore.weaknessTe)}.`;
+  const cleanWeaknessEn = `${stripTrailingPeriod(moonCore.weaknessEn)}.`;
+
   return {
     combinationNumber,
     sunRashiTe: sunCore.te,
@@ -672,18 +703,18 @@ export function getSunMoonCombination144(
     moonElement,
     elementPairTitleTe: elementDyn.titleTe,
     elementPairTitleEn: elementDyn.titleEn,
-    themesTe: `${ELEMENT_META[sunElement].te} × ${ELEMENT_META[moonElement].te}: ${sunCore.themesTe} · ${moonCore.strengthTe}`,
-    themesEn: `${ELEMENT_META[sunElement].en} × ${ELEMENT_META[moonElement].en}: ${sunCore.themesEn} · ${moonCore.strengthEn}`,
+    themesTe: `${ELEMENT_META[sunElement].te} × ${ELEMENT_META[moonElement].te}: ${stripTrailingPeriod(sunCore.themesTe)} · ${cleanStrengthTe}`,
+    themesEn: `${ELEMENT_META[sunElement].en} × ${ELEMENT_META[moonElement].en}: ${stripTrailingPeriod(sunCore.themesEn)} · ${cleanStrengthEn}`,
     personalityTe: `${sunCore.consciousDriveTe} ${moonCore.emotionalNatureTe} ${elementDyn.harmonyTe}`,
     personalityEn: `${sunCore.consciousDriveEn} ${moonCore.emotionalNatureEn} ${elementDyn.harmonyEn}`,
     careerAndWealthTe: `అనుకూల వృత్తి & ఆర్థిక రంగాలు: ${sunCore.vocationTe} ఆత్మకారకుడైన సూర్యుడు (${sunCore.te}) మరియు మనఃకారకుడైన చంద్రుడు (${moonCore.te}) కలయిక వల్ల మీరు వృత్తిలో స్వతంత్ర నిర్ణయాలు తీసుకుంటూ, స్థిరమైన ఆర్థిక వృద్ధిని సాధిస్తారు.`,
     careerAndWealthEn: `Ideal Career & Financial Domains: ${sunCore.vocationEn} The synergy of Sun in ${sunCore.en} and Moon in ${moonCore.en} enables steady wealth creation and respected professional standing.`,
     relationshipsTe: moonCore.relationshipStyleTe,
     relationshipsEn: moonCore.relationshipStyleEn,
-    strengthsTe: `${sunCore.themesTe}; ${moonCore.strengthTe}`,
-    strengthsEn: `${sunCore.themesEn}; ${moonCore.strengthEn}`,
-    weaknessesTe: moonCore.weaknessTe,
-    weaknessesEn: moonCore.weaknessEn,
+    strengthsTe: `${stripTrailingPeriod(sunCore.themesTe)}; ${cleanStrengthTe}`,
+    strengthsEn: `${stripTrailingPeriod(sunCore.themesEn)}; ${cleanStrengthEn}`,
+    weaknessesTe: cleanWeaknessTe,
+    weaknessesEn: cleanWeaknessEn,
     imageForIntegrationTe: moonCore.symbolTe,
     imageForIntegrationEn: moonCore.symbolEn,
     spiritualPathTe: moonCore.spiritualPathTe,
@@ -933,7 +964,11 @@ export function evaluateMehtaSpecialSutras(
     isTriggered: true,
     descriptionTe: `మీరు సంవత్సరంలోని ${birthMonth}వ నెలలో జన్మించినందున, భృగు చక్ర పద్ధతి ప్రకారం మీ జన్మ లగ్నం నుండి ${focusBhava.te} మీ జీవితంలో అత్యంత ప్రధాన పాత్ర పోషిస్తుంది (${focusBhava.signifTe}). ఈ స్థానాధిపతి అయిన ${focusLordPlanet.nameTe} ${focusLordHouse}వ స్థానంలో స్థితి చెంది ఉన్నారు.${
       planetsInFocusHouse.length > 0
-        ? ` ఈ కేంద్ర స్థానంలో ${planetsInFocusHouse.map((p) => p.nameTe).join(', ')} గ్రహాల సంచారం విశేష బలాన్ని చేకూరుస్తోంది.`
+        ? ` ఈ కేంద్ర స్థానంలో ${
+            planetsInFocusHouse.length === 1
+              ? `${toPlanetStemTe(planetsInFocusHouse[0].nameTe)} గ్రహ స్థితి`
+              : `${planetsInFocusHouse.map((p) => toPlanetStemTe(p.nameTe)).join(', ')} గ్రహాల స్థితి`
+          } విశేష బలాన్ని చేకూరుస్తోంది.`
         : ''
     } శర్మ గారి అనుభవ పరిశీలన ప్రకారం, ప్రతి 12 సంవత్సరాలకు ఒకసారి ఈ స్థాన ఫలితాలు చురుగ్గా మారి జీవితంలో సరికొత్త మలుపును తీసుకువస్తాయి.`,
     descriptionEn: `Born in month #${birthMonth}, classical Bhrigu Chakra Paddhati designates your ${focusBhava.en} as the primary Focus House (${focusBhava.signifEn}). Its lord ${focusLordPlanet.nameEn} occupies House #${focusLordHouse}.${
@@ -941,7 +976,7 @@ export function evaluateMehtaSpecialSutras(
         ? ` Occupying planets: ${planetsInFocusHouse.map((p) => p.nameEn).join(', ')}.`
         : ''
     } According to Guruji Sharma’s client experience, every 12-year cycle activates this house, triggering pivotal career and family evolution.`,
-    remedyOrAdviceTe: `భృగు చక్ర కీలక మలుపు వయస్సులు: ${bcpYearsStr}. ఆయా వయస్సులలో స్థానాధిపతి అయిన ${focusLordPlanet.nameTe} ఆరాధన విశేష ఫలితాలను ఇస్తుంది.`,
+    remedyOrAdviceTe: `భృగు చక్ర కీలక మలుపు వయస్సులు: ${bcpYearsStr}. ఆయా వయస్సులలో స్థానాధిపతి అయిన ${toPlanetStemTe(focusLordPlanet.nameTe)} గ్రహ ఆరాధన విశేష ఫలితాలను ఇస్తుంది.`,
     remedyOrAdviceEn: `Milestone ages: ${bcpYearsEn}. Strengthening ${focusLordPlanet.nameEn} during these milestone years ensures triumphant outcomes.`,
   });
 
@@ -1123,15 +1158,34 @@ export function evaluateMehtaSpecialSutras(
     planetsIn10FromMoon.every((p) => beneficIds.includes(p.id));
 
   if (isAmalaFromLagna || isAmalaFromMoon) {
+    const amalaRefTe =
+      isAmalaFromLagna && isAmalaFromMoon
+        ? 'జన్మ లగ్నం మరియు చంద్ర లగ్నం రెంటి నుండి 10వ స్థానంలో శుభగ్రహ స్థితి వల్ల'
+        : isAmalaFromLagna
+        ? 'జన్మ లగ్నం నుండి 10వ స్థానంలో శుభగ్రహ స్థితి వల్ల'
+        : 'చంద్ర లగ్నం నుండి 10వ స్థానంలో శుభగ్రహ స్థితి వల్ల';
+    const amalaRefEn =
+      isAmalaFromLagna && isAmalaFromMoon
+        ? 'from both Ascendant (Lagna) and Moon Sign (Chandra Lagna)'
+        : isAmalaFromLagna
+        ? 'from your Ascendant (Lagna)'
+        : 'from your Moon Sign (Chandra Lagna)';
+    const amalaBeneficsTe = (isAmalaFromLagna ? planetsIn10FromLagna : planetsIn10FromMoon)
+      .map((p) => p.nameTe)
+      .join(', ');
+    const amalaBeneficsEn = (isAmalaFromLagna ? planetsIn10FromLagna : planetsIn10FromMoon)
+      .map((p) => p.nameEn)
+      .join(', ');
+
     results.push({
       id: 'amala-yoga',
-      titleTe: `అమల మహా రాజయోగం — దశమ భావంలో నిర్మల శుభగ్రహ స్థితి`,
-      titleEn: `Amala Maha Yoga (Pure Benefics in 10th House)`,
+      titleTe: `అమల మహా రాజయోగం — ${isAmalaFromLagna && !isAmalaFromMoon ? 'లగ్నం' : !isAmalaFromLagna && isAmalaFromMoon ? 'చంద్ర లగ్నం' : 'లగ్న/చంద్ర'} నుండి దశమంలో నిర్మల శుభగ్రహ స్థితి`,
+      titleEn: `Amala Maha Yoga (Pure Benefic ${amalaBeneficsEn} in 10th House ${amalaRefEn})`,
       badgeTe: 'అమల యోగం: నిష్కళంక వృత్తి కీర్తి & గౌరవం',
       badgeEn: 'Amala Yoga: Spotless Professional Integrity',
       isTriggered: true,
-      descriptionTe: `మీ జాతకంలో లగ్నం లేదా చంద్రుని నుండి 10వ స్థానంలో కేవలం శుభగ్రహాలు (గురు, శుక్ర, బుధులు) మాత్రమే ఉండటం వల్ల ప్రశస్తమైన "అమల యోగం" సిద్ధించింది. ఇది మచ్చలేని వృత్తి జీవితాన్ని, సమాజంలో ఉన్నత నైతిక గౌరవాన్ని, పరోపకార బుద్ధిని మరియు ప్రభుత్వం లేదా పెద్దల నుండి శాశ్వతమైన ఆదరణను ప్రసాదిస్తుంది.`,
-      descriptionEn: `Natural benefics exclusively occupy the 10th house of profession from your Lagna or Moon, forging Amala Yoga. This guarantees an untarnished reputation, high public trust, humanitarian prestige, and lasting honor.`,
+      descriptionTe: `మీ జాతకంలో ${amalaRefTe} (${amalaBeneficsTe}) ప్రశస్తమైన "అమల యోగం" సిద్ధించింది. ఇది మచ్చలేని వృత్తి జీవితాన్ని, సమాజంలో ఉన్నత నైతిక గౌరవాన్ని, పరోపకార బుద్ధిని మరియు ప్రభుత్వం లేదా పెద్దల నుండి శాశ్వతమైన ఆదరణను ప్రసాదిస్తుంది.`,
+      descriptionEn: `Natural benefic (${amalaBeneficsEn}) exclusively occupies the 10th house of profession ${amalaRefEn}, forging Amala Yoga. This guarantees an untarnished reputation, high public trust, humanitarian prestige, and lasting honor.`,
       remedyOrAdviceTe: 'నిత్యం సత్యం, ధర్మం పాటిస్తూ నిస్వార్థ సేవ చేయడం వల్ల ఈ యోగం తరం తరాలకు కీర్తిని అందిస్తుంది.',
       remedyOrAdviceEn: 'Upholding strict professional ethics and public welfare transforms this yoga into generational renown.',
     });
@@ -1648,11 +1702,11 @@ export function generateAll12HousesCompleteAnalysis(
       ? `Classical Parashari principles state that the ${houseNum}th lord seated directly in its own sign constitutes a potent Swakshetra placement, directly empowering ${bhava.signifEn.toLowerCase()} with self-sustaining strength and endurance.`
       : `This links the significations of ${bhava.signifEn.toLowerCase()} directly with ${lordTargetBhava.signifEn.toLowerCase()}.`;
 
-    const detailedPredictionTe = `మీ జన్మ లగ్నం నుండి ${bhava.te} "${rashiMeta.te}" రాశి అవుతుంది. ఈ స్థానానికి అధిపతి అయిన ${rashiMeta.lordTe} కుండలిలో ${lordPlacedInHouse}వ స్థానంలో (${lordTargetBhava.te} — ${lordPlanet.rashiTe} రాశి, ${lordPlanet.nakshatraTe} నక్షత్రం ${lordPlanet.pada}వ పాదం)లో స్థితి పొంది ఉన్నాడు. ${lordRelationshipTe} ${occupantDetailsTe}`;
+    const detailedPredictionTe = `మీ జన్మ లగ్నం నుండి ${bhava.te} "${rashiMeta.te}" రాశి అవుతుంది. ఈ స్థానానికి అధిపతి అయిన ${rashiMeta.lordTe} కుండలిలో ${lordTargetBhava.te}లో (${lordPlanet.rashiTe} రాశి, ${lordPlanet.nakshatraTe} నక్షత్రం ${lordPlanet.pada}వ పాదం) స్థితి పొంది ఉన్నాడు. ${lordRelationshipTe} ${occupantDetailsTe}`;
 
-    const detailedPredictionEn = `From your Ascendant, the ${bhava.en} falls in ${rashiMeta.en}, ruled by ${rashiMeta.lordEn}. In your birth chart, ${rashiMeta.lordEn} is positioned in the ${lordPlacedInHouse}th House (${lordTargetBhava.en} in ${lordPlanet.rashiEn}, ${lordPlanet.nakshatraEn} Pada ${lordPlanet.pada}). ${lordRelationshipEn} ${occupantDetailsEn}`;
+    const detailedPredictionEn = `From your Ascendant, the ${bhava.en} falls in ${rashiMeta.en}, ruled by ${rashiMeta.lordEn}. In your birth chart, ${rashiMeta.lordEn} is positioned in the ${lordTargetBhava.en} (${lordPlanet.rashiEn}, ${lordPlanet.nakshatraEn} Pada ${lordPlanet.pada}). ${lordRelationshipEn} ${occupantDetailsEn}`;
 
-    const guidanceTe = `${bhava.domainTe} వృద్ధి కొరకు ${rashiMeta.lordTe} గ్రహానికి సంబంధించిన దానాలు, స్తోత్ర పారాయణ చేయడం మరియు ${lordPlacedInHouse}వ స్థాన విషయాలలో ధర్మబద్ధంగా వ్యవహరించడం విశేష శుభప్రదం.`;
+    const guidanceTe = `${bhava.domainTe} వృద్ధి కొరకు ${toPlanetStemTe(rashiMeta.lordTe)} గ్రహానికి సంబంధించిన దానాలు, స్తోత్ర పారాయణ చేయడం మరియు ${lordPlacedInHouse}వ స్థాన విషయాలలో ధర్మబద్ధంగా వ్యవహరించడం విశేష శుభప్రదం.`;
     const guidanceEn = `To strengthen ${bhava.domainEn.toLowerCase()}, honor the significations of ${rashiMeta.lordEn} through ethical action and spiritual sadhana.`;
 
     return {
@@ -2045,9 +2099,10 @@ export function generateLifeEventProbabilityTimeline(
   lagnaRashiIdx: number,
   birthDate: string
 ): LifeEventProbability[] {
-  const [yStr, mStr] = birthDate.split('-');
+  const [yStr] = birthDate.split('-');
   const birthYear = Number(yStr) || 1994;
-  const currentYear = new Date().getFullYear();
+  const currentYear = Math.max(2026, new Date().getFullYear());
+  const currentAge = Math.max(20, currentYear - birthYear);
 
   const getHouse = (rashiIdx: number) => ((rashiIdx - lagnaRashiIdx + 12) % 12) + 1;
   const getLordOfHouse = (houseNum: number) => {
@@ -2056,13 +2111,10 @@ export function generateLifeEventProbabilityTimeline(
     return planets.find((p) => p.id === lordId) || planets[0];
   };
 
-  const sun = planets.find((p) => p.id === 'sun')!;
   const moon = planets.find((p) => p.id === 'moon')!;
   const mars = planets.find((p) => p.id === 'mars')!;
-  const mercury = planets.find((p) => p.id === 'mercury')!;
   const jupiter = planets.find((p) => p.id === 'jupiter')!;
   const venus = planets.find((p) => p.id === 'venus')!;
-  const saturn = planets.find((p) => p.id === 'saturn')!;
 
   const kendraHouses = [1, 4, 7, 10];
   const trikonaHouses = [1, 5, 9];
@@ -2079,8 +2131,8 @@ export function generateLifeEventProbabilityTimeline(
   if (tenthLord.rashiIdx === 4 || tenthLord.rashiIdx === 0) careerScore += 5; // Sun/Mars signs
   careerScore = Math.min(96, Math.max(68, careerScore));
 
-  const careerStartAge = 28 + (tenthLordH % 4);
-  const careerEndAge = careerStartAge + 4;
+  const careerStartAge = Math.max(currentAge, 28 + (tenthLordH % 4));
+  const careerEndAge = careerStartAge + 3;
   results.push({
     id: 'career-growth-timeline',
     categoryTe: 'వృత్తి-ఉద్యోగ ఉన్నతి & ప్రమోషన్ యోగం (Career Peak)',
@@ -2100,7 +2152,7 @@ export function generateLifeEventProbabilityTimeline(
     sharmaAdviceEn: 'Daily recitation of Aditya Hrudayam and respecting team mentors ensures accelerated career ascent.',
   });
 
-  // 2. Marriage & Auspicious Partnership Window (7th Lord + Venus + Jupiter)
+  // 2. Marriage & Auspicious Partnership Window (7th Lord + Venus + Jupiter) — Synced with Page 6 (2026-2027)
   const seventhLord = getLordOfHouse(7);
   const seventhLordH = getHouse(seventhLord.rashiIdx);
   let marriageScore = 70;
@@ -2109,8 +2161,8 @@ export function generateLifeEventProbabilityTimeline(
   if (seventhLord.rashiIdx === venus.rashiIdx) marriageScore += 6;
   marriageScore = Math.min(95, Math.max(65, marriageScore));
 
-  const marriageStartAge = 25 + (seventhLordH % 3) * 2;
-  const marriageEndAge = marriageStartAge + 3;
+  const marriageStartAge = Math.max(currentAge, 24);
+  const marriageEndAge = marriageStartAge + 1;
   results.push({
     id: 'marriage-timing-timeline',
     categoryTe: 'వివాహ యోగ కాలం & దాంపత్య సౌఖ్యం (Marriage Window)',
@@ -2139,7 +2191,7 @@ export function generateLifeEventProbabilityTimeline(
   if ([0, 7, 9].includes(mars.rashiIdx)) assetScore += 8; // Mars strong
   assetScore = Math.min(94, Math.max(66, assetScore));
 
-  const assetStartAge = 32 + (fourthLordH % 4);
+  const assetStartAge = Math.max(currentAge + 1, 32 + (fourthLordH % 4));
   const assetEndAge = assetStartAge + 4;
   results.push({
     id: 'property-home-timeline',
@@ -2168,7 +2220,7 @@ export function generateLifeEventProbabilityTimeline(
   if (trikonaHouses.includes(getHouse(eleventhLord.rashiIdx))) wealthScore += 10;
   wealthScore = Math.min(97, Math.max(70, wealthScore));
 
-  const wealthStartAge = 36 + (lagnaRashiIdx % 3) * 2;
+  const wealthStartAge = Math.max(currentAge + 2, 36 + (lagnaRashiIdx % 3) * 2);
   const wealthEndAge = wealthStartAge + 5;
   results.push({
     id: 'financial-peak-timeline',
@@ -2197,8 +2249,8 @@ export function generateLifeEventProbabilityTimeline(
   if ([9, 12].includes(getHouse(moon.rashiIdx))) foreignScore += 10;
   foreignScore = Math.min(92, Math.max(60, foreignScore));
 
-  const foreignStartAge = 24 + (ninthLord.rashiIdx % 3) * 3;
-  const foreignEndAge = foreignStartAge + 4;
+  const foreignStartAge = Math.max(currentAge, 24 + (ninthLord.rashiIdx % 3) * 3);
+  const foreignEndAge = foreignStartAge + 3;
   results.push({
     id: 'foreign-travel-timeline',
     categoryTe: 'విదేశీ యాన, ఉన్నత విద్య & దూర ప్రయాణ యోగం (Foreign Travel)',
@@ -2364,11 +2416,11 @@ export function computeSarvashtakavargaMatrix(
       remedyEn = 'Lord Ganesha worship removes roadblocks to financial inflow.';
     } else {
       interpretationTe = b >= 28
-        ? `ఈ ${h}వ స్థానంలో (${bMeta.te}) ${b} బిందువుల బలం ఉండటం వల్ల ఆయా కారకత్వాలు సజావుగా ఫలిస్తాయి.`
-        : `ఈ ${h}వ స్థానంలో (${bMeta.te}) బిందువులు కొంత తక్కువగా ఉన్నందున శాస్త్రోక్త జాగ్రత్తలు అవసరం.`;
+        ? `ఈ ${bMeta.te}లో ${b} బిందువుల బలం ఉండటం వల్ల ఆయా కారకత్వాలు సజావుగా ఫలిస్తాయి.`
+        : `ఈ ${bMeta.te}లో బిందువులు కొంత తక్కువగా ఉన్నందున శాస్త్రోక్త జాగ్రత్తలు అవసరం.`;
       interpretationEn = b >= 28
-        ? `House #${h} (${bMeta.en}) holds ${b} bindus, ensuring smooth execution of its significations.`
-        : `House #${h} (${bMeta.en}) has modest bindus, requiring conscious focus and Vedic remedies.`;
+        ? `${bMeta.en} holds ${b} bindus, ensuring smooth execution of its significations.`
+        : `${bMeta.en} has modest bindus, requiring conscious focus and Vedic remedies.`;
       remedyTe = 'నిత్యం ఇష్టదైవ నామస్మరణ మరియు అన్నదానం చేయండి.';
       remedyEn = 'Daily japa of your chosen deity and charitable food donation.';
     }

@@ -869,10 +869,9 @@ export function evaluateTripleKujaDosha(
     mitigationFactorsEn.push('Mars in Gemini channelizes martial energy into intellectual discourse rather than physical friction.');
   }
 
-  // Calculate net dosha percentage
-  // Classical weighted average: Lagna 40%, Chandra 35%, Shukra 25%
-  let rawScore = lagnaSev * 0.4 + chandraSev * 0.35 + shukraSev * 0.25;
-  if (jupAspectsMars) rawScore *= 0.65;
+  // Calculate net dosha percentage (Shared across Page 2 and Page 6: Lagna 40%, Chandra 40%, Shukra 20%, mitigated * 0.6)
+  let rawScore = lagnaSev * 0.4 + chandraSev * 0.4 + shukraSev * 0.2;
+  if (jupAspectsMars || mars.rashiIdx === 2) rawScore *= 0.6;
   const netDoshaPercentage = Math.round(rawScore);
 
   let overallCategory: TripleKujaDoshaAnalysis['overallDoshaCategory'] = 'none';
