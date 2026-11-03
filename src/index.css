@@ -86,7 +86,7 @@
 
 @page {
   size: A4 portrait;
-  margin: 7mm 8mm 7mm 8mm;
+  margin: 6mm 7mm 6mm 7mm;
   background-color: #fffdf5;
 }
 
@@ -135,10 +135,15 @@
     padding: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+    line-height: 1.42 !important;
   }
 
   .print-page-break {
-    margin-top: 10px !important;
+    page-break-before: always !important;
+    break-before: page !important;
+    margin-top: 0 !important;
   }
 
   .print-page-sheet {
@@ -146,10 +151,12 @@
     width: 100% !important;
     background: linear-gradient(180deg, #fffbeb 0%, #fffdf7 50%, #fefce8 100%) !important;
     border: 2px solid #d97706 !important;
-    border-radius: 14px !important;
-    padding: 8px 10px !important;
-    margin-bottom: 10px !important;
+    border-radius: 12px !important;
+    padding: 6px 9px !important;
+    margin: 0 !important;
     box-sizing: border-box !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .print-page-sheet:nth-of-type(even) {

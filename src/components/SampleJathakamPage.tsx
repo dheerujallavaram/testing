@@ -221,14 +221,7 @@ export const SampleJathakamPage: React.FC<SampleJathakamPageProps> = ({
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-400 text-amber-950 font-bold hover:bg-amber-300 shadow-md transition-all cursor-pointer text-sm"
             >
               <Printer size={16} />
-              పీడీఎఫ్ ప్రింట్ / సేవ్ చేయండి (Print / Save PDF)
-            </button>
-            <button
-              onClick={handleDownloadHtml}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-900/80 hover:bg-amber-800 text-amber-100 border border-amber-700/60 font-semibold transition-all cursor-pointer text-sm"
-            >
-              <Download size={16} />
-              పూర్తి ఫైల్ డౌన్‌లోడ్ (.html)
+              🖨️ జాతకం PDF డౌన్‌లోడ్ / ప్రింట్ (A4 PDF Download)
             </button>
             {onNavigateToJathakam && (
               <button
