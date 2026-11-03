@@ -486,6 +486,7 @@ export interface KundaliPlanetDetail {
   pada: number;
   navamshaRashiIdx: number;
   navamshaRashiTe: string;
+  navamshaRashiEn?: string;
   isRetrograde?: boolean;
 }
 
@@ -577,6 +578,7 @@ function buildPlanetDetail(
     pada,
     navamshaRashiIdx,
     navamshaRashiTe: RASHI_LIST_META[navamshaRashiIdx].te,
+    navamshaRashiEn: RASHI_LIST_META[navamshaRashiIdx].en,
     isRetrograde,
   };
 }
@@ -698,3 +700,6 @@ export function computeAccurateJanmaKundali(
     hasKujaDosha,
   };
 }
+
+export type KundaliResult = ReturnType<typeof computeAccurateJanmaKundali>;
+

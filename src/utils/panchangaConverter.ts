@@ -206,7 +206,7 @@ const KARANA_TELUGU: Record<string, string> = {
   Garija: 'గరిజ కరణం',
   Vanija: 'వణిజ కరణం',
   Vishti: 'విష్టి (భద్ర) కరణం',
-  Sakuna: 'శకుন కరణం',
+  Sakuna: 'శకున కరణం',
   Chatushpada: 'చతుష్పాద కరణం',
   Naga: 'నాగ కరణం',
   Kimstughna: 'కింస్తుఘ్న కరణం',

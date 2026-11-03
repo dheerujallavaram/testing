@@ -156,7 +156,7 @@ const NAKSHATRA_BABY_NAMES_DB: BabyNameEntry[] = [
     rashiTe: 'కర్కాటక రాశి',
     syllables: ['డీ (Di)', 'డూ (Du)', 'డే (De)', 'డో (Do)'],
     boyNames: [
-      { nameTe: 'దివాకర్ / దీక్షిత్ (Deekshith)', nameEn: 'Deekshith', meaningTe: 'నిষ্ঠాగరిష్ఠుడు' },
+      { nameTe: 'దివాకర్ / దీక్షిత్ (Deekshith)', nameEn: 'Deekshith', meaningTe: 'నిష్ఠాగరిష్ఠుడు' },
       { nameTe: 'దుర్గా ప్రసాద్ (Durga Prasad)', nameEn: 'Durga Prasad', meaningTe: 'అమ్మవారి అనుగ్రహం' },
       { nameTe: 'దేవేంద్ర నాథ్ (Devendra)', nameEn: 'Devendra', meaningTe: 'దేవతల రాజు ఇంద్రుడు' },
     ],

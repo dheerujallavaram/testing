@@ -36,8 +36,8 @@ export const PoojaBookingModal: React.FC<PoojaBookingModalProps> = ({
   const currentPooja = isKundaliPdfSelected
     ? {
         id: 'kundali-100-pdf',
-        name: '100-Page Janma Kundali PDF Report',
-        teluguName: '100 పేజీల సంపూర్ణ జన్మ కుండలి PDF రిపోర్ట్',
+        name: 'Comprehensive Brihat Jataka PDF Report',
+        teluguName: 'సమగ్ర బృహత్ జాతక నివేదిక PDF రిపోర్ట్',
       }
     : POOJA_SERVICES.find((p) => p.id === poojaId) || POOJA_SERVICES[0];
 
@@ -227,7 +227,7 @@ export const PoojaBookingModal: React.FC<PoojaBookingModalProps> = ({
                   className="w-full p-2.5 bg-slate-50 border border-amber-300 rounded-xl font-telugu text-sm text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
                 >
                   <option value="kundali-100-pdf">
-                    📜 100 పేజీల సంపూర్ణ జన్మ కుండలి PDF రిపోర్ట్ (100-Page Janma Kundali PDF)
+                    📜 సమగ్ర బృహత్ జాతక నివేదిక PDF (Comprehensive Brihat Jataka PDF Report)
                   </option>
                   {POOJA_SERVICES.map((p) => (
                     <option key={p.id} value={p.id}>

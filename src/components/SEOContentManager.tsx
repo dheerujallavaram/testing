@@ -105,7 +105,7 @@ const SPECIFIC_CITY_TEMPLES: Record<string, TempleProximityInfo> = {
     longitudeHint: '81.8040° E',
   },
   pithapuram: {
-    templeNameTe: 'పాదగయ క్షేత్రం — శ్రీ కుక్కుటేశ్వర స్వామి & శ్రీపాద శ్రీవల్లభ మహాসংస్థానం',
+    templeNameTe: 'పాదగయ క్షేత్రం — శ్రీ కుక్కుటేశ్వర స్వామి & శ్రీపాద శ్రీవల్లభ మహాసంస్థానం',
     templeNameEn: 'Pada Gaya Kshetram — Sri Kukkuteswara Swamy & Sripada Srivallabha Anagha Datta Temple',
     deityTe: 'శ్రీ పురుహూతికా దేవి సమేత కుక్కుటేశ్వర స్వామి & శ్రీపాద శ్రీవల్లభులు',
     proximitySummaryTe: 'అష్టాదశ శక్తిపీఠాలలో ఒకటైన శ్రీ పురుహూతికా దేవి మరియు దత్త క్షేత్ర సన్నిధిలో',

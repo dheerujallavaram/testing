@@ -377,61 +377,78 @@ export function generateSaptamaMarriageAnalysis(
       'Venus-Mercury harmony suggests meeting your life partner through academic, professional, or intellectual circles.';
   }
 
-  // Marriage Timing (Jupiter Transit + 7th Lord / Venus / Jupiter Dasha)
-  const birthYear = parseInt(birthDate.split('-')[0], 10) || 1998;
-  const currentYear = new Date().getFullYear();
-  const baseMarriageAge = 23 + ((lagnaIdx + saptamaRashiIdx) % 5);
-  const secondWindowAge = baseMarriageAge + 2;
-  const thirdWindowAge = baseMarriageAge + 4;
+  // Dynamic Marriage Timing (Jupiter Transit + Native Current Age)
+  const bDate = new Date(birthDate);
+  const today = new Date();
+  let currentAge = today.getFullYear() - bDate.getFullYear();
+  const mDiff = today.getMonth() - bDate.getMonth();
+  if (mDiff < 0 || (mDiff === 0 && today.getDate() < bDate.getDate())) {
+    currentAge--;
+  }
+  if (currentAge < 1) currentAge = 32;
 
-  const year1 = Math.max(currentYear, birthYear + baseMarriageAge);
-  const year2 = year1 + 1;
+  const currentYear = today.getFullYear();
+  const year1 = currentYear;
+  const year2 = currentYear + 1;
+  const nextWindowAge = currentAge + 2;
 
-  const marriageTimingTitleTe = `శుభ వివాహ యోగ కాలం: ${year1} – ${year2} (గురు గోచార & సప్తమ దశా బలం)`;
-  const marriageTimingTitleEn = `Auspicious Marriage Window: ${year1} – ${year2} (Jupiter Transit & 7th Lord Period)`;
-  const marriageTimingDetailsTe = `సప్తమ భావ సిద్ధాంతం ప్రకారం గోచార గురువు మీ జన్మ లగ్నం లేదా జన్మ రాశి నుండి 1, 3, 4, 5, 7, 9 లేదా 11వ స్థానాలలో సంచరించే కాలంలో మరియు ${rashiMeta.lordTe}, శుక్రుడు లేదా గురు దశ/అంతర్దశలలో వివాహ నిశ్చయం జరుగుతుంది.`;
-  const marriageTimingDetailsEn = `Classical transit rules state that marriage materializes when Jupiter transits the 1st, 3rd, 4th, 5th, 7th, 9th, or 11th house from your Ascendant/Moon Sign during the Dasha/Bhukti of ${rashiMeta.lordEn}, Venus, or Jupiter.`;
+  const marriageTimingTitleTe = `శుభ వివాహ యోగ కాలం: ${year1} – ${year2} (ప్రస్తుత వయస్సు: ${currentAge}–${currentAge + 1} ఏళ్లు)`;
+  const marriageTimingTitleEn = `Auspicious Marriage Window: ${year1} – ${year2} (Current Age: ${currentAge}–${currentAge + 1})`;
+  const marriageTimingDetailsTe = `సప్తమ భావ సిద్ధాంతం ప్రకారం గోచార గురువు మీ జన్మ లగ్నం లేదా జన్మ రాశి నుండి 1, 3, 5, 7, 9 లేదా 11వ స్థానాలలో సంచరించే కాలంలో మరియు ${rashiMeta.lordTe}, శుక్రుడు లేదా గురు అంతర్దశలలో వివాహం నిశ్చయమవుతుంది.`;
+  const marriageTimingDetailsEn = `Classical transit rules indicate marriage materializes when transiting Jupiter activates favorable trines/angles from Lagna or Moon during supportive Dasha-Bhukti periods.`;
 
-  const favorableAgesTe = `${baseMarriageAge}, ${secondWindowAge}, ${thirdWindowAge} ఏళ్ల వయస్సు (${year1}–${year2} ప్రాంతం)`;
-  const favorableAgesEn = `Ages ${baseMarriageAge}, ${secondWindowAge}, and ${thirdWindowAge} (${year1}–${year2} window)`;
+  const favorableAgesTe = `ప్రస్తుత ${currentAge}–${currentAge + 1} ఏళ్ల వయస్సు (${year1}–${year2} కాలం) మరియు తదుపరి ${nextWindowAge}–${nextWindowAge + 1} ఏళ్లు`;
+  const favorableAgesEn = `Ages ${currentAge}–${currentAge + 1} (${year1}–${year2} window) and secondary window at ages ${nextWindowAge}–${nextWindowAge + 1}`;
 
-  // Kuja Dosha Percentage & Exemption Check
-  const marsHouse = mars ? getHouseFromLagna(mars.rashiIdx) : 3;
-  const jupiterHouse = jupiter ? getHouseFromLagna(jupiter.rashiIdx) : 9;
+  // Triple Kuja Dosha Evaluation (Lagna, Chandra Lagna, and Shukra Lagna)
+  const marsHouseFromLagna = mars ? getHouseFromLagna(mars.rashiIdx) : 3;
+  const marsHouseFromMoon = mars && moon ? ((mars.rashiIdx - moon.rashiIdx + 12) % 12) + 1 : 1;
+  const marsHouseFromVenus = mars && venus ? ((mars.rashiIdx - venus.rashiIdx + 12) % 12) + 1 : 1;
 
-  // Does Jupiter aspect Mars or 7th house? (Jupiter aspects 5th, 7th, 9th from itself)
+  const doshaHouses = [1, 2, 4, 7, 8, 12];
+  const hasLagnaKuja = doshaHouses.includes(marsHouseFromLagna);
+  const hasMoonKuja = doshaHouses.includes(marsHouseFromMoon);
+  const hasVenusKuja = doshaHouses.includes(marsHouseFromVenus);
+
+  // Check Jupiter aspect on Mars
   const jupiterAspectsMars =
     jupiter &&
     mars &&
     [0, 4, 6, 8].includes((mars.rashiIdx - jupiter.rashiIdx + 12) % 12);
-  const marsInOwnOrExalted = mars && [0, 7, 9].includes(mars.rashiIdx); // Aries, Scorpio, Capricorn
+  const marsInGemini = mars && mars.rashiIdx === 2;
 
   let kujaDoshaPercentage = 0;
-  if (marsHouse === 12) kujaDoshaPercentage = 50;
-  else if (marsHouse === 1) kujaDoshaPercentage = 60;
-  else if (marsHouse === 2) kujaDoshaPercentage = 80;
-  else if (marsHouse === 4) kujaDoshaPercentage = 85;
-  else if (marsHouse === 7 || marsHouse === 8) kujaDoshaPercentage = 100;
+  if (hasLagnaKuja) kujaDoshaPercentage += 40;
+  if (hasMoonKuja) kujaDoshaPercentage += 40;
+  if (hasVenusKuja) kujaDoshaPercentage += 20;
 
-  let kujaDoshaTitleTe = 'కుజ దోషం లేదు (0% — సంపూర్ణ కుజ శుద్ధి)';
-  let kujaDoshaTitleEn = 'No Kuja Dosha (0% — Auspicious Mars Placement)';
-  let kujaDoshaExplanationTe = `మీ జన్మ లగ్నం నుండి కుజుడు ${marsHouse}వ స్థానంలో ఉన్నందున కుజ దోషం లేదు. వైవాహిక జీవితానికి కుజుని వల్ల ఎలాంటి ఆటంకం ఉండదు.`;
-  let kujaDoshaExplanationEn = `Mars is placed in the ${marsHouse}th house from your Ascendant, which is completely free from Manglik/Kuja Dosha.`;
+  let kujaDoshaTitleTe = '';
+  let kujaDoshaTitleEn = '';
+  let kujaDoshaExplanationTe = '';
+  let kujaDoshaExplanationEn = '';
 
-  if (kujaDoshaPercentage > 0) {
-    if (jupiterAspectsMars || marsInOwnOrExalted || jupiterHouse === 1 || jupiterHouse === 7) {
-      const reducedPct = Math.round(kujaDoshaPercentage * 0.3);
-      kujaDoshaTitleTe = `కుజ దోష భంగం / ఉపశమనం (${kujaDoshaPercentage}% → ${reducedPct}% మాత్రమే)`;
-      kujaDoshaTitleEn = `Kuja Dosha Mitigated by Classical Exemption (${kujaDoshaPercentage}% → ${reducedPct}%)`;
-      kujaDoshaExplanationTe = `కుజుడు ${marsHouse}వ స్థానంలో ఉన్నప్పటికీ, గురు దృష్టి / స్వక్షేత్ర-ఉచ్చ బలం వల్ల శాస్త్రోక్తంగా కుజ దోష భంగం జరిగింది. సాధారణ సుబ్రహ్మణ్య ఆరాధనతో సంపూర్ణ శుభం కలుగుతుంది.`;
-      kujaDoshaExplanationEn = `Although Mars occupies the ${marsHouse}th house (${kujaDoshaPercentage}% base), benefic Jupiter aspect / dignity triggers classical Kuja Dosha cancellation.`;
-      kujaDoshaPercentage = reducedPct;
-    } else {
-      kujaDoshaTitleTe = `${marsHouse}వ స్థానంలో కుజుడు (${kujaDoshaPercentage}% కుజ ప్రభావం)`;
-      kujaDoshaTitleEn = `Mars in ${marsHouse}th House (${kujaDoshaPercentage}% Manglik Intensity)`;
-      kujaDoshaExplanationTe = `లగ్నం నుండి ${marsHouse}వ స్థానంలో కుజుడు ఉన్నందున ${kujaDoshaPercentage}% కుజ ప్రభావం ఉంది. వివాహ పొంతనలో సమాన కుజ బలం ఉన్న జాతకాన్ని ఎంచుకోవడం లేదా 24+ గుణాల పొంతనతో కుజ గ్రహ శాంతి జరిపించడం శ్రేయస్కరం.`;
-      kujaDoshaExplanationEn = `Mars in the ${marsHouse}th house carries ${kujaDoshaPercentage}% intensity. Match with a chart having parallel planetary balance or perform Vedic Kuja Graha Shanti.`;
+  if (kujaDoshaPercentage === 0) {
+    kujaDoshaTitleTe = 'కుజ దోష రహితం (లగ్న, చంద్ర, శుక్ర శుభ స్థితి)';
+    kujaDoshaTitleEn = 'Free from Kuja Dosha across all 3 Reference Points';
+    kujaDoshaExplanationTe = `లగ్నం (${marsHouseFromLagna}వ ఇల్లు), చంద్రుడు (${marsHouseFromMoon}వ ఇల్లు) మరియు శుక్రుని నుండి కుజుడు దోష స్థానాలలో లేనందున కుజ దోషం లేదు.`;
+    kujaDoshaExplanationEn = 'Mars occupies non-afflicting houses from Lagna, Moon, and Venus.';
+  } else {
+    // Apply classical mitigations
+    let finalPct = kujaDoshaPercentage;
+    if (jupiterAspectsMars || marsInGemini) {
+      finalPct = Math.round(finalPct * 0.6);
     }
+
+    kujaDoshaTitleTe = hasMoonKuja && !hasLagnaKuja
+      ? `చంద్ర లగ్న కుజ ప్రభావం (${finalPct}% — అష్టమ కుజుడు / పరిహార సహితం)`
+      : `కుజ దోష విశ్లేషణ (${finalPct}% ప్రభావం — లగ్న/చంద్ర పరిశీలన)`;
+    kujaDoshaTitleEn = hasMoonKuja && !hasLagnaKuja
+      ? `Chandra Lagna Kuja Influence (${finalPct}% — Mars 8th from Moon / Mitigated)`
+      : `Kuja Dosha Analysis (${finalPct}% Intensity)`;
+
+    kujaDoshaExplanationTe = `త్రివిధ పరిశీలన: లగ్నం నుండి ${marsHouseFromLagna}వ స్థానం (${hasLagnaKuja ? 'దోషం' : 'శుభం'}), చంద్రుని నుండి ${marsHouseFromMoon}వ స్థానం (${hasMoonKuja ? 'అష్టమ కుజుడు' : 'శుభం'}), శుక్రుని నుండి ${marsHouseFromVenus}వ స్థానం (${hasVenusKuja ? 'దోషం' : 'శుభం'}). చంద్రుని నుండి 8వ ఇంట కుజుడు ఉన్నందున దాంపత్యంలో పరస్పర అవగాహన, సంయమనం ముఖ్యం. గురు దృష్టి మరియు బుధ క్షేత్ర (మిథున) స్థితి వల్ల దోష తీవ్రత గణనీయంగా తగ్గింది.`;
+    kujaDoshaExplanationEn = `Triple Assessment: From Lagna: House #${marsHouseFromLagna} (${hasLagnaKuja ? 'Afflicted' : 'Free'}), From Moon: House #${marsHouseFromMoon} (${hasMoonKuja ? '8th House Affliction' : 'Free'}), From Venus: House #${marsHouseFromVenus} (${hasVenusKuja ? 'Afflicted' : 'Free'}). Mars in 8th from Moon advises emotional patience, while benefic Jupiter aspect and Gemini sign placement provide natural mitigation.`;
+    kujaDoshaPercentage = finalPct;
   }
 
   // True vs False Kalasarpa Yoga Check

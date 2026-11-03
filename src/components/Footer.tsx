@@ -18,6 +18,7 @@ const SEO_HUB_LINKS: { section: HubSectionId; path: string; labelTe: string; lab
   { section: 'pontana', path: '/panchangam', labelTe: 'నేటి పంచాంగం (Today Telugu Panchangam)', labelEn: 'Today Telugu Panchangam (నేటి పంచాంగం)' },
   { section: 'pontana', path: '/panchangam/calendar', labelTe: '60 రోజుల తెలుగు పంచాంగం క్యాలెండర్', labelEn: '60-Day Monthly Telugu Panchangam Calendar' },
   { section: 'kundali', path: '/janma-kundali', labelTe: 'పుట్టిన తేదీతో ఉచిత జన్మ కుండలి (Jathakam by Date of Birth)', labelEn: 'Jathakam by Date of Birth in Telugu' },
+  { section: 'kundali', path: '/sample-jathakam', labelTe: 'నమూనా బృహత్ జాతక నివేదిక PDF (Sample Report)', labelEn: 'Sample Brihat Jataka PDF Report (నమూనా జాతకం)' },
   { section: 'pontana', path: '/vivaha-pontana', labelTe: '36 గుణాల వివాహ పొంతన (Vivaha Pontana Telugu)', labelEn: '36-Point Vivaha Pontana Marriage Matching' },
   { section: 'babynames', path: '/telugu-baby-names', labelTe: '27 నక్షత్రాల తెలుగు పిల్లల పేర్లు (Telugu Baby Names)', labelEn: 'Telugu Baby Names by Nakshatra' },
   { section: 'pontana', path: '/gowri-panchangam', labelTe: 'గౌరీ పంచాంగం & హోరా చక్రం', labelEn: 'Today Gowri Panchangam & Hora Timings' },

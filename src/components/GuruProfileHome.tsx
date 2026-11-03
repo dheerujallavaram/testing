@@ -76,7 +76,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
   const hydPanchangam = computeCityLocalPanchangam(todayIso, 'hyderabad');
 
   const whatsappUrl = `https://wa.me/918977986166?text=${encodeURIComponent(
-    'నమస్కారం శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు, నేను పూజా కార్యక్రమం / 100 పేజీల జన్మ కుండలి PDF / ముహూర్తం కొరకు సంప్రదిస్తున్నాను.'
+    'నమస్కారం శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు, నేను పూజా కార్యక్రమం / సమగ్ర బృహత్ జాతక నివేదిక PDF / ముహూర్తం కొరకు సంప్రదిస్తున్నాను.'
   )}`;
 
   const cityCards = (['hyderabad', 'vijayawada', 'visakhapatnam', 'usa'] as const).map((slug) =>
@@ -215,8 +215,8 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
 
               <p className="text-amber-100/90 text-xs sm:text-sm leading-relaxed max-w-2xl">
                 {t(
-                  'సనాతన గురుకుల వేద సంప్రదాయంలో శిక్షణ పొంది, దృక్సిద్ధాంత ఖగోళ గణితం ఆధారంగా జాతక పరిశీలన, 36 గుణాల వివాహ పొంతన, 100 పేజీల బృహత్ జాతక కుండలి నివేదిక మరియు సమగ్ర హోమ క్రతువులను శాస్త్రోక్తంగా నిర్వహించే వైదిక పండితులు.',
-                  'Vedic scholar and astrologer practicing Drik-Siddhanta astrology, comprehensive 100-page Kundali Grantham generation, muhurtham determination, and sacred Maha Homams.'
+                  'సనాతన గురుకుల వేద సంప్రదాయంలో శిక్షణ పొంది, దృక్సిద్ధాంత ఖగోళ గణితం ఆధారంగా జాతక పరిశీలన, 36 గుణాల వివాహ పొంతన, సమగ్ర బృహత్ జాతక కుండలి నివేదిక PDF మరియు సమగ్ర హోమ క్రతువులను శాస్త్రోక్తంగా నిర్వహించే వైదిక పండితులు.',
+                  'Vedic scholar and astrologer practicing Drik-Siddhanta astrology, comprehensive Brihat Jataka Kundali Grantham PDF generation, muhurtham determination, and sacred Maha Homams.'
                 )}
               </p>
 
@@ -465,12 +465,12 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             <span>{t('పుట్టిన తేదీతో ఉచిత జన్మ కుండలి • Jathakam by Date of Birth in Telugu', 'Free Janma Kundali & Brihat Jataka Grantham')}</span>
           </div>
           <h2 className="text-xl sm:text-3xl font-extrabold text-amber-100">
-            {t('మీ పుట్టిన తేదీ, సమయంతో ఉచిత తెలుగు జన్మ కుండలి & 100 పేజీల PDF పొందండి', 'Get Your Free Telugu Janma Kundali & 100-Page PDF Report')}
+            {t('మీ పుట్టిన తేదీ, సమయంతో ఉచిత తెలుగు జన్మ కుండలి & సమగ్ర బృహత్ జాతక నివేదిక PDF పొందండి', 'Get Your Free Telugu Janma Kundali & Comprehensive Brihat Jataka PDF Report')}
           </h2>
           <p className="text-xs sm:text-sm text-amber-200/90 leading-relaxed max-w-2xl">
             {t(
               'పుట్టిన తేదీ, సమయం, ప్రాంతం ఆధారంగా దృక్సిద్ధాంత రాశి చక్రం (D1), నవాంశ (D9), 12 స్థానాల విశ్లేషణ, 120 ఏళ్ల వింశోత్తరి మహాదశ, భృగు చక్ర 96 ఏళ్ల కాలగమనం మరియు అదృష్ట రత్న పరిహారాలు పొందండి.',
-              'Generate an authentic 100-page Telugu Kundali with D1 Rashi, D9 Navamsha, 12 Bhava synthesis, 120-year Mahadasha timeline, Bhrigu progression, and gemstone remedies.'
+              'Generate an authentic Telugu Kundali with D1 Rashi, D9 Navamsha, 12 Bhava synthesis, 120-year Mahadasha timeline, Bhrigu progression, and gemstone remedies.'
             )}
           </p>
         </div>

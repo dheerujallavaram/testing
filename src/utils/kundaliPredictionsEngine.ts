@@ -207,7 +207,7 @@ export const BHAVA_NAMES_12: { num: number; te: string; en: string; signifTe: st
   { num: 6, te: '6వ స్థానం (శత్రు, రోగ & ఋణ జయ భావం)', en: '6th House (Ari, Roga & Runa Bhava)', signifTe: 'పోటీలలో విజయం, ఆరోగ్యం, రుణ విముక్తి, సేవా రంగం, ఉద్యోగ శ్రమ', signifEn: 'Overcoming competitors, health, debts, service, daily work', domainTe: 'శత్రు-రుణ-రోగ జయం & పోటీ పరీక్షలలో విజయం', domainEn: 'Health, Service & Victory Over Obstacles' },
   { num: 7, te: '7వ స్థానం (కళత్ర, వివాహ & వ్యాపార భావం)', en: '7th House (Kalatra & Vivaha Bhava)', signifTe: 'వివాహం, జీవిత భాగస్వామి, వ్యాపార భాగస్వామ్యం, సామాజిక సంబంధాలు', signifEn: 'Marriage, spouse, business partnerships, public relations', domainTe: 'దాంపత్య సౌఖ్యం, జీవిత భాగస్వామి & వాణిజ్య ఒప్పందాలు', domainEn: 'Marriage, Spouse & Business Partnerships' },
   { num: 8, te: '8వ స్థానం (ఆయుర్దాయ, వారసత్వ & రహస్య భావం)', en: '8th House (Ayur & Randhra Bhava)', signifTe: 'ఆయుర్దాయం, ఆకస్మిక ధన ప్రాప్తి, వారసత్వ ఆస్తి, జ్యోతిష్య/నిగూఢ శాస్త్ర పరిశోధన', signifEn: 'Longevity, sudden transformations, inheritance, occult & deep research', domainTe: 'పూర్ణ ఆయుర్దాయం, వారసత్వ ఆస్తులు & రహస్య విజ్ఞానం', domainEn: 'Longevity, Inheritance & Deep Transformation' },
-  { num: 9, te: '9వ స్థానం (భాగ్య, ధర్మ, పితృ & గురు భావం)', en: '9th House (Bhagya & Dharma Bhava)', signifTe: 'తండ్రి, అదృష్టం, గురు భక్తి, తీర్థయాత్రలు, ఉన్నత విద్య, ధర్మం', signifEn: 'Father, fortune, higher wisdom, long journeys, dharma, grace', domainTe: 'అదృష్ట యోగం, ధర్మ నిষ্ঠ, పితృ ఆశీస్సులు & విదేశీ ప్రయాణం', domainEn: 'Fortune, Dharma, Higher Learning & Grace' },
+  { num: 9, te: '9వ స్థానం (భాగ్య, ధర్మ, పితృ & గురు భావం)', en: '9th House (Bhagya & Dharma Bhava)', signifTe: 'తండ్రి, అదృష్టం, గురు భక్తి, తీర్థయాత్రలు, ఉన్నత విద్య, ధర్మం', signifEn: 'Father, fortune, higher wisdom, long journeys, dharma, grace', domainTe: 'అదృష్ట యోగం, ధర్మ నిష్ఠ, పితృ ఆశీస్సులు & విదేశీ ప్రయాణం', domainEn: 'Fortune, Dharma, Higher Learning & Grace' },
   { num: 10, te: '10వ స్థానం (కర్మ, రాజ్య, ఉద్యోగ & కీర్తి భావం)', en: '10th House (Karma & Career Bhava)', signifTe: 'ఉద్యోగం, వ్యాపారం, అధికారం, సమాజంలో పేరు ప్రతిష్టలు, కీర్తి', signifEn: 'Career, profession, authority, social standing, achievements', domainTe: 'వృత్తి-ఉద్యోగ అధికారం, రాజయోగం & సంఘ గౌరవం', domainEn: 'Career Authority, Profession & Public Honor' },
   { num: 11, te: '11వ స్థానం (లాభ, ఆదాయ & అభీష్ట సిద్ధి భావం)', en: '11th House (Labha Bhava - Gains)', signifTe: 'ఆదాయం, కోరికల సిద్ధి, పెద్ద సోదరులు, మిత్ర వర్గం, పురస్కారాలు', signifEn: 'Gains, income, fulfillment of desires, elder siblings, social network', domainTe: 'సర్వతోముఖ ఆర్థిక లాభాలు, మిత్ర సహకారం & కోరికల సిద్ధి', domainEn: 'Abundant Gains, Prosperity & Fulfilled Wishes' },
   { num: 12, te: '12వ స్థానం (వ్యయ, విదేశీ & మోక్ష భావం)', en: '12th House (Vyaya & Moksha Bhava)', signifTe: 'విదేశీ నివాసం, ధర్మ వ్యయం, ఆధ్యాత్మిక విముక్తి, నిద్ర, రహస్య సహాయం', signifEn: 'Foreign residence, charitable expenses, spiritual liberation, sleep', domainTe: 'శుభకార్య వ్యయం, విదేశీ నివాస యోగం & ఆధ్యాత్మిక మోక్షం', domainEn: 'Dharmic Expenditure, Foreign Lands & Moksha' },
@@ -298,7 +298,7 @@ const SUN_SIGN_CORE: {
   },
   {
     te: 'ధనుస్సు', en: 'Sagittarius',
-    themesTe: 'ధర్మ నిষ্ঠ, ఆశావాదం, ఉన్నత విద్య, తాత్విక దృష్టి, నిష్కపటత్వం',
+    themesTe: 'ధర్మ నిష్ఠ, ఆశావాదం, ఉన్నత విద్య, తాత్విక దృష్టి, నిష్కపటత్వం',
     themesEn: 'Visionary, optimistic, philosophical, truth-seeking, adventurous',
     consciousDriveTe: 'మీ సూర్య రాశి ధనుస్సు కావడం వల్ల మీరు సత్యం, ధర్మం మరియు ఉన్నత జ్ఞానానికి విలువనిస్తారు. భవిష్యత్తుపై గొప్ప ఆశావాదంతో పెద్ద లక్ష్యాలను నిర్దేశించుకుని గురువుల ఆశీస్సులతో ముందుకు సాగుతారు.',
     consciousDriveEn: 'With Sun in Sagittarius, your conscious mind is expansive, idealistic, and future-oriented, guided by moral integrity and wisdom.',
@@ -307,7 +307,7 @@ const SUN_SIGN_CORE: {
   },
   {
     te: 'మకరం', en: 'Capricorn',
-    themesTe: 'కర్మ నిষ্ঠ, కార్యదీక్ష, బాధ్యతాయుత ప్రవర్తన, ఆచరణాత్మక ఆశయం',
+    themesTe: 'కర్మ నిష్ఠ, కార్యదీక్ష, బాధ్యతాయుత ప్రవర్తన, ఆచరణాత్మక ఆశయం',
     themesEn: 'Ambitious, disciplined, pragmatic, responsible, enduring',
     consciousDriveTe: 'మీ సూర్య రాశి మకరం కావడం వల్ల మీరు క్రమశిక్షణ, కఠిన పరిశ్రమ మరియు బాధ్యతలతో అంచెలంచెలుగా ఉన్నత శిఖరాలను అధిరోహిస్తారు. ఆచరణ సాధ్యమైన ప్రణాళికలతో స్థిరమైన విజయాన్ని నిర్మించుకుంటారు.',
     consciousDriveEn: 'With Sun in Capricorn, your conscious drive is disciplined, strategic, and built for long-term achievement and respected authority.',
@@ -608,10 +608,16 @@ export function generateLagnaCompleteProfile(
 ): LagnaCompleteProfile {
   const idx = ((lagnaRashiIdx % 12) + 12) % 12;
   const meta = RASHI_META_12[idx];
-  const sunCore = SUN_SIGN_CORE[idx];
-  const moonCore = MOON_SIGN_CORE[idx];
+  const actualPlanets = planets.filter((p) => p.id !== 'lagna');
+  const sunPlanet = actualPlanets.find((p) => p.id === 'sun') || actualPlanets[0];
+  const moonPlanet = actualPlanets.find((p) => p.id === 'moon') || actualPlanets[1];
+  const sunIdx = ((sunPlanet.rashiIdx % 12) + 12) % 12;
+  const moonIdx = ((moonPlanet.rashiIdx % 12) + 12) % 12;
+
+  const sunCore = SUN_SIGN_CORE[sunIdx];
+  const moonCore = MOON_SIGN_CORE[moonIdx];
   const element = RASHI_ELEMENTS[idx];
-  const lagnaLord = planets.find((p) => p.id === meta.lordId) || planets[1];
+  const lagnaLord = actualPlanets.find((p) => p.id === meta.lordId) || actualPlanets[0];
   const lagnaLordHouse = ((lagnaLord.rashiIdx - idx + 12) % 12) + 1;
   const bhavaMeta = BHAVA_NAMES_12[lagnaLordHouse - 1];
 
@@ -625,10 +631,10 @@ export function generateLagnaCompleteProfile(
     lagnaLordRashiEn: lagnaLord.rashiEn,
     elementTe: ELEMENT_META[element].te,
     elementEn: ELEMENT_META[element].en,
-    dehaSwabhavamTe: `మీ జన్మ లగ్నం ${meta.te} (${ELEMENT_META[element].te}). లగ్నాధిపతి అయిన ${meta.lordTe} ప్రభావం వల్ల మీ భౌతిక వర్చస్సులో ఆకర్షణ, నడవడికలో హుందాతనం మరియు ${sunCore.themesTe} స్పష్టంగా కనిపిస్తాయి. ${sunCore.consciousDriveTe}`,
-    dehaSwabhavamEn: `Your Ascendant (Lagna) is ${meta.en} (${ELEMENT_META[element].en}), ruled by ${meta.lordEn}. This endows your physical constitution and outward bearing with dignity and ${sunCore.themesEn.toLowerCase()}. ${sunCore.consciousDriveEn}`,
-    manoSwabhavamTe: `లగ్న స్వభావం రీత్యా మీరు ${moonCore.strengthTe} కలిగి ఉంటారు. అయితే ${moonCore.weaknessTe} విషయంలో జాగ్రత్త వహించడం వల్ల జీవితంలో ప్రతి అడుగులోనూ విజయం లభిస్తుంది.`,
-    manoSwabhavamEn: `In temperament, your natural strengths include ${moonCore.strengthEn.toLowerCase()}, while mindfulness around ${moonCore.weaknessEn.toLowerCase()} ensures smooth progress.`,
+    dehaSwabhavamTe: `మీ జన్మ లగ్నం ${meta.te} (${ELEMENT_META[element].te}). లగ్నాధిపతి అయిన ${meta.lordTe} ప్రభావం వల్ల మీ భౌతిక వర్చస్సులో ఆకర్షణ, నడవడికలో హుందాతనం మరియు కార్యదీక్ష స్పష్టంగా కనిపిస్తాయి. మీ సూర్య రాశి ${sunPlanet.rashiTe} కావడం వల్ల ${sunCore.consciousDriveTe}`,
+    dehaSwabhavamEn: `Your Ascendant (Lagna) is ${meta.en} (${ELEMENT_META[element].en}), ruled by ${meta.lordEn}. This endows your physical constitution and outward bearing with dignity and purpose. With your Sun sign in ${sunPlanet.rashiEn}, ${sunCore.consciousDriveEn}`,
+    manoSwabhavamTe: `జన్మ రాశి ${moonPlanet.rashiTe} స్వభావం రీత్యా మీరు ${moonCore.strengthTe} కలిగి ఉంటారు. అయితే ${moonCore.weaknessTe} విషయంలో జాగ్రత్త వహించడం వల్ల జీవితంలో ప్రతి అడుగులోనూ విజయం లభిస్తుంది.`,
+    manoSwabhavamEn: `With natal Moon in ${moonPlanet.rashiEn}, your natural strengths include ${moonCore.strengthEn.toLowerCase()}, while mindfulness around ${moonCore.weaknessEn.toLowerCase()} ensures smooth progress.`,
     lagnaLordEffectTe: `మీ లగ్నాధిపతి అయిన ${meta.lordTe} కుండలిలో ${lagnaLordHouse}వ స్థానంలో (${bhavaMeta.te} — ${lagnaLord.rashiTe} రాశిలో) స్థితి పొంది ఉన్నాడు. దీనివల్ల మీ జీవిత శక్తి, ఆలోచనలు మరియు అదృష్టం ప్రధానంగా "${bhavaMeta.signifTe}" రంగాల చుట్టూ కేంద్రీకృతమై ఉంటాయి. స్వశక్తితో ఈ రంగాలలో ఉన్నత స్థానానికి చేరుకుంటారు.`,
     lagnaLordEffectEn: `Your Ascendant Lord ${meta.lordEn} is placed in the ${lagnaLordHouse}th House (${bhavaMeta.en} in ${lagnaLord.rashiEn}). Consequently, your life force and destiny strongly revolve around ${bhavaMeta.signifEn.toLowerCase()}, bringing distinction in these areas.`,
     lifeMissionTe: `జీవిత లక్ష్యం & అనుకూల మార్గాలు: ${sunCore.vocationTe} ${moonCore.spiritualPathTe}`,
@@ -1464,7 +1470,7 @@ const PLANET_BHAVA_TEXT: Record<string, { te: string[]; en: string[] }> = {
       'శత్రువులు, రుణాలు, ఆటంకాలపై స్థిరమైన విజయం సాధిస్తారు. కఠిన శ్రమకు తగిన ప్రతిఫలం లభిస్తుంది.',
       'దిగ్బలం పొందిన శని: పరిణతి గల, నమ్మకమైన జీవిత భాగస్వామి; స్థిరమైన వ్యాపార భాగస్వామ్యం.',
       'పూర్ణ ఆయుర్దాయం, ఓర్పుతో కష్టాలను అధిగమించే శక్తి; ఈశ్వర ఆరాధన వల్ల ఆటంకాలు తొలగుతాయి.',
-      'ధర్మ నిষ্ঠ, పూర్వీకుల ఆస్తులు, ఆధ్యాత్మిక క్రమశిక్షణ మరియు పెద్దల పట్ల గౌరవం ఉంటాయి.',
+      'ధర్మ నిష్ఠ, పూర్వీకుల ఆస్తులు, ఆధ్యాత్మిక క్రమశిక్షణ మరియు పెద్దల పట్ల గౌరవం ఉంటాయి.',
       'కర్మ స్థానాధిపత్యం: ఉద్యోగ/పరిశ్రమ/రాజకీయ రంగాలలో కఠిన శ్రమతో ఉన్నత అధికారం మరియు శాశ్వత కీర్తి.',
       'స్థిరమైన ఆదాయం, భూమి/ఇనుము/సాంకేతిక రంగాల ద్వారా విశేష ధన లాభం మరియు అభీష్ట సిద్ధి.',
       'విదేశీ ఉద్యోగం, ఆధ్యాత్మిక సేవ, ధర్మ కార్యాలకు వ్యయం; శనివార నియమాలు శుభప్రదం.',
@@ -1633,9 +1639,18 @@ export function generateAll12HousesCompleteAnalysis(
             .join(' ')
         : `Although no planet directly occupies this house, its ruler ${rashiMeta.lordEn} placed in House #${lordPlacedInHouse} (${lordPlanet.rashiEn}) governs and delivers its fruits during its Dasha periods.`;
 
-    const detailedPredictionTe = `మీ జన్మ లగ్నం నుండి ${bhava.te} "${rashiMeta.te}" రాశి అవుతుంది. ఈ స్థానానికి అధిపతి అయిన ${rashiMeta.lordTe} కుండలిలో ${lordPlacedInHouse}వ స్థానంలో (${lordTargetBhava.te} — ${lordPlanet.rashiTe} రాశి, ${lordPlanet.nakshatraTe} నక్షత్రం ${lordPlanet.pada}వ పాదం)లో స్థితి పొంది ఉన్నాడు. శాస్త్ర రీత్యా ${houseNum}వ స్థానాధిపతి ${lordPlacedInHouse}వ స్థానంతో సంబంధం ఏర్పరచుకోవడం వల్ల "${bhava.signifTe}" అంశాలు మరియు "${lordTargetBhava.signifTe}" అంశాలు పరస్పరం అనుసంధానమై మీ జీవిత గమనాన్ని నిర్దేశిస్తాయి. ${occupantDetailsTe}`;
+    const isLordInOwnHouse = lordPlacedInHouse === houseNum;
+    const lordRelationshipTe = isLordInOwnHouse
+      ? `శాస్త్ర రీత్యా ${houseNum}వ స్థానాధిపతి స్వయంగా తన సొంత స్థానమైన ${bhava.te}లోనే (స్వక్షేత్రంలో) స్థిరపడడం విశేష బలవత్తర యోగం. దీనివల్ల "${bhava.signifTe}" రంగాలలో అప్రతిహతమైన ఆధిపత్యం, స్థిరమైన విజయం మరియు విశేష శుభ ఫలాలు చేకూరుతాయి.`
+      : `శాస్త్ర రీత్యా ${houseNum}వ స్థానాధిపతి ${lordPlacedInHouse}వ స్థానంతో సంబంధం ఏర్పరచుకోవడం వల్ల "${bhava.signifTe}" అంశాలు మరియు "${lordTargetBhava.signifTe}" అంశాలు పరస్పరం అనుసంధానమై మీ జీవిత గమనాన్ని నిర్దేశిస్తాయి.`;
 
-    const detailedPredictionEn = `From your Ascendant, the ${bhava.en} falls in ${rashiMeta.en}, ruled by ${rashiMeta.lordEn}. In your birth chart, ${rashiMeta.lordEn} is positioned in the ${lordPlacedInHouse}th House (${lordTargetBhava.en} in ${lordPlanet.rashiEn}, ${lordPlanet.nakshatraEn} Pada ${lordPlanet.pada}). This links the significations of ${bhava.signifEn.toLowerCase()} directly with ${lordTargetBhava.signifEn.toLowerCase()}. ${occupantDetailsEn}`;
+    const lordRelationshipEn = isLordInOwnHouse
+      ? `Classical Parashari principles state that the ${houseNum}th lord seated directly in its own sign constitutes a potent Swakshetra placement, directly empowering ${bhava.signifEn.toLowerCase()} with self-sustaining strength and endurance.`
+      : `This links the significations of ${bhava.signifEn.toLowerCase()} directly with ${lordTargetBhava.signifEn.toLowerCase()}.`;
+
+    const detailedPredictionTe = `మీ జన్మ లగ్నం నుండి ${bhava.te} "${rashiMeta.te}" రాశి అవుతుంది. ఈ స్థానానికి అధిపతి అయిన ${rashiMeta.lordTe} కుండలిలో ${lordPlacedInHouse}వ స్థానంలో (${lordTargetBhava.te} — ${lordPlanet.rashiTe} రాశి, ${lordPlanet.nakshatraTe} నక్షత్రం ${lordPlanet.pada}వ పాదం)లో స్థితి పొంది ఉన్నాడు. ${lordRelationshipTe} ${occupantDetailsTe}`;
+
+    const detailedPredictionEn = `From your Ascendant, the ${bhava.en} falls in ${rashiMeta.en}, ruled by ${rashiMeta.lordEn}. In your birth chart, ${rashiMeta.lordEn} is positioned in the ${lordPlacedInHouse}th House (${lordTargetBhava.en} in ${lordPlanet.rashiEn}, ${lordPlanet.nakshatraEn} Pada ${lordPlanet.pada}). ${lordRelationshipEn} ${occupantDetailsEn}`;
 
     const guidanceTe = `${bhava.domainTe} వృద్ధి కొరకు ${rashiMeta.lordTe} గ్రహానికి సంబంధించిన దానాలు, స్తోత్ర పారాయణ చేయడం మరియు ${lordPlacedInHouse}వ స్థాన విషయాలలో ధర్మబద్ధంగా వ్యవహరించడం విశేష శుభప్రదం.`;
     const guidanceEn = `To strengthen ${bhava.domainEn.toLowerCase()}, honor the significations of ${rashiMeta.lordEn} through ethical action and spiritual sadhana.`;
@@ -1682,7 +1697,7 @@ export function generateBhriguLifeProgression(
     { cycle: 5, startAge: 49, endAge: 60, themeTe: 'సంఘంలో ఉన్నత గౌరవం, ఆర్థిక పరిణతి & శుభకార్యాలు', themeEn: 'Social Prestige, Financial Maturity & Auspicious Milestones' },
     { cycle: 6, startAge: 61, endAge: 72, themeTe: 'పెద్దరికం, తీర్థయాత్రలు, సంతాన విజయాలు & ఆధ్యాత్మిక శాంతి', themeEn: 'Wisdom, Pilgrimages, Legacy & Spiritual Serenity' },
     { cycle: 7, startAge: 73, endAge: 84, themeTe: 'కుటుంబ ఆదరణ, ధర్మ కార్యాలు & ఆరోగ్య సంరక్షణ', themeEn: 'Family Reverence, Dharmic Charity & Peaceful Living' },
-    { cycle: 8, startAge: 85, endAge: 96, themeTe: 'పూర్ణ ఆయుర్దాయ యోగం, తపోనిষ্ঠ & దైవ సన్నిధి', themeEn: 'Longevity, Inner Fulfillment & Divine Grace' },
+    { cycle: 8, startAge: 85, endAge: 96, themeTe: 'పూర్ణ ఆయుర్దాయ యోగం, తపోనిష్ఠ & దైవ సన్నిధి', themeEn: 'Longevity, Inner Fulfillment & Divine Grace' },
   ];
 
   return cycleMeta.map((c, idx) => {

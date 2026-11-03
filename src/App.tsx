@@ -62,6 +62,9 @@ const VedicAstrologyHub = lazy(() =>
 const JanmaKundaliGenerator = lazy(() =>
   import('./components/JanmaKundaliGenerator').then((m) => ({ default: m.JanmaKundaliGenerator }))
 );
+const SampleJathakamPage = lazy(() =>
+  import('./components/SampleJathakamPage').then((m) => ({ default: m.SampleJathakamPage }))
+);
 const GocharaPhalaluView = lazy(() =>
   import('./components/GocharaPhalaluView').then((m) => ({ default: m.GocharaPhalaluView }))
 );
@@ -320,6 +323,13 @@ export function resolveAdminFromLocation(): boolean {
   return pathname === '/admin' || pathname.endsWith('/admin') || hash === '#admin';
 }
 
+export function resolveSampleJathakamFromLocation(): boolean {
+  if (typeof window === 'undefined') return false;
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  const hash = window.location.hash.toLowerCase();
+  return pathname === '/sample-jathakam' || pathname === '/sample-report' || hash === '#sample-jathakam';
+}
+
 const LEGAL_DOC_PATHS: Record<LegalDocType, string> = {
   privacy: '/privacy-policy',
   terms: '/terms-and-conditions',
@@ -329,6 +339,9 @@ const LEGAL_DOC_PATHS: Record<LegalDocType, string> = {
 function AppContent() {
   const [activeTab, setActiveTab] = useState<NavTab>(() => resolveTabFromLocation());
   const [isAdminView, setIsAdminView] = useState<boolean>(() => resolveAdminFromLocation());
+  const [isSampleJathakamView, setIsSampleJathakamView] = useState<boolean>(() =>
+    resolveSampleJathakamFromLocation()
+  );
   const [prefillClient, setPrefillClient] = useState<ClientKundaliPrefill | null>(null);
   const [panchangamSubTab, setPanchangamSubTab] = useState<PanchangamSubTab>(() =>
     resolvePanchangamSubTabFromLocation()
@@ -358,9 +371,26 @@ function AppContent() {
 
   const currentDay = getOrGenerateDayData(selectedDayId, WEEK_DATA);
 
+  const handleNavigateToSampleJathakam = useCallback(() => {
+    setSelectedCity(null);
+    setActiveLegalDoc(null);
+    setIsAdminView(false);
+    setIsCalendarView(false);
+    setIsSampleJathakamView(true);
+    if (typeof window !== 'undefined') {
+      try {
+        if (window.location.pathname !== '/sample-jathakam') {
+          window.history.pushState({ sampleJathakam: true }, '', '/sample-jathakam');
+        }
+      } catch {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+
   const handleOpenAdmin = useCallback(() => {
     setSelectedCity(null);
     setActiveLegalDoc(null);
+    setIsSampleJathakamView(false);
     setIsAdminView(true);
     if (typeof window !== 'undefined') {
       try {
@@ -377,6 +407,7 @@ function AppContent() {
     setActiveLegalDoc(null);
     setIsAdminView(false);
     setIsCalendarView(false);
+    setIsSampleJathakamView(false);
     setActiveCityTimingSlug(null);
     setActiveTab(tab);
     if (tab === 'panchangam') {
@@ -472,7 +503,12 @@ function AppContent() {
         handleToggleCalendarRoute(true);
         return;
       }
+      if (path === '/sample-jathakam' || path === '/sample-report') {
+        handleNavigateToSampleJathakam();
+        return;
+      }
       if (section === 'kundali' || path === '/janma-kundali' || path === '/mee-jatakam') {
+        setIsSampleJathakamView(false);
         setActiveTab('jathakam');
         if (typeof window !== 'undefined') {
           try {
@@ -482,6 +518,7 @@ function AppContent() {
         }
         return;
       }
+      setIsSampleJathakamView(false);
       setActiveTab('panchangam');
       setIsCalendarView(false);
       if (path === '/gowri-panchangam') {
@@ -504,7 +541,7 @@ function AppContent() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     },
-    [handleToggleCalendarRoute]
+    [handleToggleCalendarRoute, handleNavigateToSampleJathakam]
   );
 
   const handleSelectCity = useCallback(
@@ -620,6 +657,7 @@ function AppContent() {
       setSelectedCityIntent(resolveCityIntentFromLocation());
       setActiveLegalDoc(resolveLegalDocFromLocation());
       setIsAdminView(resolveAdminFromLocation());
+      setIsSampleJathakamView(resolveSampleJathakamFromLocation());
       setIsCalendarView(resolveCalendarViewFromLocation());
       setActiveCityTimingSlug(resolveCityTimingSlugFromLocation());
       setSelectedDayId(resolveInitialIsoDateFromLocation());
@@ -738,6 +776,18 @@ function AppContent() {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
               }}
+            />
+          </Suspense>
+        </main>
+      ) : isSampleJathakamView ? (
+        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
+          <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
+            <SampleJathakamPage
+              onNavigateToJathakam={() => {
+                setIsSampleJathakamView(false);
+                handleSelectTab('jathakam');
+              }}
+              onOpenBooking={() => handleOpenBooking()}
             />
           </Suspense>
         </main>

@@ -335,7 +335,7 @@ export function buildStandardizedHowToSchema(baseUrl: string): Record<string, un
   return {
     '@type': 'HowTo',
     '@id': `${baseUrl}/#howto-janma-kundali`,
-    name: 'తెలుగులో ఉచిత జన్మ కుండలి (100 పేజీల PDF) మరియు 36 గుణాల వివాహ పొంతన ఎలా చూసుకోవాలి?',
+    name: 'తెలుగులో ఉచిత జన్మ కుండలి (సమగ్ర బృహత్ జాతక నివేదిక PDF) మరియు 36 గుణాల వివాహ పొంతన ఎలా చూసుకోవాలి?',
     description:
       'పుట్టిన తేదీ, సమయం, ప్రాంతం ఆధారంగా దృక్సిద్ధాంత జన్మ కుండలి (D1 రాశి చక్రం, D9 నవాంశ, మహాదశ, భృగు చక్రం) మరియు వధూవరుల 36 గుణాల వివాహ పొంతన చూసుకునే విధానం.',
     inLanguage: ['te', 'en'],
@@ -387,7 +387,7 @@ export function buildStandardizedWebApplicationSchema(
   const featuredRashi = getFeaturedDailyRashiSnippet(day);
 
   const subTabNames: Record<PanchangamSubTab, string> = {
-    main: `Neti Panchangam (ఈ రోజు పంచాంగం - ${day.teediVaram}): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra} | Telugu Jyothisham (తెలుగు జ్యోతిషం) — 100 పేజీల జన్మ కుండలి PDF`,
+    main: `Neti Panchangam (ఈ రోజు పంచాంగం - ${day.teediVaram}): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra} | Telugu Jyothisham (తెలుగు జ్యోతిషం) — సమగ్ర బృహత్ జాతక నివేదిక PDF`,
     'gowri-hora': `Neti Panchangam — నేటి గౌరీ పంచాంగం & హోరా చక్రం (${day.teediVaram}) | Telugu Jyothisham`,
     tarabalam: `Neti Panchangam — నేటి తారాబలం & చంద్రబలం క్యాలిక్యులేటర్ (${day.teediVaram}) | Telugu Jyothisham`,
     sankalpam: `Neti Panchangam — నేటి పూజా సంకల్పం మంత్రం (${day.teediVaram}) | Telugu Jyothisham`,
@@ -422,7 +422,7 @@ export function buildStandardizedWebApplicationSchema(
     featureList: [
       `ఈ రోజు పంచాంగం (Neti Panchangam - ${day.teediVaram}): తిథి ${cleanTithi}, నక్షత్రం ${cleanNakshatra}, శుభ సమయం: ${day.shubha.amrutha}`,
       `మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe}`,
-      'మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ పొందండి (100-Page Janma Kundali PDF)',
+      'మీ సమగ్ర జన్మ కుండలి బృహత్ జాతక PDF రిపోర్ట్ పొందండి (Comprehensive Brihat Jataka PDF)',
       `నేటి రాహుకాలం (${day.ashubha.rahukalam}) & అభిజిత్ ముహూర్తం (${day.shubha.abhijit})`,
       '12 రాశుల దిన ఫలాలు & గ్రహ దృష్టి ఫలితాలు (Today Rasi Phalalu & Graha Drishti in Telugu)',
       '36 గుణాల అష్టకూట వివాహ పొంతన (Marriage Compatibility)',
@@ -441,7 +441,7 @@ export function buildStandardizedWebApplicationSchema(
     },
     offers: {
       '@type': 'Offer',
-      name: 'Free Daily Telugu Panchangam (Neti Panchangam) & 100-Page Janma Kundali PDF Report',
+      name: 'Free Daily Telugu Panchangam (Neti Panchangam) & Comprehensive Janma Kundali PDF Report',
       price: '0',
       priceCurrency: 'INR',
       availability: 'https://schema.org/InStock',
@@ -490,15 +490,15 @@ export function buildStandardizedDailyFaqSchema(
         name: `నేటి పంచాంగం (Neti Panchangam - ${day.teediVaram}) లో ఈ రోజు తిథి, నక్షత్రం, శుభ సమయం మరియు రాశి ఫలం ఏమిటి?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `ఈ రోజు పంచాంగం (${day.teediVaram}): నేటి తిథి ${cleanTithi}, ఈ రోజు నక్షత్రం ${cleanNakshatra} (అధిపతి: ${nakshatraLord}, దేవత: ${nakshatraDeity}), శుభ సమయం (అమృత ఘడియలు): ${day.shubha.amrutha}, అభిజిత్ ముహూర్తం: ${day.shubha.abhijit} | మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe} | రాహుకాలం: ${day.ashubha.rahukalam}. మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ పొందండి.`,
+          text: `ఈ రోజు పంచాంగం (${day.teediVaram}): నేటి తిథి ${cleanTithi}, ఈ రోజు నక్షత్రం ${cleanNakshatra} (అధిపతి: ${nakshatraLord}, దేవత: ${nakshatraDeity}), శుభ సమయం (అమృత ఘడియలు): ${day.shubha.amrutha}, అభిజిత్ ముహూర్తం: ${day.shubha.abhijit} | మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలం: ${featuredRashi.predictionTe} | రాహుకాలం: ${day.ashubha.rahukalam}. మీ సమగ్ర జన్మ కుండలి బృహత్ జాతక PDF నివేదిక పొందండి.`,
         },
       },
       {
         '@type': 'Question',
-        name: `తెలుగు జ్యోతిషం (Telugu Jyothisham) లో ఈ రోజు నక్షత్రం ప్రకారం రాశి ఫలితం మరియు 100 పేజీల జన్మ కుండలి PDF ఎలా పొందాలి?`,
+        name: `తెలుగు జ్యోతిషం (Telugu Jyothisham) లో ఈ రోజు నక్షత్రం ప్రకారం రాశి ఫలితం మరియు సమగ్ర జన్మ కుండలి PDF ఎలా పొందాలి?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `ఈ రోజు నక్షత్రం ${cleanNakshatra} (${day.teediVaram}). మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలితం: ${featuredRashi.predictionTe}. www.telugujyothisham.com లో మీ పుట్టిన తేదీ, సమయం, ప్రాంతం వివరాలతో మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF రిపోర్ట్ (D1 రాశి చక్రం, D9 నవాంశ, 12 భావాల ఫలితాలు, వింశోత్తరి మహాదశ & భృగు చక్ర ఫలితాలు) వెంటనే పొందవచ్చు.`,
+          text: `ఈ రోజు నక్షత్రం ${cleanNakshatra} (${day.teediVaram}). మీ రాశి ప్రకారం నేటి ${featuredRashi.rashiNameTe} ఫలితం: ${featuredRashi.predictionTe}. www.telugujyothisham.com లో మీ పుట్టిన తేదీ, సమయం, ప్రాంతం వివరాలతో మీ సమగ్ర జన్మ కుండలి బృహత్ జాతక PDF రిపోర్ట్ (D1 రాశి చక్రం, D9 నవాంశ, 12 భావాల ఫలితాలు, వింశోత్తరి మహాదశ & భృగు చక్ర ఫలితాలు) వెంటనే పొందవచ్చు.`,
         },
       },
       {
@@ -538,7 +538,7 @@ export function buildStandardizedDailyFaqSchema(
         name: `Jathakam by date of birth in Telugu free download (Astrology in Telugu by date of birth and time free download)?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `www.telugujyothisham.com లో మీ పుట్టిన తేదీ, సమయం మరియు ప్రాంతం వివరాలతో మీ సంపూర్ణ 100 పేజీల జన్మ కుండలి (D1 రాశి చక్రం, D9 నవాంశ, 12 భావాలు, 120 ఏళ్ల వింశోత్తరి మహాదశ & పరిహారాలు) తక్షణమే ఉచితంగా PDF డౌన్‌లోడ్ చేసుకోవచ్చు.`,
+          text: `www.telugujyothisham.com లో మీ పుట్టిన తేదీ, సమయం మరియు ప్రాంతం వివరాలతో మీ సమగ్ర బృహత్ జాతక జన్మ కుండలి (D1 రాశి చక్రం, D9 నవాంశ, 12 భావాలు, 120 ఏళ్ల వింశోత్తరి మహాదశ & పరిహారాలు) తక్షణమే ఉచితంగా PDF డౌన్‌లోడ్ చేసుకోవచ్చు.`,
         },
       },
       {
@@ -767,7 +767,7 @@ export function syncAutomatedDailySeoSchema(
     `${cleanNakshatra} నక్షత్ర ఫలాలు`,
     `${cleanTithi} తిథి ఫలితం`,
     `${featuredRashi.rashiNameTe} నేటి ఫలితం`,
-    'మీ సంపూర్ణ జన్మ కుండలి 100 పేజీల PDF పొందండి',
+    'మీ సమగ్ర జన్మ కుండలి బృహత్ జాతక PDF నివేదిక పొందండి',
     'యవనాచార్యుల మతం',
     'భృగు చక్ర పద్ధతి',
     'బృహత్ జాతక గ్రంథం',
@@ -785,7 +785,7 @@ export function syncAutomatedDailySeoSchema(
     'Astrologer in Warangal Karimnagar Nizamabad Khammam Nalgonda',
   ];
 
-  const articleHeadline = `ఈ రోజు పంచాంగం (Neti Panchangam - ${day.teediVaram}) | తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra}, శుభ సమయం: ${day.shubha.amrutha} | నేటి ${featuredRashi.rashiNameTe} ఫలితం & 100 పేజీల జన్మ కుండలి PDF — Telugu Jyothisham`;
+  const articleHeadline = `ఈ రోజు పంచాంగం (Neti Panchangam - ${day.teediVaram}) | తిథి: ${cleanTithi}, నక్షత్రం: ${cleanNakshatra}, శుభ సమయం: ${day.shubha.amrutha} | నేటి ${featuredRashi.rashiNameTe} ఫలితం & సమగ్ర బృహత్ జాతక నివేదిక PDF — Telugu Jyothisham`;
 
   const eeatNodes = buildEEATAuthoritySchema(baseUrl);
   const webAppNode = buildStandardizedWebApplicationSchema(
@@ -900,8 +900,8 @@ export function syncAutomatedDailySeoSchema(
     {
       '@type': 'HowTo',
       '@id': `${fullUrl}#howto-free-jathakam-download`,
-      name: 'How to Check Jathakam by Date of Birth in Telugu & Download Free 100-Page PDF (పుట్టిన తేదీతో ఉచిత జాతకం డౌన్‌లోడ్ చేసే విధానం)',
-      description: 'Step-by-step guide to generate and download your free 100-page Telugu Janma Kundali (Astrology in Telugu by date of birth and time free download) with D1 Rashi, D9 Navamsha, and 120-year Vimshottari Mahadasha.',
+      name: 'How to Check Jathakam by Date of Birth in Telugu & Download Free Brihat Jataka PDF (పుట్టిన తేదీతో ఉచిత జాతకం డౌన్‌లోడ్ చేసే విధానం)',
+      description: 'Step-by-step guide to generate and download your free comprehensive Telugu Janma Kundali (Astrology in Telugu by date of birth and time free download) with D1 Rashi, D9 Navamsha, and 120-year Vimshottari Mahadasha.',
       totalTime: 'PT1M',
       estimatedCost: {
         '@type': 'MonetaryAmount',
@@ -927,7 +927,7 @@ export function syncAutomatedDailySeoSchema(
         {
           '@type': 'HowToStep',
           position: 3,
-          name: 'Download Free 100-Page Jathakam PDF & HD Chart (100 పేజీల PDF డౌన్‌లోడ్ చేసుకోండి)',
+          name: 'Download Free Comprehensive Jathakam PDF & HD Chart (సమగ్ర బృహత్ జాతక PDF డౌన్‌లోడ్ చేసుకోండి)',
           text: 'View your instant South Indian D1 Rashi Chart, D9 Navamsha, 12 Bhava predictions, and click "Download PDF / Print" or "Download HD Image Card" for free.',
           url: `${baseUrl}/janma-kundali`,
         },
