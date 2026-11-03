@@ -233,34 +233,18 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
   const predictions = useMemo(() => {
     const lagnaIdx = chartData.planets[0]?.rashiIdx ?? 0;
     const sunIdx = chartData.planets[1]?.rashiIdx ?? 0;
-    const moonIdx = chartData.planets[2]?.rashiIdx ?? 0;
+    const moonPlanet = chartData.planets.find((p) => p.id === 'moon') || chartData.planets[2];
+    const moonIdx = moonPlanet?.rashiIdx ?? 0;
 
-    const dignities = evaluatePlanetaryDignities(chartData.planets, lagnaIdx);
-    const neechaBhanga = evaluateNeechaBhanga(chartData.planets, dignities, lagnaIdx);
-    const yogas = detectComprehensiveYogasAndDoshas(chartData.planets, dignities, lagnaIdx);
+    const dignities = computePlanetaryDignities(chartData.planets, lagnaIdx);
+    const neechaBhanga = checkNeechaBhangaRajaYoga(dignities, chartData.planets, lagnaIdx);
+    const yogas = detectAllYogasAndDoshas(chartData.planets, lagnaIdx, dignities);
     const tripleKuja = evaluateTripleKujaDosha(chartData.planets, lagnaIdx);
-    const marriageTiming = computeDynamicMarriageAgeAndTransit(birthDate, chartData.planets, lagnaIdx);
-    const dashaInfo = computeExactVimshottariDashaTimeline(birthDate, birthTime, chartData.planets);
-    const gochara12m = compute12MonthGochara(lagnaIdx, moonIdx);
-    const panchangaProfile = computeBirthPanchangaAndNakshatraProfile(
-      birthDate,
-      birthTime,
-      chartData.planets,
-      selectedCity.lat,
-      selectedCity.lon,
-      chartData.ayanamsaFormatted,
-      chartData.birthTithiTe,
-      chartData.birthYogaTe
-    );
-    const execSummary = generateExecutiveSummary(
-      name,
-      chartData.planets,
-      dignities,
-      yogas,
-      dashaInfo,
-      tripleKuja,
-      lagnaIdx
-    );
+    const marriageTiming = calculateDynamicMarriageTiming(birthDate, lagnaIdx, moonIdx);
+    const dashaInfo = computeVimshottariFullTimeline(moonPlanet?.longitude ?? 220, birthDate, birthTime);
+    const gochara12m = computeNext12MonthsGochara(moonIdx, lagnaIdx);
+    const panchangaProfile = buildPanchangaBirthProfile(chartData, birthDate, birthTime, selectedCity.labelTe);
+    const execSummary = generateExecutiveSummary(dignities, yogas, tripleKuja, dashaInfo, marriageTiming);
 
     return {
       lagnaProfile: generateLagnaCompleteProfile(chartData.planets, lagnaIdx),
@@ -284,7 +268,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       panchangaProfile,
       execSummary,
     };
-  }, [chartData.planets, birthDate, birthTime, selectedCity, chartData.ayanamsaFormatted, chartData.birthTithiTe, chartData.birthYogaTe, name]);
+  }, [chartData, birthDate, birthTime, selectedCity]);
 
   const activeDasha = chartData.dashaList.find((d) => d.isCurrent) || chartData.dashaList[0];
 
@@ -610,7 +594,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
               .filter((pl) => pl.nameTe !== 'లగ్నం')
               .map((pl) => {
                 const fullPlanet = chartData.planets.find((fp) => fp.nameTe === pl.nameTe);
-                const dig = predictions.dignities.find((d) => d.planetNameTe === pl.nameTe);
+                const dig = predictions.dignities.find((d) => d.nameTe === pl.nameTe);
                 const shortDeg = fullPlanet ? `${fullPlanet.degreeFormatted.split('°')[0]}°` : '';
                 const isSun = pl.nameTe === 'సూర్యుడు';
                 const isMoon = pl.nameTe === 'చంద్రుడు';
@@ -639,10 +623,10 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
                     {plateMode === 'D1' && shortDeg && (
                       <span className="text-[8px] font-mono text-amber-900 font-bold">{shortDeg}</span>
                     )}
-                    {plateMode === 'D1' && dig?.isExalted && (
+                    {plateMode === 'D1' && dig?.dignityCode === 'ucha' && (
                       <span className="text-[7.5px] bg-emerald-700 text-white px-0.5 rounded">ఉచ్చ</span>
                     )}
-                    {plateMode === 'D1' && dig?.isDebilitated && (
+                    {plateMode === 'D1' && dig?.dignityCode === 'neecha' && (
                       <span className="text-[7.5px] bg-rose-700 text-white px-0.5 rounded">నీచ</span>
                     )}
                   </span>
@@ -904,7 +888,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
             <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2.5">
               <span className="text-amber-300/90 block text-[10px] font-bold">⏳ ప్రస్తుత దశ (Current Dasha)</span>
               <strong className="text-[#fde047] text-xs sm:text-sm font-extrabold block mt-0.5">
-                {predictions.dashaInfo.currentMahadashaTe} – {predictions.dashaInfo.currentAntardashaTe}
+                {predictions.dashaInfo.currentMahadasha.lordTe} మహాదశ – {predictions.dashaInfo.currentAntardasha.lordTe} అంతర్దశ
               </strong>
             </div>
           </div>
@@ -924,22 +908,22 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
               <span>త్రివిధ కుజ దోష సమగ్ర పరిశీలన (Lagna · Chandra Lagna · Shukra Lagna):</span>
             </strong>
             <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-amber-900 text-amber-100">
-              {predictions.tripleKuja.overallVerdictTe}
+              {predictions.tripleKuja.summaryTitleTe}
             </span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-2.5 text-xs mt-2">
-            <div className={`p-2.5 rounded-xl border font-bold ${predictions.tripleKuja.fromLagnaDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
-              1. లగ్నం నుండి: {predictions.tripleKuja.fromLagnaHouse}వ స్థానం — {predictions.tripleKuja.fromLagnaDosha ? 'కుజ దోష స్థానం' : 'కుజ దోషం లేదు'}
+            <div className={`p-2.5 rounded-xl border font-bold ${predictions.tripleKuja.fromLagna.hasDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
+              1. లగ్నం నుండి: {predictions.tripleKuja.fromLagna.house}వ స్థానం — {predictions.tripleKuja.fromLagna.hasDosha ? 'కుజ దోష స్థానం' : 'కుజ దోషం లేదు'}
             </div>
-            <div className={`p-2.5 rounded-xl border font-bold ${predictions.tripleKuja.fromMoonDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
-              2. చంద్ర లగ్నం నుండి: {predictions.tripleKuja.fromMoonHouse}వ స్థానం — {predictions.tripleKuja.fromMoonDosha ? 'పాక్షిక కుజ దోష స్థితి' : 'కుజ దోషం లేదు'}
+            <div className={`p-2.5 rounded-xl border font-bold ${predictions.tripleKuja.fromChandra.hasDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
+              2. చంద్ర లగ్నం నుండి: {predictions.tripleKuja.fromChandra.house}వ స్థానం — {predictions.tripleKuja.fromChandra.hasDosha ? 'పాక్షిక కుజ దోష స్థితి' : 'కుజ దోషం లేదు'}
             </div>
-            <div className={`p-2.5 rounded-xl border font-bold ${predictions.tripleKuja.fromVenusDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
-              3. శుక్ర లగ్నం నుండి: {predictions.tripleKuja.fromVenusHouse}వ స్థానం — {predictions.tripleKuja.fromVenusDosha ? 'పాక్షిక కుజ దోష స్థితి' : 'కుజ దోషం లేదు'}
+            <div className={`p-2.5 rounded-xl border font-bold ${predictions.tripleKuja.fromShukra.hasDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
+              3. శుక్ర లగ్నం నుండి: {predictions.tripleKuja.fromShukra.house}వ స్థానం — {predictions.tripleKuja.fromShukra.hasDosha ? 'పాక్షిక కుజ దోష స్థితి' : 'కుజ దోషం లేదు'}
             </div>
           </div>
           <p className="text-xs text-slate-700 mt-2 leading-relaxed">
-            {predictions.tripleKuja.remedyNoteTe}
+            {predictions.tripleKuja.recommendedRemedyTe}
           </p>
         </div>
       </div>
@@ -980,7 +964,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
             </thead>
             <tbody className="divide-y divide-amber-200">
               {chartData.planets.map((p) => {
-                const dig = predictions.dignities.find((d) => d.planetId === p.id);
+                const dig = predictions.dignities.find((d) => d.id === p.id);
                 return (
                   <tr key={p.id} className="hover:bg-amber-50/60 odd:bg-amber-50/30">
                     <td className="py-2.5 px-2.5 sm:px-3 font-extrabold text-amber-950">
@@ -1005,14 +989,16 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
                       {dig ? (
                         <span
                           className={`inline-block px-2 py-0.5 rounded-md text-xs border ${
-                            dig.isExalted || dig.isOwnSign || dig.isVargottama
+                            dig.dignityCode === 'ucha' || dig.dignityCode === 'swakshetra' || dig.isVargottama
                               ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
-                              : dig.isDebilitated || dig.isCombust
+                              : dig.dignityCode === 'neecha' || dig.isCombust
                               ? 'bg-rose-50 border-rose-300 text-rose-900'
                               : 'bg-amber-50 border-amber-300 text-amber-950'
                           }`}
                         >
                           {language === 'en' ? dig.dignityEn : dig.dignityTe}
+                          {dig.isVargottama ? ' · వర్గోత్తమం' : ''}
+                          {dig.isCombust ? ' · అస్తంగత్వం' : ''}
                         </span>
                       ) : (
                         <span className="text-xs text-amber-900 font-bold">జన్మ లగ్న ప్రమాణం</span>
@@ -1033,11 +1019,11 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
             </h5>
             <div className="grid sm:grid-cols-2 gap-3">
               {predictions.neechaBhanga.map((nb) => (
-                <div key={nb.planetNameTe} className="bg-white rounded-xl p-3 border border-amber-200 text-xs space-y-1">
+                <div key={nb.planetTe} className="bg-white rounded-xl p-3 border border-amber-200 text-xs space-y-1">
                   <div className="flex items-center justify-between">
-                    <strong className="text-amber-950 text-sm">{nb.planetNameTe} ({nb.rashiTe} రాశి)</strong>
+                    <strong className="text-amber-950 text-sm">{nb.planetTe} ({nb.debilitationRashiTe} రాశి)</strong>
                     <span className={`px-2 py-0.5 rounded font-bold ${nb.hasNeechaBhanga ? 'bg-emerald-100 text-emerald-900' : 'bg-rose-100 text-rose-900'}`}>
-                      {nb.hasNeechaBhanga ? 'నీచభంగ రాజయోగం సిద్ధించింది' : 'నీచ స్థితి (పరిహారం అవసరం)'}
+                      {nb.cancellationTypeTe}
                     </span>
                   </div>
                   <p className="text-slate-700 leading-relaxed">{nb.explanationTe}</p>
@@ -2016,7 +2002,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
             </h4>
             <p className="text-xs text-slate-600 mt-0.5">
               {t(
-                `${chartData.nakshatraName} (${chartData.pada}వ పాదం) ఆధారంగా మీ జీవితంలోని నవగ్రహ మహాదశల వరుస క్రమం మరియు భుక్తి వివరాలు (ప్రస్తుత దశ: ${predictions.dashaInfo.currentMahadashaTe} – ${predictions.dashaInfo.currentAntardashaTe}):`,
+                `${chartData.nakshatraName} (${chartData.pada}వ పాదం) ఆధారంగా మీ జీవితంలోని నవగ్రహ మహాదశల వరుస క్రమం మరియు భుక్తి వివరాలు (ప్రస్తుత దశ: ${predictions.dashaInfo.currentMahadasha.lordTe} మహాదశ – ${predictions.dashaInfo.currentAntardasha.lordTe} అంతర్దశ):`,
                 `Sequence of planetary Mahadasha & Antardasha periods calculated from ${chartData.nakshatraName} (Pada ${chartData.pada}):`
               )}
             </p>
