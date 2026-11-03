@@ -235,6 +235,33 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
     const sunIdx = chartData.planets[1]?.rashiIdx ?? 0;
     const moonIdx = chartData.planets[2]?.rashiIdx ?? 0;
 
+    const dignities = evaluatePlanetaryDignities(chartData.planets, lagnaIdx);
+    const neechaBhanga = evaluateNeechaBhanga(chartData.planets, dignities, lagnaIdx);
+    const yogas = detectComprehensiveYogasAndDoshas(chartData.planets, dignities, lagnaIdx);
+    const tripleKuja = evaluateTripleKujaDosha(chartData.planets, lagnaIdx);
+    const marriageTiming = computeDynamicMarriageAgeAndTransit(birthDate, chartData.planets, lagnaIdx);
+    const dashaInfo = computeExactVimshottariDashaTimeline(birthDate, birthTime, chartData.planets);
+    const gochara12m = compute12MonthGochara(lagnaIdx, moonIdx);
+    const panchangaProfile = computeBirthPanchangaAndNakshatraProfile(
+      birthDate,
+      birthTime,
+      chartData.planets,
+      selectedCity.lat,
+      selectedCity.lon,
+      chartData.ayanamsaFormatted,
+      chartData.birthTithiTe,
+      chartData.birthYogaTe
+    );
+    const execSummary = generateExecutiveSummary(
+      name,
+      chartData.planets,
+      dignities,
+      yogas,
+      dashaInfo,
+      tripleKuja,
+      lagnaIdx
+    );
+
     return {
       lagnaProfile: generateLagnaCompleteProfile(chartData.planets, lagnaIdx),
       sunMoon144: getSunMoonCombination144(sunIdx, moonIdx),
@@ -247,8 +274,17 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       bhriguCycles: generateBhriguLifeProgression(chartData.planets, lagnaIdx, birthDate),
       remedies: generateVedicRemediesProfile(lagnaIdx, moonIdx),
       saptamaMarriage: generateSaptamaMarriageAnalysis(chartData.planets, lagnaIdx, birthDate),
+      dignities,
+      neechaBhanga,
+      yogas,
+      tripleKuja,
+      marriageTiming,
+      dashaInfo,
+      gochara12m,
+      panchangaProfile,
+      execSummary,
     };
-  }, [chartData.planets, birthDate]);
+  }, [chartData.planets, birthDate, birthTime, selectedCity, chartData.ayanamsaFormatted, chartData.birthTithiTe, chartData.birthYogaTe, name]);
 
   const activeDasha = chartData.dashaList.find((d) => d.isCurrent) || chartData.dashaList[0];
 
@@ -519,9 +555,196 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
     document.body.removeChild(link);
   };
 
+  // Helper to render a high-resolution, ornate Temple Kundali Image Plate (D1 or D9)
+  const renderRoyalKundaliImagePlate = (plateMode: 'D1' | 'D9') => {
+    const plateMap = plateMode === 'D1' ? chartData.d1RashiPlanets : chartData.d9NavamshaPlanets;
+    const plateLagnaId = plateMode === 'D1' ? chartData.lagna.id : chartData.navamshaLagna.id;
+    const plateLagnaIdx = RASHI_12.findIndex((r) => r.id === plateLagnaId);
+    const rashiMatrix = [
+      [11, 0, 1, 2],
+      [10, -1, -1, 3],
+      [9, -1, -1, 4],
+      [8, 7, 6, 5],
+    ];
+
+    const renderSingleCell = (rIdx: number) => {
+      const rashiInfo = RASHI_12[rIdx];
+      const cellPlanets = plateMap[rIdx] || [];
+      const isLagna = rashiInfo.id === plateLagnaId;
+      const isJanmaRashi = rashiInfo.id === chartData.rashi.id && plateMode === 'D1';
+      const houseNum = ((rIdx - (plateLagnaIdx >= 0 ? plateLagnaIdx : 0) + 12) % 12) + 1;
+
+      return (
+        <td
+          key={rIdx}
+          className={`w-1/4 h-[92px] sm:h-[112px] print:h-[94px] align-top p-1.5 sm:p-2 border-[2.5px] border-[#78350f] relative ${
+            isLagna
+              ? 'bg-gradient-to-br from-[#fef3c7] via-[#fde68a] to-[#fcd34d]'
+              : isJanmaRashi
+              ? 'bg-gradient-to-br from-[#ecfdf5] via-[#d1fae5] to-[#a7f3d0]'
+              : 'bg-[#fffdf7]'
+          }`}
+        >
+          <div className="flex items-center justify-between border-b border-dashed border-amber-700/40 pb-0.5 mb-1">
+            <span className="text-[10px] sm:text-[11px] font-extrabold text-[#78350f] leading-none">
+              {rashiInfo.te}
+            </span>
+            <span className="text-[8px] sm:text-[9px] font-bold text-[#9a3412] bg-[#ffedd5] border border-[#fdba74] px-1 py-0.2 rounded">
+              {houseNum}వ ఇల్లు
+            </span>
+          </div>
+
+          {isLagna && (
+            <div className="inline-block text-[8px] sm:text-[9px] font-extrabold text-white bg-gradient-to-r from-[#b91c1c] to-[#991b1b] px-1.5 py-0.5 rounded shadow-2xs mb-0.5">
+              ★ లగ్నం //
+            </div>
+          )}
+          {!isLagna && isJanmaRashi && (
+            <div className="inline-block text-[8px] sm:text-[9px] font-extrabold text-white bg-[#065f46] px-1.5 py-0.5 rounded shadow-2xs mb-0.5">
+              ☽ జన్మ రాశి
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-1 mt-0.5">
+            {cellPlanets
+              .filter((pl) => pl.nameTe !== 'లగ్నం')
+              .map((pl) => {
+                const fullPlanet = chartData.planets.find((fp) => fp.nameTe === pl.nameTe);
+                const dig = predictions.dignities.find((d) => d.planetNameTe === pl.nameTe);
+                const shortDeg = fullPlanet ? `${fullPlanet.degreeFormatted.split('°')[0]}°` : '';
+                const isSun = pl.nameTe === 'సూర్యుడు';
+                const isMoon = pl.nameTe === 'చంద్రుడు';
+                const isMars = pl.nameTe === 'కుజుడు';
+                const isJup = pl.nameTe === 'గురువు';
+
+                return (
+                  <span
+                    key={pl.nameTe}
+                    className={`inline-flex items-center gap-0.5 text-[9.5px] sm:text-[11px] font-extrabold px-1 py-0.5 rounded border leading-tight ${
+                      isSun
+                        ? 'bg-orange-50 border-orange-300 text-orange-950'
+                        : isMoon
+                        ? 'bg-emerald-50 border-emerald-400 text-emerald-950'
+                        : isMars
+                        ? 'bg-rose-50 border-rose-300 text-rose-900'
+                        : isJup
+                        ? 'bg-amber-100/90 border-amber-400 text-amber-950'
+                        : 'bg-white/95 border-amber-300 text-slate-900'
+                    }`}
+                  >
+                    <span>
+                      {pl.nameTe}
+                      {pl.isRetro && pl.nameTe !== 'రాహువు' && pl.nameTe !== 'కేతువు' ? '(వ)' : ''}
+                    </span>
+                    {plateMode === 'D1' && shortDeg && (
+                      <span className="text-[8px] font-mono text-amber-900 font-bold">{shortDeg}</span>
+                    )}
+                    {plateMode === 'D1' && dig?.isExalted && (
+                      <span className="text-[7.5px] bg-emerald-700 text-white px-0.5 rounded">ఉచ్చ</span>
+                    )}
+                    {plateMode === 'D1' && dig?.isDebilitated && (
+                      <span className="text-[7.5px] bg-rose-700 text-white px-0.5 rounded">నీచ</span>
+                    )}
+                  </span>
+                );
+              })}
+          </div>
+        </td>
+      );
+    };
+
+    return (
+      <div className="p-2.5 sm:p-3.5 rounded-2xl bg-gradient-to-b from-[#fffbeb] via-[#fef3c7] to-[#fde68a] border-4 border-[#78350f] ring-2 ring-[#d97706] shadow-md print-keep-together">
+        <div className="flex items-center justify-between text-[10px] sm:text-xs font-extrabold text-[#78350f] pb-2 mb-2 border-b-2 border-[#b45309]">
+          <span>🪷 శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం</span>
+          <span className="bg-[#78350f] text-[#fef08a] px-2.5 py-0.5 rounded-full border border-[#f59e0b]">
+            {plateMode === 'D1' ? 'రాశి చక్రం (D1 Rashi)' : 'నవాంశ చక్రం (D9 Navamsha)'}
+          </span>
+          <span>దృక్సిద్ధాంతం 🪷</span>
+        </div>
+
+        <table className="w-full border-collapse table-fixed border-[3px] border-[#78350f] bg-[#fffdf7]">
+          <tbody>
+            <tr>
+              {renderSingleCell(rashiMatrix[0][0])}
+              {renderSingleCell(rashiMatrix[0][1])}
+              {renderSingleCell(rashiMatrix[0][2])}
+              {renderSingleCell(rashiMatrix[0][3])}
+            </tr>
+            <tr>
+              {renderSingleCell(rashiMatrix[1][0])}
+              <td
+                colSpan={2}
+                rowSpan={2}
+                className="border-[3px] border-[#78350f] bg-gradient-to-br from-[#451a03] via-[#78350f] to-[#451a03] text-[#fef3c7] p-2 sm:p-3 text-center align-middle"
+              >
+                <div className="border border-amber-400/60 rounded-xl p-2 sm:p-2.5 bg-black/15">
+                  <div className="text-[9px] sm:text-[10px] font-bold text-amber-300 tracking-wider">
+                    || ఓం శ్రీ మహాగణాధిపతయే నమః ||
+                  </div>
+                  <div className="inline-block bg-gradient-to-r from-[#f59e0b] via-[#fde047] to-[#f59e0b] text-[#451a03] font-extrabold text-xs sm:text-sm px-3 py-0.5 rounded-full mt-1 shadow-2xs">
+                    {plateMode === 'D1' ? 'రాశి చక్రం (D1)' : 'నవాంశ చక్రం (D9)'}
+                  </div>
+                  <div className="text-xs sm:text-sm font-extrabold text-white mt-1.5">
+                    {name}
+                  </div>
+                  <div className="text-[10px] sm:text-[11px] font-mono font-bold text-amber-200 mt-0.5">
+                    {birthDate} · {birthTime} ({selectedCity.labelTe.split(' (')[0]})
+                  </div>
+                  <div className="text-[10px] sm:text-[11px] font-extrabold text-emerald-300 mt-1">
+                    {plateMode === 'D1'
+                      ? `లగ్నం: ${chartData.lagna.te} | రాశి: ${chartData.rashi.te}`
+                      : `నవాంశ లగ్నం: ${chartData.navamshaLagna.te}`}
+                  </div>
+                  <div className="text-[9.5px] sm:text-[10px] font-bold text-amber-300 mt-0.5">
+                    నక్షత్రం: {chartData.nakshatraName} ({chartData.pada}వ పాదం)
+                  </div>
+                  <div className="text-[9px] text-amber-200/90 mt-1 pt-1 border-t border-amber-500/30 font-mono">
+                    🌐 www.telugujyothisham.com
+                  </div>
+                </div>
+              </td>
+              {renderSingleCell(rashiMatrix[1][3])}
+            </tr>
+            <tr>
+              {renderSingleCell(rashiMatrix[2][0])}
+              {renderSingleCell(rashiMatrix[2][3])}
+            </tr>
+            <tr>
+              {renderSingleCell(rashiMatrix[3][0])}
+              {renderSingleCell(rashiMatrix[3][1])}
+              {renderSingleCell(rashiMatrix[3][2])}
+              {renderSingleCell(rashiMatrix[3][3])}
+            </tr>
+          </tbody>
+        </table>
+
+        <div className="flex flex-wrap items-center justify-between gap-1 text-[9.5px] sm:text-[10.5px] font-bold text-[#78350f] pt-2 mt-1.5 border-t border-[#d97706]">
+          <span>★ లగ్నం: {plateMode === 'D1' ? chartData.lagna.te : chartData.navamshaLagna.te}</span>
+          <span>☽ జన్మ రాశి: {chartData.rashi.te}</span>
+          <span>☉ సూర్య రాశి: {chartData.planets[1]?.rashiTe || 'కర్కాటకం'}</span>
+          <span>🌐 www.telugujyothisham.com</span>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-8 font-telugu">
-      {/* Birth Details Form with Drik Siddhanta Badge */}
+      {/* FIXED RUNNING FOOTER FOR EVERY PRINTED PAGE */}
+      <div className="print-fixed-footer print-only-flex">
+        <span>
+          శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (+91 89779 86166)
+        </span>
+        <span>
+          జాతకులు: {name} ({birthDate} · {birthTime})
+        </span>
+        <span className="text-[#991b1b] font-extrabold">
+          🌐 www.telugujyothisham.com
+        </span>
+      </div>
+
+      {/* Birth Details Form with Drik Siddhanta Badge (Interactive Screen Only) */}
       <div className="bg-amber-50/90 rounded-2xl p-4 sm:p-6 border border-amber-200/90 shadow-2xs no-print">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <div>
@@ -615,250 +838,214 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
         </div>
       </div>
 
-      {/* Primary Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-amber-200">
-          <span className="text-xs text-slate-500 block">{t('జన్మ రాశి (Moon Sign)', 'Janma Rashi')}</span>
-          <strong className="text-base sm:text-xl font-bold text-amber-950 mt-0.5 block">
-            {chartData.rashi.te} ({chartData.rashi.en})
-          </strong>
-          <span className="text-xs text-amber-800">{t('రాశ్యాధిపతి:', 'Lord:')} {chartData.rashi.lord}</span>
-        </div>
+      {/* ==========================================================================
+          PAGE 1 MASTERPIECE: ROYAL TEMPLE JATHAKA PATRIKA BANNER + D1 & D9 KUNDALI PLATES
+          ========================================================================== */}
+      <div className="space-y-5 print-keep-together">
+        {/* Royal Temple Header Banner with User Name, DOB, Time, Place & Website */}
+        <div className="rounded-3xl border-4 border-[#78350f] ring-2 ring-[#d97706] bg-gradient-to-r from-[#451a03] via-[#78350f] to-[#451a03] text-amber-100 p-4 sm:p-6 shadow-md">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-400/40 pb-2.5 mb-3 text-xs font-bold text-amber-300">
+            <span>|| శ్రీ మహాగణాధిపతయే నమః · శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం ||</span>
+            <span className="bg-amber-400 text-[#451a03] px-3 py-0.5 rounded-full font-extrabold">
+              🌐 www.telugujyothisham.com
+            </span>
+          </div>
 
-        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-amber-200">
-          <span className="text-xs text-slate-500 block">{t('జన్మ నక్షత్రం & పాదం', 'Birth Nakshatra & Pada')}</span>
-          <strong className="text-base sm:text-xl font-bold text-amber-950 mt-0.5 block">
-            {chartData.nakshatraName} — {chartData.pada}వ పాదం
-          </strong>
-          <span className="text-xs text-amber-800">
-            {t(`జన్మ తిథి: ${chartData.birthTithiTe}`, `Star #${chartData.nakshatraIdx}/27`)}
-          </span>
-        </div>
-
-        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-amber-200">
-          <span className="text-xs text-slate-500 block">{t('జన్మ లగ్నం (D1) & నవాంశ (D9)', 'Lagna (D1 & D9)')}</span>
-          <strong className="text-base sm:text-xl font-bold text-amber-950 mt-0.5 block">
-            {chartData.lagna.te} లగ్నం
-          </strong>
-          <span className="text-xs text-amber-800">
-            {t(`నవాంశ లగ్నం: ${chartData.navamshaLagna.te}`, `D9 Navamsha: ${chartData.navamshaLagna.en}`)}
-          </span>
-        </div>
-
-        <div className="bg-amber-950 text-white rounded-2xl p-3.5 sm:p-4 border border-amber-700">
-          <span className="text-xs text-amber-300 block">{t('ప్రస్తుత మహాదశ (Running Dasha)', 'Current Mahadasha')}</span>
-          <strong className="text-base sm:text-xl font-bold text-amber-300 mt-0.5 block">
-            {activeDasha.lordTe}
-          </strong>
-          <span className="text-xs font-mono tabular-nums text-amber-100">
-            {activeDasha.startYear} – {activeDasha.endYear}
-          </span>
-        </div>
-      </div>
-
-      {/* 2-Column Split: South Indian 4x4 Chart (D1 Rashi / D9 Navamsha) & Planetary Degrees Table */}
-      <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-start">
-        {/* Left: South Indian 4x4 Square Chart with D1 / D9 Toggle */}
-        <div className="bg-white rounded-3xl p-4 sm:p-6 border border-amber-200 shadow-2xs space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h4 className="text-base sm:text-lg font-bold text-amber-950 flex items-center gap-2">
-              <Compass size={18} className="text-amber-700" />
-              <span>
-                {chartMode === 'D1'
-                  ? t('రాశి చక్రం (D1 Janma Rashi Chart)', 'D1 Rashi Kundali Chart')
-                  : t('నవాంశ చక్రం (D9 Navamsha Chart)', 'D9 Navamsha Chart')}
-              </span>
-            </h4>
-
-            <div className="inline-flex rounded-xl bg-amber-100 p-1 border border-amber-300 no-print">
-              <button
-                type="button"
-                onClick={() => setChartMode('D1')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                  chartMode === 'D1'
-                    ? 'bg-amber-900 text-white shadow-2xs'
-                    : 'text-amber-950 hover:bg-amber-200/70'
-                }`}
-              >
-                {t('రాశి చక్రం (D1)', 'Rashi (D1)')}
-              </button>
-              <button
-                type="button"
-                onClick={() => setChartMode('D9')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                  chartMode === 'D9'
-                    ? 'bg-amber-900 text-white shadow-2xs'
-                    : 'text-amber-950 hover:bg-amber-200/70'
-                }`}
-              >
-                {t('నవాంశ చక్రం (D9)', 'Navamsha (D9)')}
-              </button>
+          <div className="text-center space-y-1.5 mb-4">
+            <div className="inline-block bg-amber-500/20 border border-amber-400/50 text-amber-200 text-xs font-bold px-3.5 py-1 rounded-full">
+              బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి దృక్సిద్ధాంత జ్యోతిష విశ్లేషణ (లహిరి అయనాంశం: {chartData.ayanamsaFormatted})
             </div>
-          </div>
-
-          <div className="grid grid-cols-4 grid-rows-4 gap-1 sm:gap-1.5 bg-amber-900 p-1.5 sm:p-2 rounded-2xl aspect-square max-w-md mx-auto">
-            {Array.from({ length: 16 }, (_, cellIndex) => {
-              const r = Math.floor(cellIndex / 4);
-              const c = cellIndex % 4;
-
-              if (r === 1 && c === 1) {
-                return (
-                  <div
-                    key="center"
-                    className="col-span-2 row-span-2 bg-amber-950 text-amber-100 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center border border-amber-600/80"
-                  >
-                    <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-amber-400 font-bold">
-                      {t('శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · దృక్సిద్ధాంతం', 'Sri Lakshmi Ganapathi Jyothishalayam · Drik Siddhantam')}
-                    </span>
-                    <strong className="text-sm sm:text-lg font-bold text-white mt-1">
-                      {chartMode === 'D1' ? 'రాశి చక్రం (D1)' : 'నవాంశ చక్రం (D9)'}
-                    </strong>
-                    <span className="text-xs text-amber-200 mt-0.5">{name}</span>
-                    <span className="text-[10px] sm:text-[11px] font-mono tabular-nums text-amber-300 mt-0.5">
-                      {birthDate} · {birthTime}
-                    </span>
-                    <span className="text-[11px] sm:text-xs text-emerald-300 font-bold mt-1">
-                      {chartData.rashi.te} · {chartData.nakshatraName} ({chartData.pada})
-                    </span>
-                  </div>
-                );
-              }
-              if ((r === 1 && c === 2) || (r === 2 && c === 1) || (r === 2 && c === 2)) {
-                return null;
-              }
-
-              const foundCell = SOUTH_INDIAN_CELLS.find((sc) => sc.row === r && sc.col === c);
-              if (!foundCell) return null;
-
-              const rashiInfo = RASHI_12[foundCell.rashiIdx];
-              const planets = activePlanetsMap[foundCell.rashiIdx] || [];
-              const isLagna = rashiInfo.id === activeLagnaId;
-              const isJanmaRashi = rashiInfo.id === chartData.rashi.id && chartMode === 'D1';
-
-              return (
-                <div
-                  key={`${r}-${c}`}
-                  className={`rounded-xl p-1.5 sm:p-2 flex flex-col justify-between border ${
-                    isLagna
-                      ? 'bg-amber-100 border-amber-500'
-                      : isJanmaRashi
-                      ? 'bg-emerald-50 border-emerald-400'
-                      : 'bg-amber-50/95 border-amber-200'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-0.5">
-                    <span className="text-[9px] sm:text-xs font-bold text-amber-900/80 truncate">
-                      {rashiInfo.te}
-                    </span>
-                    {isLagna && (
-                      <span className="text-[8px] sm:text-[9px] font-bold text-rose-800 underline shrink-0">లగ్నం</span>
-                    )}
-                  </div>
-
-                  <div className="flex flex-wrap gap-0.5 sm:gap-1 my-auto pt-0.5">
-                    {planets.map((pl) => (
-                      <span
-                        key={pl.nameTe}
-                        className={`text-[9px] sm:text-xs font-bold leading-tight ${
-                          pl.nameTe === 'లగ్నం'
-                            ? 'text-rose-800'
-                            : pl.nameTe === 'చంద్రుడు'
-                            ? 'text-emerald-900'
-                            : 'text-slate-900'
-                        }`}
-                      >
-                        {pl.nameTe}
-                        {pl.isRetro && pl.nameTe !== 'రాహువు' && pl.nameTe !== 'కేతువు' ? '(వ)' : ''}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Kuja Dosha & Birth Yoga Quick Check */}
-          <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200 flex items-start gap-3">
-            {chartData.hasKujaDosha ? (
-              <ShieldCheck size={20} className="text-amber-800 shrink-0 mt-0.5" />
-            ) : (
-              <CheckCircle2 size={20} className="text-emerald-700 shrink-0 mt-0.5" />
-            )}
-            <div className="text-xs sm:text-sm text-slate-700 space-y-1">
-              <strong className="text-amber-950 block">
-                {chartData.hasKujaDosha
-                  ? t(
-                      `కుజ స్థితి పరిశీలన: లగ్నం నుండి ${chartData.marsHouseFromLagna}వ స్థానంలో కుజుడు ఉన్నాడు`,
-                      `Mars Position: Placed in House #${chartData.marsHouseFromLagna} from Ascendant`
-                    )
-                  : t(
-                      `కుజ దోషం లేదు: లగ్నం నుండి ${chartData.marsHouseFromLagna}వ స్థానంలో కుజుడు శుభ స్థితిలో ఉన్నాడు`,
-                      `No Kuja Dosha: Mars is favorably placed in House #${chartData.marsHouseFromLagna} from Lagna`
-                    )}
-              </strong>
-              <p className="text-xs text-slate-600">
-                {t(
-                  `జన్మ తిథి: ${chartData.birthTithiTe} · జన్మ యోగం: ${chartData.birthYogaTe}. (వ) = వక్ర గతి (Retrograde).`,
-                  `Birth Tithi: ${chartData.birthTithiTe} · Birth Yoga: ${chartData.birthYogaTe}.`
-                )}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Right: Planetary Degrees (Graha Sphuta) Table */}
-        <div className="bg-white rounded-3xl p-4 sm:p-6 border border-amber-200 shadow-2xs space-y-4">
-          <div>
-            <h4 className="text-base sm:text-lg font-bold text-amber-950 flex items-center gap-2">
-              <Table2 size={18} className="text-amber-700" />
-              <span>{t('నవగ్రహ స్ఫుటములు & నక్షత్ర పాద పట్టిక (Planetary Degrees)', 'Planetary Degrees & Nakshatra Table')}</span>
-            </h4>
-            <p className="text-xs text-slate-600 mt-0.5">
-              {t(
-                'నిరయన (Sidereal) గ్రహ డిగ్రీలు, రాశి, నక్షత్ర పాదం మరియు నవాంశ రాశి వివరాలు:',
-                'Exact Sidereal longitude inside each Rashi, Star Pada, and D9 Navamsha placement:'
-              )}
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#fde047] tracking-wide">
+              {name} గారి సంపూర్ణ బృహత్ జాతక పత్రిక
+            </h1>
+            <p className="text-xs sm:text-sm text-amber-200 font-semibold">
+              పుట్టిన తేదీ: <strong className="text-white">{birthDate}</strong> · పుట్టిన సమయం: <strong className="text-white">{birthTime}</strong> · పుట్టిన ప్రాంతం: <strong className="text-white">{selectedCity.labelTe}</strong>
             </p>
           </div>
 
-          <div className="overflow-x-auto border border-amber-200 rounded-2xl">
-            <table className="w-full text-left border-collapse text-xs sm:text-sm">
-              <thead>
-                <tr className="bg-amber-100/80 text-amber-950 border-b border-amber-200">
-                  <th className="py-2.5 px-2.5 sm:px-3 font-bold">{t('గ్రహం', 'Planet')}</th>
-                  <th className="py-2.5 px-2.5 sm:px-3 font-bold">{t('రాశి (D1)', 'Rashi')}</th>
-                  <th className="py-2.5 px-2.5 sm:px-3 font-bold">{t('డిగ్రీలు', 'Degrees')}</th>
-                  <th className="py-2.5 px-2.5 sm:px-3 font-bold">{t('నక్షత్రం (పాదం)', 'Star (Pada)')}</th>
-                  <th className="py-2.5 px-2.5 sm:px-3 font-bold">{t('నవాంశ (D9)', 'Navamsha')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-amber-100">
-                {chartData.planets.map((p) => (
-                  <tr key={p.id} className="hover:bg-amber-50/50">
-                    <td className="py-2.5 px-2.5 sm:px-3 font-bold text-amber-950">
+          {/* 8-Box Native Birth & Astrological Highlights Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+            <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2.5">
+              <span className="text-amber-300/90 block text-[10px] font-bold">👤 జాతకుని పేరు (Full Name)</span>
+              <strong className="text-white text-sm sm:text-base font-extrabold block mt-0.5">{name}</strong>
+            </div>
+            <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2.5">
+              <span className="text-amber-300/90 block text-[10px] font-bold">📅 పుట్టిన తేదీ & సమయం (DOB & Time)</span>
+              <strong className="text-white text-sm sm:text-base font-mono font-extrabold block mt-0.5">{birthDate} · {birthTime}</strong>
+            </div>
+            <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2.5">
+              <span className="text-amber-300/90 block text-[10px] font-bold">📍 జన్మ స్థలం (Place of Birth)</span>
+              <strong className="text-white text-sm font-extrabold block mt-0.5 truncate">{selectedCity.labelTe}</strong>
+            </div>
+            <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2.5">
+              <span className="text-amber-300/90 block text-[10px] font-bold">🌅 జన్మ లగ్నం & నవాంశ (Lagna D1/D9)</span>
+              <strong className="text-[#fde047] text-sm font-extrabold block mt-0.5">
+                {chartData.lagna.te} (D9: {chartData.navamshaLagna.te})
+              </strong>
+            </div>
+            <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2.5">
+              <span className="text-amber-300/90 block text-[10px] font-bold">☽ జన్మ రాశి (Moon Sign)</span>
+              <strong className="text-emerald-300 text-sm font-extrabold block mt-0.5">
+                {chartData.rashi.te} ({chartData.rashi.en})
+              </strong>
+            </div>
+            <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2.5">
+              <span className="text-amber-300/90 block text-[10px] font-bold">☉ సూర్య రాశి (True Sun Sign)</span>
+              <strong className="text-orange-300 text-sm font-extrabold block mt-0.5">
+                {chartData.planets[1]?.rashiTe || 'కర్కాటకం'} ({chartData.planets[1]?.rashiEn || 'Cancer'})
+              </strong>
+            </div>
+            <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2.5">
+              <span className="text-amber-300/90 block text-[10px] font-bold">⭐ జన్మ నక్షత్రం & పాదం</span>
+              <strong className="text-white text-sm font-extrabold block mt-0.5">
+                {chartData.nakshatraName} — {chartData.pada}వ పాదం
+              </strong>
+            </div>
+            <div className="bg-black/25 border border-amber-400/40 rounded-xl p-2.5">
+              <span className="text-amber-300/90 block text-[10px] font-bold">⏳ ప్రస్తుత దశ (Current Dasha)</span>
+              <strong className="text-[#fde047] text-xs sm:text-sm font-extrabold block mt-0.5">
+                {predictions.dashaInfo.currentMahadashaTe} – {predictions.dashaInfo.currentAntardashaTe}
+              </strong>
+            </div>
+          </div>
+        </div>
+
+        {/* Illuminated D1 Rashi & D9 Navamsha Royal Kundali Image Plates Side-by-Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 print:grid-cols-2 gap-5 items-start print-keep-together">
+          {renderRoyalKundaliImagePlate('D1')}
+          {renderRoyalKundaliImagePlate('D9')}
+        </div>
+
+        {/* Triple Reference Kuja Dosha Verification (Lagna, Moon, Venus) */}
+        <div className="bg-amber-50/95 rounded-2xl p-4 border-2 border-amber-400 shadow-2xs print-keep-together">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <strong className="text-sm sm:text-base font-extrabold text-amber-950 flex items-center gap-2">
+              <ShieldCheck size={18} className="text-amber-800" />
+              <span>త్రివిధ కుజ దోష సమగ్ర పరిశీలన (Lagna · Chandra Lagna · Shukra Lagna):</span>
+            </strong>
+            <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-amber-900 text-amber-100">
+              {predictions.tripleKuja.overallVerdictTe}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-2.5 text-xs mt-2">
+            <div className={`p-2.5 rounded-xl border font-bold ${predictions.tripleKuja.fromLagnaDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
+              1. లగ్నం నుండి: {predictions.tripleKuja.fromLagnaHouse}వ స్థానం — {predictions.tripleKuja.fromLagnaDosha ? 'కుజ దోష స్థానం' : 'కుజ దోషం లేదు'}
+            </div>
+            <div className={`p-2.5 rounded-xl border font-bold ${predictions.tripleKuja.fromMoonDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
+              2. చంద్ర లగ్నం నుండి: {predictions.tripleKuja.fromMoonHouse}వ స్థానం — {predictions.tripleKuja.fromMoonDosha ? 'పాక్షిక కుజ దోష స్థితి' : 'కుజ దోషం లేదు'}
+            </div>
+            <div className={`p-2.5 rounded-xl border font-bold ${predictions.tripleKuja.fromVenusDosha ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'}`}>
+              3. శుక్ర లగ్నం నుండి: {predictions.tripleKuja.fromVenusHouse}వ స్థానం — {predictions.tripleKuja.fromVenusDosha ? 'పాక్షిక కుజ దోష స్థితి' : 'కుజ దోషం లేదు'}
+            </div>
+          </div>
+          <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+            {predictions.tripleKuja.remedyNoteTe}
+          </p>
+        </div>
+      </div>
+
+      {/* ==========================================================================
+          PAGE 2: PLANETARY DEGREES, DIGNITY TABLE & NEECHA BHANGA RAJA YOGA
+          ========================================================================== */}
+      <div className="bg-white rounded-3xl p-4 sm:p-6 border-2 border-amber-300 shadow-2xs space-y-5 print-page-break print-keep-together">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-200 pb-3">
+          <div>
+            <h4 className="text-base sm:text-lg font-extrabold text-amber-950 flex items-center gap-2">
+              <Table2 size={18} className="text-amber-700" />
+              <span>{t('నవగ్రహ స్ఫుటములు, నక్షత్ర పాదములు & గ్రహ ఆధిపత్య బల పట్టిక (Planetary Degrees & Dignity Table)', 'Planetary Degrees, Nakshatra Pada & Dignity Table')}</span>
+            </h4>
+            <p className="text-xs text-slate-600 mt-0.5">
+              {t(
+                'నిరయన (Sidereal) గ్రహ డిగ్రీలు, రాశి (D1), నవాంశ (D9), ఉచ్చ / నీచ / స్వక్షేత్ర / వర్గోత్తమ / అస్తంగత్వ (Combust) స్థితి వివరాలు:',
+                'Exact Sidereal longitude, Rashi, Star Pada, D9 Navamsha, and Planetary Dignity (Exalted/Debilitated/Combust/Vargottama):'
+              )}
+            </p>
+          </div>
+          <span className="text-xs font-bold text-amber-900 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
+            లహిరి అయనాంశం: {chartData.ayanamsaFormatted}
+          </span>
+        </div>
+
+        <div className="overflow-x-auto border-2 border-amber-300 rounded-2xl">
+          <table className="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr className="bg-amber-900 text-amber-100 border-b-2 border-amber-700">
+                <th className="py-2.5 px-2.5 sm:px-3 font-extrabold">{t('గ్రహం', 'Planet')}</th>
+                <th className="py-2.5 px-2.5 sm:px-3 font-extrabold">{t('రాశి (D1)', 'Rashi (D1)')}</th>
+                <th className="py-2.5 px-2.5 sm:px-3 font-extrabold">{t('డిగ్రీలు', 'Degrees')}</th>
+                <th className="py-2.5 px-2.5 sm:px-3 font-extrabold">{t('నక్షత్రం (పాదం)', 'Nakshatra (Pada)')}</th>
+                <th className="py-2.5 px-2.5 sm:px-3 font-extrabold">{t('నవాంశ (D9)', 'Navamsha (D9)')}</th>
+                <th className="py-2.5 px-2.5 sm:px-3 font-extrabold">{t('గ్రహ ఆధిపత్య స్థితి (Dignity)', 'Planetary Dignity')}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-amber-200">
+              {chartData.planets.map((p) => {
+                const dig = predictions.dignities.find((d) => d.planetId === p.id);
+                return (
+                  <tr key={p.id} className="hover:bg-amber-50/60 odd:bg-amber-50/30">
+                    <td className="py-2.5 px-2.5 sm:px-3 font-extrabold text-amber-950">
                       {language === 'en' ? p.nameEn : p.nameTe}
                       {p.isRetrograde && p.id !== 'rahu' && p.id !== 'ketu' && (
                         <span className="ml-1 text-[10px] text-rose-700 font-bold">(వక్రం)</span>
                       )}
                     </td>
-                    <td className="py-2.5 px-2.5 sm:px-3 font-semibold text-slate-800">
+                    <td className="py-2.5 px-2.5 sm:px-3 font-bold text-slate-900">
                       {language === 'en' ? p.rashiEn : p.rashiTe}
                     </td>
-                    <td className="py-2.5 px-2.5 sm:px-3 font-mono tabular-nums text-xs font-bold text-amber-900">
+                    <td className="py-2.5 px-2.5 sm:px-3 font-mono tabular-nums text-xs font-extrabold text-amber-900">
                       {p.degreeFormatted}
                     </td>
-                    <td className="py-2.5 px-2.5 sm:px-3 text-slate-700">
-                      {language === 'en' ? p.nakshatraEn : p.nakshatraTe} ({p.pada})
+                    <td className="py-2.5 px-2.5 sm:px-3 font-semibold text-slate-800">
+                      {language === 'en' ? p.nakshatraEn : p.nakshatraTe} ({p.pada}వ పాదం)
                     </td>
-                    <td className="py-2.5 px-2.5 sm:px-3 font-semibold text-emerald-900">
+                    <td className="py-2.5 px-2.5 sm:px-3 font-bold text-emerald-900">
                       {p.navamshaRashiTe}
                     </td>
+                    <td className="py-2.5 px-2.5 sm:px-3 font-bold">
+                      {dig ? (
+                        <span
+                          className={`inline-block px-2 py-0.5 rounded-md text-xs border ${
+                            dig.isExalted || dig.isOwnSign || dig.isVargottama
+                              ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                              : dig.isDebilitated || dig.isCombust
+                              ? 'bg-rose-50 border-rose-300 text-rose-900'
+                              : 'bg-amber-50 border-amber-300 text-amber-950'
+                          }`}
+                        >
+                          {language === 'en' ? dig.dignityEn : dig.dignityTe}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-amber-900 font-bold">జన్మ లగ్న ప్రమాణం</span>
+                      )}
+                    </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
+
+        {/* Neecha Bhanga Raja Yoga & Special Yoga Highlights Box */}
+        {predictions.neechaBhanga.length > 0 && (
+          <div className="bg-amber-50/90 rounded-2xl p-4 border-2 border-amber-300 space-y-2">
+            <h5 className="text-sm sm:text-base font-extrabold text-amber-950">
+              👑 నీచభంగ రాజయోగ పరిశీలన (Neecha Bhanga Raja Yoga Verification):
+            </h5>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {predictions.neechaBhanga.map((nb) => (
+                <div key={nb.planetNameTe} className="bg-white rounded-xl p-3 border border-amber-200 text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <strong className="text-amber-950 text-sm">{nb.planetNameTe} ({nb.rashiTe} రాశి)</strong>
+                    <span className={`px-2 py-0.5 rounded font-bold ${nb.hasNeechaBhanga ? 'bg-emerald-100 text-emerald-900' : 'bg-rose-100 text-rose-900'}`}>
+                      {nb.hasNeechaBhanga ? 'నీచభంగ రాజయోగం సిద్ధించింది' : 'నీచ స్థితి (పరిహారం అవసరం)'}
+                    </span>
+                  </div>
+                  <p className="text-slate-700 leading-relaxed">{nb.explanationTe}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ==========================================================================
@@ -1797,8 +1984,21 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
                       <p className="text-xs text-emerald-100 mt-1">
                         {t('తెలుగు జ్యోతిషం (Telugu Jyothisham)', 'Telugu Jyothisham · Vedic Astrology')}
                       </p>
+                      <p className="text-[11px] font-mono text-amber-300 mt-1 font-bold">
+                        🌐 www.telugujyothisham.com
+                      </p>
                     </div>
                   </div>
+                </div>
+
+                {/* Gemstone Safety Advisory (Mandatory Pandit Consultation Note) */}
+                <div className="bg-rose-950/90 border-2 border-amber-400 rounded-2xl p-4 text-xs sm:text-sm text-amber-100 leading-relaxed">
+                  <strong className="text-amber-300 block mb-1">
+                    ⚠️ ముఖ్య గమనిక — రత్న ధారణ జాగ్రత్త (Gemstone Safety Advisory):
+                  </strong>
+                  <span>
+                    జాతకంలో నీచ స్థితిలో ఉన్న గ్రహానికి లేదా సూర్యునితో కలిసి అస్తంగత్వం (Combust) చెందిన గ్రహానికి సంబంధించిన రత్నాన్ని నేరుగా ధరించరాదు. ఏ రత్నాన్నైనా ధరించే ముందు ఖచ్చితంగా సిద్ధాంతుల వారిని సంప్రదించి (Wear only after consulting the Pandit), వ్యక్తిగత దశా భుక్తులను పరిశీలించిన తర్వాతే ధరించాలి.
+                  </span>
                 </div>
               </div>
             </div>
@@ -1807,16 +2007,16 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       </div>
 
       {/* Full-Width 120-Year Vimshottari Mahadasha & Antardasha Breakdown */}
-      <div className="bg-white rounded-3xl p-4 sm:p-6 border border-amber-200 shadow-2xs space-y-4">
+      <div className="bg-white rounded-3xl p-4 sm:p-6 border-2 border-amber-300 shadow-2xs space-y-4 print-keep-together">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h4 className="text-base sm:text-lg font-bold text-amber-950 flex items-center gap-2">
+            <h4 className="text-base sm:text-lg font-extrabold text-amber-950 flex items-center gap-2">
               <Star size={18} className="text-amber-700" />
               <span>{t('120 ఏళ్ల వింశోత్తరి మహాదశ & అంతర్దశ కాలచక్రం', '120-Year Vimshottari Mahadasha & Antardasha Timeline')}</span>
             </h4>
             <p className="text-xs text-slate-600 mt-0.5">
               {t(
-                `${chartData.nakshatraName} (${chartData.pada}వ పాదం) ఆధారంగా మీ జీవితంలోని నవగ్రహ మహాదశల వరుస క్రమం మరియు భుక్తి వివరాలు:`,
+                `${chartData.nakshatraName} (${chartData.pada}వ పాదం) ఆధారంగా మీ జీవితంలోని నవగ్రహ మహాదశల వరుస క్రమం మరియు భుక్తి వివరాలు (ప్రస్తుత దశ: ${predictions.dashaInfo.currentMahadashaTe} – ${predictions.dashaInfo.currentAntardashaTe}):`,
                 `Sequence of planetary Mahadasha & Antardasha periods calculated from ${chartData.nakshatraName} (Pada ${chartData.pada}):`
               )}
             </p>
@@ -1829,7 +2029,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
               key={d.lordTe}
               className={`p-4 rounded-2xl border transition-colors ${
                 d.isCurrent
-                  ? 'bg-amber-100/90 border-amber-500 shadow-2xs'
+                  ? 'bg-amber-100/90 border-2 border-amber-600 shadow-2xs'
                   : 'bg-amber-50/30 border-amber-200/80 hover:bg-amber-50/70'
               }`}
             >
@@ -1861,6 +2061,33 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Royal Pandit Blessing, Signature & Website Seal at End of Report */}
+        <div className="mt-6 rounded-2xl border-2 border-[#78350f] bg-gradient-to-r from-[#fffbeb] via-[#fef3c7] to-[#fde68a] p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 print-keep-together">
+          <div className="space-y-1 text-center sm:text-left">
+            <span className="text-xs font-extrabold text-[#9a3412] uppercase tracking-wider block">
+              || శుభం భూయాత్ · సర్వే జనాః సుఖినో భవంతు ||
+            </span>
+            <h5 className="text-base sm:text-lg font-extrabold text-[#451a03]">
+              బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు
+            </h5>
+            <p className="text-xs font-bold text-[#78350f]">
+              శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · సంప్రదింపులకు: +91 89779 86166
+            </p>
+            <p className="text-[11px] text-slate-700">
+              సాంప్రదాయ దృక్సిద్ధాంత జ్యోతిష విశ్లేషణ · వ్యక్తిగత గోప్యతా నిబంధనలకు (DPDP Act 2023) లోబడి రూపొందించబడింది.
+            </p>
+          </div>
+          <div className="text-center sm:text-right shrink-0 bg-[#451a03] text-amber-100 px-4 py-3 rounded-xl border border-amber-400">
+            <span className="text-[10px] text-amber-300 font-bold block">అధికారిక వెబ్‌సైట్</span>
+            <strong className="text-sm sm:text-base font-mono font-extrabold text-[#fde047] block mt-0.5">
+              🌐 www.telugujyothisham.com
+            </strong>
+            <span className="text-[10px] text-emerald-300 font-bold block mt-0.5">
+              ఉచిత తెలుగు జాతకం & పంచాంగం
+            </span>
+          </div>
         </div>
 
         <a

@@ -749,14 +749,16 @@ function AppContent() {
       />
 
       {!isAdminView && (
-        <LiveSiteAnnouncementBanner
-          onNavigateJathakam={() => {
-            handleSelectTab('jathakam');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onNavigatePanchangam={() => handleNavigateToPanchangam()}
-          onOpenBooking={() => handleOpenBooking()}
-        />
+        <div className="no-print">
+          <LiveSiteAnnouncementBanner
+            onNavigateJathakam={() => {
+              handleSelectTab('jathakam');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onNavigatePanchangam={() => handleNavigateToPanchangam()}
+            onOpenBooking={() => handleOpenBooking()}
+          />
+        </div>
       )}
 
       {isAdminView ? (
@@ -885,12 +887,14 @@ function AppContent() {
                 />
               </Suspense>
 
-              <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
-                <VedicAstrologyHub
-                  initialSection="pontana"
-                  onOpenBooking={() => handleOpenBooking()}
-                />
-              </Suspense>
+              <div className="no-print">
+                <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
+                  <VedicAstrologyHub
+                    initialSection="pontana"
+                    onOpenBooking={() => handleOpenBooking()}
+                  />
+                </Suspense>
+              </div>
             </div>
           )}
 
@@ -1181,19 +1185,23 @@ function AppContent() {
 
       {/* Site-Wide Internal Links (Home, Today's Panchangam, 3+ Related Tools in Telugu) & Author Bio */}
       {!isAdminView && (
-        <AuthorBioAndInternalLinks
-          onNavigateHome={() => handleSelectTab('home')}
-          onNavigatePanchangam={handleNavigateToPanchangam}
-          onNavigateCalendar={() => handleToggleCalendarRoute(true)}
-          onNavigateHubSection={handleNavigateHubSection}
-          onSelectCityTiming={(slug) => handleSelectCityTimingRoute(slug)}
-          onNavigateAbout={() => handleSelectTab('about')}
-          onNavigateContact={() => handleSelectTab('contact')}
-          onOpenLegal={handleOpenLegal}
-        />
+        <div className="no-print">
+          <AuthorBioAndInternalLinks
+            onNavigateHome={() => handleSelectTab('home')}
+            onNavigatePanchangam={handleNavigateToPanchangam}
+            onNavigateCalendar={() => handleToggleCalendarRoute(true)}
+            onNavigateHubSection={handleNavigateHubSection}
+            onSelectCityTiming={(slug) => handleSelectCityTimingRoute(slug)}
+            onNavigateAbout={() => handleSelectTab('about')}
+            onNavigateContact={() => handleSelectTab('contact')}
+            onOpenLegal={handleOpenLegal}
+          />
+        </div>
       )}
 
-      <FloatingWhatsApp />
+      <div className="no-print">
+        <FloatingWhatsApp />
+      </div>
 
       {isBookingOpen && (
         <Suspense
