@@ -257,7 +257,8 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
 
   // Build self-contained printable HTML document for reliable printing & offline saving
   const buildPrintableHtmlDocument = (): string => {
-    const siteUrl = 'https://ais-pre-krhrvntksgfwwwffzkwaf6-283907454417.asia-east1.run.app';
+    const siteUrl = 'www.telugujyothisham.com';
+    const fullSiteUrl = 'https://www.telugujyothisham.com';
 
     const renderChartTableHtml = (
       title: string,
@@ -319,18 +320,19 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
 <html lang="te">
 <head>
   <meta charset="UTF-8" />
-  <title>${name} - సంపూర్ణ జాతక ఫలితాల నివేదిక | శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600;700&display=swap" rel="stylesheet" />
+  <title>${name} - సంపూర్ణ జాతక ఫలితాల నివేదిక | ${siteUrl}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; }
     @page {
       size: A4 portrait;
-      margin: 14mm 10mm 16mm 10mm;
+      margin: 14mm 10mm 18mm 10mm;
       @bottom-center {
         content: "🌐 అధికారిక వెబ్‌సైట్: ${siteUrl} · శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం (+91 89779 86166)";
         font-size: 8.5pt;
-        font-family: 'Noto Serif Telugu', serif;
+        font-family: 'Noto Serif Telugu', Georgia, serif;
         color: #78350f;
+        font-weight: bold;
       }
     }
     body {
@@ -369,17 +371,18 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       font-size: 13.5px;
     }
 
-    /* TOP MAIN PAGE CREDENTIALS CARD */
-    .user-credentials-hero {
-      border: 2.5px solid #92400e;
+    /* PROMINENT TOP MAIN PAGE CREDENTIALS CARD */
+    .user-prominent-header-card {
+      border: 3px double #92400e;
       border-radius: 12px;
       background: #fffbeb;
       padding: 14px 18px;
       margin-bottom: 16px;
       page-break-inside: avoid;
       break-inside: avoid;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-    .deva-motto {
+    .user-prominent-motto {
       font-size: 12px;
       font-weight: bold;
       color: #065f46;
@@ -388,58 +391,77 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       margin-bottom: 4px;
       letter-spacing: 0.5px;
     }
-    .main-report-title {
+    .user-prominent-main-heading {
       font-size: 21px;
-      font-weight: bold;
+      font-weight: 800;
       color: #451a03;
       text-align: center;
       margin: 2px 0 4px 0;
     }
-    .sub-guru-title {
+    .user-prominent-guru-sub {
       font-size: 13.5px;
-      font-weight: bold;
+      font-weight: 700;
       color: #92400e;
       text-align: center;
       margin-bottom: 12px;
     }
-    .cred-grid {
-      display: table;
+
+    /* 4-PILLAR PRIMARY IDENTITY TABLE: NAME, LOCATION, DOB, TIME */
+    .user-primary-identity-table {
       width: 100%;
-      border-collapse: collapse;
-      border: 1.5px solid #b45309;
+      border-collapse: separate;
+      border-spacing: 8px 0;
+      margin-bottom: 6px;
+    }
+    .primary-identity-col {
       background: #ffffff;
+      border: 1.5px solid #d97706;
       border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 8px;
+      padding: 8px 10px;
+      vertical-align: top;
+      text-align: center;
     }
-    .cred-row {
-      display: table-row;
-    }
-    .cred-cell-lbl {
-      display: table-cell;
-      width: 22%;
-      padding: 7px 10px;
-      border: 1px solid #fed7aa;
+    .primary-identity-col.primary-name {
       background: #fef3c7;
-      color: #78350f;
-      font-weight: bold;
-      font-size: 12.5px;
-    }
-    .cred-cell-val {
-      display: table-cell;
+      border: 2px solid #b45309;
       width: 28%;
-      padding: 7px 10px;
-      border: 1px solid #fed7aa;
-      color: #1e293b;
-      font-weight: bold;
-      font-size: 13px;
     }
-    .cred-astro-bar {
+    .primary-identity-col.primary-loc {
+      width: 28%;
+    }
+    .primary-identity-col.primary-dob {
+      width: 24%;
+    }
+    .primary-identity-col.primary-time {
+      width: 20%;
+    }
+    .primary-lbl {
+      font-size: 11px;
+      font-weight: 700;
+      color: #78350f;
+      margin-bottom: 3px;
+      border-bottom: 1px dashed #fde68a;
+      padding-bottom: 2px;
+    }
+    .primary-val {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-top: 3px;
+      line-height: 1.3;
+    }
+    .primary-identity-col.primary-name .primary-val {
+      font-size: 16px;
+      color: #92400e;
+    }
+
+    .user-prominent-footer-strip {
       background: #451a03;
-      color: #fef3c7;
-      padding: 7px 12px;
+      color: #fde68a;
+      padding: 6px 12px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11.5px;
+      font-weight: 600;
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -553,7 +575,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
         font-weight: bold !important;
         z-index: 9999 !important;
       }
-      .card, table, .user-credentials-hero {
+      .card, table, .user-prominent-header-card {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
       }
@@ -571,7 +593,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
 <body>
   <!-- RUNNING PRINT FOOTER FOR EVERY PAGE IN PDF -->
   <div class="running-print-footer">
-    🌐 అధికారిక వెబ్‌సైట్: ${siteUrl} · శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · ఫోన్: +91 89779 86166
+    🌐 అధికారిక వెబ్‌సైట్: <strong>${siteUrl}</strong> · శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం · ఫోన్: +91 89779 86166
   </div>
 
   <div class="doc-container">
@@ -585,54 +607,62 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       </button>
     </div>
 
-    <!-- MAIN PAGE HEADER: USER CREDENTIALS & HOROSCOPE PROFILE (PAINA MAIN PAGE LO) -->
-    <div class="user-credentials-hero">
-      <span class="deva-motto">॥ శ్రీ లక్ష్మీ గణపతయే నమః · దృక్సిద్ధాంత ఖగోళ గణితం · వేద జ్యోతిష నివేదిక ॥</span>
-      <h1 class="main-report-title">${name} గారి సంపూర్ణ జన్మ కుండలి & జీవిత ఫలితాలు</h1>
-      <div class="sub-guru-title">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (వైదిక జ్యోతిష్య & స్మార్త పురోహితులు · +91 89779 86166)</div>
+    <!-- 1. PROMINENT TOP MAIN PAGE CREDENTIALS CARD (NAME, LOCATION/ADDRESS, DOB) -->
+    <div class="user-prominent-header-card">
+      <span class="user-prominent-motto">॥ శ్రీ లక్ష్మీ గణపతయే నమః · దృక్సిద్ధాంత ఖగోళ గణితం · వేద జ్యోతిష నివేదిక ॥</span>
+      <h1 class="user-prominent-main-heading">${name} గారి సంపూర్ణ జన్మ కుండలి & జీవిత ఫలితాలు</h1>
+      <div class="user-prominent-guru-sub">బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు (వైదిక జ్యోతిష్య & స్మార్త పురోహితులు · +91 89779 86166)</div>
 
-      <!-- MAIN CREDENTIALS GRID: NAME, PLACE, TIME, DOB -->
-      <div class="cred-grid">
-        <div class="cred-row">
-          <div class="cred-cell-lbl">జాతకుని పేరు (Name)</div>
-          <div class="cred-cell-val" style="color:#92400e;font-size:14px;">${name}</div>
-          <div class="cred-cell-lbl">పుట్టిన తేదీ (DOB)</div>
-          <div class="cred-cell-val">${birthDate}</div>
-        </div>
-        <div class="cred-row">
-          <div class="cred-cell-lbl">జన్మ స్థలం / ఊరు (Place)</div>
-          <div class="cred-cell-val">${selectedCity.labelTe} (${selectedCity.labelEn})</div>
-          <div class="cred-cell-lbl">జన్మ సమయం (Time)</div>
-          <div class="cred-cell-val">${birthTime}</div>
-        </div>
-        <div class="cred-row">
-          <div class="cred-cell-lbl">జన్మ రాశి (Moon Sign)</div>
-          <div class="cred-cell-val">${chartData.rashi.te} (${chartData.rashi.en})</div>
-          <div class="cred-cell-lbl">జన్మ నక్షత్రం & పాదం</div>
-          <div class="cred-cell-val">${chartData.nakshatraName} — ${chartData.pada}వ పాదం</div>
-        </div>
-        <div class="cred-row">
-          <div class="cred-cell-lbl">జన్మ లగ్నం (D1 Lagna)</div>
-          <div class="cred-cell-val">${chartData.lagna.te} లగ్నం</div>
-          <div class="cred-cell-lbl">నవాంశ లగ్నం (D9)</div>
-          <div class="cred-cell-val">${chartData.navamshaLagna.te}</div>
-        </div>
-        <div class="cred-row">
-          <div class="cred-cell-lbl">జన్మ తిథి & యోగం</div>
-          <div class="cred-cell-val">${chartData.birthTithiTe} · ${chartData.birthYogaTe}</div>
-          <div class="cred-cell-lbl">ప్రస్తుత మహాదశ</div>
-          <div class="cred-cell-val">${activeDasha.lordTe} (${activeDasha.startYear}–${activeDasha.endYear})</div>
-        </div>
-      </div>
+      <!-- PROMINENT IDENTITY PILLARS: USER NAME, ADDRESS/LOCATION, DATE OF BIRTH, TIME -->
+      <table class="user-primary-identity-table">
+        <tr>
+          <td class="primary-identity-col primary-name">
+            <div class="primary-lbl">👤 జాతకుని పేరు (User Name)</div>
+            <div class="primary-val">${name}</div>
+          </td>
+          <td class="primary-identity-col primary-loc">
+            <div class="primary-lbl">📍 చిరునామా / ప్రాంతం (Address / Location)</div>
+            <div class="primary-val">${selectedCity.labelTe} (${selectedCity.labelEn})</div>
+          </td>
+          <td class="primary-identity-col primary-dob">
+            <div class="primary-lbl">📅 పుట్టిన తేదీ (Date of Birth / DOB)</div>
+            <div class="primary-val">${birthDate}</div>
+          </td>
+          <td class="primary-identity-col primary-time">
+            <div class="primary-lbl">⏰ జన్మ సమయం (Birth Time)</div>
+            <div class="primary-val">${birthTime}</div>
+          </td>
+        </tr>
+      </table>
 
-      <div class="cred-astro-bar">
+      <!-- DETAILED HOROSCOPE ATTRIBUTES TABLE -->
+      <table class="summary-grid" style="margin-top:10px;margin-bottom:0;">
+        <tr>
+          <th style="width:20%;">జన్మ రాశి (Moon Sign)</th>
+          <td style="width:30%;"><strong>${chartData.rashi.te} (${chartData.rashi.en})</strong> · అధిపతి: ${chartData.rashi.lord}</td>
+          <th style="width:20%;">జన్మ నక్షత్రం & పాదం</th>
+          <td style="width:30%;"><strong>${chartData.nakshatraName} — ${chartData.pada}వ పాదం</strong></td>
+        </tr>
+        <tr>
+          <th>జన్మ లగ్నం (D1 Lagna)</th>
+          <td><strong>${chartData.lagna.te} లగ్నం</strong> · అధిపతి: ${chartData.lagna.lord}</td>
+          <th>నవాంశ లగ్నం (D9)</th>
+          <td><strong>${chartData.navamshaLagna.te}</strong></td>
+        </tr>
+        <tr>
+          <th>జన్మ తిథి & యోగం</th>
+          <td>${chartData.birthTithiTe} · ${chartData.birthYogaTe}</td>
+          <th>ప్రస్తుత మహాదశ</th>
+          <td><strong>${activeDasha.lordTe} (${activeDasha.startYear}–${activeDasha.endYear})</strong></td>
+        </tr>
+      </table>
+
+      <div class="user-prominent-footer-strip">
         <span><strong>లహిరి అయనాంశం:</strong> ${chartData.ayanamsaFormatted}</span>
         <span>·</span>
-        <span><strong>రాశ్యాధిపతి:</strong> ${chartData.rashi.lord}</span>
+        <span><strong>అధికారిక వెబ్‌సైట్:</strong> ${siteUrl}</span>
         <span>·</span>
-        <span><strong>లగ్నాధిపతి:</strong> ${chartData.lagna.lord}</span>
-        <span>·</span>
-        <span><strong>వెబ్‌సైట్:</strong> ${siteUrl}</span>
+        <span><strong>సంప్రదించుటకు:</strong> +91 89779 86166</span>
       </div>
     </div>
 
