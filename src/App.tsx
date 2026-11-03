@@ -254,13 +254,15 @@ export function resolveTabFromLocation(): NavTab {
     pathname === '/gochara-phalalu' ||
     pathname.startsWith('/gochara-phalalu/') ||
     pathname === '/yelinati-shani' ||
+    pathname === '/astroinformatics-research' ||
     Boolean(resolveCityTimingSlugFromLocation()) ||
     hash === '#panchangam' ||
     hash === '#dina-phalam' ||
     hash === '#rashi-chakram' ||
     hash === '#muhurthalu' ||
     hash === '#panchangam-faq' ||
-    hash === '#vedic-astrology-hub'
+    hash === '#vedic-astrology-hub' ||
+    hash === '#research'
   ) {
     return 'panchangam';
   }
@@ -298,6 +300,7 @@ export function resolveHubSectionFromLocation(): HubSectionId {
   if (pathname === '/shubha-muhurthalu' || pathname === '/festivals') return 'muhurtham';
   if (pathname === '/vastu-shastra-telugu') return 'vastu';
   if (pathname === '/dosha-pariharalu') return 'dosha';
+  if (pathname === '/astroinformatics-research' || pathname === '/research') return 'research';
   return 'pontana';
 }
 

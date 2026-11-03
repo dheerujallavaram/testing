@@ -565,6 +565,37 @@ export const RashiCompatibilityTool: React.FC<RashiCompatibilityProps> = ({
       }
     }
 
+    // 4. Gana Dosha Exception Check ("మైత్రీ చేత్ గణ దోషో న విద్యతే")
+    const bGana = bNak.gana;
+    const gGana = gNak.gana;
+    const isGanaConflict = (bGana === 'Rakshasa' && gGana !== 'Rakshasa') || (gGana === 'Rakshasa' && bGana !== 'Rakshasa');
+    const maitriPts = result.kootas.find((k) => k.nameTelugu.includes('గ్రహ మైత్రి'))?.scoredPoints ?? 0;
+    const isGanaExempted = isGanaConflict && maitriPts >= 4;
+    const ganaStatusTe = !isGanaConflict
+      ? 'గణ అనుకూలత: ఇరువర్గాల గణ స్వభావాలు అనుకూలంగా ఉన్నాయి (దోషం లేదు).'
+      : isGanaExempted
+      ? 'శాస్త్రోక్త గణ దోష మినహాయింపు (మైత్రీ చేత్ గణ దోషో న విద్యతే): రాశ్యాధిపతుల మధ్య బలమైన మిత్రత్వం (4+/5) ఉన్నందున గణ దోషం పూర్తిగా రద్దయింది.'
+      : 'గణ భేదం: ఒకరిది రాక్షస గణం, మరొకరిది దేవ/మనుష్య గణం. పరస్పర సర్దుబాటు వైఖరి మరియు గురు ఆరాధన శ్రేయస్కరం.';
+    const ganaStatusEn = !isGanaConflict
+      ? 'Gana Harmony: Naturally compatible temperaments.'
+      : isGanaExempted
+      ? 'Gana Dosha Mitigated by High Planetary Friendship (Maitri Ched Gana Dosho Na Vidyate).'
+      : 'Gana Friction: One partner possesses Rakshasa Gana; mutual patience and Jupiter worship recommended.';
+
+    // 5. Bhakoot Dosha Exception Check ("షష్టాష్టకేపి మైత్రే సతి న దోషః")
+    const bhakootKoota = result.kootas.find((k) => k.nameTelugu.includes('భకూట'));
+    const isBhakootExempted = bhakootKoota?.descriptionTelugu.includes('పరిహారం') || false;
+    const bhakootStatusTe = (bhakootKoota?.scoredPoints ?? 7) >= 7
+      ? 'సంపూర్ణ భకూట శుద్ధి: రాశుల మధ్య ద్వి-ద్వాదశ, షష్టాష్టక దోషాలు లేవు (7/7 శుభం).'
+      : isBhakootExempted
+      ? 'భకూట దోష పరిహారం (షష్టాష్టకేపి మైత్రే సతి న దోషః): రాశ్యాధిపతుల పరస్పర మిత్రత్వం వల్ల సంసారానికి ఎలాంటి ఆటంకం లేదు.'
+      : 'భకూట గమనిక: ద్వి-ద్వాదశ లేదా షష్టాష్టక స్థితి ఉంది. వివాహానంతరం పరస్పర ఆర్థిక పారదర్శకత మరియు శివపార్వతుల పూజ శుభకరం.';
+    const bhakootStatusEn = (bhakootKoota?.scoredPoints ?? 7) >= 7
+      ? 'Pure Bhakoot Harmony: Free from 2-12 or 6-8 rashi tensions (7/7).'
+      : isBhakootExempted
+      ? 'Bhakoot Conflict Neutralized: Planetary ruler friendship supersedes angular tension.'
+      : 'Bhakoot Note: Angular difference observed; financial transparency and Shiva-Parvati worship recommended.';
+
     return {
       bNak,
       gNak,
@@ -579,8 +610,15 @@ export const RashiCompatibilityTool: React.FC<RashiCompatibilityProps> = ({
       kujaBalanced,
       kujaVerdictTe,
       kujaVerdictEn,
+      isGanaConflict,
+      isGanaExempted,
+      ganaStatusTe,
+      ganaStatusEn,
+      isBhakootExempted,
+      bhakootStatusTe,
+      bhakootStatusEn,
     };
-  }, [brideNakId, bridePada, groomNakId, groomPada, brideRashi, groomRashi, brideKujaHouse, groomKujaHouse, result.totalScore]);
+  }, [brideNakId, bridePada, groomNakId, groomPada, brideRashi, groomRashi, brideKujaHouse, groomKujaHouse, result.totalScore, result.kootas]);
 
   const brideObj = RASHI_CHART_ORDER.find((r) => r.key === brideRashi) || RASHI_CHART_ORDER[0];
   const groomObj = RASHI_CHART_ORDER.find((r) => r.key === groomRashi) || RASHI_CHART_ORDER[1];
@@ -886,78 +924,138 @@ export const RashiCompatibilityTool: React.FC<RashiCompatibilityProps> = ({
         </div>
       </div>
 
-      {/* NEW: Deep Shastric Exemption & Kuja Dosha Balancing Report */}
-      <div className="grid md:grid-cols-3 gap-4">
-        {/* Card 1: Nadi Dosha & Pada-Vedh Exemption */}
-        <div
-          className={`rounded-2xl p-4 border ${
-            deepShastricAnalysis.isNadiSafe
-              ? 'bg-emerald-50/70 border-emerald-300'
-              : 'bg-amber-50/80 border-amber-300'
-          } space-y-2`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-amber-900 uppercase">
-              {t('1. నాడీ & పాద-వేధ పరిశీలన', '1. Nadi & Pada Exemption Check')}
-            </span>
-            <CheckCircle2
-              size={16}
-              className={deepShastricAnalysis.isNadiSafe ? 'text-emerald-700' : 'text-amber-700'}
-            />
-          </div>
-          <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
-            {language === 'te'
-              ? deepShastricAnalysis.nadiExemptionReasonTe
-              : deepShastricAnalysis.nadiExemptionReasonEn}
-          </p>
+      {/* NEW: Smart Canonical Exceptions & Kuja Dosha Balancing Report (5 Pillars) */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Sparkles size={16} className="text-amber-700" />
+          <h4 className="text-sm sm:text-base font-bold text-amber-950 uppercase tracking-wide">
+            {t(
+              'శాస్త్రోక్త మినహాయింపుల విశ్లేషణ ఇంజిన్ • Smart Canonical Exceptions & Remedies',
+              'Smart Canonical Exceptions & Dosha Mitigation Engine'
+            )}
+          </h4>
         </div>
 
-        {/* Card 2: South Indian Rajju & Dasha Sandhi Check */}
-        <div
-          className={`rounded-2xl p-4 border ${
-            !deepShastricAnalysis.sameRajju
-              ? 'bg-emerald-50/70 border-emerald-300'
-              : 'bg-amber-50/80 border-amber-300'
-          } space-y-2`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-amber-900 uppercase">
-              {t('2. దక్షిణ భారత రజ్జు & దశా మైత్రి', '2. South Indian Rajju & Dasha Check')}
-            </span>
-            <Shield
-              size={16}
-              className={!deepShastricAnalysis.sameRajju ? 'text-emerald-700' : 'text-amber-700'}
-            />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Card 1: Nadi Dosha & Pada-Vedh Exemption */}
+          <div
+            className={`rounded-2xl p-4 border ${
+              deepShastricAnalysis.isNadiSafe
+                ? 'bg-emerald-50/70 border-emerald-300'
+                : 'bg-amber-50/80 border-amber-300'
+            } space-y-2`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-900 uppercase">
+                {t('1. నాడీ & పాద-వేధ మినహాయింపు', '1. Nadi & Pada-Vedh Exemption')}
+              </span>
+              <CheckCircle2
+                size={16}
+                className={deepShastricAnalysis.isNadiSafe ? 'text-emerald-700' : 'text-amber-700'}
+              />
+            </div>
+            <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
+              {language === 'te'
+                ? deepShastricAnalysis.nadiExemptionReasonTe
+                : deepShastricAnalysis.nadiExemptionReasonEn}
+            </p>
           </div>
-          <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
-            {language === 'te'
-              ? deepShastricAnalysis.rajjuStatusTe
-              : deepShastricAnalysis.rajjuStatusEn}
-          </p>
-        </div>
 
-        {/* Card 3: Kuja Dosha Percentage & Balancing */}
-        <div
-          className={`rounded-2xl p-4 border ${
-            deepShastricAnalysis.kujaBalanced
-              ? 'bg-emerald-50/70 border-emerald-300'
-              : 'bg-rose-50/80 border-rose-300'
-          } space-y-2`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-amber-900 uppercase">
-              {t('3. కుజ దోష శాతం (%) & సమతుల్యత', '3. Kuja Dosha % & Balancing')}
-            </span>
-            <Flame
-              size={16}
-              className={deepShastricAnalysis.kujaBalanced ? 'text-emerald-700' : 'text-rose-700'}
-            />
+          {/* Card 2: Gana Dosha Exception */}
+          <div
+            className={`rounded-2xl p-4 border ${
+              !deepShastricAnalysis.isGanaConflict || deepShastricAnalysis.isGanaExempted
+                ? 'bg-emerald-50/70 border-emerald-300'
+                : 'bg-amber-50/80 border-amber-300'
+            } space-y-2`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-900 uppercase">
+                {t('2. గణ దోష శాస్త్రోక్త నివృత్తి', '2. Gana Dosha Maitri Mitigation')}
+              </span>
+              <Users
+                size={16}
+                className={!deepShastricAnalysis.isGanaConflict || deepShastricAnalysis.isGanaExempted ? 'text-emerald-700' : 'text-amber-700'}
+              />
+            </div>
+            <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
+              {language === 'te'
+                ? deepShastricAnalysis.ganaStatusTe
+                : deepShastricAnalysis.ganaStatusEn}
+            </p>
           </div>
-          <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
-            {language === 'te'
-              ? deepShastricAnalysis.kujaVerdictTe
-              : deepShastricAnalysis.kujaVerdictEn}
-          </p>
+
+          {/* Card 3: Bhakoot Dosha Exception */}
+          <div
+            className={`rounded-2xl p-4 border ${
+              deepShastricAnalysis.isBhakootExempted || !deepShastricAnalysis.bhakootStatusTe.includes('గమనిక')
+                ? 'bg-emerald-50/70 border-emerald-300'
+                : 'bg-amber-50/80 border-amber-300'
+            } space-y-2`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-900 uppercase">
+                {t('3. భకూట దోష మిత్రత్వ ఉపశమనం', '3. Bhakoot Friendship Exemption')}
+              </span>
+              <Scale
+                size={16}
+                className={deepShastricAnalysis.isBhakootExempted || !deepShastricAnalysis.bhakootStatusTe.includes('గమనిక') ? 'text-emerald-700' : 'text-amber-700'}
+              />
+            </div>
+            <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
+              {language === 'te'
+                ? deepShastricAnalysis.bhakootStatusTe
+                : deepShastricAnalysis.bhakootStatusEn}
+            </p>
+          </div>
+
+          {/* Card 4: South Indian Rajju & Dasha Sandhi Check */}
+          <div
+            className={`rounded-2xl p-4 border ${
+              !deepShastricAnalysis.sameRajju
+                ? 'bg-emerald-50/70 border-emerald-300'
+                : 'bg-amber-50/80 border-amber-300'
+            } space-y-2`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-900 uppercase">
+                {t('4. దక్షిణ భారత రజ్జు బలం', '4. South Indian Rajju Longevity')}
+              </span>
+              <Shield
+                size={16}
+                className={!deepShastricAnalysis.sameRajju ? 'text-emerald-700' : 'text-amber-700'}
+              />
+            </div>
+            <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
+              {language === 'te'
+                ? deepShastricAnalysis.rajjuStatusTe
+                : deepShastricAnalysis.rajjuStatusEn}
+            </p>
+          </div>
+
+          {/* Card 5: Kuja Dosha Percentage & Balancing */}
+          <div
+            className={`rounded-2xl p-4 border sm:col-span-2 lg:col-span-2 ${
+              deepShastricAnalysis.kujaBalanced
+                ? 'bg-emerald-50/70 border-emerald-300'
+                : 'bg-rose-50/80 border-rose-300'
+            } space-y-2`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-900 uppercase">
+                {t('5. కుజ దోష శాతం (%) & సమతుల్యత (Dosha Samyam)', '5. Kuja Dosha % & Mutual Cancellation')}
+              </span>
+              <Flame
+                size={16}
+                className={deepShastricAnalysis.kujaBalanced ? 'text-emerald-700' : 'text-rose-700'}
+              />
+            </div>
+            <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
+              {language === 'te'
+                ? deepShastricAnalysis.kujaVerdictTe
+                : deepShastricAnalysis.kujaVerdictEn}
+            </p>
+          </div>
         </div>
       </div>
 

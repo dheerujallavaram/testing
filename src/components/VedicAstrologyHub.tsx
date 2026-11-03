@@ -14,6 +14,7 @@ import {
   Compass,
   Baby,
   ScrollText,
+  Cpu,
 } from 'lucide-react';
 import { RashiCompatibilityTool } from './RashiCompatibilityTool';
 import { WEEK_DATA } from '../data/panchangamData';
@@ -32,10 +33,14 @@ const VastuChakraGuide = lazy(() =>
 const ShaniDoshaChecker = lazy(() =>
   import('./ShaniDoshaChecker').then((m) => ({ default: m.ShaniDoshaChecker }))
 );
+const AstroinformaticsResearch = lazy(() =>
+  import('./AstroinformaticsResearch').then((m) => ({ default: m.AstroinformaticsResearch }))
+);
 
 export type HubSectionId =
   | 'pontana'
   | 'kundali'
+  | 'research'
   | 'akshara'
   | 'babynames'
   | 'vastu'
@@ -198,6 +203,7 @@ export const HUB_SECTION_PATHS: Record<HubSectionId, string> = {
   ugadi: '/ugadi-rashi-phalalu',
   muhurtham: '/shubha-muhurthalu',
   dosha: '/dosha-pariharalu',
+  research: '/astroinformatics-research',
 };
 
 export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
@@ -255,6 +261,7 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
   const navButtons: { id: HubSectionId; labelTe: string; labelEn: string; icon: React.ComponentType<{ size?: number; className?: string }> }[] = [
     { id: 'kundali', labelTe: 'ఉచిత జన్మ కుండలి & మహాదశ', labelEn: 'Free Janma Kundali & Dasha', icon: ScrollText },
     { id: 'pontana', labelTe: 'వివాహ రాశి పొంతన (36 గుణాలు)', labelEn: 'Marriage Guna Milan (36 Pts)', icon: Heart },
+    { id: 'research', labelTe: 'ఆస్ట్రోఇన్ఫర్మేటిక్స్ & రీసెర్చ్', labelEn: 'Astroinformatics & Research', icon: Cpu },
     { id: 'akshara', labelTe: 'పేరు మొదటి అక్షరంతో రాశి-నక్షత్రం', labelEn: 'Name First Letter Rashi Finder', icon: Search },
     { id: 'babynames', labelTe: '27 నక్షత్రాల పిల్లల పేర్లు', labelEn: '27 Nakshatra Baby Names', icon: Baby },
     { id: 'vastu', labelTe: 'గృహ వాస్తు చక్రం', labelEn: 'Gruha Vastu Compass', icon: Compass },
@@ -652,6 +659,15 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* SECTION 6: ASTROINFORMATICS & ACADEMIC RESEARCH */}
+      {activeSection === 'research' && (
+        <div className="animate-fadeIn">
+          <Suspense fallback={<div className="py-12 text-center text-sm text-amber-900">ఆస్ట్రోఇన్ఫర్మేటిక్స్ రీసెర్చ్ లోడ్ అవుతోంది...</div>}>
+            <AstroinformaticsResearch onOpenBooking={onOpenBooking} />
+          </Suspense>
         </div>
       )}
     </section>

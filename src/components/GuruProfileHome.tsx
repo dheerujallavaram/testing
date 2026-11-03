@@ -36,6 +36,7 @@ import {
   getTodayIsoDateIST,
 } from '../seo/panchangamSsrEngine';
 import { DailySubhashithamCard } from './DailySubhashithamCard';
+import { DevoteeReviewsSection } from './DevoteeReviewsSection';
 
 const ShaniDoshaChecker = lazy(() =>
   import('./ShaniDoshaChecker').then((m) => ({ default: m.ShaniDoshaChecker }))
@@ -150,35 +151,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
     },
   ];
 
-  const testimonials = [
-    {
-      name: t('కె. రామకృష్ణ & పద్మావతి', 'K. Ramakrishna & Padmavathi'),
-      location: t('హైదరాబాద్', 'Hyderabad'),
-      comment: t(
-        'మా అబ్బాయి వివాహ ముహూర్తం మరియు వివాహ పొంతన విషయంలో గురువుగారు ఇచ్చిన సలహాలు ఎంతో ఉపయోగపడ్డాయి. వివాహం అద్భుతంగా జరిగింది.',
-        'Guruji’s marriage compatibility guidance and muhurtham determination for our son was remarkably accurate and blessed.'
-      ),
-      rating: 5,
-    },
-    {
-      name: t('శ్రీనివాస రావు గారు', 'Srinivasa Rao'),
-      location: t('డల్లాస్, అమెరికా (USA NRI)', 'Dallas, USA'),
-      comment: t(
-        '100 పేజీల బృహత్ జాతక కుండలి రిపోర్ట్ తీసుకున్నాను. నా వ్యాపార మరియు కెరీర్ ప్రణాళికకు ఎంతో ఉపయోగపడింది. గురువుగారికి కృతజ్ఞతలు.',
-        'The 100-page Brihat Jataka PDF report provided clear life predictions. Recommended for overseas Telugu families.'
-      ),
-      rating: 5,
-    },
-    {
-      name: t('ఎం. లక్ష్మీ ప్రసన్న', 'M. Lakshmi Prasanna'),
-      location: t('విజయవాడ', 'Vijayawada'),
-      comment: t(
-        'గృహప్రవేశ ముహూర్తం మరియు నవగ్రహ శాంతి హోమం గురువుగారి సమక్షంలో జరిపించుకున్నాము. ఇంట్లో అఖండమైన శాంతి, శ్రేయస్సు లభించింది.',
-        'We performed our Gruhapravesham and Navagraha Homam under Guruji’s divine guidance. It brought immense peace and prosperity.'
-      ),
-      rating: 5,
-    },
-  ];
+
 
   return (
     <div className="space-y-12 font-telugu max-w-6xl mx-auto">
@@ -702,41 +675,9 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
       </div>
 
       {/* ============================================================== */}
-      {/* 7. DEVOTEE TESTIMONIALS                                        */}
+      {/* 7. DEVOTEE TESTIMONIALS & USER REVIEWS                         */}
       {/* ============================================================== */}
-      <div className="space-y-6">
-        <GopuramSectionHeader
-          kicker={t('భక్తుల అనుభవాలు • Devotee Testimonials', 'Devotee Experiences')}
-          title={t('తెలుగు రాష్ట్రాలు & విదేశీ భక్తుల విశ్వసనీయత', 'Trusted by Families Across the World')}
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((testi, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-3xl p-6 border-2 border-amber-200 shadow-xs flex flex-col justify-between space-y-4"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center text-amber-500 gap-0.5">
-                  {[...Array(testi.rating)].map((_, i) => (
-                    <Star key={i} size={15} className="fill-amber-400 text-amber-500" />
-                  ))}
-                </div>
-                <p className="text-xs sm:text-sm text-slate-700 italic leading-relaxed">
-                  "{testi.comment}"
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-amber-100 flex items-center justify-between">
-                <span className="text-xs font-bold text-amber-950">{testi.name}</span>
-                <span className="text-[11px] bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full font-semibold">
-                  {testi.location}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <DevoteeReviewsSection />
     </div>
   );
 };

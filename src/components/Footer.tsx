@@ -28,6 +28,7 @@ const SEO_HUB_LINKS: { section: HubSectionId; path: string; labelTe: string; lab
   { section: 'muhurtham', path: '/shubha-muhurthalu', labelTe: 'శుభ ముహూర్తాలు & పండుగల క్యాలెండర్', labelEn: 'Auspicious Muhurthams & Festivals' },
   { section: 'vastu', path: '/vastu-shastra-telugu', labelTe: 'గృహ వాస్తు చక్రం & దిక్పాలక నియమాలు', labelEn: 'Telugu Gruha Vastu Shastra Guide' },
   { section: 'dosha', path: '/dosha-pariharalu', labelTe: 'ఏలినాటి శని, అష్టమ శని & కుజ దోష పరిహారాలు', labelEn: 'Elinati Shani & Kuja Dosha Remedies' },
+  { section: 'research', path: '/astroinformatics-research', labelTe: 'ఆస్ట్రోఇన్ఫర్మేటిక్స్ & జ్యోతిష శాస్త్ర పరిశోధన', labelEn: 'Astroinformatics & Astrometry Research' },
 ];
 
 const VERIFIED_CITY_PANCHANGAM_LINKS: {

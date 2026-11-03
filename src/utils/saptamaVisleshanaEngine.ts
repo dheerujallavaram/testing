@@ -1,4 +1,4 @@
-import { KundaliPlanetPosition } from './astronomyPanchangam';
+import { KundaliPlanetDetail } from './astronomyPanchangam';
 
 export interface SaptamaMarriageAnalysis {
   saptamaRashiTe: string;
@@ -295,7 +295,7 @@ const PLANET_JAPA_REMEDY: Record<
 };
 
 export function generateSaptamaMarriageAnalysis(
-  planets: KundaliPlanetPosition[],
+  planets: KundaliPlanetDetail[],
   lagnaIdx: number,
   birthDate: string
 ): SaptamaMarriageAnalysis {
