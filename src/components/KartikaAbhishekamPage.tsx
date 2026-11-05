@@ -28,6 +28,7 @@ import {
   BookOpen,
   Compass,
   Check,
+  Share2,
 } from 'lucide-react';
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
@@ -99,6 +100,47 @@ export const KartikaAbhishekamPage: React.FC = () => {
   const [rashiSearchQuery, setRashiSearchQuery] = useState('');
   const [copiedMantraId, setCopiedMantraId] = useState<string | null>(null);
   const [rashiSelectionToast, setRashiSelectionToast] = useState<string | null>(null);
+  const [copiedPromo, setCopiedPromo] = useState(false);
+
+  const promoAdText = [
+    '🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — telugujyothisham.com* 🕉️',
+    '✍️ *బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు*',
+    '',
+    '🔱 *కార్తీక మాస పవిత్ర ఏకవార రుద్రాభిషేకం & పవిత్ర ప్రసాదం* 🔱',
+    'నెల రోజుల పాటు భక్తుల గోత్రనామాలతో నిత్యం శ్రీ పరమేశ్వరునికి ఏకవార రుద్రాభిషేకం & బిల్వార్చన నిర్వహించబడును.',
+    '',
+    '🎁 *భక్తుల స్వగృహానికి చేర్చబడు దివ్య ప్రసాదములు (స్పీడ్ పోస్ట్ ద్వారా ఉచిత డెలివరీ):*',
+    '• 🌿 పరమశివుని పవిత్ర చందన గంధం',
+    '• 🪔 మహాన్యాస పూర్వక వేద విభూతి',
+    '• 🛡️ కాశీ విశ్వనాథుని సన్నిధి నుండి తెచ్చిన కాలభైరవ రక్షా సూత్రం (సమస్త దుష్ట శక్తులు, దృష్టి దోషాల నివారణ)',
+    '',
+    '🌟 *ద్వాదశ రాశుల విశేష ఫలితాలు:* ఏలినాటి శని, కుజ దోష నివారణ, ఆకస్మిక ధనలాభం, దాంపత్య సౌఖ్యం, సత్సంతాన ప్రాప్తి & సమస్త కార్యసిద్ధి.',
+    '',
+    '💰 *నెల రోజుల దక్షిణ:* ₹2,500/- (రోజుకు కేవలం ₹83 మాత్రమే!)',
+    '🏦 *అధికారిక కొటాక్ UPI ID:* 7013079166@kotakbank (Kotak Mahindra Bank)',
+    '👉 *మీ గోత్రనామాలు ఆన్‌లైన్‌లో నమోదు చేసుకోండి:*',
+    '🔗 https://www.telugujyothisham.com/kartika-abhishekam',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '🌐 *మన వెబ్‌సైట్ ఉచిత సేవలు (Free Vedic Astrology Tools):*',
+    '📜 *ఉచిత 30-పేజీల తెలుగు జన్మ కుండలి PDF:* https://www.telugujyothisham.com/janma-kundali',
+    '📅 *నిత్య తెలుగు పంచాంగం & రాశి ఫలితాలు:* https://www.telugujyothisham.com/panchangam',
+    '✨ *50+ వేద శుభ ముహూర్తాల నిర్ణయం:* https://www.telugujyothisham.com/muhurtham',
+    '💍 *36 గుణాల వివాహ పొంతన:* https://www.telugujyothisham.com/vivaha-pontana',
+    '🏠 *గృహ వాస్తు శాస్త్ర చక్రం:* https://www.telugujyothisham.com/vastu-shastra-telugu',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '',
+    '📞 *సంప్రదించండి (WhatsApp):* +91 8977986166',
+    '🌐 *వెబ్‌సైట్:* https://www.telugujyothisham.com',
+    '',
+    '🙏 సర్వేజనా సుఖినోభవంతు! ఈ పవిత్ర సందేశాన్ని బంధుమిత్రులకు షేర్ చేయండి.'
+  ].join('\n');
+
+  const handleCopyPromoText = () => {
+    navigator.clipboard?.writeText(promoAdText);
+    setCopiedPromo(true);
+    setTimeout(() => setCopiedPromo(false), 2500);
+  };
 
   const UPI_ID = '7013079166@kotakbank';
   const DAKSHINA_AMOUNT = '2,500';
@@ -775,6 +817,36 @@ export const KartikaAbhishekamPage: React.FC = () => {
                 <span><strong>సోమవారాల విశేష పూజ:</strong> కార్తీక సోమవారాలు, కోటి సోమవారము మరియు కార్తీక పౌర్ణమి నాడు విశేష మహాన్యాస పూర్వక రుద్రాభిషేకం అదనపు రుసుము లేకుండా ఉచితంగా నిర్వహించబడును.</span>
               </li>
             </ul>
+          </div>
+
+          {/* Viral WhatsApp Promotional Share Card */}
+          <div className="bg-gradient-to-br from-[#12381f] via-emerald-950 to-[#0e2c17] rounded-3xl p-6 border-2 border-emerald-500/60 shadow-xl space-y-3.5">
+            <div className="flex items-center gap-2 text-emerald-300 text-xs font-bold uppercase tracking-wider">
+              <Share2 size={16} />
+              వాట్సాప్‌లో బంధుమిత్రులతో పంచుకోండి • Share Divine Blessings
+            </div>
+            <p className="text-xs text-emerald-100/90 leading-relaxed">
+              కార్తీక ఏకవార రుద్రాభిషేకం, ఉచిత 30-పేజీల జన్మ కుండలి మరియు దిన పంచాంగ సమాచారాన్ని మీ వాట్సాప్ గ్రూపులలో మరియు కుటుంబ సభ్యులతో పంచుకోండి:
+            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-1">
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(promoAdText)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-transform hover:scale-[1.02]"
+              >
+                <Share2 size={16} />
+                WhatsApp లో షేర్ చేయండి ➔
+              </a>
+              <button
+                type="button"
+                onClick={handleCopyPromoText}
+                className="w-full sm:w-auto px-4 py-3 rounded-xl bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 border border-emerald-400/40 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shrink-0"
+              >
+                <Copy size={14} />
+                {copiedPromo ? 'కాపీ అయింది!' : 'యాడ్ స్క్రిప్ట్ కాపీ'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
