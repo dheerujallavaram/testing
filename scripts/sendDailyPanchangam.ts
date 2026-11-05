@@ -52,40 +52,18 @@ async function run() {
     }
   }
 
-  const phone = process.env.WHATSAPP_PHONE || '918977986166';
-  const callMeBotKey = process.env.CALLMEBOT_API_KEY;
-  const metaToken = process.env.META_WA_TOKEN;
-  const metaPhoneId = process.env.META_PHONE_ID;
-
-  // 2. Meta WhatsApp Cloud API (Official)
-  if (metaToken && metaPhoneId) {
-    const res = await fetch(`https://graph.facebook.com/v20.0/${metaPhoneId}/messages`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${metaToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messaging_product: 'whatsapp',
-        to: phone,
-        type: 'text',
-        text: { preview_url: true, body: message },
-      }),
-    });
-    const data = await res.json();
-    console.log('Meta WhatsApp Cloud API response:', data);
-    return;
-  }
-
-  // 3. CallMeBot Free Personal WhatsApp Webhook
-  if (callMeBotKey) {
-    const url = `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(
-      phone
-    )}&text=${encodeURIComponent(message)}&apikey=${encodeURIComponent(callMeBotKey)}`;
-    const res = await fetch(url);
-    const body = await res.text();
-    console.log('CallMeBot WhatsApp API response:', body);
-    return;
+  // 2. WhatsApp Automation (Meta Official Cloud API / CallMeBot Free Webhook)
+  try {
+    const { sendWhatsAppTextMessage } = await import('./whatsappBot');
+    const waPhone = process.env.WHATSAPP_PHONE || '918977986166';
+    const waResult = await sendWhatsAppTextMessage(waPhone, message);
+    if (waResult.success) {
+      console.log(`✅ Sent Daily Panchangam to WhatsApp (${waPhone}) via ${waResult.provider}`);
+    } else {
+      console.log(`ℹ️ WhatsApp automation status: ${waResult.error || 'Ready for configuration'}`);
+    }
+  } catch (waErr) {
+    console.error('WhatsApp send error:', waErr);
   }
 
   // 4. Automated LinkedIn & Instagram Posting

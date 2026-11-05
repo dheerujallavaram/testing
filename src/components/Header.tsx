@@ -14,13 +14,14 @@ import {
   Search,
   ArrowRight,
   Clock,
+  Flame,
 } from 'lucide-react';
 import { playTempleBell } from '../utils/audioChime';
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
 import { ASTRO_SEARCH_TOPICS, AstroSearchTopic, searchAstroTopics } from '../data/astroSearchIndex';
 
-export type NavTab = 'home' | 'panchangam' | 'muhurtham' | 'jathakam' | 'awards' | 'services' | 'about' | 'contact';
+export type NavTab = 'home' | 'panchangam' | 'kartika' | 'muhurtham' | 'jathakam' | 'awards' | 'services' | 'about' | 'contact';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -30,6 +31,7 @@ interface HeaderProps {
 }
 
 const QUICK_SEARCH_CHIPS: { labelTe: string; labelEn: string; query: string }[] = [
+  { labelTe: 'కార్తీక రుద్రాభిషేకం (Kartika Abhishekam)', labelEn: 'Kartika Puja', query: 'Kartika Abhishekam' },
   { labelTe: 'వాస్తు (Vastu)', labelEn: 'Vastu', query: 'Vastu' },
   { labelTe: 'ముహూర్తం (Muhurtham)', labelEn: 'Muhurtham', query: 'Muhurtham' },
   { labelTe: 'పూజా సేవలు (Pooja Services)', labelEn: 'Pooja Services', query: 'Pooja services' },
@@ -67,6 +69,13 @@ export const Header: React.FC<HeaderProps> = ({
   }[] = [
     { id: 'home', label: t('హోమ్ పేజీ', 'Home'), shortLabelTe: 'హోమ్', shortLabelEn: 'Home', icon: Home },
     { id: 'panchangam', label: t('నేటి పంచాంగం', 'Panchangam'), shortLabelTe: 'పంచాంగం', shortLabelEn: 'Panchangam', icon: Calendar },
+    {
+      id: 'kartika',
+      label: t('కార్తీక రుద్రాభిషేకం', 'Kartika Abhishekam'),
+      shortLabelTe: 'కార్తీక పూజ',
+      shortLabelEn: 'Kartika Puja',
+      icon: Flame,
+    },
     {
       id: 'muhurtham',
       label: t('శుభ ముహూర్తం', 'Muhurtham Finder'),

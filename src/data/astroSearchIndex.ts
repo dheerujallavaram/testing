@@ -21,6 +21,32 @@ export interface AstroSearchTopic {
 
 export const ASTRO_SEARCH_TOPICS: AstroSearchTopic[] = [
   {
+    id: 'kartika-abhishekam',
+    titleTe: 'కార్తీక మాస ఏకవార రుద్రాభిషేకం – నెల రోజుల నిత్య సంకల్పం',
+    titleEn: 'Kartika Masam Ekavara Rudrabhishekam – 30 Days Daily Puja',
+    descriptionTe: 'నెల రోజుల పాటు మీ గోత్రనామాలతో పరమేశ్వరునికి ఏకవార రుద్రాభిషేకం. ప్రసాదంగా కాశీ కాలభైరవ రక్ష, విభూతి, గంధం.',
+    descriptionEn: 'Daily 30-day Ekavara Rudrabhishekam with devotee gotra-namas. Consecrated Kashi Kala Bhairava Raksha & Vibhuti prasad.',
+    categoryTe: 'కార్తీక విశేష పూజ',
+    categoryEn: 'Kartika Masam Special',
+    keywords: [
+      'kartika',
+      'karthika',
+      'kartika masam',
+      'rudrabhishekam',
+      'ekavara rudrabhishekam',
+      'kartika abhishekam',
+      'కార్తీక',
+      'కార్తీక మాసం',
+      'రుద్రాభిషేకం',
+      'ఏకవార రుద్రాభిషేకం',
+      'శివాభిషేకం',
+      'కాలభైరవ రక్ష',
+      'కాల భైరవ రక్ష',
+    ],
+    targetTab: 'kartika',
+    targetPath: '/kartika-abhishekam',
+  },
+  {
     id: 'gochara-phalalu',
     titleTe: 'గోచార ఫలాలు – శని, గురు, రాహు కేతు గోచారం & ఏలినాటి శని',
     titleEn: 'Gochara Phalalu – Saturn, Jupiter, Rahu-Ketu Transit & Sade Sati',

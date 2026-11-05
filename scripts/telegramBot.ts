@@ -726,6 +726,11 @@ export function buildPanchangamTelegramCaption(day: DayData, lang: 'te' | 'en' =
     ``,
     `✨ *ఉచిత 100 పేజీల జన్మ కుండలి PDF & 12 రాశుల ఫలితాల కోసం:*`,
     `🌐 https://www.telugujyothisham.com`,
+    ``,
+    `🔱 *కార్తీక మాస పవిత్ర ఏకవార రుద్రాభిషేకం:*`,
+    `నెల రోజుల పాటు భక్తుల గోత్రనామాలతో నిత్యం శ్రీ పరమేశ్వరునికి ఏకవార రుద్రాభిషేకం & దివ్య ప్రసాదం (గంధం, విభూతి, కాశీ కాలభైరవ రక్ష).`,
+    `💰 దక్షిణ: ₹2,500/- | 🏦 Kotak UPI: 7013079166@kotakbank`,
+    `👉 గోత్రనామాలు నమోదు: https://www.telugujyothisham.com/kartika-abhishekam`,
     `📞 *WhatsApp సంప్రదింపులు:* +91 8977986166`,
   ].join('\n');
 }

@@ -23,6 +23,7 @@ import type { HubSectionId } from './components/VedicAstrologyHub';
 import type { LegalDocType } from './components/LegalComplianceModal';
 import type { ClientKundaliPrefill } from './components/AdminDashboard';
 import { LiveSiteAnnouncementBanner } from './components/LiveSiteAnnouncementBanner';
+import { KartikaScrollingTicker } from './components/KartikaScrollingTicker';
 import { AstroSearchTopic, searchAstroTopics } from './data/astroSearchIndex';
 import { DailyPanchangamRouteBar } from './components/DailyPanchangamRouteView';
 import {
@@ -106,6 +107,9 @@ const AdminDashboard = lazy(() =>
 const MuhurthamCalculator = lazy(() =>
   import('./components/MuhurthamCalculator').then((m) => ({ default: m.MuhurthamCalculator }))
 );
+const KartikaAbhishekamPage = lazy(() =>
+  import('./components/KartikaAbhishekamPage').then((m) => ({ default: m.KartikaAbhishekamPage }))
+);
 
 const SectionLoader: React.FC<{ minHeight?: string }> = ({ minHeight = 'min-h-[280px]' }) => (
   <div
@@ -160,6 +164,7 @@ const LazyViewportSection: React.FC<{
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
   panchangam: '/panchangam',
+  kartika: '/kartika-abhishekam',
   muhurtham: '/muhurtham',
   jathakam: '/mee-jatakam',
   awards: '/awards',
@@ -231,6 +236,17 @@ export function resolveTabFromLocation(): NavTab {
   const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
   const hash = window.location.hash.toLowerCase();
 
+  if (
+    pathname === '/kartika-abhishekam' ||
+    pathname.startsWith('/kartika') ||
+    pathname === '/rudrabhishekam' ||
+    pathname === '/kartika-masam' ||
+    pathname === '/kartika-somavaram' ||
+    hash === '#kartika' ||
+    hash === '#rudrabhishekam'
+  ) {
+    return 'kartika';
+  }
   if (
     pathname === '/muhurtham' ||
     pathname.startsWith('/muhurtham/') ||
@@ -766,6 +782,17 @@ function AppContent() {
 
       {!isAdminView && (
         <div className="no-print">
+          <KartikaScrollingTicker
+            onNavigateKartika={() => {
+              handleSelectTab('kartika');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        </div>
+      )}
+
+      {!isAdminView && (
+        <div className="no-print">
           <LiveSiteAnnouncementBanner
             onNavigateJathakam={() => {
               handleSelectTab('jathakam');
@@ -912,6 +939,13 @@ function AppContent() {
                 </Suspense>
               </div>
             </div>
+          )}
+
+          {/* TAB: KARTIKA MASAM RUDRABHISHEKAM */}
+          {activeTab === 'kartika' && (
+            <Suspense fallback={<SectionLoader minHeight="min-h-[700px]" />}>
+              <KartikaAbhishekamPage />
+            </Suspense>
           )}
 
           {/* TAB: MUHURTHAM FINDER & VEDIC SUTRA EXPLORER */}

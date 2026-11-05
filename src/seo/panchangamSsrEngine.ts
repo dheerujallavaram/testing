@@ -1628,6 +1628,21 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       h1: 'సంకల్పం తెలుగులో – నిత్య సంకల్పం మంత్రం (Pooja Sankalpam in Telugu)',
       breadcrumbName: 'సంకల్పం తెలుగులో',
     },
+    '/kartika-abhishekam': {
+      primaryKeyword: 'కార్తీక మాస ఏకవార రుద్రాభిషేకం',
+      secondaryKeywords: [
+        'kartika masam rudrabhishekam',
+        'kartika somavaram abhishekam',
+        'శ్రీ పరమేశ్వర ఏకవార రుద్రాభిషేకం',
+        'కాశీ కాలభైరవ రక్ష',
+        'కార్తీక మాసం పూజ గోత్రనామాలు',
+      ],
+      title: 'కార్తీక మాస ఏకవార రుద్రాభిషేకం – నెల రోజుల నిత్య సంకల్పం & ప్రసాదం',
+      description:
+        'కార్తీక మాస ఏకవార రుద్రాభిషేకం: నెల రోజుల పాటు మీ గోత్రనామాలతో పరమశివునికి నిత్య సంకల్పం. ప్రసాదంగా కాశీ కాలభైరవ రక్ష, విభూతి, గంధం మరియు ద్వాదశ రాశుల విశేష ఫలితాలు.',
+      h1: 'కార్తీక మాస ఏకవార రుద్రాభిషేకం – భక్తుల గోత్రనామాలతో నెల రోజుల నిత్య పూజ',
+      breadcrumbName: 'కార్తీక రుద్రాభిషేకం',
+    },
     '/muhurtham': {
       primaryKeyword: 'శుభ ముహూర్తం',
       secondaryKeywords: [
