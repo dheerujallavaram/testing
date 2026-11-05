@@ -79,11 +79,11 @@ export function buildTeluguJyothishamBrandSnippet(
   const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.split('(')[0]?.trim() || day.panchanga.nakshatram;
 
   if (lang === 'en') {
-    const descEn = `Telugu Jyothishyam & Neti Panchangam: Ee roju nakshatra ${cleanNakshatra}, Tithi ${cleanTithi}, Subha timings. Astrology in Telugu by date of birth and time free download 100p PDF.`;
+    const descEn = `Telugu Jyothishyam, Astrology & Neti Panchangam: Ee roju nakshatra ${cleanNakshatra}, Tithi ${cleanTithi}, Horoscope & Free 30-Page Jathakam PDF by date of birth in Telugu.`;
     return descEn.length <= 158 ? descEn : descEn.slice(0, 155) + '...';
   }
 
-  const descTe = `తెలుగు జ్యోతిష్యం (Telugu Jyothisham) & నేటి పంచాంగం: ఈ రోజు నక్షత్రం ${cleanNakshatra}, తిథి ${cleanTithi}, శుభ సమయం. Jathakam by date of birth in Telugu free download (100p PDF).`;
+  const descTe = `తెలుగు జ్యోతిష్యం (Telugu Jyothisham), నేటి పంచాంగం & జాతకం: ఈ రోజు నక్షత్రం ${cleanNakshatra}, తిథి ${cleanTithi}, రాశి ఫలాలు & 30-పేజీల ఉచిత జన్మ కుండలి PDF (Astrology & Horoscope).`;
   return descTe.length <= 158 ? descTe : descTe.slice(0, 155) + '...';
 }
 
@@ -98,11 +98,11 @@ export function buildNetiPanchangamSearchSnippet(
   const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.split('(')[0]?.trim() || day.panchanga.nakshatram;
 
   if (lang === 'en') {
-    const descEn = `Neti Panchangam (${day.teediVaram}): Ee roju nakshatra ${cleanNakshatra}, Tithi ${cleanTithi}, Subha Muhurtham, Telugu Jyotish, Jathakam by date of birth in Telugu free download.`;
+    const descEn = `Neti Panchangam & Telugu Panchangam (${day.teediVaram}): Nakshatra ${cleanNakshatra}, Tithi ${cleanTithi}, Astrology, Horoscope & Free 30-Page Jathakam PDF in Telugu.`;
     return descEn.length <= 158 ? descEn : descEn.slice(0, 155) + '...';
   }
 
-  const descTe = `నేటి పంచాంగం (Neti Panchangam): ఈ రోజు నక్షత్రం ${cleanNakshatra}, తిథి ${cleanTithi}, శుభ సమయం, రాశి ఫలాలు. Astrology in Telugu by date of birth free download (100p PDF).`;
+  const descTe = `నేటి పంచాంగం (Neti Panchangam) & తెలుగు పంచాంగం: ఈ రోజు నక్షత్రం ${cleanNakshatra}, తిథి ${cleanTithi}, శుభ సమయం, జ్యోతిష్యం, రాశి ఫలాలు & 30-పేజీల ఉచిత జాతకం PDF.`;
   return descTe.length <= 158 ? descTe : descTe.slice(0, 155) + '...';
 }
 

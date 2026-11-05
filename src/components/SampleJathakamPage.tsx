@@ -15,7 +15,6 @@ import {
 import { computeAccurateJanmaKundali } from '../utils/astronomyPanchangam';
 import {
   buildComprehensiveJathakaPdfHtml,
-  renderNorthIndianChartSvg,
 } from '../utils/jathakamReportPdfGenerator';
 import {
   computePlanetaryDignities,

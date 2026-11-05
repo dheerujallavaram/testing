@@ -940,6 +940,49 @@ export const TOOL_PAGE_ORIGINAL_GUIDES: Record<string, ToolGuideContent> = {
       },
     ],
   },
+  '/muhurtham': {
+    primaryKeyword: 'శుభ ముహూర్తం',
+    secondaryKeywords: [
+      'how to choose good muhurtham',
+      'when good muhurtham for marriage',
+      'when good muhurtham for house warming',
+      'when good muhurtham for vehicle purchase',
+      'astrology horoscope telugu muhurtham',
+      'వివాహ ముహూర్తం',
+      'గృహ ప్రవేశ ముహూర్తం',
+    ],
+    authorPlaceholderTag: '{{AUTHOR_NOTE_MUHURTHAM_FINDER}}',
+    introTe:
+      'శుభ ముహూర్తం (how to choose good muhurtham): వశిష్ఠ, పరాశర, భృగు, గర్గ మహర్షుల శాస్త్ర ప్రమాణాలతో వివాహం, గృహప్రవేశం, వాహనం, వ్యాపారం, విద్య మరియు 50+ శుభకార్యాల ఆదర్శ ముహూర్త నిర్ణయ విశ్లేషణ.',
+    howItWorksTitle: 'శుభ ముహూర్తం ఎలా నిర్ణయిస్తారు? (How Muhurtham is Calculated)',
+    howItWorksTe:
+      'పంచాంగ శుద్ధి (తిథి, వారం, నక్షత్రం, యోగం, కరణం) తో పాటు వ్యక్తిగత తారాబలం, చంద్రబలం, లగ్న శుద్ధి మరియు ఏకవింశతి (21) మహా దోషాల విచారణ జరిపి దోష రహిత ముహూర్తాన్ని నిర్ణయిస్తారు.',
+    termsTitle: 'ముహూర్త శాస్త్రంలోని ముఖ్య విభాగాలు',
+    termsListTe: [
+      {
+        term: 'పంచాంగ శుద్ధి (Panchanga Shuddhi)',
+        meaning: 'అమావాస్య, రిక్త తిథులు, వ్యతీపాత, వైధృతి యోగాలు మరియు విష్టి కరణం లేని పవిత్ర కాలం.',
+      },
+      {
+        term: 'ఏకవింశతి దోషాలు (21 Marriage Doshas)',
+        meaning: 'వివాహ లగ్నంలో కుజాష్టమం, భృగుషట్కం, పాపకర్తరీ, సప్తమ అశుద్ధి మొదలైన 21 దోషాలు రాకుండా చూచుట.',
+      },
+      {
+        term: 'అభిజిత్ ముహూర్తం (Abhijit Window)',
+        meaning: 'మధ్యాహ్న సూర్యోదయ-సూర్యాస్తమయాల మధ్య బిందువు సమయం – బుధవారం తప్ప మిగిలిన రోజులలో సర్వదోష హరం.',
+      },
+    ],
+    faqListTe: [
+      {
+        q: 'శుభ ముహూర్తం ఎలా చూసుకోవాలి? (How to choose good muhurtham?)',
+        a: 'పంచాంగ శుద్ధి, కర్త యొక్క తారాబలం, చంద్రబలం మరియు రాహుకాల-యమగండ-వర్జ్య రహిత శుభ లగ్నాన్ని ఎన్నుకోవాలి.',
+      },
+      {
+        q: 'వివాహానికి ఏ ముహూర్తం మంచిది? (When is good muhurtham for marriage?)',
+        a: 'శుక్లపక్షంలో రోహిణి, మృగశిర, మఘ, ఉత్తర, హస్త, స్వాతి, అనూరాధ నక్షత్రాలలో, వృషభ, మిథున, కన్య, తుల, ధనుస్సు లగ్నాలు శ్రేష్టం.',
+      },
+    ],
+  },
   '/shubha-muhurthalu': {
     primaryKeyword: 'శుభ ముహూర్తాలు 2026',
     secondaryKeywords: ['పెళ్లి ముహూర్తాలు 2026', 'గృహప్రవేశ ముహూర్తం', 'vivaha muhurtham 2026'],
@@ -1584,6 +1627,24 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       description: `సంకల్పం తెలుగులో (pooja sankalpam in telugu): శ్రీ పరాభవ నామ సంవత్సరం (${cleanTithi}, ${cleanNak}) నిత్య సంకల్పం మంత్రం – India & USA.`,
       h1: 'సంకల్పం తెలుగులో – నిత్య సంకల్పం మంత్రం (Pooja Sankalpam in Telugu)',
       breadcrumbName: 'సంకల్పం తెలుగులో',
+    },
+    '/muhurtham': {
+      primaryKeyword: 'శుభ ముహూర్తం',
+      secondaryKeywords: [
+        'how to choose good muhurtham',
+        'when good muhurtham for marriage',
+        'when good muhurtham for house warming',
+        'when good muhurtham for vehicle purchase',
+        'astrology horoscope telugu muhurtham',
+        'వివాహ ముహూర్తం',
+        'గృహ ప్రవేశ ముహూర్తం',
+        'నేటి మంచి ముహూర్తం',
+      ],
+      title: 'శుభ ముహూర్తం నిర్ధారణ – వివాహ, గృహప్రవేశ, వ్యాపార ముహూర్తాలు | Muhurtham Finder',
+      description:
+        'శుభ ముహూర్తం (how to choose good muhurtham): వివాహం, గృహప్రవేశం, వాహనం, వ్యాపారం, బంగారం మరియు 50+ శుభకార్యాల వేద శాస్త్ర ప్రమాణ ముహూర్తాలు (Astrology Horoscope).',
+      h1: 'శుభ ముహూర్తం – వేద మహర్షుల ప్రమాణ ముహూర్త నిర్ణయ యంత్రం (Muhurtham Finder)',
+      breadcrumbName: 'శుభ ముహూర్తం',
     },
     '/shubha-muhurthalu': {
       primaryKeyword: 'శుభ ముహూర్తాలు 2026',

@@ -62,29 +62,7 @@ interface AdminDashboardProps {
   onOpenClientKundali: (client: ClientKundaliPrefill) => void;
 }
 
-const ADMIN_BIRTH_CITIES = [
-  { id: 'hyderabad', labelTe: 'హైదరాబాద్ (Hyderabad, TS)', lat: 17.385, lon: 78.4867, tz: 5.5 },
-  { id: 'vijayawada', labelTe: 'విజయవాడ (Vijayawada, AP)', lat: 16.5062, lon: 80.648, tz: 5.5 },
-  { id: 'visakhapatnam', labelTe: 'విశాఖపట్నం (Visakhapatnam, AP)', lat: 17.6868, lon: 83.2185, tz: 5.5 },
-  { id: 'tirupati', labelTe: 'తిరుపతి (Tirupati, AP)', lat: 13.6288, lon: 79.4192, tz: 5.5 },
-  { id: 'warangal', labelTe: 'వరంగల్ (Warangal, TS)', lat: 17.9689, lon: 79.5941, tz: 5.5 },
-  { id: 'guntur', labelTe: 'గుంటూరు (Guntur, AP)', lat: 16.3067, lon: 80.4365, tz: 5.5 },
-  { id: 'rajahmundry', labelTe: 'రాజమండ్రి (Rajahmundry, AP)', lat: 17.0005, lon: 81.804, tz: 5.5 },
-  { id: 'nellore', labelTe: 'నెల్లూరు (Nellore, AP)', lat: 14.4426, lon: 79.9865, tz: 5.5 },
-  { id: 'kurnool', labelTe: 'కర్నూలు (Kurnool, AP)', lat: 15.8281, lon: 78.0373, tz: 5.5 },
-  { id: 'karimnagar', labelTe: 'కరీంనగర్ (Karimnagar, TS)', lat: 18.4386, lon: 79.1288, tz: 5.5 },
-  { id: 'nizamabad', labelTe: 'నిజామాబాద్ (Nizamabad, TS)', lat: 18.6725, lon: 78.0941, tz: 5.5 },
-  { id: 'khammam', labelTe: 'ఖమ్మం (Khammam, TS)', lat: 17.2473, lon: 80.1514, tz: 5.5 },
-  { id: 'anantapur', labelTe: 'అనంతపురం (Anantapur, AP)', lat: 14.6819, lon: 77.6006, tz: 5.5 },
-  { id: 'kadapa', labelTe: 'కడప (Kadapa, AP)', lat: 14.4673, lon: 78.8242, tz: 5.5 },
-  { id: 'bengaluru', labelTe: 'బెంగళూరు (Bengaluru, KA)', lat: 12.9716, lon: 77.5946, tz: 5.5 },
-  { id: 'chennai', labelTe: 'చెన్నై (Chennai, TN)', lat: 13.0827, lon: 80.2707, tz: 5.5 },
-  { id: 'dallas', labelTe: 'డల్లాస్, అమెరికా (Dallas, USA)', lat: 32.7767, lon: -96.797, tz: -6 },
-  { id: 'newyork', labelTe: 'న్యూయార్క్, అమెరికా (New York, USA)', lat: 40.7128, lon: -74.006, tz: -5 },
-  { id: 'sanjose', labelTe: 'కాలిఫోర్నియా (San Jose, USA)', lat: 37.3382, lon: -121.8863, tz: -8 },
-  { id: 'london', labelTe: 'లండన్ (London, UK)', lat: 51.5072, lon: -0.1276, tz: 0 },
-  { id: 'sydney', labelTe: 'సిడ్నీ (Sydney, Australia)', lat: -33.8688, lon: 151.2093, tz: 10 },
-];
+import { BIRTH_CITIES as ADMIN_BIRTH_CITIES, BIRTH_CITY_GROUPS } from '../data/birthCitiesData';
 
 const VIMSHOTTARI_LORDS_TE = [
   { lordTe: 'కేతు మహాదశ', years: 7 },
@@ -1165,10 +1143,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         onChange={(e) => setKCityId(e.target.value)}
                         className="w-full p-2.5 bg-slate-50 border border-amber-300 rounded-xl text-xs font-bold"
                       >
-                        {ADMIN_BIRTH_CITIES.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.labelTe}
-                          </option>
+                        {BIRTH_CITY_GROUPS.map((grp) => (
+                          <optgroup key={grp.groupTe} label={grp.groupTe}>
+                            {grp.cities.map((c) => (
+                              <option key={c.id} value={c.id}>
+                                {c.labelTe}
+                              </option>
+                            ))}
+                          </optgroup>
                         ))}
                       </select>
                     </div>

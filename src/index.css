@@ -85,8 +85,8 @@
 }
 
 @page {
-  size: A4 portrait;
-  margin: 6mm 7mm 6mm 7mm;
+  size: 210mm auto;
+  margin: 0;
   background-color: #fffdf5;
 }
 
@@ -133,11 +133,32 @@
     color: #1e293b !important;
     margin: 0 !important;
     padding: 0 !important;
-    max-width: 100% !important;
-    width: 100% !important;
+    max-width: 210mm !important;
+    width: 210mm !important;
     -webkit-text-size-adjust: 100% !important;
     text-size-adjust: 100% !important;
-    line-height: 1.42 !important;
+    line-height: 1.56 !important;
+  }
+
+  p,
+  li,
+  td,
+  th,
+  dd,
+  dt {
+    line-height: 1.56 !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong,
+  span,
+  div {
+    line-height: 1.48 !important;
   }
 
   .print-page-break {
@@ -146,22 +167,36 @@
     margin-top: 0 !important;
   }
 
+  .page,
   .print-page-sheet {
     display: block !important;
-    width: 100% !important;
-    background: linear-gradient(180deg, #fffbeb 0%, #fffdf7 50%, #fefce8 100%) !important;
-    border: 2px solid #d97706 !important;
-    border-radius: 12px !important;
-    padding: 6px 9px !important;
-    margin: 0 !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
+    background: #fffdf9 !important;
+    border: 1.5px solid #e2c07d !important;
+    box-shadow: inset 0 0 0 3px #ffffff, inset 0 0 0 4px rgba(217, 119, 6, 0.25) !important;
+    border-radius: 16px !important;
+    /* 1 inch (25.4mm) Top & Bottom Gap + 16mm Left/Right Margin */
+    padding: 25.4mm 16mm 25.4mm 16mm !important;
+    margin: 0 auto !important;
     box-sizing: border-box !important;
+    page-break-after: always !important;
+    break-after: page !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
 
-  .print-page-sheet:nth-of-type(even) {
-    background: linear-gradient(180deg, #fefce8 0%, #fffbeb 55%, #ffedd5 100%) !important;
-    border-color: #b45309 !important;
+  .single-side-stack {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .single-side-stack > * {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
   }
 
   .print-keep-together,
@@ -188,6 +223,324 @@
     pointer-events: auto !important;
   }
 }
+
+/* ============================================================================
+   DYNAMIC CONTENT-HEIGHT PDF CAPTURE MODE (210mm Fixed Width x Auto Height)
+   Single-Side Royal Layout with 1-inch (96px / 25.4mm) Top & Bottom Gap,
+   Full-Width Single-Column Cards, and Generous Spacing After Text
+   ============================================================================ */
+.pdf-dynamic-capture {
+  width: 794px !important;
+  max-width: 794px !important;
+  min-width: 794px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #fffdf7 !important;
+  color: #1e293b !important;
+  line-height: 1.6 !important;
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+}
+
+.pdf-dynamic-capture * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: none !important;
+  animation: none !important;
+  letter-spacing: normal !important;
+}
+
+/* Ensure Telugu script ascenders and subscript ottulu (వత్తులు) never collide between lines */
+.pdf-dynamic-capture p,
+.pdf-dynamic-capture li,
+.pdf-dynamic-capture td,
+.pdf-dynamic-capture th {
+  line-height: 1.62 !important;
+}
+
+.pdf-dynamic-capture .print-card p {
+  margin-bottom: 6px !important;
+}
+
+.pdf-dynamic-capture h1,
+.pdf-dynamic-capture h2,
+.pdf-dynamic-capture h3,
+.pdf-dynamic-capture h4,
+.pdf-dynamic-capture h5,
+.pdf-dynamic-capture h6,
+.pdf-dynamic-capture strong,
+.pdf-dynamic-capture span,
+.pdf-dynamic-capture a {
+  line-height: 1.5 !important;
+}
+
+.pdf-dynamic-capture .leading-none,
+.pdf-dynamic-capture .leading-tight,
+.pdf-dynamic-capture .leading-snug,
+.pdf-dynamic-capture .print\:leading-tight,
+.pdf-dynamic-capture .print\:leading-snug {
+  line-height: 1.56 !important;
+}
+
+.pdf-dynamic-capture .no-print {
+  display: none !important;
+}
+
+.pdf-dynamic-capture .print-only {
+  display: block !important;
+}
+
+.pdf-dynamic-capture .print-only-flex {
+  display: flex !important;
+}
+
+.pdf-dynamic-capture .hidden.print\:block {
+  display: block !important;
+}
+
+.pdf-dynamic-capture .page,
+.pdf-dynamic-capture .print-page-sheet {
+  display: block !important;
+  width: 794px !important;
+  max-width: 794px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  background: #fffdf9 !important;
+  border: 1.5px solid #e2c07d !important;
+  box-shadow: inset 0 0 0 3px #ffffff, inset 0 0 0 4px rgba(217, 119, 6, 0.25) !important;
+  border-radius: 16px !important;
+  /* Exact 1 inch (96px = 25.4mm) Top & Bottom Gap + 52px (14mm) Left & Right Margin */
+  padding: 96px 52px 96px 52px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Force Single-Column (Single Side) Full-Width Stack for all chapter cards & Kundalis */
+.pdf-dynamic-capture .single-side-stack {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 14px !important;
+}
+
+.pdf-dynamic-capture .single-side-stack > * {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+}
+
+/* Keep explicit multi-column grids only for small stat badges (like 4-col Birth Profile or 3-col Kuja Dosha) */
+.pdf-dynamic-capture .sm\:grid-cols-2:not(.single-side-stack),
+.pdf-dynamic-capture .md\:grid-cols-2:not(.single-side-stack),
+.pdf-dynamic-capture .lg\:grid-cols-2:not(.single-side-stack),
+.pdf-dynamic-capture .print\:grid-cols-2:not(.single-side-stack) {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+.pdf-dynamic-capture .sm\:grid-cols-3:not(.single-side-stack),
+.pdf-dynamic-capture .md\:grid-cols-3:not(.single-side-stack),
+.pdf-dynamic-capture .print\:grid-cols-3:not(.single-side-stack) {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+.pdf-dynamic-capture .sm\:grid-cols-4:not(.single-side-stack),
+.pdf-dynamic-capture .lg\:grid-cols-4:not(.single-side-stack),
+.pdf-dynamic-capture .print\:grid-cols-4:not(.single-side-stack) {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+.pdf-dynamic-capture .sm\:col-span-2,
+.pdf-dynamic-capture .md\:col-span-2,
+.pdf-dynamic-capture .print\:col-span-2 {
+  grid-column: span 2 / span 2 !important;
+}
+.pdf-dynamic-capture .sm\:flex-row,
+.pdf-dynamic-capture .md\:flex-row,
+.pdf-dynamic-capture .print\:flex-row {
+  flex-direction: row !important;
+}
+.pdf-dynamic-capture .print\:flex-col {
+  flex-direction: column !important;
+}
+.pdf-dynamic-capture .sm\:items-center,
+.pdf-dynamic-capture .md\:items-center,
+.pdf-dynamic-capture .print\:items-center {
+  align-items: center !important;
+}
+.pdf-dynamic-capture .sm\:items-end,
+.pdf-dynamic-capture .print\:items-end {
+  align-items: flex-end !important;
+}
+.pdf-dynamic-capture .sm\:justify-start,
+.pdf-dynamic-capture .print\:justify-start {
+  justify-content: flex-start !important;
+}
+.pdf-dynamic-capture .sm\:text-left,
+.pdf-dynamic-capture .print\:text-left {
+  text-align: left !important;
+}
+.pdf-dynamic-capture .sm\:w-auto,
+.pdf-dynamic-capture .print\:w-auto {
+  width: auto !important;
+}
+.pdf-dynamic-capture .print\:w-\[344px\] {
+  width: 344px !important;
+}
+.pdf-dynamic-capture .print\:min-h-\[336px\] {
+  min-height: 336px !important;
+}
+.pdf-dynamic-capture .print\:w-14 {
+  width: 3.5rem !important;
+}
+.pdf-dynamic-capture .print\:h-14 {
+  height: 3.5rem !important;
+}
+.pdf-dynamic-capture .print\:w-12 {
+  width: 3rem !important;
+}
+.pdf-dynamic-capture .print\:h-12 {
+  height: 3rem !important;
+}
+.pdf-dynamic-capture .print\:p-1 {
+  padding: 0.3rem !important;
+}
+.pdf-dynamic-capture .print\:p-1\.5 {
+  padding: 0.4rem !important;
+}
+.pdf-dynamic-capture .print\:p-2 {
+  padding: 0.55rem !important;
+}
+.pdf-dynamic-capture .print\:p-2\.5 {
+  padding: 0.65rem !important;
+}
+.pdf-dynamic-capture .print\:p-3 {
+  padding: 0.75rem !important;
+}
+.pdf-dynamic-capture .print\:p-3\.5 {
+  padding: 0.875rem !important;
+}
+.pdf-dynamic-capture .print\:py-1 {
+  padding-top: 0.3rem !important;
+  padding-bottom: 0.3rem !important;
+}
+.pdf-dynamic-capture .print\:py-1\.5 {
+  padding-top: 0.4rem !important;
+  padding-bottom: 0.4rem !important;
+}
+.pdf-dynamic-capture .print\:px-2\.5 {
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+}
+.pdf-dynamic-capture .print\:px-3 {
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
+.pdf-dynamic-capture .print\:gap-1 {
+  gap: 0.3rem !important;
+}
+.pdf-dynamic-capture .print\:gap-1\.5 {
+  gap: 0.4rem !important;
+}
+.pdf-dynamic-capture .print\:gap-2 {
+  gap: 0.55rem !important;
+}
+.pdf-dynamic-capture .print\:gap-2\.5 {
+  gap: 0.65rem !important;
+}
+
+/* Match Tailwind v4 space-y (margin-block-end on :not(:last-child)) cleanly without conflicting margins */
+.pdf-dynamic-capture .print\:space-y-0 > :not(:last-child) {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  margin-block-end: 0px !important;
+}
+.pdf-dynamic-capture .print\:space-y-0\.5 > :not(:last-child) {
+  margin-top: 0px !important;
+  margin-bottom: 0.2rem !important;
+  margin-block-end: 0.2rem !important;
+}
+.pdf-dynamic-capture .print\:space-y-1 > :not(:last-child) {
+  margin-top: 0px !important;
+  margin-bottom: 0.3rem !important;
+  margin-block-end: 0.3rem !important;
+}
+.pdf-dynamic-capture .print\:space-y-1\.5 > :not(:last-child) {
+  margin-top: 0px !important;
+  margin-bottom: 0.4rem !important;
+  margin-block-end: 0.4rem !important;
+}
+.pdf-dynamic-capture .print\:space-y-2 > :not(:last-child) {
+  margin-top: 0px !important;
+  margin-bottom: 0.5rem !important;
+  margin-block-end: 0.5rem !important;
+}
+.pdf-dynamic-capture .print\:space-y-2\.5 > :not(:last-child) {
+  margin-top: 0px !important;
+  margin-bottom: 0.625rem !important;
+  margin-block-end: 0.625rem !important;
+}
+
+.pdf-dynamic-capture .print\:text-xs {
+  font-size: 11.5px !important;
+  line-height: 1.52 !important;
+}
+.pdf-dynamic-capture .print\:text-sm {
+  font-size: 13.5px !important;
+  line-height: 1.48 !important;
+}
+.pdf-dynamic-capture .print\:text-base {
+  font-size: 15px !important;
+  line-height: 1.48 !important;
+}
+.pdf-dynamic-capture .print\:text-\[11px\] {
+  font-size: 11px !important;
+  line-height: 1.54 !important;
+}
+.pdf-dynamic-capture .print\:text-\[10\.5px\] {
+  font-size: 10.5px !important;
+  line-height: 1.54 !important;
+}
+.pdf-dynamic-capture .print\:text-\[10px\] {
+  font-size: 10px !important;
+  line-height: 1.52 !important;
+}
+.pdf-dynamic-capture .print\:text-\[9\.5px\] {
+  font-size: 9.5px !important;
+  line-height: 1.5 !important;
+}
+.pdf-dynamic-capture .print\:text-\[9px\] {
+  font-size: 9px !important;
+  line-height: 1.48 !important;
+}
+.pdf-dynamic-capture .print\:text-\[8\.5px\] {
+  font-size: 8.5px !important;
+  line-height: 1.46 !important;
+}
+.pdf-dynamic-capture .print\:text-\[8px\] {
+  font-size: 8.2px !important;
+  line-height: 1.45 !important;
+}
+.pdf-dynamic-capture .print\:text-\[7\.8px\] {
+  font-size: 8px !important;
+  line-height: 1.45 !important;
+}
+.pdf-dynamic-capture .print\:text-\[7\.5px\] {
+  font-size: 7.8px !important;
+  line-height: 1.45 !important;
+}
+.pdf-dynamic-capture .print\:text-\[7\.2px\] {
+  font-size: 7.5px !important;
+  line-height: 1.45 !important;
+}
+.pdf-dynamic-capture .print\:text-\[7px\] {
+  font-size: 7.2px !important;
+  line-height: 1.45 !important;
+}
+.pdf-dynamic-capture .print\:text-\[6\.8px\] {
+  font-size: 7px !important;
+  line-height: 1.45 !important;
+}
+.pdf-dynamic-capture .print\:text-\[6\.5px\] {
+  font-size: 6.8px !important;
+  line-height: 1.45 !important;
+}
+
+
 
 
 

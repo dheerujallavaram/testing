@@ -1296,8 +1296,8 @@ export function buildComprehensiveJathakaPdfHtml(input: JathakaPdfGeneratorInput
        3. A4 PAGE SETUP & PRINT RULES (Chromium / WeasyPrint Ready)
        ========================================================================== */
     @page {
-      size: A4 portrait;
-      margin: 15mm;
+      size: 210mm auto;
+      margin: 0;
     }
 
     * {
@@ -1387,23 +1387,28 @@ export function buildComprehensiveJathakaPdfHtml(input: JathakaPdfGeneratorInput
       gap: 6px;
     }
 
-    /* Page Sheet Container */
+    /* Page Sheet Container (Dynamic Content-Fitted Height + 10mm Bottom Padding) */
+    .page,
     .pdf-page {
       width: 210mm;
-      min-height: 297mm;
-      margin: 12mm auto;
-      padding: 15mm;
+      height: auto !important;
+      min-height: 0 !important;
+      margin: 10mm auto;
+      padding: 12mm 14mm 10mm 14mm !important;
       background: var(--brand-cream);
       border: 1px solid var(--brand-gold);
       box-shadow: 0 8px 28px rgba(74, 29, 10, 0.16);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       position: relative;
       page-break-after: always;
       break-after: page;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
 
+    .page:last-of-type,
     .pdf-page:last-of-type {
       page-break-after: auto;
       break-after: auto;
@@ -2593,13 +2598,19 @@ export function buildComprehensiveJathakaPdfHtml(input: JathakaPdfGeneratorInput
       .screen-toolbar {
         display: none !important;
       }
+      .page,
       .pdf-page {
-        width: 100% !important;
-        min-height: 266mm !important;
+        width: 210mm !important;
+        height: auto !important;
+        min-height: 0 !important;
         margin: 0 !important;
-        padding: 0 !important;
+        padding: 10mm 12mm 10mm 12mm !important;
         border: none !important;
         box-shadow: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
       }
     }
   </style>

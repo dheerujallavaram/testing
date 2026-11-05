@@ -103,6 +103,9 @@ const ContactSection = lazy(() =>
 const AdminDashboard = lazy(() =>
   import('./components/AdminDashboard').then((m) => ({ default: m.AdminDashboard }))
 );
+const MuhurthamCalculator = lazy(() =>
+  import('./components/MuhurthamCalculator').then((m) => ({ default: m.MuhurthamCalculator }))
+);
 
 const SectionLoader: React.FC<{ minHeight?: string }> = ({ minHeight = 'min-h-[280px]' }) => (
   <div
@@ -157,6 +160,7 @@ const LazyViewportSection: React.FC<{
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
   panchangam: '/panchangam',
+  muhurtham: '/muhurtham',
   jathakam: '/mee-jatakam',
   awards: '/awards',
   services: '/services',
@@ -228,6 +232,19 @@ export function resolveTabFromLocation(): NavTab {
   const hash = window.location.hash.toLowerCase();
 
   if (
+    pathname === '/muhurtham' ||
+    pathname.startsWith('/muhurtham/') ||
+    pathname === '/shubha-muhurthalu' ||
+    pathname === '/shubha-muhurtham' ||
+    pathname === '/vivaha-muhurtham' ||
+    pathname === '/gruha-pravesha-muhurtham' ||
+    pathname === '/manchi-muhurtham' ||
+    hash === '#muhurtham' ||
+    hash === '#muhurthalu'
+  ) {
+    return 'muhurtham';
+  }
+  if (
     pathname === '/mee-jatakam' ||
     pathname.endsWith('/mee-jatakam') ||
     pathname === '/janma-kundali' ||
@@ -251,7 +268,6 @@ export function resolveTabFromLocation(): NavTab {
     pathname === '/vivaha-pontana' ||
     pathname === '/naama-nakshatra' ||
     pathname === '/ugadi-rashi-phalalu' ||
-    pathname === '/shubha-muhurthalu' ||
     pathname === '/festivals' ||
     pathname === '/dosha-pariharalu' ||
     pathname === '/gochara-phalalu' ||
@@ -896,6 +912,13 @@ function AppContent() {
                 </Suspense>
               </div>
             </div>
+          )}
+
+          {/* TAB: MUHURTHAM FINDER & VEDIC SUTRA EXPLORER */}
+          {activeTab === 'muhurtham' && (
+            <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
+              <MuhurthamCalculator />
+            </Suspense>
           )}
 
           {/* TAB 2: PANCHANGAM (/panchangam, /panchangam/[yyyy-mm-dd], /panchangam/calendar, /panchangam/[city]) */}

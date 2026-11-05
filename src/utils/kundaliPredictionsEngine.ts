@@ -980,27 +980,47 @@ export function evaluateMehtaSpecialSutras(
     remedyOrAdviceEn: `Milestone ages: ${bcpYearsEn}. Strengthening ${focusLordPlanet.nameEn} during these milestone years ensures triumphant outcomes.`,
   });
 
+  // Helper to compute exact manifestation years & ages for any planet/house rashi via Jupiter & Saturn transits
+  const getSutraYearsTeEn = (targetRashiIdx: number) => {
+    const jupBase = 2025 + ((targetRashiIdx - 2 + 12) % 12);
+    const trine1 = 2025 + (((targetRashiIdx + 4) % 12 - 2 + 12) % 12);
+    const trine2 = 2025 + (((targetRashiIdx + 8) % 12 - 2 + 12) % 12);
+    const years = Array.from(new Set([jupBase, trine1, trine2, jupBase + 12])).sort((a, b) => a - b);
+    const te = years
+      .slice(0, 4)
+      .map((y) => `${y}–${y + 1} (${Math.max(1, y - birthYear)} ఏళ్లు)`)
+      .join(', ');
+    const en = years
+      .slice(0, 4)
+      .map((y) => `${y}–${y + 1} (Age ${Math.max(1, y - birthYear)})`)
+      .join(', ');
+    return { te, en };
+  };
+
   // 2. Saturn's 2nd-House Signification Karmic Discipline Rule
   const satHouse = getHouse(saturn.rashiIdx);
   const secondFromSatHouse = (satHouse % 12) + 1;
   const secondFromSatBhava = BHAVA_NAMES_12[secondFromSatHouse - 1];
+  const satSecondRashiIdx = (saturn.rashiIdx + 1) % 12;
+  const satSecondYears = getSutraYearsTeEn(satSecondRashiIdx);
   results.push({
     id: 'saturn-2nd-house-rule',
-    titleTe: `శని ద్వితీయ స్థాన కర్మ పరీక్షా సూత్రం (${secondFromSatBhava.te})`,
-    titleEn: `Saturn’s 2nd-House Karmic Discipline Rule (House #${secondFromSatHouse})`,
+    titleTe: `భృగు నాడీ సూత్రం — శని ద్వితీయ స్థాన కర్మ పరీక్షా సూత్రం (${secondFromSatBhava.te})`,
+    titleEn: `Bhrigu Naadi Sutra — Saturn’s 2nd-House Karmic Discipline Rule (House #${secondFromSatHouse})`,
     badgeTe: `శని (${satHouse}వ స్థానం) → ${secondFromSatHouse}వ స్థానంపై ప్రభావం`,
     badgeEn: `Saturn in ${satHouse}H → Tests ${secondFromSatHouse}H`,
     isTriggered: true,
-    descriptionTe: `ప్రాచీన నాడీ జ్యోతిష్య నియమం ప్రకారం, కర్మకారకుడైన శని తాను ఉన్న ${satHouse}వ స్థానం నుండి రెండవ స్థానమైన ${secondFromSatBhava.te} కారకత్వాలను (${secondFromSatBhava.signifTe}) తీవ్రంగా పరీక్షిస్తాడు. తొలినాళ్లలో కొంత శ్రమ, అలసట ఎదురైనా, సత్యసంధత, ఓర్పు మరియు క్రమశిక్షణతో పనిచేస్తే మధ్య వయస్సు దాటాక తిరుగులేని స్థిరత్వాన్ని మరియు సమాజంలో పేరు ప్రఖ్యాతులను ప్రసాదిస్తాడు.`,
-    descriptionEn: `Classical Nadi principles reveal that karmic mentor Saturn thoroughly tests the house placed 2nd from its natal position—which in your chart is the ${secondFromSatBhava.en} (${secondFromSatBhava.signifEn}). Initial patience and unwavering integrity transform early obstacles into unshakeable life mastery.`,
-    remedyOrAdviceTe: `${secondFromSatBhava.te} విషయాలలో తొందరపాటు నిర్ణయాలు తీసుకోకండి. శనివారం నల్ల నువ్వుల దీపం మరియు పేదలకు అన్నదానం చేయడం వల్ల శని పరీక్షలు విజయాలుగా మారతాయి.`,
-    remedyOrAdviceEn: `Avoid hasty shortcuts in ${secondFromSatBhava.en} matters. Saturday charity and disciplined effort unlock Saturn’s enduring favor.`,
+    descriptionTe: `మహర్షి ప్రణీత భృగు నంది నాడీ సంహిత నియమం ప్రకారం, కర్మకారకుడైన శని తాను ఉన్న ${satHouse}వ స్థానం నుండి రెండవ స్థానమైన ${secondFromSatBhava.te} కారకత్వాలను (${secondFromSatBhava.signifTe}) తీవ్రంగా పరీక్షిస్తాడు. తొలినాళ్లలో కొంత శ్రమ ఎదురైనా, సత్యసంధత, ఓర్పు మరియు క్రమశిక్షణతో పనిచేస్తే 30–36 ఏళ్ల వయస్సు దాటాక తిరుగులేని స్థిరత్వాన్ని మరియు సమాజంలో పేరు ప్రఖ్యాతులను ప్రసాదిస్తాడు.`,
+    descriptionEn: `Classical Bhrigu Nandi Naadi Samhita reveals that karmic mentor Saturn thoroughly tests the house placed 2nd from its natal position—which in your chart is the ${secondFromSatBhava.en} (${secondFromSatBhava.signifEn}). Initial patience and integrity transform early obstacles into unshakeable life mastery.`,
+    remedyOrAdviceTe: `📅 ఈ సూత్రం ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${satSecondYears.te}. శనివారం నల్ల నువ్వుల దీపం మరియు పేదలకు అన్నదానం చేయడం వల్ల శని పరీక్షలు విజయాలుగా మారతాయి.`,
+    remedyOrAdviceEn: `📅 Exact Manifestation Years: ${satSecondYears.en}. Saturday charity and disciplined effort unlock Saturn’s enduring favor.`,
   });
 
   // 3. PANCHAMAHAPURUSHA RAJA YOGAS (Ruchaka, Bhadra, Hamsa, Malavya, Sasa)
   // Mars: Ruchaka (Own: Aries 0, Scorpio 7; Exalted: Capricorn 9 in Kendra)
   const marsH = getHouse(mars.rashiIdx);
   if (kendraHouses.includes(marsH) && [0, 7, 9].includes(mars.rashiIdx)) {
+    const marsY = getSutraYearsTeEn(mars.rashiIdx);
     results.push({
       id: 'panchamahapurusha-ruchaka',
       titleTe: `రుచక మహాపురుష రాజయోగం — కేంద్రంలో బలమైన కుజ స్థితి (${marsH}వ స్థానం)`,
@@ -1008,16 +1028,17 @@ export function evaluateMehtaSpecialSutras(
       badgeTe: 'రుచక రాజయోగం: అపార ధైర్యం & నాయకత్వం',
       badgeEn: 'Ruchaka Yoga: Supreme Valor & Real Estate Gains',
       isTriggered: true,
-      descriptionTe: `మీ లగ్నం నుండి ${marsH}వ కేంద్ర స్థానంలో కుజుడు తన స్వక్షేత్రం లేదా ఉచ్ఛ క్షేత్రమైన ${mars.rashiTe}లో ఉండటం వల్ల అత్యంత శక్తివంతమైన "రుచక మహాపురుష యోగం" ఏర్పడింది. ఇది అజేయమైన సంకల్ప బలాన్ని, రియల్ ఎస్టేట్/భూమి ద్వారా విశేష సంపదను, మరియు ఇంజనీరింగ్/రక్షణ/పాలనా రంగాలలో ఉన్నత నాయకత్వాన్ని ప్రసాదిస్తుంది.`,
+      descriptionTe: `బృహత్ పరాశర హోరా శాస్త్ర ప్రమాణం ప్రకారం మీ లగ్నం నుండి ${marsH}వ కేంద్ర స్థానంలో కుజుడు తన స్వక్షేత్రం లేదా ఉచ్ఛ క్షేత్రమైన ${mars.rashiTe}లో ఉండటం వల్ల అత్యంత శక్తివంతమైన "రుచక మహాపురుష యోగం" ఏర్పడింది. ఇది అజేయమైన సంకల్ప బలాన్ని, రియల్ ఎస్టేట్/భూమి ద్వారా విశేష సంపదను, మరియు ఇంజనీరింగ్/రక్షణ/పాలనా రంగాలలో ఉన్నత నాయకత్వాన్ని ప్రసాదిస్తుంది.`,
       descriptionEn: `Mars is placed in Kendra House #${marsH} in its own/exaltation sign (${mars.rashiEn}), generating the celebrated Ruchaka Panchamahapurusha Yoga—bestowing physical energy, real estate prosperity, courage, and commanding leadership.`,
-      remedyOrAdviceTe: 'మంగళవారం సుబ్రహ్మణ్య స్వామి లేదా ఆంజనేయ స్వామి ఆరాధన చేయడం వల్ల ఈ యోగం సంపూర్ణంగా అనుకూలిస్తుంది.',
-      remedyOrAdviceEn: 'Lord Subrahmanya or Hanuman worship on Tuesdays honors and channels this fiery royal energy constructively.',
+      remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${marsY.te}. మంగళవారం సుబ్రహ్మణ్య స్వామి లేదా ఆంజనేయ స్వామి ఆరాధన చేయడం వల్ల ఈ యోగం సంపూర్ణంగా అనుకూలిస్తుంది.`,
+      remedyOrAdviceEn: `📅 Exact Manifestation Years: ${marsY.en}. Lord Subrahmanya or Hanuman worship on Tuesdays honors this royal energy.`,
     });
   }
 
   // Mercury: Bhadra (Own/Exalted: Gemini 2, Virgo 5 in Kendra)
   const mercH = getHouse(mercury.rashiIdx);
   if (kendraHouses.includes(mercH) && [2, 5].includes(mercury.rashiIdx)) {
+    const mercY = getSutraYearsTeEn(mercury.rashiIdx);
     results.push({
       id: 'panchamahapurusha-bhadra',
       titleTe: `భద్ర మహాపురుష రాజయోగం — కేంద్రంలో బుధుని స్వ/ఉచ్ఛ స్థితి (${mercH}వ స్థానం)`,
@@ -1025,16 +1046,17 @@ export function evaluateMehtaSpecialSutras(
       badgeTe: 'భద్ర రాజయోగం: అసమాన మేధస్సు & వాక్చాతుర్యం',
       badgeEn: 'Bhadra Yoga: Intellectual Genius & Business Mastery',
       isTriggered: true,
-      descriptionTe: `బుధుడు ${mercH}వ కేంద్ర స్థానంలో తన స్వ/ఉచ్ఛ క్షేత్రమైన ${mercury.rashiTe}లో ఉండటం వల్ల "భద్ర మహాపురుష యోగం" సిద్ధించింది. ఇది అసాధారణమైన మేధాశక్తి, వాక్చాతుర్యం, వ్యాపార దక్షత, విశ్లేషణా నైపుణ్యం మరియు గణిత/సాంకేతిక రంగాలలో తిరుగులేని ప్రావీణ్యాన్ని ఇస్తుంది.`,
+      descriptionTe: `బృహత్ పరాశర హోరా శాస్త్రం ప్రకారం బుధుడు ${mercH}వ కేంద్ర స్థానంలో తన స్వ/ఉచ్ఛ క్షేత్రమైన ${mercury.rashiTe}లో ఉండటం వల్ల "భద్ర మహాపురుష యోగం" సిద్ధించింది. ఇది అసాధారణమైన మేధాశక్తి, వాక్చాతుర్యం, వ్యాపార దక్షత, విశ్లేషణా నైపుణ్యం మరియు గణిత/సాంకేతిక రంగాలలో తిరుగులేని ప్రావీణ్యాన్ని ఇస్తుంది.`,
       descriptionEn: `Mercury occupies Kendra House #${mercH} in its own/exalted sign (${mercury.rashiEn}), conferring Bhadra Panchamahapurusha Yoga. This endows supreme intellect, eloquence, commercial acumen, and scholarly renown.`,
-      remedyOrAdviceTe: 'బుధవారం శ్రీ విష్ణు సహస్రనామ పారాయణ చేయడం లేదా గోసేవ చేయడం వల్ల విశేష ధనలాభం కలుగుతుంది.',
-      remedyOrAdviceEn: 'Reciting Vishnu Sahasranama and supporting educational/green causes enhances Mercury’s intellectual blessings.',
+      remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${mercY.te}. బుధవారం శ్రీ విష్ణు సహస్రనామ పారాయణ చేయడం లేదా గోసేవ చేయడం వల్ల విశేష ధనలాభం కలుగుతుంది.`,
+      remedyOrAdviceEn: `📅 Exact Manifestation Years: ${mercY.en}. Reciting Vishnu Sahasranama enhances Mercury’s intellectual blessings.`,
     });
   }
 
   // Jupiter: Hamsa (Own: Sagittarius 8, Pisces 11; Exalted: Cancer 3 in Kendra)
   const jupH = getHouse(jupiter.rashiIdx);
   if (kendraHouses.includes(jupH) && [3, 8, 11].includes(jupiter.rashiIdx)) {
+    const jupY = getSutraYearsTeEn(jupiter.rashiIdx);
     results.push({
       id: 'panchamahapurusha-hamsa',
       titleTe: `హంస మహాపురుష రాజయోగం — కేంద్రంలో గురుని స్వ/ఉచ్ఛ వైభవం (${jupH}వ స్థానం)`,
@@ -1042,16 +1064,17 @@ export function evaluateMehtaSpecialSutras(
       badgeTe: 'హంస రాజయోగం: దైవానుగ్రహం & సర్వజన గౌరవం',
       badgeEn: 'Hamsa Yoga: Righteous Wisdom & Royal Honor',
       isTriggered: true,
-      descriptionTe: `దేవగురువైన బృహస్పతి ${jupH}వ కేంద్రంలో స్వ/ఉచ్ఛ క్షేత్రమైన ${jupiter.rashiTe}లో ఉండటం వల్ల పవిత్రమైన "హంస మహాపురుష యోగం" ఏర్పడింది. ఇది సమాజంలో పూజ్యనీయమైన స్థానాన్ని, ధర్మబద్ధమైన ఆలోచనను, ఉత్తమ సంతాన సౌఖ్యాన్ని మరియు ఆపదల సమయంలో అదృశ్య దైవ రక్షణను ప్రసాదిస్తుంది.`,
+      descriptionTe: `మహర్షి పరాశర హోరా శాస్త్రం ప్రకారం దేవగురువైన బృహస్పతి ${jupH}వ కేంద్రంలో స్వ/ఉచ్ఛ క్షేత్రమైన ${jupiter.rashiTe}లో ఉండటం వల్ల పవిత్రమైన "హంస మహాపురుష యోగం" ఏర్పడింది. ఇది సమాజంలో పూజ్యనీయమైన స్థానాన్ని, ధర్మబద్ధమైన ఆలోచనను, ఉత్తమ సంతాన సౌఖ్యాన్ని మరియు ఆపదల సమయంలో అదృశ్య దైవ రక్షణను ప్రసాదిస్తుంది.`,
       descriptionEn: `Jupiter is seated in Kendra House #${jupH} in its own or exalted sign (${jupiter.rashiEn}), forming Hamsa Panchamahapurusha Yoga. This blesses the native with pure ethical character, academic honor, prosperous children, and divine grace.`,
-      remedyOrAdviceTe: 'గురువారం శ్రీ దక్షిణామూర్తి ఆరాధన మరియు గురువులను, విద్యావంతులను గౌరవించడం వల్ల సమస్త శుభాలు సిద్ధిస్తాయి.',
-      remedyOrAdviceEn: 'Thursday prayers to Sri Dakshinamurthy and respecting mentors amplify Jupiter’s supreme benevolence.',
+      remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${jupY.te}. గురువారం శ్రీ దక్షిణామూర్తి ఆరాధన మరియు గురువులను గౌరవించడం వల్ల సమస్త శుభాలు సిద్ధిస్తాయి.`,
+      remedyOrAdviceEn: `📅 Exact Manifestation Years: ${jupY.en}. Thursday prayers to Sri Dakshinamurthy amplify Jupiter’s supreme benevolence.`,
     });
   }
 
   // Venus: Malavya (Own: Taurus 1, Libra 6; Exalted: Pisces 11 in Kendra)
   const venH = getHouse(venus.rashiIdx);
   if (kendraHouses.includes(venH) && [1, 6, 11].includes(venus.rashiIdx)) {
+    const venY = getSutraYearsTeEn(venus.rashiIdx);
     results.push({
       id: 'panchamahapurusha-malavya',
       titleTe: `మాళవ్య మహాపురుష రాజయోగం — కేంద్రంలో శుక్రుని దివ్య శోభ (${venH}వ స్థానం)`,
@@ -1059,15 +1082,16 @@ export function evaluateMehtaSpecialSutras(
       badgeTe: 'మాళవ్య రాజయోగం: భోగభాగ్యాలు & కళావైభవం',
       badgeEn: 'Malavya Yoga: Luxury, Beauty & Matrimonial Harmony',
       isTriggered: true,
-      descriptionTe: `శుక్రుడు ${venH}వ కేంద్రంలో తన స్వ/ఉచ్ఛ రాశి అయిన ${venus.rashiTe}లో ఉండటం వల్ల "మాళవ్య మహాపురుష యోగం" ప్రకాశిస్తోంది. ఇది ఉత్తమ గృహ-వాహన సౌఖ్యాలు, ఆకర్షణీయమైన వ్యక్తిత్వం, దాంపత్య సుఖం, కళా/సృజనాత్మక నైపుణ్యాలు మరియు విలాసవంతమైన జీవితాన్ని ఇస్తుంది.`,
+      descriptionTe: `మహర్షి పరాశర హోరా శాస్త్రం ప్రకారం శుక్రుడు ${venH}వ కేంద్రంలో తన స్వ/ఉచ్ఛ రాశి అయిన ${venus.rashiTe}లో ఉండటం వల్ల "మాళవ్య మహాపురుష యోగం" ప్రకాశిస్తోంది. ఇది ఉత్తమ గృహ-వాహన సౌఖ్యాలు, ఆకర్షణీయమైన వ్యక్తిత్వం, దాంపత్య సుఖం, కళా/సృజనాత్మక నైపుణ్యాలు మరియు విలాసవంతమైన జీవితాన్ని ఇస్తుంది.`,
       descriptionEn: `Venus is placed in Kendra House #${venH} in its own or exalted sign (${venus.rashiEn}), forging Malavya Panchamahapurusha Yoga. This bestows refined aesthetics, marital happiness, luxurious conveyances, and financial abundance.`,
-      remedyOrAdviceTe: 'శుక్రవారం శ్రీ మహాలక్ష్మి పూజ మరియు కనకధారా స్తోత్ర పారాయణ వల్ల ఈ యోగ ఫలితాలు రెట్టింపవుతాయి.',
-      remedyOrAdviceEn: 'Friday Sri Mahalakshmi worship and Kanakadhara Stotram recitation nourish enduring prosperity.',
+      remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${venY.te}. శుక్రవారం శ్రీ మహాలక్ష్మి పూజ మరియు కనకధారా స్తోత్ర పారాయణ వల్ల ఈ యోగ ఫలితాలు రెట్టింపవుతాయి.`,
+      remedyOrAdviceEn: `📅 Exact Manifestation Years: ${venY.en}. Friday Sri Mahalakshmi worship nourishes enduring prosperity.`,
     });
   }
 
   // Saturn: Sasa (Own: Capricorn 9, Aquarius 10; Exalted: Libra 6 in Kendra)
   if (kendraHouses.includes(satHouse) && [6, 9, 10].includes(saturn.rashiIdx)) {
+    const satY = getSutraYearsTeEn(saturn.rashiIdx);
     results.push({
       id: 'panchamahapurusha-sasa',
       titleTe: `శశ మహాపురుష రాజయోగం — కేంద్రంలో శని యొక్క ఉచ్ఛ/స్వక్షేత్ర బలం (${satHouse}వ స్థానం)`,
@@ -1075,41 +1099,43 @@ export function evaluateMehtaSpecialSutras(
       badgeTe: 'శశ రాజయోగం: ప్రజా నాయకత్వం & శాశ్వత కీర్తి',
       badgeEn: 'Sasa Yoga: Strategic Authority & Enduring Legacy',
       isTriggered: true,
-      descriptionTe: `శని భగవానుడు ${satHouse}వ కేంద్రంలో తన స్వక్షేత్రం లేదా ఉచ్ఛ రాశి అయిన ${saturn.rashiTe}లో ఉండటం వల్ల అత్యంత శక్తివంతమైన "శశ మహాపురుష యోగం" ఏర్పడింది. ఇది ప్రజాదరణ, సంస్థాగత పరిపాలనా దక్షత, రాజకీయ లేదా పారిశ్రామిక విజయం మరియు కాలానికి ఎదురీది నిలిచే శాశ్వతమైన విజయాన్ని ఇస్తుంది.`,
+      descriptionTe: `బృహత్ పరాశర హోరా శాస్త్రం ప్రకారం శని భగవానుడు ${satHouse}వ కేంద్రంలో తన స్వక్షేత్రం లేదా ఉచ్ఛ రాశి అయిన ${saturn.rashiTe}లో ఉండటం వల్ల అత్యంత శక్తివంతమైన "శశ మహాపురుష యోగం" ఏర్పడింది. ఇది ప్రజాదరణ, సంస్థాగత పరిపాలనా దక్షత, రాజకీయ లేదా పారిశ్రామిక విజయం మరియు కాలానికి ఎదురీది నిలిచే శాశ్వతమైన విజయాన్ని ఇస్తుంది.`,
       descriptionEn: `Saturn occupies Kendra House #${satHouse} in its own or exalted sign (${saturn.rashiEn}), producing Sasa Panchamahapurusha Yoga. This bestows immense perseverance, judicial and administrative mastery, popular trust, and long-lasting authority.`,
-      remedyOrAdviceTe: 'శనివారం హనుమాన్ చాలీసా పారాయణ మరియు శ్రామికులకు, వృద్ధులకు సహాయం చేయడం వల్ల విశేష పురోగతి లభిస్తుంది.',
-      remedyOrAdviceEn: 'Hanuman Chalisa recitation and charitable service to hardworking laborers elevate this powerful yoga.',
+      remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${satY.te}. శనివారం హనుమాన్ చాలీసా పారాయణ మరియు శ్రామికులకు సహాయం చేయడం వల్ల విశేష పురోగతి లభిస్తుంది.`,
+      remedyOrAdviceEn: `📅 Exact Manifestation Years: ${satY.en}. Hanuman Chalisa recitation elevates this powerful yoga.`,
     });
   }
 
   // 4. GAJAKESARI / GURU-CHANDRA MAHA RAJA YOGA
   const distMoonToJup = ((jupiter.rashiIdx - moon.rashiIdx + 12) % 12) + 1;
   const isGajakesari = [1, 4, 7, 10].includes(distMoonToJup);
+  const gkYears = getSutraYearsTeEn(moon.rashiIdx);
   results.push({
     id: 'gajakesari-yoga-check',
     titleTe: isGajakesari
       ? `గజకేసరి మహా రాజయోగం — చంద్రుని నుండి కేంద్రంలో (${distMoonToJup}వ స్థానంలో) గురువు`
-      : `గురు-చంద్ర సంబంధ విశ్లేషణ (చంద్రుని నుండి ${distMoonToJup}వ స్థానంలో గురువు)`,
+      : `గురు-చంద్ర నాడీ సంబంధ విశ్లేషణ (చంద్రుని నుండి ${distMoonToJup}వ స్థానంలో గురువు)`,
     titleEn: isGajakesari
       ? `Gajakesari Maha Raja Yoga (Jupiter in Kendra #${distMoonToJup} from Moon)`
-      : `Jupiter-Moon Angular Relationship (Jupiter ${distMoonToJup}H from Moon)`,
+      : `Jupiter-Moon Naadi Relationship (Jupiter ${distMoonToJup}H from Moon)`,
     badgeTe: isGajakesari ? 'గజకేసరి రాజయోగం సిద్ధించింది!' : `గురు స్థితి: ${jupiter.rashiTe}`,
     badgeEn: isGajakesari ? 'Auspicious Gajakesari Raja Yoga Active!' : `Jupiter in ${jupiter.rashiEn}`,
     isTriggered: true,
     descriptionTe: isGajakesari
-      ? `మీ జన్మ రాశి (${moon.rashiTe}) నుండి ${distMoonToJup}వ కేంద్ర స్థానంలో దేవగురువైన బృహస్పతి (${jupiter.rashiTe}) ఉండటం వల్ల క్లాసికల్ "గజకేసరి యోగం" ఏర్పడింది. సింహం ముందు ఏనుగులు భయపడినట్లుగా, ఈ యోగవంతుడి ముందు శత్రువులు, విపత్తులు నిలవలేవు. జీవితంలో ఎన్ని ఆటంకాలు వచ్చినా అంతిమంగా గౌరవం, ఆస్తులు, సద్విజ్ఞానం మరియు ఉన్నత సామాజిక హోదా లభిస్తాయి.`
-      : `మీ జన్మ రాశి (${moon.rashiTe}) నుండి గురువు ${distMoonToJup}వ స్థానంలో (${jupiter.rashiTe}) ఉన్నాడు. గురు-చంద్రుల సమన్వయం వల్ల మీలో సహజమైన దయాగుణం, పెద్దల పట్ల విధేయత మరియు కుటుంబ శ్రేయస్సు ఉంటాయి. గురు దశ మరియు అంతర్దశలలో మంచి అభివృద్ధి కనిపిస్తుంది.`,
+      ? `పరాశర హోరా శాస్త్రం ప్రకారం మీ జన్మ రాశి (${moon.rashiTe}) నుండి ${distMoonToJup}వ కేంద్ర స్థానంలో దేవగురువైన బృహస్పతి (${jupiter.rashiTe}) ఉండటం వల్ల "గజకేసరి యోగం" ఏర్పడింది. సింహం ముందు ఏనుగులు భయపడినట్లుగా, ఈ యోగవంతుడి ముందు శత్రువులు, విపత్తులు నిలవలేవు. జీవితంలో ఎన్ని ఆటంకాలు వచ్చినా అంతిమంగా గౌరవం, ఆస్తులు, సద్విజ్ఞానం మరియు ఉన్నత సామాజిక హోదా లభిస్తాయి.`
+      : `భృగు నంది నాడీ సంహిత ప్రకారం మీ జన్మ రాశి (${moon.rashiTe}) నుండి గురువు ${distMoonToJup}వ స్థానంలో (${jupiter.rashiTe}) ఉన్నాడు. గురు-చంద్రుల సమన్వయం వల్ల మీలో సహజమైన దయాగుణం, పెద్దల పట్ల విధేయత మరియు కుటుంబ శ్రేయస్సు ఉంటాయి. గోచార గురువు మీ జన్మ చంద్రుని కోణ రాశులలో సంచరించినప్పుడు విశేష అభివృద్ధి కలుగుతుంది.`,
     descriptionEn: isGajakesari
-      ? `Jupiter is placed in Kendra House #${distMoonToJup} from your natal Moon (${moon.rashiEn}), giving rise to the celebrated Gajakesari Raja Yoga. Like a fearless lion among elephants, the native commands respect, triumphs over life crises, and attains lasting nobility, wisdom, and financial stability.`
-      : `Jupiter is placed ${distMoonToJup} houses from your Moon sign (${moon.rashiEn}), supporting compassionate intuition, moral integrity, and peaceful family growth during Jupiter transits and sub-periods.`,
-    remedyOrAdviceTe: 'గురువారం నాడు శ్రీ దక్షిణామూర్తి లేదా సాయిబాబా ఆరాధన చేయడం వల్ల ఈ యోగ బలం జీవితాంతం రక్షణగా నిలుస్తుంది.',
-    remedyOrAdviceEn: 'Honoring spiritual teachers and Thursday prayers to Sri Dakshinamurthy sustain this noble protective energy.',
+      ? `Jupiter is placed in Kendra House #${distMoonToJup} from your natal Moon (${moon.rashiEn}), giving rise to the celebrated Gajakesari Raja Yoga. The native commands respect, triumphs over life crises, and attains lasting nobility, wisdom, and financial stability.`
+      : `Jupiter is placed ${distMoonToJup} houses from your Moon sign (${moon.rashiEn}), supporting compassionate intuition, moral integrity, and peaceful family growth during Jupiter transits.`,
+    remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${gkYears.te}. గురువారం నాడు శ్రీ దక్షిణామూర్తి ఆరాధన చేయడం వల్ల ఈ యోగ బలం జీవితాంతం రక్షణగా నిలుస్తుంది.`,
+    remedyOrAdviceEn: `📅 Exact Manifestation Years: ${gkYears.en}. Thursday prayers to Sri Dakshinamurthy sustain this noble protective energy.`,
   });
 
   // 5. BUDHADITYA RAJA YOGA
   const isBudhaditya = sun.rashiIdx === mercury.rashiIdx;
   if (isBudhaditya) {
     const baHouse = getHouse(sun.rashiIdx);
+    const baYears = getSutraYearsTeEn(sun.rashiIdx);
     results.push({
       id: 'budhaditya-yoga',
       titleTe: `బుధాదిత్య రాజయోగం — ${baHouse}వ స్థానంలో (${sun.rashiTe}) రవి-బుధుల కలయిక`,
@@ -1117,10 +1143,10 @@ export function evaluateMehtaSpecialSutras(
       badgeTe: 'బుధాదిత్య యోగం: విశేష మేధాశక్తి & కీర్తి',
       badgeEn: 'Budhaditya Yoga: Brilliance & Executive Acumen',
       isTriggered: true,
-      descriptionTe: `మీ జాతకంలో ${baHouse}వ స్థానంలో (${sun.rashiTe} రాశిలో) సూర్యుడు మరియు బుధుడు కలిసి ఉండటం వల్ల ప్రసిద్ధ "బుధాదిత్య రాజయోగం" ఏర్పడింది. ఇది అత్యంత తీక్షణమైన మేధస్సు, గణిత/సాంకేతిక నైపుణ్యం, వాక్చాతుర్యం మరియు ప్రభుత్వ/కార్పొరేట్ సంస్థలలో గౌరవప్రదమైన ఉన్నత పదవులను అందిస్తుంది. శర్మ గారి పరిశీలన ప్రకారం, ఇలాంటి వ్యక్తులు సంక్లిష్ట సమస్యలను కూడా అవలీలగా పరిష్కరిస్తారు.`,
+      descriptionTe: `మీ జాతకంలో ${baHouse}వ స్థానంలో (${sun.rashiTe} రాశిలో) సూర్యుడు మరియు బుధుడు కలిసి ఉండటం వల్ల ప్రసిద్ధ "బుధాదిత్య రాజయోగం" ఏర్పడింది. ఇది అత్యంత తీక్షణమైన మేధస్సు, గణిత/సాంకేతిక నైపుణ్యం, వాక్చాతుర్యం మరియు ప్రభుత్వ/కార్పొరేట్ సంస్థలలో గౌరవప్రదమైన ఉన్నత పదవులను అందిస్తుంది.`,
       descriptionEn: `Sun and Mercury unite in your ${baHouse}th house (${sun.rashiEn}), generating the renowned Budhaditya Raja Yoga. This bestows administrative brilliance, analytical precision, articulate diplomacy, and high career distinction.`,
-      remedyOrAdviceTe: 'నిత్యం ఆదిత్య హృదయ స్తోత్ర పారాయణ మరియు సూర్య నమస్కారాలు చేయడం వల్ల ఈ మేధా యోగం పూర్తి స్థాయిలో వికసిస్తుంది.',
-      remedyOrAdviceEn: 'Daily Aditya Hrudaya Stotram and Surya Namaskaram unlock the pinnacle of executive and analytical excellence.',
+      remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${baYears.te}. నిత్యం ఆదిత్య హృదయ స్తోత్ర పారాయణ మరియు సూర్య నమస్కారాలు చేయడం వల్ల ఈ మేధా యోగం పూర్తి స్థాయిలో వికసిస్తుంది.`,
+      remedyOrAdviceEn: `📅 Exact Manifestation Years: ${baYears.en}. Daily Aditya Hrudaya Stotram unlocks executive excellence.`,
     });
   }
 
@@ -1129,7 +1155,7 @@ export function evaluateMehtaSpecialSutras(
     moon.rashiIdx === mars.rashiIdx ||
     ((mars.rashiIdx - moon.rashiIdx + 12) % 12) === 6;
   if (isChandraMangala) {
-    const cmHouse = getHouse(moon.rashiIdx);
+    const cmYears = getSutraYearsTeEn(mars.rashiIdx);
     results.push({
       id: 'chandra-mangala-dhana-yoga',
       titleTe: `చంద్ర-మంగళ ధన రాజయోగం — మనఃకారక (చంద్ర) & భూకారక (కుజ) సమన్వయం`,
@@ -1139,8 +1165,8 @@ export function evaluateMehtaSpecialSutras(
       isTriggered: true,
       descriptionTe: `మీ జాతకంలో చంద్రుడు మరియు కుజుడు ఒకే రాశిలో సంయోగం చెందడం లేదా పరస్పర సప్తమ దృష్టితో ఉండటం వల్ల "చంద్ర-మంగళ ధన యోగం" ఏర్పడింది. ఇది స్వయంకృషితో విశేష సంపదను ఆర్జించే సామర్థ్యాన్ని, స్థిరాస్తి అభివృద్ధిని, వాణిజ్య నైపుణ్యాన్ని మరియు వ్యాపారంలో ధైర్యంగా ముందడుగు వేసే శక్తిని ప్రసాదిస్తుంది.`,
       descriptionEn: `Moon and Mars form a close conjunction or 7th mutual aspect, generating Chandra-Mangala Dhana Yoga. This produces exceptional commercial enterprise, property gains, dynamic ambition, and self-made financial momentum.`,
-      remedyOrAdviceTe: 'లక్ష్మీ నరసింహ స్వామి లేదా దుర్గా దేవి ఆరాధన చేయడం వల్ల ఆర్థిక ప్రవాహం స్థిరంగా, పవిత్రంగా ఉంటుంది.',
-      remedyOrAdviceEn: 'Worship of Sri Lakshmi Narasimha or Sri Durga balances intense commercial passion with righteous stability.',
+      remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${cmYears.te}. లక్ష్మీ నరసింహ స్వామి లేదా దుర్గా దేవి ఆరాధన చేయడం వల్ల ఆర్థిక ప్రవాహం స్థిరంగా ఉంటుంది.`,
+      remedyOrAdviceEn: `📅 Exact Manifestation Years: ${cmYears.en}. Worship of Sri Lakshmi Narasimha balances commercial passion with stability.`,
     });
   }
 
@@ -1158,6 +1184,7 @@ export function evaluateMehtaSpecialSutras(
     planetsIn10FromMoon.every((p) => beneficIds.includes(p.id));
 
   if (isAmalaFromLagna || isAmalaFromMoon) {
+    const amalaYears = getSutraYearsTeEn(isAmalaFromLagna ? tenthFromLagna : tenthFromMoon);
     const amalaRefTe =
       isAmalaFromLagna && isAmalaFromMoon
         ? 'జన్మ లగ్నం మరియు చంద్ర లగ్నం రెంటి నుండి 10వ స్థానంలో శుభగ్రహ స్థితి వల్ల'
@@ -1186,8 +1213,8 @@ export function evaluateMehtaSpecialSutras(
       isTriggered: true,
       descriptionTe: `మీ జాతకంలో ${amalaRefTe} (${amalaBeneficsTe}) ప్రశస్తమైన "అమల యోగం" సిద్ధించింది. ఇది మచ్చలేని వృత్తి జీవితాన్ని, సమాజంలో ఉన్నత నైతిక గౌరవాన్ని, పరోపకార బుద్ధిని మరియు ప్రభుత్వం లేదా పెద్దల నుండి శాశ్వతమైన ఆదరణను ప్రసాదిస్తుంది.`,
       descriptionEn: `Natural benefic (${amalaBeneficsEn}) exclusively occupies the 10th house of profession ${amalaRefEn}, forging Amala Yoga. This guarantees an untarnished reputation, high public trust, humanitarian prestige, and lasting honor.`,
-      remedyOrAdviceTe: 'నిత్యం సత్యం, ధర్మం పాటిస్తూ నిస్వార్థ సేవ చేయడం వల్ల ఈ యోగం తరం తరాలకు కీర్తిని అందిస్తుంది.',
-      remedyOrAdviceEn: 'Upholding strict professional ethics and public welfare transforms this yoga into generational renown.',
+      remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${amalaYears.te}. నిత్యం సత్యం, ధర్మం పాటిస్తూ నిస్వార్థ సేవ చేయడం వల్ల ఈ యోగం తరం తరాలకు కీర్తిని అందిస్తుంది.`,
+      remedyOrAdviceEn: `📅 Exact Manifestation Years: ${amalaYears.en}. Upholding strict professional ethics transforms this yoga into generational renown.`,
     });
   }
 
@@ -1205,6 +1232,8 @@ export function evaluateMehtaSpecialSutras(
   const hasVimala = dusthanaHouses.includes(twelfthLordH);
 
   if (hasHarsha || hasSarala || hasVimala) {
+    const vipTargetRashi = hasHarsha ? sixthLord.rashiIdx : hasSarala ? eighthLord.rashiIdx : twelfthLord.rashiIdx;
+    const vipYears = getSutraYearsTeEn(vipTargetRashi);
     const yogaNames: string[] = [];
     const yogaNamesEn: string[] = [];
     if (hasHarsha) {
@@ -1227,10 +1256,10 @@ export function evaluateMehtaSpecialSutras(
       badgeTe: 'విపరీత రాజయోగం: ఆపదల నుండి అద్భుత విజయాలు',
       badgeEn: 'Viparita Raja Yoga: Triumph Through Adversity',
       isTriggered: true,
-      descriptionTe: `దుష్ట స్థానాలైన 6, 8, 12వ అధిపతులు తమలో తామే దుష్ట స్థానాలలో ఉండటం వల్ల శాస్త్రోక్త "విపరీత రాజయోగం" ఏర్పడింది. దీని ఫలితంగా జీవితంలో ఇతరులు కుంగిపోయే కష్టాలు లేదా సంక్షోభాలు ఎదురైనప్పుడు, మీరు ఆశ్చర్యకరమైన రీతిలో విజేతగా నిలుస్తారు. శత్రువులు స్వయంగా వెనక్కి తగ్గుతారు; ఆకస్మిక ధన లాభాలు మరియు సంక్షోభ సమయంలో అదృష్టం కలిసి వస్తుంది.`,
+      descriptionTe: `పరాశర హోరా శాస్త్ర ప్రమాణం ప్రకారం దుష్ట స్థానాలైన 6, 8, 12వ అధిపతులు తమలో తామే దుష్ట స్థానాలలో ఉండటం వల్ల శాస్త్రోక్త "విపరీత రాజయోగం" ఏర్పడింది. దీని ఫలితంగా జీవితంలో ఇతరులు కుంగిపోయే కష్టాలు లేదా సంక్షోభాలు ఎదురైనప్పుడు, మీరు ఆశ్చర్యకరమైన రీతిలో విజేతగా నిలుస్తారు. శత్రువులు స్వయంగా వెనక్కి తగ్గుతారు; ఆకస్మిక ధన లాభాలు మరియు సంక్షోభ సమయంలో అదృష్టం కలిసి వస్తుంది.`,
       descriptionEn: `Dusthana lords (6th, 8th, or 12th) occupying dusthana houses cancel out malevolence and produce the classical Viparita Raja Yoga. The native thrives in crises, overcomes formidable adversaries, and gains sudden windfalls when least expected.`,
-      remedyOrAdviceTe: 'శ్రీ సుదర్శన హోమం లేదా మహా మృత్యుంజయ మంత్ర జపం వల్ల ఈ యోగ శక్తి సంపూర్ణ రక్షణ కవచంగా మారుతుంది.',
-      remedyOrAdviceEn: 'Maha Mrityunjaya mantra japa aligns dusthana energies into a formidable shield of invincibility.',
+      remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${vipYears.te}. శ్రీ సుదర్శన ఆరాధన లేదా మహా మృత్యుంజయ జపం వల్ల ఈ యోగ శక్తి సంపూర్ణ రక్షణ కవచంగా మారుతుంది.`,
+      remedyOrAdviceEn: `📅 Exact Manifestation Years: ${vipYears.en}. Maha Mrityunjaya japa aligns dusthana energies into a shield of invincibility.`,
     });
   }
 
@@ -1242,6 +1271,7 @@ export function evaluateMehtaSpecialSutras(
   const is9and10Conjoined = ninthLord.rashiIdx === tenthLord.rashiIdx;
   const is9and10MutualAspect =
     ((tenthLord.rashiIdx - ninthLord.rashiIdx + 12) % 12) === 6;
+  const dkYears = getSutraYearsTeEn(tenthLord.rashiIdx);
 
   results.push({
     id: 'karma-labha-yoga',
@@ -1262,38 +1292,38 @@ export function evaluateMehtaSpecialSutras(
       ? `మీ జాతకంలో అత్యున్నత త్రికోణాధిపతి అయిన భాగ్యాధిపతి (${ninthLord.nameTe}) మరియు అత్యున్నత కేంద్రాధిపతి అయిన రాజ్యాధిపతి (${tenthLord.nameTe}) కలవడం లేదా పరస్పర దృష్టి కలిగి ఉండటం వల్ల వేద జ్యోతిషంలో రారాజు లాంటి "ధర్మ-కర్మాధిపతి మహా రాజయోగం" ఏర్పడింది. ఇది ఉన్నత అధికారాలు, ప్రభుత్వం/సమాజంలో అత్యున్నత గౌరవం, ధర్మబద్ధమైన విస్తార సంపద మరియు తరతరాల కీర్తిని ప్రసాదిస్తుంది.`
       : is10and11Conjoined
       ? `మీ జాతకంలో వృత్తి స్థానాధిపతి (${tenthLord.nameTe}) మరియు సమస్త కోరికల-లాభ స్థానాధిపతి (${eleventhLord.nameTe}) ఒకే రాశిలో కలవడం వల్ల అఖండ వృత్తి విజయాలు, స్థిరమైన బహుళ ఆదాయ వనరులు మరియు ప్రభావవంతమైన మిత్రుల సహకారం లభిస్తాయి.`
-      : `మీ జాతకంలో భాగ్యాధిపతి ${ninthLord.nameTe} ${getHouse(ninthLord.rashiIdx)}వ స్థానంలో, వృత్తి స్థానాధిపతి ${tenthLord.nameTe} ${getHouse(tenthLord.rashiIdx)}వ స్థానంలో, లాభాధిపతి ${eleventhLord.nameTe} ${getHouse(eleventhLord.rashiIdx)}వ స్థానంలో ఉన్నారు. వీరి దశ-అంతర్దశలలో వృత్తి ఉన్నతి మరియు ఆర్థిక లాభాలు విశేషంగా కలుగుతాయి.`,
+      : `మీ జాతకంలో భాగ్యాధిపతి ${ninthLord.nameTe} ${getHouse(ninthLord.rashiIdx)}వ స్థానంలో, వృత్తి స్థానాధిపతి ${tenthLord.nameTe} ${getHouse(tenthLord.rashiIdx)}వ స్థానంలో, లాభాధిపతి ${eleventhLord.nameTe} ${getHouse(eleventhLord.rashiIdx)}వ స్థానంలో ఉన్నారు. గోచార గురు-శనులు ఈ రాశులను స్పృశించినప్పుడు వృత్తి ఉన్నతి మరియు ఆర్థిక లాభాలు విశేషంగా కలుగుతాయి.`,
     descriptionEn: is9and10Conjoined || is9and10MutualAspect
       ? `The alliance between your 9th lord of fortune (${ninthLord.nameEn}) and 10th lord of career (${tenthLord.nameEn}) forms the pinnacle Dharma-Karmadhipati Raja Yoga—bestowing supreme executive leadership, ethical prosperity, and enduring public reverence.`
       : is10and11Conjoined
       ? `The conjunction of your 10th lord (${tenthLord.nameEn}) and 11th lord (${eleventhLord.nameEn}) generates steady career ascendancy, multi-channel revenues, and high societal connections.`
-      : `Your 9th lord ${ninthLord.nameEn} is in House #${getHouse(ninthLord.rashiIdx)}, 10th lord ${tenthLord.nameEn} in House #${getHouse(tenthLord.rashiIdx)}, and 11th lord ${eleventhLord.nameEn} in House #${getHouse(eleventhLord.rashiIdx)}, creating systematic prosperity windows during their dasha sub-periods.`,
-    remedyOrAdviceTe: `${tenthLord.nameTe} మరియు ${eleventhLord.nameTe} కారకత్వ రంగాలలో నిజాయితీతో కూడిన కృషి చేయడం వల్ల ఆర్థిక స్థిరత్వం వేగంగా లభిస్తుంది.`,
-    remedyOrAdviceEn: `Aligning your professional endeavors with Houses #${getHouse(tenthLord.rashiIdx)} and #${getHouse(eleventhLord.rashiIdx)} unlocks maximal financial growth.`,
+      : `Your 9th lord ${ninthLord.nameEn} is in House #${getHouse(ninthLord.rashiIdx)}, 10th lord ${tenthLord.nameEn} in House #${getHouse(tenthLord.rashiIdx)}, and 11th lord ${eleventhLord.nameEn} in House #${getHouse(eleventhLord.rashiIdx)}, creating systematic prosperity windows.`,
+    remedyOrAdviceTe: `📅 ఈ వృత్తి-ధన సూత్రం ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${dkYears.te}. ${tenthLord.nameTe} మరియు ${eleventhLord.nameTe} కారకత్వ రంగాలలో నిజాయితీతో కూడిన కృషి చేయడం వల్ల ఆర్థిక స్థిరత్వం వేగంగా లభిస్తుంది.`,
+    remedyOrAdviceEn: `📅 Exact Manifestation Years: ${dkYears.en}. Aligning your professional endeavors with Houses #${getHouse(tenthLord.rashiIdx)} and #${getHouse(eleventhLord.rashiIdx)} unlocks maximal financial growth.`,
   });
 
   // 10. DHANA & PURVAPUNYA YOGA (2nd & 5th Lords)
   const secondLord = getLordOfHouse(2);
   const fifthLord = getLordOfHouse(5);
+  const dpYears = getSutraYearsTeEn(secondLord.rashiIdx);
   results.push({
     id: 'dhana-purvapunya-yoga',
-    titleTe: `ధన (2వ) & పూర్వపుణ్య (5వ) స్థానాధిపతుల సంపద-సంతాన విశ్లేషణ`,
-    titleEn: `2nd & 5th Lord Wealth Accumulation & Purvapunya Synthesis`,
+    titleTe: `ధన (2వ) & పూర్వపుణ్య (5వ) స్థానాధిపతుల సంపద-సంతాన నాడీ విశ్లేషణ`,
+    titleEn: `2nd & 5th Lord Wealth Accumulation & Purvapunya Naadi Synthesis`,
     badgeTe: `ధనాధిపతి: ${secondLord.nameTe} (${getHouse(secondLord.rashiIdx)}వ స్థానం) · పంచమాధిపతి: ${fifthLord.nameTe} (${getHouse(fifthLord.rashiIdx)}వ స్థానం)`,
     badgeEn: `2nd Lord: ${secondLord.nameEn} (${getHouse(secondLord.rashiIdx)}H) · 5th Lord: ${fifthLord.nameEn} (${getHouse(fifthLord.rashiIdx)}H)`,
     isTriggered: true,
-    descriptionTe: `మీ కుండలిలో ధన-కుటుంబ స్థానాధిపతి అయిన ${secondLord.nameTe} ${getHouse(secondLord.rashiIdx)}వ స్థానంలో మరియు పూర్వపుణ్య-బుద్ధి స్థానాధిపతి అయిన ${fifthLord.nameTe} ${getHouse(fifthLord.rashiIdx)}వ స్థానంలో ఉన్నారు. దీనివల్ల కుటుంబ సంపద నిల్వలు, సంతానాభివృద్ధి, తెలివితేటలు మరియు పూర్వజన్మ సుకృతం మీకు కీలక సమయాలలో రక్షణగా నిలుస్తాయి. శర్మ గారి అనుభవంలో, 2వ మరియు 5వ అధిపతుల బలం ఉన్నవారు ఎన్నటికీ కటిక పేదరికంలో ఉండలేరు.`,
+    descriptionTe: `మీ కుండలిలో ధన-కుటుంబ స్థానాధిపతి అయిన ${secondLord.nameTe} ${getHouse(secondLord.rashiIdx)}వ స్థానంలో మరియు పూర్వపుణ్య-బుద్ధి స్థానాధిపతి అయిన ${fifthLord.nameTe} ${getHouse(fifthLord.rashiIdx)}వ స్థానంలో ఉన్నారు. దీనివల్ల కుటుంబ సంపద నిల్వలు, సంతానాభివృద్ధి, తెలివితేటలు మరియు పూర్వజన్మ సుకృతం మీకు కీలక సమయాలలో రక్షణగా నిలుస్తాయి. భృగు సంహిత ప్రకారం 2వ మరియు 5వ అధిపతుల బలం ఉన్నవారు ఎన్నటికీ ఆర్థిక దుస్థితిలో ఉండరు.`,
     descriptionEn: `Your 2nd lord of wealth (${secondLord.nameEn}) occupies House #${getHouse(secondLord.rashiIdx)} and your 5th lord of intellect and purvapunya (${fifthLord.nameEn}) occupies House #${getHouse(fifthLord.rashiIdx)}, anchoring investment foresight, ancestral protection, and brilliant problem-solving.`,
-    remedyOrAdviceTe: 'శ్రీ లక్ష్మీ గణపతి ఆరాధన మరియు కులదేవతా పూజ వల్ల ధన నిల్వలు, సంతాన సౌఖ్యం నిరంతరం వృద్ధి చెందుతాయి.',
-    remedyOrAdviceEn: 'Worship of Sri Lakshmi Ganapathi and your family deity (Kula Devata) ensures perpetual family prosperity.',
+    remedyOrAdviceTe: `📅 ధన వృద్ధి ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${dpYears.te}. శ్రీ లక్ష్మీ గణపతి ఆరాధన మరియు కులదేవతా పూజ వల్ల ధన నిల్వలు, సంతాన సౌఖ్యం నిరంతరం వృద్ధి చెందుతాయి.`,
+    remedyOrAdviceEn: `📅 Exact Wealth Manifestation Years: ${dpYears.en}. Worship of Sri Lakshmi Ganapathi and your Kula Devata ensures perpetual family prosperity.`,
   });
 
   // 11. KAHALA & PARVATA YOGA (4th & 9th Lords in Mutual Kendras)
   const fourthLord = getLordOfHouse(4);
-  const fourthLordH = getHouse(fourthLord.rashiIdx);
-  const ninthLordH = getHouse(ninthLord.rashiIdx);
   const dist4to9 = ((ninthLord.rashiIdx - fourthLord.rashiIdx + 12) % 12) + 1;
   if ([1, 4, 7, 10].includes(dist4to9)) {
+    const kahalaYears = getSutraYearsTeEn(fourthLord.rashiIdx);
     results.push({
       id: 'kahala-yoga',
       titleTe: `కాహళ రాజయోగం — సుఖ (4వ) & భాగ్య (9వ) స్థానాధిపతుల పరస్పర కేంద్ర బలం`,
@@ -1303,8 +1333,8 @@ export function evaluateMehtaSpecialSutras(
       isTriggered: true,
       descriptionTe: `మీ జాతకంలో చతుర్థాధిపతి (${fourthLord.nameTe}) మరియు భాగ్యాధిపతి (${ninthLord.nameTe}) పరస్పరం కేంద్ర స్థానాలలో ఉండటం వల్ల "కాహళ యోగం" ఏర్పడింది. ఇది అపారమైన భూములు, సొంత ఇళ్లు, వాహనాలు, సమాజంలో తిరుగులేని ధైర్యం మరియు నాయకత్వ లక్షణాలను ప్రసాదిస్తుంది.`,
       descriptionEn: `Your 4th lord of assets (${fourthLord.nameEn}) and 9th lord of fortune (${ninthLord.nameEn}) stand in mutual Kendras, forming Kahala Yoga—bestowing abundant immovable properties, courageous determination, and executive authority.`,
-      remedyOrAdviceTe: 'భూమాతను గౌరవిస్తూ, నూతన గృహ/వాహన కొనుగోలు సమయాలలో గోపూజ చేయడం అత్యంత శ్రేయస్కరం.',
-      remedyOrAdviceEn: 'Go Pooja (cow seva) and Vastu sanctification during property milestones multiply these expansive blessings.',
+      remedyOrAdviceTe: `📅 గృహ/భూమి యోగం ఫలించే సంవత్సరాలు: ${kahalaYears.te}. నూతన గృహ/వాహన కొనుగోలు సమయాలలో గోపూజ చేయడం అత్యంత శ్రేయస్కరం.`,
+      remedyOrAdviceEn: `📅 Exact Property Manifestation Years: ${kahalaYears.en}. Go Pooja and Vastu sanctification multiply these blessings.`,
     });
   }
 
@@ -1313,17 +1343,18 @@ export function evaluateMehtaSpecialSutras(
   const scorpioHouse = getHouse(7);
   const isMarsInAir = [2, 6, 10].includes(mars.rashiIdx);
   if (isMarsInAir) {
+    const marsAirY = getSutraYearsTeEn(mars.rashiIdx);
     results.push({
       id: 'mars-air-sign-sutra',
-      titleTe: `కుజుడు వాయు రాశి (${mars.rashiTe})లో స్థితి — కుజ క్షేత్ర ప్రభావ సూత్రం`,
-      titleEn: `Mars in Air Sign (${mars.rashiEn}) — Dual Ownership Rule`,
+      titleTe: `భృగు నాడీ సూత్రం — కుజుడు వాయు రాశి (${mars.rashiTe})లో స్థితి`,
+      titleEn: `Bhrigu Naadi Sutra — Mars in Air Sign (${mars.rashiEn})`,
       badgeTe: `${ariesHouse}వ లేదా ${scorpioHouse}వ స్థానంపై ప్రత్యేక శ్రద్ధ`,
       badgeEn: `Mind House #${ariesHouse} & House #${scorpioHouse}`,
       isTriggered: true,
-      descriptionTe: `నాడీ జ్యోతిష్య పరిశీలనా సూత్రం ప్రకారం, కుజుడు మిథునం, తుల లేదా కుంభ రాశిలో ఉన్నప్పుడు, కుజుని స్వక్షేత్రాలైన మేషం (${ariesHouse}వ స్థానం - ${BHAVA_NAMES_12[ariesHouse - 1].signifTe}) లేదా వృశ్చికం (${scorpioHouse}వ స్థానం - ${BHAVA_NAMES_12[scorpioHouse - 1].signifTe})లలో ఒక స్థాన ఫలితాలలో ప్రారంభంలో కొంత అలసత్వం లేదా అదనపు శ్రమ ఉంటాయి. పట్టుదలతో పనిచేస్తే రెండవ అర్ధభాగంలో గొప్ప విజయాలు సాధిస్తారు.`,
-      descriptionEn: `When dynamic Mars occupies Gemini, Libra, or Aquarius, one of its dual-owned signs—House #${ariesHouse} (Aries) or House #${scorpioHouse} (Scorpio)—demands extra persistence during initial cycles before delivering durable success.`,
-      remedyOrAdviceTe: `మంగళవారం సుబ్రహ్మణ్య స్వామి లేదా ఆంజనేయ స్వామి ఆరాధన చేయడం వల్ల ${ariesHouse}వ మరియు ${scorpioHouse}వ స్థాన ఫలితాలు అత్యంత శుభప్రదంగా మారుతాయి.`,
-      remedyOrAdviceEn: `Tuesday prayers to Lord Subrahmanya protect and vitalize Houses #${ariesHouse} and #${scorpioHouse}.`,
+      descriptionTe: `మహర్షి భృగు నాడీ పరిశీలనా సూత్రం ప్రకారం, కుజుడు మిథునం, తుల లేదా కుంభ రాశిలో ఉన్నప్పుడు, కుజుని స్వక్షేత్రాలైన మేషం (${ariesHouse}వ స్థానం - ${BHAVA_NAMES_12[ariesHouse - 1].signifTe}) లేదా వృశ్చికం (${scorpioHouse}వ స్థానం - ${BHAVA_NAMES_12[scorpioHouse - 1].signifTe})లలో ఒక స్థాన ఫలితాలలో ప్రారంభంలో కొంత అదనపు శ్రమ ఉన్నా, 28 ఏళ్ల వయస్సు దాటాక గొప్ప విజయాలు సాధిస్తారు.`,
+      descriptionEn: `When dynamic Mars occupies Gemini, Libra, or Aquarius, one of its dual-owned signs—House #${ariesHouse} (Aries) or House #${scorpioHouse} (Scorpio)—demands extra persistence during initial cycles before delivering durable success after age 28.`,
+      remedyOrAdviceTe: `📅 ఖచ్చితంగా ఫలించే సంవత్సరాలు: ${marsAirY.te}. మంగళవారం సుబ్రహ్మణ్య స్వామి లేదా ఆంజనేయ స్వామి ఆరాధన చేయడం వల్ల ${ariesHouse}వ మరియు ${scorpioHouse}వ స్థాన ఫలితాలు అత్యంత శుభప్రదంగా మారుతాయి.`,
+      remedyOrAdviceEn: `📅 Exact Manifestation Years: ${marsAirY.en}. Tuesday prayers to Lord Subrahmanya protect and vitalize Houses #${ariesHouse} and #${scorpioHouse}.`,
     });
   }
 

@@ -13,13 +13,14 @@ import {
   Compass,
   Search,
   ArrowRight,
+  Clock,
 } from 'lucide-react';
 import { playTempleBell } from '../utils/audioChime';
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
 import { ASTRO_SEARCH_TOPICS, AstroSearchTopic, searchAstroTopics } from '../data/astroSearchIndex';
 
-export type NavTab = 'home' | 'panchangam' | 'jathakam' | 'awards' | 'services' | 'about' | 'contact';
+export type NavTab = 'home' | 'panchangam' | 'muhurtham' | 'jathakam' | 'awards' | 'services' | 'about' | 'contact';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -66,6 +67,13 @@ export const Header: React.FC<HeaderProps> = ({
   }[] = [
     { id: 'home', label: t('హోమ్ పేజీ', 'Home'), shortLabelTe: 'హోమ్', shortLabelEn: 'Home', icon: Home },
     { id: 'panchangam', label: t('నేటి పంచాంగం', 'Panchangam'), shortLabelTe: 'పంచాంగం', shortLabelEn: 'Panchangam', icon: Calendar },
+    {
+      id: 'muhurtham',
+      label: t('శుభ ముహూర్తం', 'Muhurtham Finder'),
+      shortLabelTe: 'ముహూర్తం',
+      shortLabelEn: 'Muhurtham',
+      icon: Clock,
+    },
     {
       id: 'jathakam',
       label: t('మీ జాతకం తెలుసుకోండి', 'Horoscope & Tools'),
