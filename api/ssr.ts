@@ -64,28 +64,40 @@ function loadTemplateHtml(): string {
 }
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
-  const queryPath = req.query?.__pathname;
-  const rawQueryPath = Array.isArray(queryPath) ? queryPath[0] : queryPath;
-  const forwardedUri =
-    (typeof req.headers?.['x-matched-path'] === 'string' && req.headers['x-matched-path']) ||
-    (typeof req.headers?.['x-vercel-forwarded-for'] === 'string' && '') ||
-    '';
+  try {
+    const queryPath = req.query?.__pathname;
+    const rawQueryPath = Array.isArray(queryPath) ? queryPath[0] : queryPath;
+    const forwardedUri =
+      (typeof req.headers?.['x-matched-path'] === 'string' && req.headers['x-matched-path']) ||
+      (typeof req.headers?.['x-vercel-forwarded-for'] === 'string' && '') ||
+      '';
 
-  let routePath = rawQueryPath || forwardedUri || req.url || '/';
-  routePath = routePath.split('?')[0].trim();
-  if (!routePath.startsWith('/')) {
-    routePath = '/' + routePath;
+    let routePath = rawQueryPath || forwardedUri || req.url || '/';
+    routePath = routePath.split('?')[0].trim();
+    if (!routePath.startsWith('/')) {
+      routePath = '/' + routePath;
+    }
+    if (routePath === '/api/ssr' || routePath === '/index.html' || routePath === '') {
+      routePath = '/';
+    } else if (routePath.length > 1) {
+      routePath = routePath.replace(/\/+$/, '');
+    }
+
+    const templateHtml = loadTemplateHtml();
+    let renderedHtml = templateHtml;
+    try {
+      renderedHtml = buildRouteHtmlFromTemplate(templateHtml, routePath);
+    } catch (renderErr) {
+      console.warn('[SSR renderRoute warning]:', renderErr);
+      renderedHtml = templateHtml || FALLBACK_HTML_SHELL;
+    }
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=86400');
+    return res.status(200).send(renderedHtml);
+  } catch (err: any) {
+    console.error('[SSR Handler Exception]:', err);
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.status(200).send(FALLBACK_HTML_SHELL);
   }
-  if (routePath === '/api/ssr' || routePath === '/index.html' || routePath === '') {
-    routePath = '/';
-  } else if (routePath.length > 1) {
-    routePath = routePath.replace(/\/+$/, '');
-  }
-
-  const templateHtml = loadTemplateHtml();
-  const renderedHtml = buildRouteHtmlFromTemplate(templateHtml, routePath);
-
-  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=86400');
-  return res.status(200).send(renderedHtml);
 }

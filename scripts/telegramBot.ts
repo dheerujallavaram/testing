@@ -1,7 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createCanvas, GlobalFonts, SKRSContext2D } from '@napi-rs/canvas';
+import type { SKRSContext2D } from '@napi-rs/canvas';
+let createCanvas: any = null;
+let GlobalFonts: any = null;
+try {
+  const canvasPkg = await import('@napi-rs/canvas');
+  createCanvas = canvasPkg.createCanvas;
+  GlobalFonts = canvasPkg.GlobalFonts;
+} catch (canvasErr) {
+  console.warn('[@napi-rs/canvas lazy load]:', canvasErr);
+}
+
 import { getOrGenerateDayData } from '../src/utils/astronomyPanchangam';
 import { getDailyRashiFortunes, RashiDailyFortune } from '../src/utils/panchangaLogic';
 import { DayData } from '../src/types/panchangam';
@@ -12,9 +22,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Register Noto Serif Telugu font for crisp Telugu ligature shaping in Node.js
-const fontPath = path.join(__dirname, 'fonts', 'NotoSerifTelugu.ttf');
-if (fs.existsSync(fontPath)) {
-  GlobalFonts.registerFromPath(fontPath, 'Noto Serif Telugu');
+try {
+  const fontPath = path.join(__dirname, 'fonts', 'NotoSerifTelugu.ttf');
+  if (fs.existsSync(fontPath) && GlobalFonts?.registerFromPath) {
+    GlobalFonts.registerFromPath(fontPath, 'Noto Serif Telugu');
+  }
+} catch (fontErr) {
+  console.warn('[Font registration warning]:', fontErr);
 }
 
 const DEFAULT_BOT_TOKEN = '9209965871:AAEa0mqf-gCfYFmKnGop1g4Ns6X5EosGdXY';

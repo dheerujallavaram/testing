@@ -90,8 +90,20 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!api/|favicon\\.ico|favicon.*\\.png|apple-touch-icon.*\\.png|ganapathi-favicon\\.svg|site\\.webmanifest|robots\\.txt|sitemap\\.xml|BingSiteAuth\\.xml|ads\\.txt|ffe9fa91702c937109ee200641e2921e\\.txt|llms\\.txt|llms-full\\.txt|assets/).*)",
-      "destination": "/api/ssr?__pathname=/$1"
+      "source": "/api/telegram-webhook",
+      "destination": "/api/telegram-webhook"
+    },
+    {
+      "source": "/api/whatsapp-webhook",
+      "destination": "/api/whatsapp-webhook"
+    },
+    {
+      "source": "/api/ssr",
+      "destination": "/api/ssr"
+    },
+    {
+      "source": "/((?!api/|assets/|.*\\..*).*)",
+      "destination": "/index.html"
     }
   ]
 }
