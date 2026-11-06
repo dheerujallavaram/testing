@@ -1,5 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 import path from 'path';
 import { defineConfig } from 'vite';
 import { buildRouteHtmlFromTemplate } from './scripts/prerender-ssg';
@@ -41,6 +42,18 @@ export default defineConfig(() => {
               res.setHeader('Location', redirectTarget);
               res.end();
               return;
+            }
+
+            // Direct PDF Static Serving
+            if (pathname.endsWith('.pdf')) {
+              const filePath = path.join(process.cwd(), 'public', pathname.replace(/^\//, ''));
+              if (fs.existsSync(filePath)) {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/pdf');
+                res.setHeader('Content-Disposition', `inline; filename="${path.basename(filePath)}"`);
+                res.end(fs.readFileSync(filePath));
+                return;
+              }
             }
 
             // Dynamic Sitemap XML

@@ -29,6 +29,9 @@ import {
   Compass,
   Check,
   Share2,
+  Download,
+  Eye,
+  FileCheck,
 } from 'lucide-react';
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
@@ -101,6 +104,67 @@ export const KartikaAbhishekamPage: React.FC = () => {
   const [copiedMantraId, setCopiedMantraId] = useState<string | null>(null);
   const [rashiSelectionToast, setRashiSelectionToast] = useState<string | null>(null);
   const [copiedPromo, setCopiedPromo] = useState(false);
+  const [activeCertTab, setActiveCertTab] = useState<'kishan' | 'sample'>('kishan');
+  const [copiedCertText, setCopiedCertText] = useState(false);
+  const [showFullCertModal, setShowFullCertModal] = useState<string | null>(null);
+
+  const kishanPersonalMsg = [
+    '|| ఓం శ్రీలక్ష్మి గణపతయే నమః • ఓం నమః శివాయ • శ్రీ మాత్రే నమః ||',
+    '',
+    'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (హైదరాబాద్)',
+    'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్వర్యంలో...',
+    '',
+    'ప్రియతమ భక్తులు శ్రీ కిషన్ రావ్ గారికి, మాలతి గారికి మరియు మీ కుటుంబ సభ్యులకు శుభాశీస్సులు! 💐🙏',
+    '',
+    'కార్తీక మాస పవిత్ర మాసమంతా (నెల రోజుల పాటు) శ్రీ పరమేశ్వరునికి జరిగే "ఏకవార రుద్రాభిషేక పూజ" నిమిత్తం మీ గోత్రనామాలతో సంకల్పం నమోదు చేసుకొని, సమర్పించిన దక్షిణ ₹2,500/- మా జ్యోతిషాలయ అధికారిక యూపీఐ (7013079166@kotakbank) ద్వారా స్వీకరించడమైనది.',
+    '',
+    '🔱 మీ అధికారిక సంకల్ప ధ్రువీకరణ ప్రమాణ పత్రం (Pramana Patram):',
+    '• సంకల్ప రిఫరెన్స్ సంఖ్య: SLG-KARTIKA-2026-BH701',
+    '• గోత్రము: భరద్వాజస గోత్రం',
+    '• కర్త: కిషన్ రావ్ గారు',
+    '• ధర్మపత్ని: మాలతి గారు',
+    '• సుపుత్రుడు: రాఘవేంద్ర రావు గారు',
+    '• సంకల్పం: కుటుంబ క్షేమ, స్థైర్య, విజయ, ఆయురారోగ్య ఐశ్వర్యాభివృద్ధి & సమస్త గ్రహదోష నివారణార్థం',
+    '',
+    '🎁 స్వామివారి దివ్య ప్రసాదములు:',
+    'కార్తీక మాస పూజల అనంతరం మీ స్వగృహానికి పరమశివుని చందన గంధం, మహాన్యాస వేద విభూతి, మరియు కాశీ విశ్వనాథుని దివ్య కాలభైరవ రక్షా సూత్రం స్పీడ్ పోస్ట్ ద్వారా నేరుగా పంపబడును.',
+    '',
+    '|| ఓం త్ర్యంబకం యజామహే సుగంధిం పుష్టివర్ధనమ్ |',
+    'ఉర్వారుకమివ బంధనాన్ మృత్యోర్ముక్షీయ మామృతాత్ ||',
+    '',
+    'శ్రీ సాంబసదాశివుని కృపాకటాక్షములు మీ కుటుంబమునకు సదా రక్షగా ఉండుగాక! ✨',
+    '— బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ',
+    'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం | ఫోన్/వాట్సాప్: +91 8977986166',
+    'అధికారిక వేదిక: www.telugujyothisham.com',
+  ].join('\n');
+
+  const sampleGroupMsg = [
+    '|| ఓం శ్రీలక్ష్మి గణపతయే నమః • ఓం నమః శివాయ ||',
+    '',
+    'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం - కార్తీక మాస విశేష సంకల్ప ప్రకటన 🔱',
+    '',
+    'కార్తీక మాస పవిత్ర నెల రోజుల పాటు ప్రతిరోజూ భక్తుల గోత్రనామాలతో పరమశివునికి నిర్వహించే "ఏకవార రుద్రాభిషేక మహోత్సవం" సంకల్ప నమోదులు జరుగుచున్నవి!',
+    '',
+    'పూజలో పాల్గొనే భక్తులకు అందజేసే "అధికారిక సంకల్ప ధ్రువీకరణ ప్రమాణ పత్రం" నమూనా (Sample Certificate) పైన జతపరచడమైనది. 📜✨',
+    '',
+    'ఈ పవిత్ర అభిషేకంలో పాల్గొనే భక్తులకు విశేష ఫలితాలు:',
+    '✅ నెల రోజుల పాటు మీ పేరు, గోత్రం, నక్షత్రంపై రోజూ రుద్ర నమక-చమక సహిత అభిషేకం.',
+    '✅ 12 రాశుల వారికి గ్రహదోష శాంతి, అష్టైశ్వర్య ప్రాప్తి, ఆరోగ్య రక్ష.',
+    '✅ ప్రతి భక్తునికి డిజిటల్ సంకల్ప ప్రమాణ పత్రం.',
+    '✅ పూజానంతరం మీ ఇంటికే స్పీడ్ పోస్ట్ ద్వారా ఉచితంగా పంపబడు దివ్య ప్రసాదాలు:',
+    '   1. పరమశివుని చందన గంధం 🪔',
+    '   2. మహాన్యాస పూర్వక వేద భస్మం (విభూతి) 🕉️',
+    '   3. కాశీ క్షేత్రం నుండి ప్రత్యేకంగా తెచ్చిన "కాలభైరవ రక్షా సూత్రం" 🧿',
+    '',
+    '💰 నెల రోజుల సంపూర్ణ అభిషేక దక్షిణ: ₹2,500/- మాత్రమే',
+    '📱 అధికారిక Kotak Bank UPI ID: 7013079166@kotakbank',
+    '(PhonePe / Google Pay / Paytm ద్వారా చెల్లించవచ్చు)',
+    '',
+    '👉 దక్షిణ సమర్పించిన వెంటనే స్క్రీన్‌షాట్, మీ గోత్రం, కుటుంబ సభ్యుల పేర్లు, మరియు మీ పూర్తి అడ్రస్ మాకు వాట్సాప్ చేయండి: +91 8977986166',
+    'వెబ్‌సైట్ లో నమోదు కోసం: https://www.telugujyothisham.com/kartika-abhishekam',
+    '',
+    'ధర్మో రక్షతి రక్షితః • శుభం భవతు! 🙏',
+  ].join('\n');
 
   const promoAdText = [
     '🕉️ *శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం — telugujyothisham.com* 🕉️',
@@ -346,6 +410,159 @@ export const KartikaAbhishekamPage: React.FC = () => {
               <div>
                 <strong className="block text-amber-200 font-serif">దక్షిణ: ₹2,500/- (నెలకు)</strong>
                 <span className="text-amber-300/80 text-xs">రోజుకు కేవలం ₹83 మాత్రమే!</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PRAMANA PATRAM VIEWER SECTION (IMAGE & PDF DOWNLOAD) */}
+      <div id="pramana-patram-gallery" className="max-w-6xl mx-auto mb-10 px-4">
+        <div className="bg-gradient-to-br from-[#2a0808] via-[#1a0404] to-[#250606] border-2 border-amber-500/70 rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="text-center max-w-2xl mx-auto mb-6">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-semibold uppercase tracking-wider border border-amber-500/40">
+              <FileCheck size={14} className="text-amber-400" />
+              అధికారిక సంకల్ప పత్రాల విభాగం • Official Certificates
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold font-serif text-amber-100 mt-2">
+              రుద్రాభిషేక సంకల్ప ప్రమాణ పత్రములు (PDF & Image)
+            </h2>
+            <p className="text-xs sm:text-sm text-amber-200/80 mt-1">
+              బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్వర్యంలో • భక్తుల వ్యక్తిగత ధ్రువీకరణ మరియు వాట్సాప్ గ్రూప్ నమూనా పత్రములు
+            </p>
+          </div>
+
+          {/* Certificate Tabs */}
+          <div className="flex flex-wrap justify-center gap-2 mb-6 max-w-xl mx-auto">
+            <button
+              type="button"
+              onClick={() => setActiveCertTab('kishan')}
+              className={`flex-1 min-w-[200px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+                activeCertTab === 'kishan'
+                  ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white shadow-lg shadow-amber-900/50 scale-[1.02]'
+                  : 'bg-amber-950/60 text-amber-300/80 hover:bg-amber-900/50 border border-amber-500/30'
+              }`}
+            >
+              <span>🌟 కిషన్ రావ్ గారి ప్రమాణ పత్రం</span>
+              <span className="text-[10px] bg-black/30 px-2 py-0.5 rounded-full">వ్యక్తిగతం</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveCertTab('sample')}
+              className={`flex-1 min-w-[200px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+                activeCertTab === 'sample'
+                  ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white shadow-lg shadow-amber-900/50 scale-[1.02]'
+                  : 'bg-amber-950/60 text-amber-300/80 hover:bg-amber-900/50 border border-amber-500/30'
+              }`}
+            >
+              <span>📢 వాట్సాప్ గ్రూప్ నమూనా పత్రం</span>
+              <span className="text-[10px] bg-black/30 px-2 py-0.5 rounded-full">నమూనా</span>
+            </button>
+          </div>
+
+          {/* Certificate Display Area */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-black/40 border border-amber-500/30 rounded-2xl p-4 sm:p-6">
+            {/* Left: Certificate Preview Card */}
+            <div className="lg:col-span-6 flex flex-col items-center">
+              <div 
+                className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-amber-400/50 shadow-2xl bg-amber-950/50"
+                onClick={() => setShowFullCertModal(activeCertTab === 'kishan' ? '/pramana-patram-kishan-rao.png' : '/pramana-patram-sample.png')}
+              >
+                <img
+                  src={activeCertTab === 'kishan' ? '/pramana-patram-kishan-rao.png' : '/pramana-patram-sample.png'}
+                  alt={activeCertTab === 'kishan' ? 'కిషన్ రావ్ గారి ప్రమాణ పత్రం' : 'వాట్సాప్ గ్రూప్ నమూనా పత్రం'}
+                  className="w-full max-w-sm sm:max-w-md h-auto block transform group-hover:scale-[1.02] transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-sm">
+                  <Eye size={20} className="text-amber-400" />
+                  <span>పూర్తి సైజులో చూడండి (Zoom)</span>
+                </div>
+              </div>
+              <span className="text-[11px] text-amber-300/70 mt-2 flex items-center gap-1">
+                🔍 ఇమేజ్ క్లిక్ చేసి ఫుల్ సైజులో చూడవచ్చు
+              </span>
+            </div>
+
+            {/* Right: Actions, Download & WhatsApp Content */}
+            <div className="lg:col-span-6 space-y-4">
+              <div className="border-b border-amber-500/30 pb-3">
+                <span className="text-xs text-amber-400 font-semibold uppercase tracking-wider">
+                  {activeCertTab === 'kishan' ? 'రిఫరెన్స్: SLG-KARTIKA-2026-BH701 (ధ్రువీకరించబడినది)' : 'రిఫరెన్స్: SLG-KARTIKA-SAMPLE-001 (నమూనా ఎగ్జాంపుల్)'}
+                </span>
+                <h3 className="text-xl font-bold font-serif text-amber-100 mt-1">
+                  {activeCertTab === 'kishan' ? 'శ్రీ కిషన్ రావ్ గారి కుటుంబ సంకల్ప పత్రం' : 'వాట్సాప్ గ్రూప్ ప్రమోషన్ నమూనా పత్రం'}
+                </h3>
+                <p className="text-xs text-amber-200/80 mt-1">
+                  {activeCertTab === 'kishan' 
+                    ? 'గోత్రం: భరద్వాజస | కిషన్ రావ్, మాలతి, రాఘవేంద్ర రావు గార్ల పేర్లతో రూపుదిద్దబడిన అధికారిక పత్రం.' 
+                    : 'మిగతా భక్తులకు చూపించి పూజల విశిష్టతను వివరించడానికి సిద్ధం చేసిన వాటర్‌మార్క్ నమూనా పత్రం.'}
+                </p>
+              </div>
+
+              {/* Download Buttons: PDF & Image */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* 1. PDF Download */}
+                <a
+                  href={activeCertTab === 'kishan' ? '/pramana-patram-kishan-rao.pdf' : '/pramana-patram-sample.pdf'}
+                  download={activeCertTab === 'kishan' ? 'pramana-patram-kishan-rao.pdf' : 'pramana-patram-sample.pdf'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-3 px-4 rounded-xl bg-gradient-to-r from-red-800 to-amber-700 hover:from-red-700 hover:to-amber-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-transform hover:scale-[1.02] border border-amber-400/40 text-center"
+                >
+                  <Download size={16} className="text-amber-300" />
+                  <span>📄 PDF డౌన్‌లోడ్ (A4 Print)</span>
+                </a>
+
+                {/* 2. PNG Image Download */}
+                <a
+                  href={activeCertTab === 'kishan' ? '/pramana-patram-kishan-rao.png' : '/pramana-patram-sample.png'}
+                  download={activeCertTab === 'kishan' ? 'pramana-patram-kishan-rao.png' : 'pramana-patram-sample.png'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-3 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-amber-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-transform hover:scale-[1.02] border border-amber-300 text-center"
+                >
+                  <Download size={16} className="text-amber-950" />
+                  <span>🖼️ ఇమేజ్ డౌన్‌లోడ్ (PNG)</span>
+                </a>
+              </div>
+
+              {/* Copy WhatsApp Message Box */}
+              <div className="bg-amber-950/70 border border-amber-500/40 rounded-xl p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                    <Send size={14} className="text-green-400" />
+                    {activeCertTab === 'kishan' ? 'కిషన్ రావ్ గారికి పంపాల్సిన మెసేజ్' : 'వాట్సాప్ గ్రూప్‌లో పెట్టాల్సిన మెసేజ్'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const text = activeCertTab === 'kishan' ? kishanPersonalMsg : sampleGroupMsg;
+                      navigator.clipboard?.writeText(text);
+                      setCopiedCertText(true);
+                      setTimeout(() => setCopiedCertText(false), 2500);
+                    }}
+                    className="py-1 px-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                  >
+                    {copiedCertText ? (
+                      <>
+                        <Check size={12} className="text-green-300" />
+                        <span>కాపీ అయ్యింది!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={12} />
+                        <span>కాపీ చేయండి</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="max-h-36 overflow-y-auto bg-black/50 rounded-lg p-2.5 text-[11px] sm:text-xs text-amber-200/90 whitespace-pre-wrap font-sans border border-amber-500/20 leading-relaxed">
+                  {activeCertTab === 'kishan' ? kishanPersonalMsg : sampleGroupMsg}
+                </div>
               </div>
             </div>
           </div>
@@ -1355,6 +1572,65 @@ export const KartikaAbhishekamPage: React.FC = () => {
           })}
         </div>
       </div>
+
+      {/* Fullscreen Certificate Lightbox Modal */}
+      {showFullCertModal && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md p-4 flex flex-col items-center justify-center animate-fadeIn"
+          onClick={() => setShowFullCertModal(null)}
+        >
+          <div 
+            className="relative max-w-2xl w-full max-h-[92vh] flex flex-col items-center bg-[#200505] border-2 border-amber-500/70 rounded-2xl p-4 shadow-2xl" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between w-full mb-3 text-amber-200 border-b border-amber-500/30 pb-2">
+              <span className="font-bold text-sm sm:text-base font-serif flex items-center gap-2">
+                <FileCheck size={18} className="text-amber-400" />
+                సంకల్ప ధ్రువీకరణ ప్రమాణ పత్రము (Full View)
+              </span>
+              <button 
+                type="button" 
+                onClick={() => setShowFullCertModal(null)}
+                className="px-3 py-1 bg-red-600/80 hover:bg-red-600 text-white rounded-lg text-xs font-bold cursor-pointer transition-colors"
+              >
+                ✕ మూసివేయి (Close)
+              </button>
+            </div>
+            
+            <div className="overflow-auto max-h-[70vh] w-full flex justify-center py-2">
+              <img 
+                src={showFullCertModal} 
+                alt="Pramana Patram Full Size" 
+                className="max-h-[68vh] w-auto rounded-lg border border-amber-500/50 shadow-2xl object-contain"
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-3 mt-4 justify-center w-full pt-2 border-t border-amber-500/30">
+              <a
+                href={showFullCertModal.replace('.png', '.pdf')}
+                download={showFullCertModal.includes('kishan') ? 'pramana-patram-kishan-rao.pdf' : 'pramana-patram-sample.pdf'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-gradient-to-r from-red-800 to-amber-700 hover:from-red-700 hover:to-amber-600 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 border border-amber-400/50 shadow-lg cursor-pointer"
+              >
+                <Download size={16} className="text-amber-300" />
+                <span>📄 PDF డౌన్‌లోడ్ (HD A4)</span>
+              </a>
+
+              <a
+                href={showFullCertModal}
+                download={showFullCertModal.includes('kishan') ? 'pramana-patram-kishan-rao.png' : 'pramana-patram-sample.png'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-amber-950 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-lg cursor-pointer"
+              >
+                <Download size={16} className="text-amber-950" />
+                <span>🖼️ ఇమేజ్ డౌన్‌లోడ్ (PNG)</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
