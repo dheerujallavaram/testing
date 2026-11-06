@@ -13,6 +13,10 @@ import {
   findRashiBySlug,
 } from '../utils/gocharaEngine';
 import { DAILY_SUBHASHITHALU } from '../components/DailySubhashithamCard';
+import {
+  DWADASA_RASHI_VEDIC_ENCYCLOPEDIA,
+  LUNAR_AND_SHANI_MENTAL_GUIDES,
+} from '../data/dwadasaRashiVedicEncyclopedia';
 
 export const SITE_URL = 'https://www.telugujyothisham.com';
 export const ISR_REVALIDATE_SECONDS = 86400;
@@ -1163,6 +1167,67 @@ export const TOOL_PAGE_ORIGINAL_GUIDES: Record<string, ToolGuideContent> = {
       },
     ],
   },
+  '/dwadasa-rashi-rahasyalu': {
+    primaryKeyword: '12 రాశుల దాంపత్యం & జీవన రహస్యాలు',
+    secondaryKeywords: [
+      'రాశి ప్రకారం భార్య భర్త మనస్తత్వం',
+      'రాశి ప్రకారం పిల్లల విద్యా స్వభావం',
+      'రాశి ప్రకారం వ్యాపార భాగస్వామ్యం',
+      'రాశి ప్రకారం ఆరోగ్య రక్షణ',
+      'పౌర్ణమి అమావాస్య ఏలినాటి శని మనోబలం',
+    ],
+    authorPlaceholderTag: '{{AUTHOR_NOTE_DWADASA_RASHI}}',
+    introTe:
+      '12 రాశుల దాంపత్యం & జీవన రహస్యాలు (dwadasa rashi rahasyalu in telugu): మేషం నుండి మీనం వరకు ద్వాదశ చంద్ర రాశుల వారీగా భార్య మరియు భర్తల మనస్తత్వం, పిల్లల సహజ విద్యా శైలి & తల్లిదండ్రుల పెంపక సూత్రాలు, ఆర్థిక ఆకర్షణ & వ్యాపార భాగస్వామ్య అనుకూలత, కాలపురుష అంగ ఆరోగ్య రక్షణ మరియు పౌర్ణమి-అమావాస్య-చంద్రాష్టమ-ఏలినాటి శని మానసిక స్థైర్య విజ్ఞానం.',
+    howItWorksTitle: 'చంద్ర రాశి ఆధారిత దాంపత్య, సంతాన, వృత్తి & ఆరోగ్య విశ్లేషణ ఎలా పనిచేస్తుంది?',
+    howItWorksTe:
+      'వేద జ్యోతిష్య శాస్త్రంలో "చంద్రమా మనసో జాతః" అనే సూత్రం ప్రకారం మనిషి ఆలోచనా విధానం, భావోద్వేగాలు, దాంపత్య అనుబంధం మరియు జీవన శైలిపై జన్మ చంద్ర రాశి మరియు రాశ్యాధిపతి ప్రత్యక్ష ప్రభావం చూపుతారు. అలాగే కాలపురుష చక్రంలో 12 రాశులు శిరస్సు నుండి పాదాల వరకు 12 శరీర అవయవాలకు ప్రాతినిధ్యం వహిస్తాయి.',
+    termsTitle: 'ద్వాదశ రాశి జీవన విజ్ఞాన సర్వస్వం – 5 ప్రధాన విభాగాలు',
+    termsListTe: [
+      {
+        term: '1. భార్య & భర్త దాంపత్య మనస్తత్వం (Spouse Psychology by Rashi)',
+        meaning: 'ప్రతి రాశికి చెందిన స్త్రీ (భార్యగా) మరియు పురుషుడు (భర్తగా) గృహ నిర్వహణలో, ఆర్థిక క్రమశిక్షణలో మరియు ప్రేమానుబంధంలో ఎలా ప్రవర్తిస్తారో మరియు వారి మధ్య అన్యోన్యతకు పాటించాల్సిన దాంపత్య సూత్రాలు.',
+      },
+      {
+        term: '2. పిల్లల విద్యా స్వభావం & పెంపక మార్గదర్శిని (Child Nature & Parenting)',
+        meaning: 'చిన్నారుల జన్మ రాశిని బట్టి వారి ఏకాగ్రత, నేర్చుకునే శైలి మరియు తల్లిదండ్రులు వారిని భయపెట్టకుండా ఉత్సాహపరిచే పెంపక పద్ధతులు.',
+      },
+      {
+        term: '3. వృత్తి, వ్యాపార భాగస్వామ్యం & ధన ఆకర్షణ (Career, Partnerships & Wealth)',
+        meaning: 'రాశి తత్వం (అగ్ని, భూ, వాయు, జల) ఆధారంగా రాణించే వృత్తులు, వ్యాపారంలో ఏ రాశుల వారితో భాగస్వామ్యం (Partnership) కలిసివస్తుందో మరియు ధన వృద్ధి నియమాలు.',
+      },
+      {
+        term: '4. కాలపురుష అంగం & ఆరోగ్య రక్షణ (Anatomical Health Care)',
+        meaning: 'మేషం (శిరస్సు) నుండి మీనం (పాదాలు) వరకు ప్రతి రాశి పాలించే శరీర భాగాలు, తీసుకోవాల్సిన ఆహార-నిద్ర జాగ్రత్తలు.',
+      },
+      {
+        term: '5. పౌర్ణమి-అమావాస్య చంద్ర తరంగాలు & ఏలినాటి శని మనోబలం',
+        meaning: 'తిథుల మార్పులు మరియు శని 30 ఏళ్ల పరిభ్రమణ చక్రం (ఏలినాటి శని, అష్టమ శని, శని పునరాగమనం) సమయంలో మానసిక ఒత్తిడిని జయించే వైదిక ధర్మ సూత్రాలు.',
+      },
+    ],
+    faqListTe: [
+      {
+        q: 'వివాహ పొంతనలో 36 గుణాలతో పాటు చంద్ర రాశి మనస్తత్వం ఎందుకు చూడాలి?',
+        a: 'నక్షత్ర కూటమి బాహ్య పొంతనను తెలుపుతుంది; కానీ దైనందిన సంసారంలో భార్య-భర్తల ఆలోచనలు, ఆర్థిక అలవాట్లు మరియు మాటతీరు కలవడానికి వారి చంద్ర రాశుల మనస్తత్వ అవగాహన ఎంతో కీలకం.',
+      },
+      {
+        q: 'పిల్లల చదువులో జన్మ రాశి ఎలా ఉపయోగపడుతుంది?',
+        a: 'అగ్ని రాశుల పిల్లలు ప్రశంసలతో, భూ రాశుల పిల్లలు క్రమబద్ధమైన టైమ్-టేబుల్‌తో, వాయు రాశుల పిల్లలు తార్కిక చర్చలతో, జల రాశుల పిల్లలు ఆప్యాయత మరియు ప్రశాంత వాతావరణంలో అత్యుత్తమంగా చదువుతారు.',
+      },
+      {
+        q: 'వ్యాపార భాగస్వామ్యానికి (Business Partnership) ఏ రాశులు అనుకూలం?',
+        a: 'ఆశయాలు మరియు వేగం కలిగిన రాశుల వారికి (మేషం, సింహం, ధనుస్సు) ఆర్థిక క్రమశిక్షణ మరియు వ్యూహాత్మక ఓర్పు గల రాశుల వారు (వృషభం, కన్య, తుల, మకరం) భాగస్వాములుగా ఉంటే వ్యాపారం స్థిరంగా వృద్ధి చెందుతుంది.',
+      },
+      {
+        q: 'పౌర్ణమి, అమావాస్య మరియు చంద్రాష్టమం రోజులలో మనస్సుపై ఎలాంటి ప్రభావం ఉంటుంది?',
+        a: 'చంద్రుడు మనోకారకుడు కనుక పౌర్ణమి నాడు భావోద్వేగాల ఉధృతి, అమావాస్య నాడు అంతర్ముఖత, చంద్రాష్టమ (8వ చంద్ర) సమయంలో ఆలోచనా అలసట సహజం; ఆ రోజులలో కీలక వాదనలను వాయిదా వేసి శివ/లలితా ధ్యానం చేయడం శ్రేయస్కరం.',
+      },
+      {
+        q: '28–30 ఏళ్ల వయస్సులో మరియు ఏలినాటి శని కాలంలో మానసిక స్థైర్యం ఎలా నిలుపుకోవాలి?',
+        a: 'శని గ్రహం 30 ఏళ్లకు ఒకసారి జన్మ శని స్థానానికి చేరుకుంటాడు; ఇది శిక్షించే కాలం కాదు, బాధ్యత మరియు పరిపక్వత నేర్పే కాలం. క్రమశిక్షణ, శ్రమజీవుల గౌరవం మరియు శనివార ఆరాధనతో ఈ దశలో శాశ్వత విజయం లభిస్తుంది.',
+      },
+    ],
+  },
 };
 
 /**
@@ -1701,6 +1766,21 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       h1: 'ఏలినాటి శని, అష్టమ శని & కుజ దోషం శాంతి పరిహారాలు',
       breadcrumbName: 'ఏలినాటి శని & దోష పరిహారాలు',
     },
+    '/dwadasa-rashi-rahasyalu': {
+      primaryKeyword: '12 రాశుల దాంపత్యం & జీవన రహస్యాలు',
+      secondaryKeywords: [
+        'రాశి ప్రకారం భార్య భర్త మనస్తత్వం',
+        'రాశి ప్రకారం పిల్లల విద్యా స్వభావం',
+        'రాశి ప్రకారం వ్యాపార భాగస్వామ్యం',
+        'రాశి ప్రకారం ఆరోగ్య రక్షణ',
+        'పౌర్ణమి అమావాస్య ఏలినాటి శని మనోబలం',
+      ],
+      title: '12 రాశుల దాంపత్యం, పిల్లలు, వృత్తి, భాగస్వామ్యం & ఆరోగ్యం',
+      description:
+        'మేషం నుండి మీనం వరకు 12 రాశుల భార్య-భర్త మనస్తత్వం, పిల్లల చదువు & పెంపకం, వ్యాపార భాగస్వామ్యం, ధన ఆకర్షణ, ఆరోగ్యం & పౌర్ణమి-అమావాస్య-శని మనోబలం.',
+      h1: 'ద్వాదశ రాశుల దాంపత్యం, సంతానం, వృత్తి-భాగస్వామ్యం & ఆరోగ్య విజ్ఞాన సర్వస్వం',
+      breadcrumbName: '12 రాశుల జీవన విజ్ఞానం',
+    },
     '/festivals': {
       primaryKeyword: 'తెలుగు పండుగలు 2026',
       secondaryKeywords: ['ఏకాదశి తేదీలు 2026', 'కార్తీక మాసం విశేషాలు', 'పౌర్ణమి అమావాస్య తేదీలు'],
@@ -2123,6 +2203,52 @@ function renderGocharaServerSection(pathname: string): string {
     </section>`;
 }
 
+function renderDwadasaRashiEncyclopediaServerSection(pathname: string): string {
+  const shouldRender =
+    pathname === '/dwadasa-rashi-rahasyalu' ||
+    pathname === '/panchangam' ||
+    pathname === '/vivaha-pontana' ||
+    pathname === '/telugu-baby-names' ||
+    pathname === '/dosha-pariharalu' ||
+    pathname === '/janma-kundali' ||
+    pathname === '/mee-jatakam';
+  if (!shouldRender) return '';
+
+  return `
+    <section aria-label="12 Chandra Rashi Vedic Life Encyclopedia" style="background:#ffffff;border:2px solid #f59e0b;border-radius:18px;padding:22px;margin-bottom:24px;">
+      <h2 style="margin:0 0 10px;font-size:21px;color:#451a03;">
+        ద్వాదశ రాశుల దాంపత్యం (భార్య-భర్త), పిల్లల విద్యా స్వభావం, వృత్తి-భాగస్వామ్యం &amp; ఆరోగ్య విజ్ఞాన సర్వస్వం
+      </h2>
+      <p style="margin:0 0 14px;font-size:15px;color:#1e293b;">
+        బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి ఆధ్వర్యంలో (శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం) చంద్ర రాశి మరియు రాశ్యాధిపతి తత్వం ఆధారంగా మేషం నుండి మీనం వరకు 12 రాశుల సమగ్ర జీవన మార్గదర్శిని:
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:18px;">
+        ${DWADASA_RASHI_VEDIC_ENCYCLOPEDIA.map(
+          (r) => `
+          <article style="background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:14px;">
+            <h3 style="margin:0 0 6px;font-size:17px;color:#78350f;">✦ ${escapeHtml(r.rashiNameTe)} (${escapeHtml(r.rashiNameEn)}) – అధిపతి: ${escapeHtml(r.rashiLordTe)}</h3>
+            <p style="margin:0 0 6px;font-size:13.5px;color:#1e293b;"><strong>భార్య స్వభావం:</strong> ${escapeHtml(r.wifeProfileTe)}</p>
+            <p style="margin:0 0 6px;font-size:13.5px;color:#1e293b;"><strong>భర్త స్వభావం:</strong> ${escapeHtml(r.husbandProfileTe)}</p>
+            <p style="margin:0 0 6px;font-size:13.5px;color:#1e293b;"><strong>పిల్లల చదువు &amp; పెంపకం:</strong> ${escapeHtml(r.childNatureAndStudyTe)} ${escapeHtml(r.parentingGuideTe)}</p>
+            <p style="margin:0 0 6px;font-size:13.5px;color:#1e293b;"><strong>వృత్తి, వ్యాపార భాగస్వామ్యం &amp; ధనం:</strong> ${escapeHtml(r.careerLifeWorkTe)} ${escapeHtml(r.businessPartnershipTe)} (అనుకూల రాశులు: ${escapeHtml(r.bestPartnerRashisTe)})</p>
+            <p style="margin:0 0 6px;font-size:13.5px;color:#1e293b;"><strong>శారీరక ఆరోగ్యం (${escapeHtml(r.kalapurushaAngamTe)}):</strong> ${escapeHtml(r.arogyaRakshaTe)}</p>
+            <p style="margin:0;font-size:13px;color:#9a3412;"><strong>వైదిక పరిహారం:</strong> ${escapeHtml(r.vedicRemedyTe)}</p>
+          </article>`
+        ).join('\n')}
+      </div>
+      <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:14px;padding:16px;">
+        <h3 style="margin:0 0 8px;font-size:18px;color:#1e293b;">పౌర్ణమి – అమావాస్య – చంద్రాష్టమ తరంగాలు &amp; శని 30 ఏళ్ల పరిభ్రమణ మనోబల సూత్రాలు</h3>
+        ${LUNAR_AND_SHANI_MENTAL_GUIDES.map(
+          (g) => `
+          <div style="margin-bottom:10px;">
+            <strong style="color:#451a03;font-size:15px;">${escapeHtml(g.titleTe)} (${escapeHtml(g.titleEn)}):</strong>
+            <p style="margin:4px 0;font-size:14px;color:#334155;">${escapeHtml(g.shastraPrincipleTe)}</p>
+          </div>`
+        ).join('\n')}
+      </div>
+    </section>`;
+}
+
 /**
  * Builds the lead introductory paragraph (first 100 words) for any route,
  * guaranteeing that meta.primaryKeyword appears naturally in the first paragraph
@@ -2269,6 +2395,7 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
 
   const toolGuideHtml = !isPanchangamOnlyRoute ? renderRichToolGuideHtml(pathname) : '';
   const gocharaHtml = renderGocharaServerSection(pathname);
+  const rashiEncyclopediaHtml = renderDwadasaRashiEncyclopediaServerSection(pathname);
 
   return `
       <main style="max-width:1140px;margin:0 auto;padding:24px 16px;font-family:'Noto Serif Telugu',Georgia,serif;color:#1e293b;line-height:1.65;">
@@ -2296,6 +2423,7 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
 
         ${gocharaHtml}
         ${toolGuideHtml}
+        ${rashiEncyclopediaHtml}
 
         <section aria-label="Daily Telugu Panchangam Data" style="background:#ffffff;border:2px solid #f59e0b;border-radius:18px;padding:20px;margin-bottom:24px;">
           <h2 style="margin:0 0 14px;font-size:22px;color:#451a03;">
@@ -2397,6 +2525,7 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
             <li><a href="/tarabalam-chandrabalam" style="color:#9a3412;font-weight:700;">తారాబలం &amp; చంద్రబలం క్యాలిక్యులేటర్</a></li>
             <li><a href="/gochara-phalalu" style="color:#9a3412;font-weight:700;">గోచార ఫలాలు – శని, గురు, రాహు కేతు గోచారం</a></li>
             <li><a href="/dosha-pariharalu" style="color:#9a3412;font-weight:700;">ఏలినాటి శని, అష్టమ శని &amp; కుజ దోష పరిహారాలు</a></li>
+            <li><a href="/dwadasa-rashi-rahasyalu" style="color:#9a3412;font-weight:700;">12 రాశుల దాంపత్యం (భార్య-భర్త), పిల్లల విద్యా స్వభావం, వృత్తి-భాగస్వామ్యం &amp; ఆరోగ్యం</a></li>
             <li><a href="/panchangam/calendar" style="color:#9a3412;font-weight:700;">తెలుగు క్యాలెండర్ 2026 – నెలవారీ పంచాంగం</a></li>
           </ul>
         </section>

@@ -58,6 +58,10 @@ import {
   generateExecutiveSummary,
 } from '../utils/advancedAstrologyReportEngine';
 import { generateCompleteNaadiTransitReport } from '../utils/naadiTransitPredictions';
+import {
+  getRashiEncyclopediaByIdOrIndex,
+  LUNAR_AND_SHANI_MENTAL_GUIDES,
+} from '../data/dwadasaRashiVedicEncyclopedia';
 
 interface JanmaKundaliGeneratorProps {
   onOpenBooking?: () => void;
@@ -243,6 +247,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       panchangaProfile,
       execSummary,
       naadiTransitReport: generateCompleteNaadiTransitReport(chartData.planets, lagnaIdx, birthDate),
+      chandraRashiEncyclopedia: getRashiEncyclopediaByIdOrIndex(moonIdx),
     };
   }, [chartData, birthDate, birthTime, selectedCity]);
 
@@ -3175,7 +3180,152 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
         </div>
 
         {/* ====================================================================
-            PAGE 30: FULL-WIDTH 120-YEAR VIMSHOTTARI MAHADASHA & ANTARDASHA
+            CHANDRA RASHI COMPLETE VEDIC LIFE ENCYCLOPEDIA:
+            SPOUSE PSYCHOLOGY, CHILD/EDUCATION, CAREER/PARTNERSHIP, HEALTH & LUNAR/SHANI RESILIENCE
+            ==================================================================== */}
+        <div className="bg-white rounded-3xl p-4 sm:p-6 print:p-3 border-2 border-amber-300 shadow-2xs space-y-4 print:space-y-3 print-page-break page print-page-sheet">
+          {renderPrintPageHeader(30)}
+
+          <div className="print-chapter-banner">
+            <h4 className="text-base sm:text-lg print:text-sm font-extrabold text-amber-950 flex items-center gap-2">
+              <BookOpen size={16} className="text-amber-700" />
+              <span>
+                {t(
+                  `జన్మ రాశి (${predictions.chandraRashiEncyclopedia.rashiNameTe}) సంపూర్ణ జీవన విజ్ఞాన విశ్లేషణ — దాంపత్యం, విద్య, వృత్తి, ఆరోగ్యం & మనోబలం`,
+                  `Birth Moon Sign (${predictions.chandraRashiEncyclopedia.rashiNameEn}) Complete Life Profile — Marriage, Education, Career, Health & Resilience`
+                )}
+              </span>
+            </h4>
+            <p className="text-xs print:text-[10.5px] text-slate-600 mt-0.5 leading-relaxed">
+              {t(
+                `రాశ్యాధిపతి: ${predictions.chandraRashiEncyclopedia.rashiLordTe} · తత్వం: ${predictions.chandraRashiEncyclopedia.tatvamTe} · కాలపురుష అవయవ స్థానం: ${predictions.chandraRashiEncyclopedia.kalapurushaAngamTe}`,
+                `Ruling Lord: ${predictions.chandraRashiEncyclopedia.rashiLordEn} · Element: ${predictions.chandraRashiEncyclopedia.tatvamEn} · Anatomical Domain: ${predictions.chandraRashiEncyclopedia.kalapurushaAngamEn}`
+              )}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 single-side-stack gap-3 print:gap-2.5">
+            {/* 1. Wife & Husband Marital Psychology */}
+            <div className="rounded-2xl p-3.5 sm:p-4 print:p-2.5 border border-amber-200 bg-amber-50/40 space-y-1.5 print-card">
+              <strong className="text-sm sm:text-base print:text-xs font-extrabold text-amber-950 block">
+                {t(
+                  `1. ${predictions.chandraRashiEncyclopedia.rashiNameTe} దాంపత్య మనస్తత్వం (భార్య & భర్త స్వభావం)`,
+                  `1. ${predictions.chandraRashiEncyclopedia.rashiNameEn} Marital Psychology (Wife & Husband Nature)`
+                )}
+              </strong>
+              <p className="text-xs print:text-[10.5px] text-slate-800 leading-relaxed">
+                <strong>{t('ఇల్లాలు / భార్యగా స్వభావం:', 'As a Wife:')}</strong>{' '}
+                {t(
+                  predictions.chandraRashiEncyclopedia.wifeProfileTe,
+                  predictions.chandraRashiEncyclopedia.wifeProfileEn
+                )}
+              </p>
+              <p className="text-xs print:text-[10.5px] text-slate-800 leading-relaxed">
+                <strong>{t('పురుషుడు / భర్తగా స్వభావం:', 'As a Husband:')}</strong>{' '}
+                {t(
+                  predictions.chandraRashiEncyclopedia.husbandProfileTe,
+                  predictions.chandraRashiEncyclopedia.husbandProfileEn
+                )}
+              </p>
+              <p className="text-xs print:text-[10.5px] text-emerald-900 font-semibold">
+                ✦ {t('దాంపత్య అన్యోన్యత సూత్రం:', 'Marital Harmony Sutra:')}{' '}
+                {t(
+                  predictions.chandraRashiEncyclopedia.maritalHarmonySutraTe,
+                  predictions.chandraRashiEncyclopedia.maritalHarmonySutraEn
+                )}
+              </p>
+            </div>
+
+            {/* 2. Child Nature, Study Habits & Parenting Guide */}
+            <div className="rounded-2xl p-3.5 sm:p-4 print:p-2.5 border border-amber-200 bg-white space-y-1.5 print-card">
+              <strong className="text-sm sm:text-base print:text-xs font-extrabold text-amber-950 block">
+                {t(
+                  `2. ${predictions.chandraRashiEncyclopedia.rashiNameTe} బాల్య ప్రతిభ, విద్యా శైలి & తల్లిదండ్రుల మార్గదర్శనం`,
+                  `2. ${predictions.chandraRashiEncyclopedia.rashiNameEn} Child Learning Style & Parenting Guide`
+                )}
+              </strong>
+              <p className="text-xs print:text-[10.5px] text-slate-800 leading-relaxed">
+                <strong>{t('సహజ మేధస్సు & విద్యా శైలి:', 'Natural Talent & Study Habits:')}</strong>{' '}
+                {t(
+                  predictions.chandraRashiEncyclopedia.childNatureAndStudyTe,
+                  predictions.chandraRashiEncyclopedia.childNatureAndStudyEn
+                )}
+              </p>
+              <p className="text-xs print:text-[10.5px] text-slate-800 leading-relaxed">
+                <strong>{t('పెంపకం & ప్రోత్సాహ విధానం:', 'Parenting Guidance:')}</strong>{' '}
+                {t(
+                  predictions.chandraRashiEncyclopedia.parentingGuideTe,
+                  predictions.chandraRashiEncyclopedia.parentingGuideEn
+                )}
+              </p>
+            </div>
+
+            {/* 3. Life Work, Business Partnership & Wealth Attraction */}
+            <div className="rounded-2xl p-3.5 sm:p-4 print:p-2.5 border border-amber-200 bg-amber-50/40 space-y-1.5 print-card">
+              <strong className="text-sm sm:text-base print:text-xs font-extrabold text-amber-950 block">
+                {t(
+                  `3. ${predictions.chandraRashiEncyclopedia.rashiNameTe} జీవన వృత్తి, వ్యాపార భాగస్వామ్యం & ధనాకర్షణ యోగం`,
+                  `3. ${predictions.chandraRashiEncyclopedia.rashiNameEn} Ideal Career, Business Partnerships & Wealth`
+                )}
+              </strong>
+              <p className="text-xs print:text-[10.5px] text-slate-800 leading-relaxed">
+                <strong>{t('అనుకూల వృత్తి & ఉద్యోగ రంగాలు:', 'Ideal Professions:')}</strong>{' '}
+                {t(
+                  predictions.chandraRashiEncyclopedia.careerLifeWorkTe,
+                  predictions.chandraRashiEncyclopedia.careerLifeWorkEn
+                )}
+              </p>
+              <p className="text-xs print:text-[10.5px] text-slate-800 leading-relaxed">
+                <strong>{t('వ్యాపార భాగస్వామ్యం & ధనాకర్షణ:', 'Business Partnership & Wealth:')}</strong>{' '}
+                {t(
+                  `${predictions.chandraRashiEncyclopedia.businessPartnershipTe} ${predictions.chandraRashiEncyclopedia.wealthAttractionTe}`,
+                  `${predictions.chandraRashiEncyclopedia.businessPartnershipEn} ${predictions.chandraRashiEncyclopedia.wealthAttractionEn}`
+                )}
+              </p>
+              <p className="text-xs print:text-[10.5px] text-amber-950 font-semibold">
+                ✦ {t('భాగస్వామ్యానికి అనుకూల రాశులు:', 'Harmonious Partner Rashis:')}{' '}
+                {t(
+                  predictions.chandraRashiEncyclopedia.bestPartnerRashisTe,
+                  predictions.chandraRashiEncyclopedia.bestPartnerRashisEn
+                )}
+              </p>
+            </div>
+
+            {/* 4. Chandra Rashi Health & Lunar/Shani Mental Resilience */}
+            <div className="rounded-2xl p-3.5 sm:p-4 print:p-2.5 border border-amber-200 bg-white space-y-1.5 print-card">
+              <strong className="text-sm sm:text-base print:text-xs font-extrabold text-amber-950 block">
+                {t(
+                  `4. శారీరక ఆరోగ్య రక్షణ (${predictions.chandraRashiEncyclopedia.kalapurushaAngamTe}) & చంద్ర-శని మనోధైర్య సూత్రం`,
+                  `4. Physical Health (${predictions.chandraRashiEncyclopedia.kalapurushaAngamEn}) & Lunar-Saturn Mental Resilience`
+                )}
+              </strong>
+              <p className="text-xs print:text-[10.5px] text-slate-800 leading-relaxed">
+                <strong>{t('ఆరోగ్య జాగ్రత్తలు:', 'Health Care:')}</strong>{' '}
+                {t(
+                  predictions.chandraRashiEncyclopedia.arogyaRakshaTe,
+                  predictions.chandraRashiEncyclopedia.arogyaRakshaEn
+                )}
+              </p>
+              <p className="text-xs print:text-[10.5px] text-slate-800 leading-relaxed">
+                <strong>
+                  {t('పౌర్ణమి–అమావాస్య & శని గోచార మనోధైర్యం:', 'Lunar Tides & Saturn Transit Resilience:')}
+                </strong>{' '}
+                {t(
+                  `${LUNAR_AND_SHANI_MENTAL_GUIDES[0].practicalGuidanceTe[0]} ${LUNAR_AND_SHANI_MENTAL_GUIDES[1].practicalGuidanceTe[0]}`,
+                  `${LUNAR_AND_SHANI_MENTAL_GUIDES[0].practicalGuidanceEn[0]} ${LUNAR_AND_SHANI_MENTAL_GUIDES[1].practicalGuidanceEn[0]}`
+                )}
+              </p>
+            </div>
+          </div>
+
+          {renderPrintPageFooter(
+            `అధ్యాయం 19 · ${predictions.chandraRashiEncyclopedia.rashiNameTe} సంపూర్ణ జీవన విజ్ఞాన సర్వస్వం`,
+            30
+          )}
+        </div>
+
+        {/* ====================================================================
+            PAGE 31: FULL-WIDTH 120-YEAR VIMSHOTTARI MAHADASHA & ANTARDASHA
             SINGLE-SIDE STACK + ROYAL PANDIT BLESSING SEAL
             ==================================================================== */}
         <div className="bg-white rounded-3xl p-4 sm:p-6 print:p-3 border-2 border-amber-300 shadow-2xs space-y-4 print:space-y-3 print-page-break page print-page-sheet">

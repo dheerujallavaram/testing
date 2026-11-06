@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { RASHI_CHART_ORDER } from '../data/panchangamData';
 import { useLanguage } from '../context/LanguageContext';
+import { getRashiEncyclopediaByIdOrIndex } from '../data/dwadasaRashiVedicEncyclopedia';
 
 export interface RashiCompatibilityProps {
   defaultBrideRashi?: string;
@@ -622,6 +623,8 @@ export const RashiCompatibilityTool: React.FC<RashiCompatibilityProps> = ({
 
   const brideObj = RASHI_CHART_ORDER.find((r) => r.key === brideRashi) || RASHI_CHART_ORDER[0];
   const groomObj = RASHI_CHART_ORDER.find((r) => r.key === groomRashi) || RASHI_CHART_ORDER[1];
+  const brideEncyclopedia = useMemo(() => getRashiEncyclopediaByIdOrIndex(brideRashi), [brideRashi]);
+  const groomEncyclopedia = useMemo(() => getRashiEncyclopediaByIdOrIndex(groomRashi), [groomRashi]);
 
   const statusBadgeColors = {
     excellent: 'bg-emerald-100 text-emerald-900 border-emerald-300',
@@ -1054,6 +1057,68 @@ export const RashiCompatibilityTool: React.FC<RashiCompatibilityProps> = ({
               {language === 'te'
                 ? deepShastricAnalysis.kujaVerdictTe
                 : deepShastricAnalysis.kujaVerdictEn}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Bride Wife Profile & Groom Husband Profile Psychology Section */}
+      <div className="bg-[#faf7f2] border border-amber-300 rounded-2xl p-5 sm:p-6 space-y-4">
+        <div className="border-b border-amber-200 pb-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-amber-800 block">
+            {t(
+              'చంద్ర రాశి దాంపత్య మనస్తత్వ విశ్లేషణ • Bride & Groom Rashi Spouse Psychology',
+              'Chandra Rashi Marital Temperament & Spouse Psychology'
+            )}
+          </span>
+          <h4 className="text-lg sm:text-xl font-extrabold text-amber-950 mt-0.5">
+            {t(
+              `${brideEncyclopedia.rashiNameTe} వధువు (భార్య) & ${groomEncyclopedia.rashiNameTe} వరుడు (భర్త) — స్వభావం & దాంపత్య సమన్వయం`,
+              `${brideEncyclopedia.rashiNameEn.split(' ')[0]} Wife & ${groomEncyclopedia.rashiNameEn.split(' ')[0]} Husband — Marital Nature & Harmony`
+            )}
+          </h4>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-white border border-amber-200 rounded-2xl p-4 space-y-2">
+            <div className="flex items-center justify-between border-b border-amber-100 pb-2">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-rose-800">
+                {t('వధువు / భార్య మనస్తత్వం', 'Bride / Wife Temperament')}
+              </span>
+              <span className="text-xs font-bold text-amber-900">
+                {language === 'te' ? brideEncyclopedia.rashiNameTe : brideEncyclopedia.rashiNameEn}
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-stone-800 leading-relaxed">
+              {language === 'te' ? brideEncyclopedia.wifeProfileTe : brideEncyclopedia.wifeProfileEn}
+            </p>
+            <p className="text-xs text-amber-900 pt-1 border-t border-amber-100">
+              <strong>{t('దాంపత్య సూత్రం:', 'Harmony Tip:')}</strong>{' '}
+              {language === 'te'
+                ? brideEncyclopedia.maritalHarmonySutraTe
+                : brideEncyclopedia.maritalHarmonySutraEn}
+            </p>
+          </div>
+
+          <div className="bg-white border border-amber-200 rounded-2xl p-4 space-y-2">
+            <div className="flex items-center justify-between border-b border-amber-100 pb-2">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-amber-900">
+                {t('వరుడు / భర్త మనస్తత్వం', 'Groom / Husband Temperament')}
+              </span>
+              <span className="text-xs font-bold text-amber-900">
+                {language === 'te' ? groomEncyclopedia.rashiNameTe : groomEncyclopedia.rashiNameEn}
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-stone-800 leading-relaxed">
+              {language === 'te'
+                ? groomEncyclopedia.husbandProfileTe
+                : groomEncyclopedia.husbandProfileEn}
+            </p>
+            <p className="text-xs text-amber-900 pt-1 border-t border-amber-100">
+              <strong>{t('దాంపత్య సూత్రం:', 'Harmony Tip:')}</strong>{' '}
+              {language === 'te'
+                ? groomEncyclopedia.maritalHarmonySutraTe
+                : groomEncyclopedia.maritalHarmonySutraEn}
             </p>
           </div>
         </div>

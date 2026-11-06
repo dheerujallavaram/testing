@@ -110,6 +110,9 @@ const MuhurthamCalculator = lazy(() =>
 const KartikaAbhishekamPage = lazy(() =>
   import('./components/KartikaAbhishekamPage').then((m) => ({ default: m.KartikaAbhishekamPage }))
 );
+const DwadasaRashiVedicGuide = lazy(() =>
+  import('./components/DwadasaRashiVedicGuide').then((m) => ({ default: m.DwadasaRashiVedicGuide }))
+);
 
 const SectionLoader: React.FC<{ minHeight?: string }> = ({ minHeight = 'min-h-[280px]' }) => (
   <div
@@ -286,6 +289,7 @@ export function resolveTabFromLocation(): NavTab {
     pathname === '/ugadi-rashi-phalalu' ||
     pathname === '/festivals' ||
     pathname === '/dosha-pariharalu' ||
+    pathname === '/dwadasa-rashi-rahasyalu' ||
     pathname === '/gochara-phalalu' ||
     pathname.startsWith('/gochara-phalalu/') ||
     pathname === '/yelinati-shani' ||
@@ -297,6 +301,7 @@ export function resolveTabFromLocation(): NavTab {
     hash === '#muhurthalu' ||
     hash === '#panchangam-faq' ||
     hash === '#vedic-astrology-hub' ||
+    hash === '#dwadasa-rashi-vedic-encyclopedia' ||
     hash === '#research'
   ) {
     return 'panchangam';
@@ -335,6 +340,7 @@ export function resolveHubSectionFromLocation(): HubSectionId {
   if (pathname === '/shubha-muhurthalu' || pathname === '/festivals') return 'muhurtham';
   if (pathname === '/vastu-shastra-telugu') return 'vastu';
   if (pathname === '/dosha-pariharalu') return 'dosha';
+  if (pathname === '/dwadasa-rashi-rahasyalu') return 'rashiguide';
   if (pathname === '/astroinformatics-research' || pathname === '/research') return 'research';
   return 'pontana';
 }
@@ -1187,6 +1193,10 @@ function AppContent() {
                           currentDay={currentDay}
                           onOpenBooking={() => handleOpenBooking()}
                         />
+                      </Suspense>
+
+                      <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
+                        <DwadasaRashiVedicGuide onOpenBooking={() => handleOpenBooking()} />
                       </Suspense>
                     </div>
                   </div>

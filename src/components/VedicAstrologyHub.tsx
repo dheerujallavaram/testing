@@ -36,9 +36,13 @@ const ShaniDoshaChecker = lazy(() =>
 const AstroinformaticsResearch = lazy(() =>
   import('./AstroinformaticsResearch').then((m) => ({ default: m.AstroinformaticsResearch }))
 );
+const DwadasaRashiVedicGuide = lazy(() =>
+  import('./DwadasaRashiVedicGuide').then((m) => ({ default: m.DwadasaRashiVedicGuide }))
+);
 
 export type HubSectionId =
   | 'pontana'
+  | 'rashiguide'
   | 'kundali'
   | 'research'
   | 'akshara'
@@ -196,6 +200,7 @@ const DOSHA_REMEDIES_LIST = [
 
 export const HUB_SECTION_PATHS: Record<HubSectionId, string> = {
   pontana: '/vivaha-pontana',
+  rashiguide: '/dwadasa-rashi-rahasyalu',
   kundali: '/janma-kundali',
   akshara: '/naama-nakshatra',
   babynames: '/telugu-baby-names',
@@ -261,6 +266,7 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
   const navButtons: { id: HubSectionId; labelTe: string; labelEn: string; icon: React.ComponentType<{ size?: number; className?: string }> }[] = [
     { id: 'kundali', labelTe: 'ఉచిత జన్మ కుండలి & మహాదశ', labelEn: 'Free Janma Kundali & Dasha', icon: ScrollText },
     { id: 'pontana', labelTe: 'వివాహ రాశి పొంతన (36 గుణాలు)', labelEn: 'Marriage Guna Milan (36 Pts)', icon: Heart },
+    { id: 'rashiguide', labelTe: '12 రాశుల దాంపత్యం • పిల్లలు • వృత్తి • ఆరోగ్యం', labelEn: '12 Rashi Spouse • Child • Career • Health', icon: BookOpen },
     { id: 'research', labelTe: 'ఆస్ట్రోఇన్ఫర్మేటిక్స్ & రీసెర్చ్', labelEn: 'Astroinformatics & Research', icon: Cpu },
     { id: 'akshara', labelTe: 'పేరు మొదటి అక్షరంతో రాశి-నక్షత్రం', labelEn: 'Name First Letter Rashi Finder', icon: Search },
     { id: 'babynames', labelTe: '27 నక్షత్రాల పిల్లల పేర్లు', labelEn: '27 Nakshatra Baby Names', icon: Baby },
@@ -336,6 +342,15 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
               window.open(`https://wa.me/918977986166?text=${encodeURIComponent(msg)}`, '_blank');
             }}
           />
+        </div>
+      )}
+
+      {/* SECTION 1B: 12 RASHI COMPLETE VEDIC LIFE ENCYCLOPEDIA (SPOUSE, CHILD, CAREER, HEALTH, LUNAR/SHANI) */}
+      {activeSection === 'rashiguide' && (
+        <div className="animate-fadeIn">
+          <Suspense fallback={<div className="py-12 text-center text-sm text-amber-900">ద్వాదశ రాశుల విజ్ఞాన సర్వస్వం లోడ్ అవుతోంది...</div>}>
+            <DwadasaRashiVedicGuide onOpenBooking={onOpenBooking} />
+          </Suspense>
         </div>
       )}
 

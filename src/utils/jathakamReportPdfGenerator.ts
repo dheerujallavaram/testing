@@ -22,6 +22,10 @@ import {
   buildPanchangaBirthProfile,
   generateExecutiveSummary,
 } from "./advancedAstrologyReportEngine";
+import {
+  getRashiEncyclopediaByIdOrIndex,
+  LUNAR_AND_SHANI_MENTAL_GUIDES,
+} from "../data/dwadasaRashiVedicEncyclopedia";
 
 export type JathakaReportVariant = "sample" | "a4-full" | "mobile";
 
@@ -354,6 +358,7 @@ export function buildComprehensiveJathakaPdfHtml(input: JathakaPdfGeneratorInput
   const bhriguCycles = generateBhriguLifeProgression(chartData.planets, lagnaIdx, birthDate);
   const remedies = generateVedicRemediesProfile(lagnaIdx, moonIdx);
   const saptamaMarriage = generateSaptamaMarriageAnalysis(chartData.planets, lagnaIdx, birthDate);
+  const chandraRashiEncyclopedia = getRashiEncyclopediaByIdOrIndex(moonIdx);
 
   const sharedKujaDoshaPercentage = Math.round(tripleKuja.netDoshaPercentage);
   const activeDashaStr = `${dashaInfo.currentMahadasha.lordTe} మహాదశ (${dashaInfo.currentMahadasha.startDate} – ${dashaInfo.currentMahadasha.endDate})`;
@@ -363,7 +368,7 @@ export function buildComprehensiveJathakaPdfHtml(input: JathakaPdfGeneratorInput
     `నమస్కారం బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు, నా జన్మ కుండలి వివరాలు: పేరు: ${nativeName}, పుట్టిన తేదీ: ${birthDate}, సమయం: ${birthTime}, ప్రాంతం: ${shortCity}, లగ్నం: ${chartData.lagna.te}, రాశి: ${chartData.rashi.te}, నక్షత్రం: ${nakshatraPadaStr}. వ్యక్తిగత జాతక పరిశీలన కొరకు సంప్రదిస్తున్నాను.`
   )}`;
 
-  const totalPages = variant === "sample" ? 2 : 12;
+  const totalPages = variant === "sample" ? 2 : 13;
 
   // Running Header & Footer HTML helper
   const renderRunningHeader = (pageNum: number, sectionTitle: string) => `
@@ -1148,14 +1153,61 @@ export function buildComprehensiveJathakaPdfHtml(input: JathakaPdfGeneratorInput
     ${renderRunningFooter()}
   </section>
 
-  <!-- ==================== PAGE 12: CHAPTER 10 — REMEDIES CHECKLIST, DISCLAIMER, CTA & QR CODE ==================== -->
+  <!-- ==================== PAGE 12: CHAPTER 10 — CHANDRA RASHI LIFE ENCYCLOPEDIA (SPOUSE, CHILD, CAREER, HEALTH) ==================== -->
   <section class="pdf-page">
-    ${renderRunningHeader(12, "అధ్యాయం 10 · వైదిక పరిహార చెక్‌లిస్ట్ & సంప్రదింపులు")}
+    ${renderRunningHeader(12, `అధ్యాయం 10 · ${chandraRashiEncyclopedia.rashiNameTe} జీవన విజ్ఞాన సర్వస్వం`)}
+
+    <div class="chapter-header-bar" style="--ch-accent: #78350F;">
+      <span class="chapter-icon">📖</span>
+      <div class="chapter-title-wrap">
+        <span class="chapter-num-label">అధ్యాయం 10 · జన్మ రాశి (${escapeHtml(chandraRashiEncyclopedia.rashiNameTe)}) సంపూర్ణ జీవన విశ్లేషణ</span>
+        <h1 class="h1-title">దాంపత్య మనస్తత్వం, బాల్య-విద్యా ప్రతిభ, వృత్తి-భాగస్వామ్యం, ఆరోగ్యం & మనోబలం</h1>
+      </div>
+    </div>
+
+    <div class="two-col-cards">
+      <div class="content-card avoid-break">
+        <h3 class="h3-title">1. ${escapeHtml(chandraRashiEncyclopedia.rashiNameTe)} దాంపత్య మనస్తత్వం (భార్య & భర్త స్వభావం)</h3>
+        <p style="margin-top:2mm;font-size:10pt;"><strong>ఇల్లాలు / భార్యగా స్వభావం:</strong> ${escapeHtml(chandraRashiEncyclopedia.wifeProfileTe)}</p>
+        <p style="margin-top:2mm;font-size:10pt;"><strong>పురుషుడు / భర్తగా స్వభావం:</strong> ${escapeHtml(chandraRashiEncyclopedia.husbandProfileTe)}</p>
+        <p style="margin-top:2mm;font-size:9.8pt;color:#14532D;font-weight:700;">✦ దాంపత్య సూత్రం: ${escapeHtml(chandraRashiEncyclopedia.maritalHarmonySutraTe)}</p>
+      </div>
+
+      <div class="content-card avoid-break">
+        <h3 class="h3-title">2. బాల్య ప్రతిభ, విద్యా శైలి & తల్లిదండ్రుల మార్గదర్శనం</h3>
+        <p style="margin-top:2mm;font-size:10pt;"><strong>సహజ మేధస్సు & విద్యా శైలి:</strong> ${escapeHtml(chandraRashiEncyclopedia.childNatureAndStudyTe)}</p>
+        <p style="margin-top:2mm;font-size:10pt;"><strong>పెంపకం & ప్రోత్సాహ విధానం:</strong> ${escapeHtml(chandraRashiEncyclopedia.parentingGuideTe)}</p>
+        <p style="margin-top:2mm;font-size:9.8pt;color:#4A1D0A;"><strong>తల్లిదండ్రుల స్వభావం:</strong> ${escapeHtml(chandraRashiEncyclopedia.parentTemperamentTe)}</p>
+      </div>
+    </div>
+
+    <div class="two-col-cards" style="margin-top:5mm;">
+      <div class="content-card avoid-break">
+        <h3 class="h3-title">3. జీవన వృత్తి, వ్యాపార భాగస్వామ్యం & ధనాకర్షణ</h3>
+        <p style="margin-top:2mm;font-size:10pt;"><strong>అనుకూల వృత్తి రంగాలు:</strong> ${escapeHtml(chandraRashiEncyclopedia.careerLifeWorkTe)}</p>
+        <p style="margin-top:2mm;font-size:10pt;"><strong>వ్యాపార భాగస్వామ్యం:</strong> ${escapeHtml(chandraRashiEncyclopedia.businessPartnershipTe)}</p>
+        <p style="margin-top:2mm;font-size:10pt;"><strong>ధనాకర్షణ & ఆస్తులు:</strong> ${escapeHtml(chandraRashiEncyclopedia.wealthAttractionTe)}</p>
+      </div>
+
+      <div class="content-card avoid-break">
+        <h3 class="h3-title">4. శారీరక ఆరోగ్య రక్షణ (${escapeHtml(chandraRashiEncyclopedia.kalapurushaAngamTe)}) & మనోధైర్యం</h3>
+        <p style="margin-top:2mm;font-size:10pt;"><strong>చంద్ర మానసిక తత్వం:</strong> ${escapeHtml(chandraRashiEncyclopedia.chandraManasikaTatvamTe)}</p>
+        <p style="margin-top:2mm;font-size:10pt;"><strong>ఆరోగ్య జాగ్రత్తలు:</strong> ${escapeHtml(chandraRashiEncyclopedia.arogyaRakshaTe)}</p>
+        <p style="margin-top:2mm;font-size:9.8pt;color:#4A1D0A;"><strong>పౌర్ణమి–అమావాస్య & శని గోచార సూత్రం:</strong> ${escapeHtml(LUNAR_AND_SHANI_MENTAL_GUIDES[0].practicalGuidanceTe[0])} ${escapeHtml(LUNAR_AND_SHANI_MENTAL_GUIDES[1].practicalGuidanceTe[0])}</p>
+      </div>
+    </div>
+
+    ${renderRunningFooter()}
+  </section>
+
+  <!-- ==================== PAGE 13: CHAPTER 11 — REMEDIES CHECKLIST, DISCLAIMER, CTA & QR CODE ==================== -->
+  <section class="pdf-page">
+    ${renderRunningHeader(13, "అధ్యాయం 11 · వైదిక పరిహార చెక్‌లిస్ట్ & సంప్రదింపులు")}
 
     <div class="chapter-header-bar" style="--ch-accent: #B45309;">
       <span class="chapter-icon">🪔</span>
       <div class="chapter-title-wrap">
-        <span class="chapter-num-label">అధ్యాయం 10 · CHAPTER 10 (REMEDIES & CONSULTATION)</span>
+        <span class="chapter-num-label">అధ్యాయం 11 · CHAPTER 11 (REMEDIES & CONSULTATION)</span>
         <h1 class="h1-title">వైదిక శాంతి పరిహార చెక్‌లిస్ట్, సంప్రదింపులు & ఆన్‌లైన్ వెర్షన్</h1>
       </div>
     </div>
