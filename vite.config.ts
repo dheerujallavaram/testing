@@ -44,12 +44,12 @@ export default defineConfig(() => {
               return;
             }
 
-            // Direct PDF Static Serving
-            if (pathname.endsWith('.pdf')) {
+            // Direct PDF & PNG Static Serving
+            if (pathname.endsWith('.pdf') || pathname.endsWith('.png')) {
               const filePath = path.join(process.cwd(), 'public', pathname.replace(/^\//, ''));
               if (fs.existsSync(filePath)) {
                 res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/pdf');
+                res.setHeader('Content-Type', pathname.endsWith('.pdf') ? 'application/pdf' : 'image/png');
                 res.setHeader('Content-Disposition', `inline; filename="${path.basename(filePath)}"`);
                 res.end(fs.readFileSync(filePath));
                 return;

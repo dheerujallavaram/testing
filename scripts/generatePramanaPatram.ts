@@ -198,12 +198,23 @@ export function generatePramanaPatramImage(data: PramanaPatramData): Buffer {
   drawCenteredText(ctx, 'పూజా కర్తల పవిత్ర గోత్రనామముల వివరములు', width / 2, cardY + 38);
 
   // Devotee details table inside the card
-  const details = [
+  const details: { label: string; val: string; color: string; bold: boolean }[] = [
     { label: 'పవిత్ర గోత్రము:', val: `${data.gotram} గోత్రోద్భవః`, color: '#991b1b', bold: true },
-    { label: 'కర్త / గృహపతి:', val: `${data.kartaName} గారు`, color: '#1e293b', bold: true },
-    { label: 'ధర్మపత్ని:', val: `${data.wifeName} గారు`, color: '#1e293b', bold: true },
-    { label: 'సుపుత్రుడు / కుటుంబ సభ్యులు:', val: `${data.childrenNames} గారు`, color: '#1e293b', bold: true },
   ];
+
+  if (data.wifeName && data.wifeName !== '—') {
+    details.push(
+      { label: 'కర్త / గృహపతి:', val: `${data.kartaName} గారు`, color: '#1e293b', bold: true },
+      { label: 'ధర్మపత్ని:', val: `${data.wifeName} గారు`, color: '#1e293b', bold: true },
+      { label: 'సుపుత్రుడు / కుటుంబ సభ్యులు:', val: `${data.childrenNames} గారు`, color: '#1e293b', bold: true }
+    );
+  } else {
+    details.push(
+      { label: 'మాతృమూర్తి / పూజా కర్త:', val: `${data.kartaName} గారు`, color: '#1e293b', bold: true },
+      { label: 'సుపుత్రుడు / సంకల్ప కర్త:', val: `${data.childrenNames} గారు`, color: '#1e293b', bold: true },
+      { label: 'సంకల్ప విశేషం:', val: 'కార్తీక మాస పరమశివ ఏకవార రుద్రాభిషేకం', color: '#78350f', bold: true }
+    );
+  }
 
   let currentLineY = cardY + 115;
   for (const item of details) {
@@ -252,15 +263,15 @@ export function generatePramanaPatramImage(data: PramanaPatramData): Buffer {
   ctx.textAlign = 'left';
   ctx.fillStyle = '#14532d';
   ctx.font = 'bold 24px "Noto Serif Telugu", serif';
-  ctx.fillText('✓ రుద్రాభిషేక దక్షిణ: ₹2,500/- (నెల రోజుల పూజకు సంపూర్ణంగా స్వీకరించబడినది)', 140, dakshinaY + 45);
+  ctx.fillText('• రుద్రాభిషేక దక్షిణ: ₹2,500/- (నెల రోజుల పూజకు సంపూర్ణంగా స్వీకరించబడినది)', 140, dakshinaY + 45);
 
   ctx.fillStyle = '#78350f';
   ctx.font = 'bold 21px "Noto Serif Telugu", serif';
-  ctx.fillText('📦 భక్తుల స్వగృహానికి స్పీడ్ పోస్ట్ ద్వారా చేర్చబడు దివ్య ప్రసాదములు:', 140, dakshinaY + 86);
+  ctx.fillText('• భక్తుల స్వగృహానికి స్పీడ్ పోస్ట్ ద్వారా చేర్చబడు దివ్య ప్రసాదములు:', 140, dakshinaY + 86);
 
   ctx.fillStyle = '#451a03';
   ctx.font = '19px "Noto Serif Telugu", serif';
-  ctx.fillText('• పరమశివుని చందన గంధం  •  మహాన్యాస వేద విభూతి  •  కాశీ విశ్వనాథుని కాలభైరవ రక్షా సూత్రం', 150, dakshinaY + 122);
+  ctx.fillText('   - పరమశివుని చందన గంధం   - మహాన్యాస వేద విభూతి   - కాశీ విశ్వనాథుని కాలభైరవ రక్షా సూత్రం', 150, dakshinaY + 122);
 
   // 9. SACRED VEDIC BLESSINGS SHLOKA
   const shlokaY = 1170;
@@ -335,7 +346,7 @@ export function generatePramanaPatramImage(data: PramanaPatramData): Buffer {
   ctx.font = 'bold 17px "Noto Serif Telugu", serif';
   drawCenteredText(
     ctx,
-    '🌐 www.telugujyothisham.com   •   📞 వాట్సాప్: +91 8977986166   •   Kotak UPI: 7013079166@kotakbank',
+    'www.telugujyothisham.com   •   వాట్సాప్: +91 8977986166   •   Kotak UPI: 7013079166@kotakbank',
     width / 2,
     1548
   );
@@ -408,7 +419,30 @@ export function runCertificateGeneration() {
     fs.writeFileSync(path.join(distDir, 'pramana-patram-sample.pdf'), fs.readFileSync(samplePdfPath));
   }
   console.log(`✅ Generated PNG: ${sampleData.outputPath} (${(sampleBuffer.length / 1024).toFixed(1)} KB)`);
-  console.log(`✅ Generated PDF: ${samplePdfPath} (${(fs.statSync(samplePdfPath).size / 1024).toFixed(1)} KB)`);
+  // 3. Munipalle Bhavani Devi & Sriharsha Manikanta Anjaneya Sharma Certificate
+  const sriharshaData: PramanaPatramData = {
+    refId: 'SLG-KARTIKA-2026-KA702',
+    isSample: false,
+    gotram: 'కణ్వాస',
+    kartaName: 'మునిపల్లె భవాని దేవి',
+    wifeName: '—',
+    childrenNames: 'శ్రీహర్ష మణికంఠ ఆంజనేయ శర్మ',
+    dakshinaText: '₹2,500/-',
+    dateText: 'కార్తీక మాసము (నవంబర్ 2026)',
+    outputPath: path.join(publicDir, 'pramana-patram-sriharsha.png'),
+  };
+
+  const sriharshaBuffer = generatePramanaPatramImage(sriharshaData);
+  fs.writeFileSync(sriharshaData.outputPath, sriharshaBuffer);
+  const sriharshaPdfPath = path.join(publicDir, 'pramana-patram-sriharsha.pdf');
+  saveAsPdf(sriharshaBuffer, sriharshaPdfPath);
+
+  if (fs.existsSync(distDir)) {
+    fs.writeFileSync(path.join(distDir, 'pramana-patram-sriharsha.png'), sriharshaBuffer);
+    fs.writeFileSync(path.join(distDir, 'pramana-patram-sriharsha.pdf'), fs.readFileSync(sriharshaPdfPath));
+  }
+  console.log(`✅ Generated PNG: ${sriharshaData.outputPath} (${(sriharshaBuffer.length / 1024).toFixed(1)} KB)`);
+  console.log(`✅ Generated PDF: ${sriharshaPdfPath} (${(fs.statSync(sriharshaPdfPath).size / 1024).toFixed(1)} KB)`);
 }
 
 runCertificateGeneration();
