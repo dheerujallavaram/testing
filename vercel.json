@@ -102,7 +102,7 @@
       "destination": "/api/ssr"
     },
     {
-      "source": "/((?!api/|assets/|.*\\..*).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
