@@ -113,6 +113,12 @@ const KartikaAbhishekamPage = lazy(() =>
 const DwadasaRashiVedicGuide = lazy(() =>
   import('./components/DwadasaRashiVedicGuide').then((m) => ({ default: m.DwadasaRashiVedicGuide }))
 );
+const VedicArticleReader = lazy(() =>
+  import('./components/VedicArticleReader').then((m) => ({ default: m.VedicArticleReader }))
+);
+const VedicArticlesDirectory = lazy(() =>
+  import('./components/VedicArticlesDirectory').then((m) => ({ default: m.VedicArticlesDirectory }))
+);
 
 const SectionLoader: React.FC<{ minHeight?: string }> = ({ minHeight = 'min-h-[280px]' }) => (
   <div
@@ -167,6 +173,7 @@ const LazyViewportSection: React.FC<{
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
   panchangam: '/panchangam',
+  vyasalu: '/vedic-articles',
   kartika: '/kartika-abhishekam',
   muhurtham: '/muhurtham',
   jathakam: '/mee-jatakam',
@@ -273,6 +280,21 @@ export function resolveTabFromLocation(): NavTab {
     return 'jathakam';
   }
   if (
+    pathname === '/vedic-articles' ||
+    pathname === '/vyasalu' ||
+    pathname === '/shastras' ||
+    pathname === '/dwadasa-rashi-rahasyalu' ||
+    pathname === '/astroinformatics-research' ||
+    pathname === '/research' ||
+    hash === '#vyasalu' ||
+    hash === '#vedic-articles' ||
+    hash === '#shastras' ||
+    hash === '#dwadasa-rashi-vedic-encyclopedia' ||
+    hash === '#research'
+  ) {
+    return 'vyasalu';
+  }
+  if (
     pathname === '/panchangam' ||
     pathname.startsWith('/panchangam/') ||
     pathname.endsWith('/panchangam') ||
@@ -289,20 +311,16 @@ export function resolveTabFromLocation(): NavTab {
     pathname === '/ugadi-rashi-phalalu' ||
     pathname === '/festivals' ||
     pathname === '/dosha-pariharalu' ||
-    pathname === '/dwadasa-rashi-rahasyalu' ||
     pathname === '/gochara-phalalu' ||
     pathname.startsWith('/gochara-phalalu/') ||
     pathname === '/yelinati-shani' ||
-    pathname === '/astroinformatics-research' ||
     Boolean(resolveCityTimingSlugFromLocation()) ||
     hash === '#panchangam' ||
     hash === '#dina-phalam' ||
     hash === '#rashi-chakram' ||
     hash === '#muhurthalu' ||
     hash === '#panchangam-faq' ||
-    hash === '#vedic-astrology-hub' ||
-    hash === '#dwadasa-rashi-vedic-encyclopedia' ||
-    hash === '#research'
+    hash === '#vedic-astrology-hub'
   ) {
     return 'panchangam';
   }
@@ -342,7 +360,58 @@ export function resolveHubSectionFromLocation(): HubSectionId {
   if (pathname === '/dosha-pariharalu') return 'dosha';
   if (pathname === '/dwadasa-rashi-rahasyalu') return 'rashiguide';
   if (pathname === '/astroinformatics-research' || pathname === '/research') return 'research';
+  if (pathname === '/vedic-articles' || pathname === '/shastras') return 'shastras';
   return 'pontana';
+}
+
+export function resolveVedicArticleSlugFromLocation(): string | null {
+  if (typeof window === 'undefined') return null;
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  if (pathname === '/swarodaya-shastra') return 'swarodaya-shastra';
+  if (pathname === '/balarishta-dosha-shanti') return 'balarishta-dosha-shanti';
+  if (pathname === '/prashna-nimitta-shastra') return 'prashna-nimitta-shastra';
+  if (pathname === '/graha-vakra-gati') return 'graha-vakra-gati';
+  if (pathname === '/surya-siddhanta-kala-ganana') return 'surya-siddhanta-kala-ganana';
+  if (
+    pathname === '/classical-astrology-faq' ||
+    pathname === '/vedic-astro-qa-1959' ||
+    pathname === '/jyotish-faq'
+  )
+    return 'classical-astrology-faq';
+  if (pathname === '/jyotisha-paribhasha-rahasyalu') return 'jyotisha-paribhasha-rahasyalu';
+  if (
+    pathname === '/hasta-samudrika-rekhala-vignanam' ||
+    pathname === '/palmistry-telugu' ||
+    pathname === '/hasta-samudrikam'
+  )
+    return 'hasta-samudrika-rekhala-vignanam';
+  if (
+    pathname === '/why-are-geminis-so-powerful' ||
+    pathname === '/mithuna-rashi-power' ||
+    pathname === '/gemini-superpowers-iq'
+  )
+    return 'why-are-geminis-so-powerful';
+  if (
+    pathname === '/who-is-libras-true-love' ||
+    pathname === '/libra-soulmate-compatibility' ||
+    pathname === '/how-do-you-explain-astrology'
+  )
+    return 'who-is-libras-true-love';
+  return null;
+}
+
+export function resolveVedicDirectoryFromLocation(): boolean {
+  if (typeof window === 'undefined') return false;
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  const hash = window.location.hash.toLowerCase();
+  return (
+    pathname === '/vedic-articles' ||
+    pathname === '/vyasalu' ||
+    pathname === '/shastras' ||
+    hash === '#vyasalu' ||
+    hash === '#vedic-articles' ||
+    hash === '#shastras'
+  );
 }
 
 export function resolveLegalDocFromLocation(): LegalDocType | null {
@@ -376,6 +445,12 @@ const LEGAL_DOC_PATHS: Record<LegalDocType, string> = {
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<NavTab>(() => resolveTabFromLocation());
+  const [activeArticleSlug, setActiveArticleSlug] = useState<string | null>(() =>
+    resolveVedicArticleSlugFromLocation()
+  );
+  const [isVedicDirectoryView, setIsVedicDirectoryView] = useState<boolean>(() =>
+    resolveVedicDirectoryFromLocation()
+  );
   const [isAdminView, setIsAdminView] = useState<boolean>(() => resolveAdminFromLocation());
   const [isSampleJathakamView, setIsSampleJathakamView] = useState<boolean>(() =>
     resolveSampleJathakamFromLocation()
@@ -409,11 +484,51 @@ function AppContent() {
 
   const currentDay = getOrGenerateDayData(selectedDayId, WEEK_DATA);
 
+  const handleSelectVedicArticle = useCallback((slug: string) => {
+    setSelectedCity(null);
+    setActiveLegalDoc(null);
+    setIsAdminView(false);
+    setIsCalendarView(false);
+    setIsSampleJathakamView(false);
+    setIsVedicDirectoryView(false);
+    setActiveArticleSlug(slug);
+    if (typeof window !== 'undefined') {
+      try {
+        const targetPath = `/${slug}`;
+        if (window.location.pathname !== targetPath) {
+          window.history.pushState({ articleSlug: slug }, '', targetPath);
+        }
+      } catch {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+
+  const handleNavigateVedicDirectory = useCallback(() => {
+    setSelectedCity(null);
+    setActiveLegalDoc(null);
+    setIsAdminView(false);
+    setIsCalendarView(false);
+    setIsSampleJathakamView(false);
+    setActiveArticleSlug(null);
+    setIsVedicDirectoryView(false);
+    setActiveTab('vyasalu');
+    if (typeof window !== 'undefined') {
+      try {
+        if (window.location.pathname !== '/vedic-articles') {
+          window.history.pushState({ tab: 'vyasalu', vedicArticles: true }, '', '/vedic-articles');
+        }
+      } catch {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+
   const handleNavigateToSampleJathakam = useCallback(() => {
     setSelectedCity(null);
     setActiveLegalDoc(null);
     setIsAdminView(false);
     setIsCalendarView(false);
+    setActiveArticleSlug(null);
+    setIsVedicDirectoryView(false);
     setIsSampleJathakamView(true);
     if (typeof window !== 'undefined') {
       try {
@@ -429,6 +544,8 @@ function AppContent() {
     setSelectedCity(null);
     setActiveLegalDoc(null);
     setIsSampleJathakamView(false);
+    setActiveArticleSlug(null);
+    setIsVedicDirectoryView(false);
     setIsAdminView(true);
     if (typeof window !== 'undefined') {
       try {
@@ -446,6 +563,8 @@ function AppContent() {
     setIsAdminView(false);
     setIsCalendarView(false);
     setIsSampleJathakamView(false);
+    setActiveArticleSlug(null);
+    setIsVedicDirectoryView(false);
     setActiveCityTimingSlug(null);
     setActiveTab(tab);
     if (tab === 'panchangam') {
@@ -556,6 +675,19 @@ function AppContent() {
         }
         return;
       }
+      if (
+        section === 'shastras' ||
+        section === 'rashiguide' ||
+        section === 'research' ||
+        path === '/vedic-articles' ||
+        path === '/vyasalu' ||
+        path === '/shastras' ||
+        path === '/dwadasa-rashi-rahasyalu' ||
+        path === '/astroinformatics-research'
+      ) {
+        handleNavigateVedicDirectory();
+        return;
+      }
       setIsSampleJathakamView(false);
       setActiveTab('panchangam');
       setIsCalendarView(false);
@@ -634,6 +766,39 @@ function AppContent() {
     setActiveLegalDoc(null);
     setIsAdminView(false);
     setIsCalendarView(false);
+
+    const rawPath = topic.targetPath.toLowerCase().replace(/\/+$/, '') || '/';
+    const articleSlugMatch = rawPath.startsWith('/') ? rawPath.slice(1) : rawPath;
+    if (
+      [
+        'swarodaya-shastra',
+        'balarishta-dosha-shanti',
+        'prashna-nimitta-shastra',
+        'graha-vakra-gati',
+        'surya-siddhanta-kala-ganana',
+        'classical-astrology-faq',
+        'jyotisha-paribhasha-rahasyalu',
+        'hasta-samudrika-rekhala-vignanam',
+        'why-are-geminis-so-powerful',
+        'who-is-libras-true-love',
+      ].includes(articleSlugMatch)
+    ) {
+      handleSelectVedicArticle(articleSlugMatch);
+      return;
+    }
+    if (
+      rawPath === '/vedic-articles' ||
+      rawPath === '/vyasalu' ||
+      rawPath === '/shastras' ||
+      rawPath === '/dwadasa-rashi-rahasyalu' ||
+      rawPath === '/astroinformatics-research'
+    ) {
+      handleNavigateVedicDirectory();
+      return;
+    }
+
+    setActiveArticleSlug(null);
+    setIsVedicDirectoryView(false);
     setActiveTab(topic.targetTab);
 
     if (topic.panchangamSubTab) {
@@ -672,7 +837,7 @@ function AppContent() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 120);
     }
-  }, []);
+  }, [handleNavigateVedicDirectory, handleSelectVedicArticle]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -699,6 +864,8 @@ function AppContent() {
       setIsCalendarView(resolveCalendarViewFromLocation());
       setActiveCityTimingSlug(resolveCityTimingSlugFromLocation());
       setSelectedDayId(resolveInitialIsoDateFromLocation());
+      setActiveArticleSlug(resolveVedicArticleSlugFromLocation());
+      setIsVedicDirectoryView(resolveVedicDirectoryFromLocation());
       if (!matchedCity) {
         setActiveTab(resolveTabFromLocation());
         setPanchangamSubTab(resolvePanchangamSubTabFromLocation());
@@ -716,6 +883,10 @@ function AppContent() {
     const currentPath =
       typeof window !== 'undefined'
         ? window.location.pathname.replace(/\/+$/, '') || '/'
+        : activeArticleSlug
+        ? `/${activeArticleSlug}`
+        : isVedicDirectoryView
+        ? '/vedic-articles'
         : TAB_PATHS[activeTab] || '/';
 
     const meta = generatePageMetadata(currentPath);
@@ -736,6 +907,8 @@ function AppContent() {
     }
   }, [
     activeTab,
+    activeArticleSlug,
+    isVedicDirectoryView,
     panchangamSubTab,
     hubSection,
     language,
@@ -810,7 +983,28 @@ function AppContent() {
         </div>
       )}
 
-      {isAdminView ? (
+      {activeArticleSlug ? (
+        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
+          <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
+            <VedicArticleReader
+              articleSlug={activeArticleSlug}
+              onNavigateArticle={handleSelectVedicArticle}
+              onNavigateHome={() => handleNavigateVedicDirectory()}
+              onOpenBooking={() => handleOpenBooking()}
+            />
+          </Suspense>
+        </main>
+      ) : activeTab === 'vyasalu' || isVedicDirectoryView ? (
+        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
+          <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
+            <VedicArticlesDirectory
+              onSelectArticle={handleSelectVedicArticle}
+              onOpenBooking={() => handleOpenBooking()}
+              currentDay={currentDay}
+            />
+          </Suspense>
+        </main>
+      ) : isAdminView ? (
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
           <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
             <AdminDashboard
@@ -1180,24 +1374,6 @@ function AppContent() {
                     <div className="space-y-8">
                       <DayVisheshamCard day={currentDay} />
                       <DailyHoroscope day={currentDay} />
-
-                      <Suspense fallback={<SectionLoader minHeight="min-h-[360px]" />}>
-                        <DailyNakshatraArticle
-                          currentDay={currentDay}
-                          onOpenBooking={() => handleOpenBooking()}
-                        />
-                      </Suspense>
-
-                      <Suspense fallback={<SectionLoader minHeight="min-h-[320px]" />}>
-                        <DailyAstrologyInsights
-                          currentDay={currentDay}
-                          onOpenBooking={() => handleOpenBooking()}
-                        />
-                      </Suspense>
-
-                      <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
-                        <DwadasaRashiVedicGuide onOpenBooking={() => handleOpenBooking()} />
-                      </Suspense>
                     </div>
                   </div>
                 </>

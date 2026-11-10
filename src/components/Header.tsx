@@ -15,13 +15,14 @@ import {
   ArrowRight,
   Clock,
   Flame,
+  BookOpen,
 } from 'lucide-react';
 import { playTempleBell } from '../utils/audioChime';
 import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
 import { ASTRO_SEARCH_TOPICS, AstroSearchTopic, searchAstroTopics } from '../data/astroSearchIndex';
 
-export type NavTab = 'home' | 'panchangam' | 'kartika' | 'muhurtham' | 'jathakam' | 'awards' | 'services' | 'about' | 'contact';
+export type NavTab = 'home' | 'panchangam' | 'vyasalu' | 'kartika' | 'muhurtham' | 'jathakam' | 'awards' | 'services' | 'about' | 'contact';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -31,6 +32,7 @@ interface HeaderProps {
 }
 
 const QUICK_SEARCH_CHIPS: { labelTe: string; labelEn: string; query: string }[] = [
+  { labelTe: 'వేద శాస్త్రాలు (Vedic Shastras)', labelEn: 'Vedic Shastras', query: 'శాస్త్రాలు' },
   { labelTe: 'కార్తీక రుద్రాభిషేకం (Kartika Abhishekam)', labelEn: 'Kartika Puja', query: 'Kartika Abhishekam' },
   { labelTe: 'వాస్తు (Vastu)', labelEn: 'Vastu', query: 'Vastu' },
   { labelTe: 'ముహూర్తం (Muhurtham)', labelEn: 'Muhurtham', query: 'Muhurtham' },
@@ -69,6 +71,13 @@ export const Header: React.FC<HeaderProps> = ({
   }[] = [
     { id: 'home', label: t('హోమ్ పేజీ', 'Home'), shortLabelTe: 'హోమ్', shortLabelEn: 'Home', icon: Home },
     { id: 'panchangam', label: t('నేటి పంచాంగం', 'Panchangam'), shortLabelTe: 'పంచాంగం', shortLabelEn: 'Panchangam', icon: Calendar },
+    {
+      id: 'vyasalu',
+      label: t('వ్యాసాలు (జ్యోతిష విజ్ఞానం)', 'Articles (Vedic Treatises)'),
+      shortLabelTe: 'వ్యాసాలు',
+      shortLabelEn: 'Articles',
+      icon: BookOpen,
+    },
     {
       id: 'kartika',
       label: t('కార్తీక రుద్రాభిషేకం', 'Kartika Abhishekam'),
@@ -267,22 +276,23 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-xl bg-amber-900/80 text-amber-200 hover:bg-amber-800 border border-amber-600/50 cursor-pointer shrink-0"
+            className="md:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-amber-950 font-black text-xs shadow-md border border-amber-300 cursor-pointer shrink-0"
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+            <span>{mobileMenuOpen ? 'మూసివేయి' : 'మెనూ'}</span>
           </button>
         </div>
       </div>
 
       {/* Row 2: Navigation Tabs + Dedicated Topic Search Bar */}
-      <div ref={searchContainerRef} className="relative bg-[#240a02]/95 border-t border-amber-700/50">
-        {/* Mobile & Tablet (< lg): Quick Tab Strip + Search Button */}
+      <div ref={searchContainerRef} className="relative bg-[#200502] border-t-2 border-amber-500/70 shadow-inner">
+        {/* Mobile & Small Screens (< md): Smooth Full Tab Strip + Search Button */}
         <nav
-          aria-label="Quick Mobile Navigation"
-          className="lg:hidden px-2.5 py-1.5 flex items-center justify-between gap-2"
+          aria-label="Mobile Navigation Bar"
+          className="md:hidden px-2.5 py-2 flex items-center justify-between gap-2"
         >
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar min-w-0 flex-1">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar min-w-0 flex-1 py-0.5">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -291,14 +301,14 @@ export const Header: React.FC<HeaderProps> = ({
                   key={item.id}
                   type="button"
                   onClick={() => handleTabClick(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-telugu font-bold transition-all cursor-pointer shrink-0 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-telugu font-bold transition-all cursor-pointer shrink-0 ${
                     isActive
-                      ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 shadow-sm'
-                      : 'bg-amber-950/80 text-amber-100/90 border border-amber-700/50 hover:bg-amber-900'
+                      ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 shadow-md scale-105 border border-amber-200'
+                      : 'bg-amber-950/90 text-amber-100 hover:text-white border border-amber-700/60 hover:bg-amber-900'
                   }`}
                 >
                   <Icon size={13} className={isActive ? 'text-amber-950' : 'text-amber-400'} />
-                  <span>{language === 'en' ? item.shortLabelEn : item.shortLabelTe}</span>
+                  <span>{language === 'en' ? item.shortLabelEn : item.label}</span>
                 </button>
               );
             })}
@@ -310,7 +320,7 @@ export const Header: React.FC<HeaderProps> = ({
               setIsSearchOpen(!isSearchOpen);
               setTimeout(() => searchInputRef.current?.focus(), 50);
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-900 hover:bg-amber-800 text-amber-100 border border-amber-400/70 text-xs font-telugu font-bold cursor-pointer shrink-0 shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 border border-amber-400/70 text-xs font-telugu font-bold cursor-pointer shrink-0 shadow-xs"
             title={t('వెతకండి (Search Topics)', 'Search Topics')}
             aria-label="Search astrological topics"
           >
@@ -319,10 +329,10 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </nav>
 
-        {/* Desktop (lg+): Primary Navigation Tabs + Search Input */}
-        <nav aria-label="Primary Navigation" className="hidden lg:block">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 py-2">
-            <div className="flex items-center gap-1.5 xl:gap-2 flex-wrap">
+        {/* Tablet & Desktop (md+): Primary Grand Navigation Tabs + Search Input */}
+        <nav aria-label="Primary Navigation" className="hidden md:block">
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 lg:gap-4 py-2">
+            <div className="flex items-center gap-1 lg:gap-1.5 xl:gap-2 flex-wrap">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
@@ -331,10 +341,10 @@ export const Header: React.FC<HeaderProps> = ({
                     key={item.id}
                     type="button"
                     onClick={() => handleTabClick(item.id)}
-                    className={`flex items-center gap-2 px-3.5 xl:px-4 py-2 rounded-xl text-sm font-telugu font-semibold transition-all cursor-pointer ${
+                    className={`flex items-center gap-1.5 lg:gap-2 px-3 lg:px-4 py-2 rounded-xl text-xs lg:text-sm font-telugu font-bold transition-all cursor-pointer ${
                       isActive
-                        ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 shadow-md font-bold scale-[1.02]'
-                        : 'text-amber-100/90 hover:bg-amber-900/70 hover:text-amber-200'
+                        ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 shadow-md scale-[1.02] border border-amber-200'
+                        : 'text-amber-100/90 hover:bg-amber-900/80 hover:text-amber-200 border border-transparent'
                     }`}
                   >
                     <Icon size={16} className={isActive ? 'text-amber-950' : 'text-amber-400'} />
@@ -510,7 +520,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#240a02] border-t border-amber-700/60 px-4 py-4 space-y-2 shadow-2xl">
+        <div className="md:hidden bg-[#240a02] border-t border-amber-700/60 px-4 py-4 space-y-2 shadow-2xl">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;

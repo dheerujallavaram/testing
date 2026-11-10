@@ -575,6 +575,136 @@ export const DwadasaRashiVedicGuide: React.FC<DwadasaRashiVedicGuideProps> = ({
           </div>
         </section>
       )}
+
+      {/* 6. GLOBAL ZODIAC RANKINGS, GEMINI POWER/IQ & LIBRA TRUE LOVE / SOULMATE PILLAR GUIDES */}
+      <section className="space-y-6 pt-6 border-t-2 border-amber-300">
+        <div className="space-y-1">
+          <p className="text-xs font-bold uppercase tracking-widest text-amber-800">
+            {t(
+              'ప్రపంచ రాశి ర్యాంకింగ్స్ & ఆత్మబంధువు విశ్లేషణ • GLOBAL ZODIAC POWER, IQ & SOULMATE GUIDES',
+              'Global Zodiac Power, IQ, Soulmate & 4 Pillars of Astrology Guides'
+            )}
+          </p>
+          <h3 className="text-xl sm:text-2xl font-extrabold text-amber-950 flex items-center gap-2">
+            <Sparkles size={22} className="text-amber-700 shrink-0" />
+            <span>
+              {t(
+                '06. మిథున రాశి సూపర్ పవర్స్ (Why Are Geminis So Powerful?) & తుల రాశి నిజమైన ప్రేమ (Who Is Libra’s True Love?)',
+                '06. Why Are Geminis So Powerful? & Who Is Libra’s True Love? (Complete Ranking Guides)'
+              )}
+            </span>
+          </h3>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Card 1: Why Are Geminis So Powerful & Global Zodiac Rankings */}
+          <div className="bg-gradient-to-br from-[#fffdf7] to-[#fff5e0] border-2 border-amber-400 rounded-3xl p-5 sm:p-6 flex flex-col justify-between space-y-4 shadow-md">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-900 text-amber-100 text-[10px] font-extrabold uppercase tracking-wider">
+                  {t('మిథున రాశి శక్తి & IQ • Gemini Power & IQ', 'Gemini Power, IQ & Rankings')}
+                </span>
+                <span className="text-xs font-bold text-amber-800">
+                  {t('18 నిమిషాల సమగ్ర వ్యాసం', '18 Min Pillar Treatise')}
+                </span>
+              </div>
+              <h4 className="text-lg sm:text-xl font-extrabold text-amber-950 leading-snug">
+                {t(
+                  'మిథున రాశి వారు ఎందుకు అంత శక్తివంతులు? (Why Are Geminis So Powerful?) – IQ, సూపర్ పవర్స్ & టాప్ 3 శక్తివంతమైన రాశులు',
+                  'Why Are Geminis So Powerful? – Gemini IQ, Superpowers, #1 Soulmate & Top 3 Most Powerful, Rarest, Richest Zodiac Signs'
+                )}
+              </h4>
+              <p className="text-xs sm:text-sm text-stone-800 leading-relaxed">
+                {t(
+                  'బుధ గ్రహ మేధాశక్తి, మిథున రాశి రహస్య ప్రతిభ (Hidden Talents), IQ స్థాయి (120–135+), ఆకర్షణ రహస్యం, #1 Soulmate (తుల/కుంభం), డ్రీమ్ జాబ్ మరియు ప్రపంచంలో అత్యంత శక్తివంతమైన 3 రాశులు (Scorpio, Leo, Aries/Capricorn), అత్యంత అరుదైన రాశి (Aquarius), అందమైన రాశులు (Libra, Taurus), అదృష్ట రాశులు (Sagittarius, Pisces) మరియు ధనిక రాశుల పూర్తి విశ్లేషణ.',
+                  'Complete Vedic and psychological answers to: Why are Geminis so powerful? Do Geminis have a high IQ? Is Gemini a devil or angel? Who is Gemini’s #1 soulmate? Plus definitive rankings for the top 3 most powerful (Scorpio, Leo, Aries/Capricorn), rarest (Aquarius), most beautiful (Libra, Taurus, Pisces), luckiest (Sagittarius, Pisces), richest, and Big 3 zodiac signs.'
+                )}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  'Why are Geminis so powerful?',
+                  'Do Geminis have a high IQ?',
+                  'Top 3 most powerful zodiac signs',
+                  'Top 3 rarest zodiac signs',
+                  'Richest & luckiest zodiac signs',
+                ].map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[10px] font-bold bg-white text-amber-900 px-2.5 py-1 rounded-lg border border-amber-300"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <a
+              href="/why-are-geminis-so-powerful"
+              className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-900 hover:from-amber-800 hover:to-amber-950 text-amber-50 font-bold text-xs sm:text-sm shadow-sm transition-all"
+            >
+              <span>
+                {t(
+                  'మిథున రాశి శక్తి & 12 రాశుల ర్యాంకింగ్స్ వ్యాసం చదవండి →',
+                  'Read Full Gemini Power & Zodiac Rankings Guide →'
+                )}
+              </span>
+            </a>
+          </div>
+
+          {/* Card 2: Who Is Libra's True Love & 4 Pillars of Astrology */}
+          <div className="bg-gradient-to-br from-[#fffdf7] to-[#fff5e0] border-2 border-amber-400 rounded-3xl p-5 sm:p-6 flex flex-col justify-between space-y-4 shadow-md">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-rose-900 text-rose-100 text-[10px] font-extrabold uppercase tracking-wider">
+                  {t('తుల రాశి ప్రేమ & వివాహం • Libra True Love', 'Libra Soulmate & 4 Pillars')}
+                </span>
+                <span className="text-xs font-bold text-amber-800">
+                  {t('19 నిమిషాల సమగ్ర వ్యాసం', '19 Min Pillar Treatise')}
+                </span>
+              </div>
+              <h4 className="text-lg sm:text-xl font-extrabold text-amber-950 leading-snug">
+                {t(
+                  'తుల రాశి వారి నిజమైన ప్రేమ ఎవరు? (Who Is Libra’s True Love?) – వివాహ పొంతన, కర్కాటక రాశి #1 ఆత్మబంధువు & జ్యోతిష 4 మూలస్తంభాలు',
+                  'Who Is Libra’s True Love? – Who Libras Usually Marry, Red Flags, Cancer’s #1 Soulmate & The 4 Pillars of Astrology'
+                )}
+              </h4>
+              <p className="text-xs sm:text-sm text-stone-800 leading-relaxed">
+                {t(
+                  'శుక్ర గ్రహ తుల రాశి వారికి వాయు తత్త్వ రాశులైన మిథునం (Gemini), కుంభం (Aquarius) మరియు అగ్ని రాశులైన సింహం (Leo), మేషం (Aries) ఎందుకు నిజమైన ప్రేమ భాగస్వాములు అవుతారు? తుల రాశి వివాహ నిబద్ధత, Red Flags, కర్కాటక రాశి #1 ఆత్మబంధువు (Scorpio/Pisces) మరియు జ్యోతిష శాస్త్ర 4 మూలస్తంభాల (Planets, 12 Signs, 12 Houses, Aspects/Dashas) సులభ వివరణ.',
+                  'Discover why fellow Air signs (Gemini, Aquarius) and Fire signs (Leo, Aries) are Libra’s true love and lifelong marriage partners, Libra red flags and loyalty, who Cancer’s #1 soulmate is (Scorpio/Pisces), how to explain astrology to a beginner, and the 4 Pillars of Astrology.'
+                )}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  "Who is Libra's true love?",
+                  'Who do Libras usually marry?',
+                  "Who is Cancer's #1 soulmate?",
+                  'What are the 4 pillars of astrology?',
+                  'How do you explain astrology?',
+                ].map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[10px] font-bold bg-white text-amber-900 px-2.5 py-1 rounded-lg border border-amber-300"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <a
+              href="/who-is-libras-true-love"
+              className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-900 hover:from-amber-800 hover:to-amber-950 text-amber-50 font-bold text-xs sm:text-sm shadow-sm transition-all"
+            >
+              <span>
+                {t(
+                  'తుల రాశి ప్రేమ & జ్యోతిష మూలస్తంభాల వ్యాసం చదవండి →',
+                  'Read Full Libra Soulmate & Astrology Pillars Guide →'
+                )}
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
     </article>
   );
 };
+

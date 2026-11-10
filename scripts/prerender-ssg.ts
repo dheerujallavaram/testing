@@ -166,13 +166,16 @@ export function runPrerenderSsg() {
     count++;
   }
 
-  // Generate sitemap.xml and robots.txt in both public/ and dist/
+  // Generate sitemap.xml, robots.txt, and copy ads.txt in both public/ and dist/
   const sitemapXml = generateSitemapXML();
   const robotsTxt = generateRobotsTxt();
   fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapXml, 'utf-8');
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapXml, 'utf-8');
   fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt, 'utf-8');
   fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt, 'utf-8');
+  if (fs.existsSync(path.join(publicDir, 'ads.txt'))) {
+    fs.copyFileSync(path.join(publicDir, 'ads.txt'), path.join(distDir, 'ads.txt'));
+  }
 
   console.log(`✅ [SSG Pre-Render] Pre-rendered ${count} static HTML pages (.html + /index.html) with raw Panchangam data in dist/`);
 }

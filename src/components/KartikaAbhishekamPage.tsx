@@ -41,6 +41,7 @@ import {
 } from '../data/kartikaAbhishekamData';
 import { auth, db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { DailyAbhishekamVideoLive } from './DailyAbhishekamVideoLive';
 
 interface FamilyMemberEntry {
   name: string;
@@ -350,6 +351,18 @@ export const KartikaAbhishekamPage: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* DAILY ABHISHEKAM LIVE DARSHAN & GOTRANAMALU SANKALPA TICKER */}
+      <div className="max-w-6xl mx-auto mb-10">
+        <DailyAbhishekamVideoLive
+          onScrollToRegister={() => {
+            const el = document.getElementById('sankalpa-form');
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }}
+        />
       </div>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

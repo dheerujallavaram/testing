@@ -17,6 +17,7 @@ import {
   DWADASA_RASHI_VEDIC_ENCYCLOPEDIA,
   LUNAR_AND_SHANI_MENTAL_GUIDES,
 } from '../data/dwadasaRashiVedicEncyclopedia';
+import { VEDIC_CLASSICAL_ARTICLES } from '../data/vedicArticlesData';
 
 export const SITE_URL = 'https://www.telugujyothisham.com';
 export const ISR_REVALIDATE_SECONDS = 86400;
@@ -1866,7 +1867,48 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       h1: 'నిబంధనలు మరియు షరతులు (Terms & Conditions)',
       breadcrumbName: 'నిబంధనలు మరియు షరతులు',
     },
+    '/vedic-articles': {
+      primaryKeyword: 'వేద జ్యోతిష శాస్త్రాలు',
+      secondaryKeywords: ['vedic astrology articles', 'శాస్త్ర వ్యాసాలు', 'ప్రాచీన జ్యోతిష రహస్యాలు'],
+      title: 'వేద జ్యోతిష శాస్త్ర రహస్యాలు & ప్రాచీన పరిశోధనా వ్యాసాలు | Shastras',
+      description:
+        'ప్రాచీన వేద జ్యోతిష శాస్త్ర రహస్యాలు: స్వరోదయ శాస్త్రం, బాలారిష్ట దోష శాంతి, ప్రశ్న-నిమిత్త శాస్త్రం, గ్రహాల వక్రగతి మరియు సూర్య సిద్ధాంత కాలచక్రం.',
+      h1: 'వేద జ్యోతిష శాస్త్ర రహస్యాలు & ప్రాచీన పరిశోధనా వ్యాసాల భాండాగారం',
+      breadcrumbName: 'వేద శాస్త్రాలు',
+    },
   };
+
+  const articleMatch = VEDIC_CLASSICAL_ARTICLES.find(
+    (a) => pathname === `/${a.slug}`
+  );
+  if (articleMatch) {
+    const canonical = `${SITE_URL}/${articleMatch.slug}`;
+    const rawSeoTitle = articleMatch.telugu.seoTitle || `${articleMatch.telugu.title} | వేద జ్యోతిషం`;
+    const title = clampTitle(rawSeoTitle, 65);
+    const desc = clampMetaDescription(articleMatch.telugu.metaDescription, 160);
+    return {
+      title,
+      description: desc,
+      canonical,
+      robots: defaultRobots,
+      h1: articleMatch.telugu.title,
+      primaryKeyword: articleMatch.telugu.primaryKeyword,
+      secondaryKeywords: articleMatch.telugu.secondaryKeywords,
+      ogTitle: title,
+      ogDescription: desc,
+      ogUrl: canonical,
+      ogImage: defaultOgImage,
+      breadcrumbs: [
+        { name: 'తెలుగు జ్యోతిషం (Home)', item: `${SITE_URL}/` },
+        { name: 'వేద శాస్త్రాలు', item: `${SITE_URL}/vedic-articles` },
+        { name: articleMatch.telugu.primaryKeyword, item: canonical },
+      ],
+      faqItems: [
+        ...articleMatch.telugu.faqs.map((f) => ({ q: f.question, a: f.answer })),
+        ...articleMatch.english.faqs.map((f) => ({ q: f.question, a: f.answer })),
+      ],
+    };
+  }
 
   const matched = routeTable[pathname];
   if (matched) {
@@ -2011,6 +2053,58 @@ export function buildCleanJsonLdSchema(meta: PageSeoMetadata): Record<string, un
     });
   }
 
+  const articleMatch = VEDIC_CLASSICAL_ARTICLES.find(
+    (a) => meta.canonical === `${SITE_URL}/${a.slug}`
+  );
+  if (articleMatch) {
+    graph.push({
+      '@type': 'Article',
+      '@id': `${meta.canonical}#article`,
+      headline: articleMatch.telugu.title,
+      alternativeHeadline: articleMatch.english.title,
+      description: articleMatch.telugu.metaDescription,
+      inLanguage: ['te', 'en'],
+      mainEntityOfPage: meta.canonical,
+      datePublished: articleMatch.datePublished,
+      dateModified: articleMatch.dateModified,
+      author: {
+        '@type': 'Person',
+        name: 'Jallavaram Sai Dheeraj Sharma',
+        alternateName: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ',
+        url: `${SITE_URL}/about`,
+      },
+      publisher: {
+        '@id': `${SITE_URL}/#organization`,
+      },
+      keywords: [
+        articleMatch.telugu.primaryKeyword,
+        ...articleMatch.telugu.secondaryKeywords,
+        articleMatch.english.primaryKeyword,
+      ].join(', '),
+      ...(articleMatch.archivalSource
+        ? {
+            citation: {
+              '@type': 'PublicationIssue',
+              issueNumber: articleMatch.archivalSource.issue,
+              datePublished: String(articleMatch.archivalSource.year),
+              isPartOf: {
+                '@type': 'Periodical',
+                name: articleMatch.archivalSource.publication,
+                editor: {
+                  '@type': 'Person',
+                  name: articleMatch.archivalSource.editor,
+                },
+                publisher: {
+                  '@type': 'Organization',
+                  name: articleMatch.archivalSource.publisher,
+                },
+              },
+            },
+          }
+        : {}),
+    });
+  }
+
   return {
     '@context': 'https://schema.org',
     '@graph': graph,
@@ -2026,6 +2120,243 @@ function escapeHtml(str: string): string {
 }
 
 function renderRichToolGuideHtml(pathname: string): string {
+  const article = VEDIC_CLASSICAL_ARTICLES.find((a) => pathname === `/${a.slug}`);
+  if (article) {
+    const te = article.telugu;
+    const en = article.english;
+    const archivalHtml = article.archivalSource
+      ? `
+        <div style="padding:18px;background:#fefce8;border:2px solid #f59e0b;border-radius:14px;margin-bottom:22px;color:#451a03;">
+          <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#92400e;margin-bottom:6px;">
+            📜 చారిత్రక గ్రంథ నివాళి &amp; సౌజన్య ప్రకటన (Archival Citation &amp; Book Tribute – ${article.archivalSource.year})
+          </div>
+          <p style="margin:0 0 8px;font-size:15px;font-weight:700;">
+            మూల పత్రిక: ${escapeHtml(article.archivalSource.publicationTe)} (${escapeHtml(article.archivalSource.issueTe)})
+          </p>
+          <p style="margin:0 0 8px;font-size:13.5px;">
+            <strong>సంపాదకులు (Editor):</strong> ${escapeHtml(article.archivalSource.editorTe)} | 
+            <strong>ప్రచురణాలయం (Publisher):</strong> ${escapeHtml(article.archivalSource.publisherTe)}
+          </p>
+          <ul style="margin:6px 0 10px 18px;font-size:13.5px;">
+            ${article.archivalSource.originalArticles
+              .map(
+                (orig) =>
+                  `<li><strong>${escapeHtml(orig.titleTe)}</strong> — రచన: ${escapeHtml(orig.authorTe)} (${escapeHtml(orig.pages)})</li>`
+              )
+              .join('')}
+          </ul>
+          <p style="margin:0;font-size:13px;background:#78350f;color:#fef3c7;padding:10px 14px;border-radius:8px;">
+            ${escapeHtml(article.archivalSource.tributeNoteTe)}
+          </p>
+        </div>`
+      : '';
+
+    return `
+      <article aria-label="${escapeHtml(te.title)}" style="background:#ffffff;border:2px solid #b45309;border-radius:18px;padding:24px;margin-bottom:24px;color:#1e293b;line-height:1.7;">
+        <div style="border-bottom:2px solid #fef3c7;padding-bottom:16px;margin-bottom:20px;">
+          <span style="display:inline-block;padding:4px 12px;background:#fef3c7;color:#92400e;border-radius:9999px;font-size:12px;font-weight:700;text-transform:uppercase;border:1px solid #fde68a;">
+            ${escapeHtml(article.categoryTe)} • ${escapeHtml(article.categoryEn)}
+          </span>
+          <h1 style="margin:12px 0 8px;font-size:26px;color:#451a03;line-height:1.3;">${escapeHtml(te.title)}</h1>
+          <h2 style="margin:0 0 10px;font-size:18px;color:#78350f;font-weight:600;">${escapeHtml(en.title)}</h2>
+          <div style="font-size:13px;color:#64748b;">
+            <span>రచన / విశ్లేషణ: <strong>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ</strong></span> • 
+            <span>పఠన సమయం: <strong>${article.readTimeMinutes} నిమిషాలు</strong></span> • 
+            <span>సంప్రదాయం: <strong>పరాశర &amp; సూర్య సిద్ధాంత వైదిక క్రమం</strong></span>
+          </div>
+        </div>
+
+        ${archivalHtml}
+
+        <div style="padding:14px 18px;background:#fffbeb;border-left:4px solid #d97706;border-radius:8px;margin-bottom:22px;font-size:15px;color:#78350f;">
+          <strong>సారాంశం (Executive Summary):</strong> ${escapeHtml(te.summary)}
+        </div>
+
+        ${te.sections
+          .map(
+            (sec) => `
+          <section style="margin-bottom:26px;">
+            <h3 style="margin:0 0 8px;font-size:20px;color:#9a3412;">${escapeHtml(sec.heading)}</h3>
+            ${sec.subheading ? `<h4 style="margin:0 0 10px;font-size:16px;color:#b45309;">${escapeHtml(sec.subheading)}</h4>` : ''}
+            ${
+              sec.shloka
+                ? `
+              <div style="margin:12px 0;padding:14px 18px;background:#fefce8;border:1px dashed #ca8a04;border-radius:10px;text-align:center;">
+                <p style="margin:0 0 6px;font-size:16px;font-weight:bold;color:#713f12;letter-spacing:0.5px;">${escapeHtml(sec.shloka.sanskrit)}</p>
+                <p style="margin:0;font-size:13.5px;color:#854d0e;font-style:italic;">తాత్పర్యం: ${escapeHtml(sec.shloka.meaning)}</p>
+              </div>`
+                : ''
+            }
+            <p style="font-size:15px;color:#334155;margin:8px 0 12px;white-space:pre-line;">${escapeHtml(sec.content)}</p>
+            ${
+              sec.keyPoints && sec.keyPoints.length > 0
+                ? `
+              <ul style="margin:8px 0 14px 20px;color:#334155;font-size:14.5px;">
+                ${sec.keyPoints.map((pt) => `<li style="margin-bottom:6px;">✦ ${escapeHtml(pt)}</li>`).join('')}
+              </ul>`
+                : ''
+            }
+            ${
+              sec.table
+                ? `
+              <div style="overflow-x:auto;margin:14px 0;">
+                <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:left;">
+                  <thead>
+                    <tr style="background:#fef3c7;color:#78350f;">
+                      ${sec.table.headers.map((h) => `<th style="padding:10px;border:1px solid #fde68a;">${escapeHtml(h)}</th>`).join('')}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${sec.table.rows
+                      .map(
+                        (row) => `
+                      <tr style="border-bottom:1px solid #fef3c7;">
+                        ${row.map((cell) => `<td style="padding:10px;border:1px solid #fde68a;">${escapeHtml(cell)}</td>`).join('')}
+                      </tr>`
+                      )
+                      .join('')}
+                  </tbody>
+                </table>
+              </div>`
+                : ''
+            }
+          </section>`
+          )
+          .join('')}
+
+        ${
+          te.remedies && te.remedies.length > 0
+            ? `
+          <section style="margin-bottom:26px;padding:18px;background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;">
+            <h3 style="margin:0 0 12px;font-size:19px;color:#9a3412;">శాస్త్రీయ పరిహారాలు &amp; సాధనా మార్గాలు (Vedic Remedies)</h3>
+            ${te.remedies
+              .map(
+                (rem) => `
+              <div style="margin-bottom:14px;">
+                <h4 style="margin:0 0 4px;font-size:16px;color:#7c2d12;">✦ ${escapeHtml(rem.title)}</h4>
+                <p style="margin:0 0 6px;font-size:14.5px;color:#334155;">${escapeHtml(rem.description)}</p>
+                ${rem.mantra ? `<div style="padding:8px 12px;background:#ffffff;border:1px dashed #f97316;border-radius:8px;font-weight:600;color:#9a3412;margin:6px 0;">మంత్రం: ${escapeHtml(rem.mantra)}</div>` : ''}
+              </div>`
+              )
+              .join('')}
+          </section>`
+            : ''
+        }
+
+        <section style="margin-bottom:24px;">
+          <h3 style="margin:0 0 12px;font-size:19px;color:#78350f;">తరచుగా అడిగే ప్రశ్నలు (Telugu FAQ)</h3>
+          <div>
+            ${te.faqs
+              .map(
+                (f) => `
+              <div style="margin-bottom:12px;padding:14px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;">
+                <strong style="display:block;color:#451a03;font-size:15px;margin-bottom:4px;">ప్రశ్న: ${escapeHtml(f.question)}</strong>
+                <p style="margin:0;color:#334155;font-size:14.5px;">సమాధానం: ${escapeHtml(f.answer)}</p>
+              </div>`
+              )
+              .join('')}
+          </div>
+        </section>
+
+        <hr style="border:none;border-top:2px dashed #f59e0b;margin:28px 0;" />
+
+        <section aria-label="${escapeHtml(en.title)}" style="margin-bottom:24px;">
+          <h2 style="margin:0 0 10px;font-size:22px;color:#451a03;">${escapeHtml(en.title)}</h2>
+          <p style="padding:12px 16px;background:#fffbeb;border-left:4px solid #d97706;border-radius:8px;margin-bottom:18px;font-size:14.5px;color:#78350f;">
+            <strong>Executive Summary:</strong> ${escapeHtml(en.summary)}
+          </p>
+          ${en.sections
+            .map(
+              (sec) => `
+            <div style="margin-bottom:20px;">
+              <h3 style="margin:0 0 6px;font-size:18px;color:#9a3412;">${escapeHtml(sec.heading)}</h3>
+              ${sec.subheading ? `<h4 style="margin:0 0 8px;font-size:15px;color:#b45309;">${escapeHtml(sec.subheading)}</h4>` : ''}
+              <p style="font-size:14.5px;color:#334155;margin:6px 0 10px;white-space:pre-line;">${escapeHtml(sec.content)}</p>
+              ${
+                sec.table
+                  ? `
+                <div style="overflow-x:auto;margin:12px 0;">
+                  <table style="width:100%;border-collapse:collapse;font-size:13.5px;text-align:left;">
+                    <thead>
+                      <tr style="background:#fef3c7;color:#78350f;">
+                        ${sec.table.headers.map((h) => `<th style="padding:8px;border:1px solid #fde68a;">${escapeHtml(h)}</th>`).join('')}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${sec.table.rows
+                        .map(
+                          (row) => `
+                        <tr style="border-bottom:1px solid #fef3c7;">
+                          ${row.map((cell) => `<td style="padding:8px;border:1px solid #fde68a;">${escapeHtml(cell)}</td>`).join('')}
+                        </tr>`
+                        )
+                        .join('')}
+                    </tbody>
+                  </table>
+                </div>`
+                  : ''
+              }
+            </div>`
+            )
+            .join('')}
+
+          <h3 style="margin:18px 0 12px;font-size:18px;color:#78350f;">Frequently Asked Questions (English FAQ)</h3>
+          <div>
+            ${en.faqs
+              .map(
+                (f) => `
+              <div style="margin-bottom:10px;padding:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;">
+                <strong style="display:block;color:#451a03;font-size:14.5px;margin-bottom:4px;">Q: ${escapeHtml(f.question)}</strong>
+                <p style="margin:0;color:#334155;font-size:14px;">A: ${escapeHtml(f.answer)}</p>
+              </div>`
+              )
+              .join('')}
+          </div>
+        </section>
+
+        <div style="padding-top:16px;border-top:1px solid #fef3c7;display:flex;flex-wrap:wrap;gap:12px;font-size:13px;">
+          <a href="/vedic-articles" style="color:#b45309;text-decoration:none;font-weight:bold;">← అన్ని వేద శాస్త్రాల భాండాగారం</a> • 
+          <a href="/why-are-geminis-so-powerful" style="color:#b45309;text-decoration:none;font-weight:bold;">Why Are Geminis So Powerful?</a> • 
+          <a href="/who-is-libras-true-love" style="color:#b45309;text-decoration:none;font-weight:bold;">Who Is Libra’s True Love?</a> • 
+          <a href="/panchangam" style="color:#b45309;text-decoration:none;font-weight:bold;">నేటి పంచాంగం</a> • 
+          <a href="/janma-kundali" style="color:#b45309;text-decoration:none;font-weight:bold;">ఉచిత జన్మ కుండలి</a>
+        </div>
+      </article>`;
+  }
+
+  if (pathname === '/vedic-articles') {
+    return `
+      <article aria-label="వేద జ్యోతిష శాస్త్ర రహస్యాలు" style="background:#ffffff;border:2px solid #b45309;border-radius:18px;padding:24px;margin-bottom:24px;color:#1e293b;line-height:1.7;">
+        <div style="border-bottom:2px solid #fef3c7;padding-bottom:16px;margin-bottom:20px;">
+          <span style="display:inline-block;padding:4px 12px;background:#fef3c7;color:#92400e;border-radius:9999px;font-size:12px;font-weight:700;text-transform:uppercase;border:1px solid #fde68a;">
+            ప్రాచీన వేద జ్యోతిష గ్రంథాలు • Authentic Classical Shastras
+          </span>
+          <h1 style="margin:12px 0 8px;font-size:26px;color:#451a03;line-height:1.3;">వేద జ్యోతిష శాస్త్ర రహస్యాలు &amp; ప్రాచీన పరిశోధనా వ్యాసాలు</h1>
+          <p style="font-size:15px;color:#78350f;margin:0;">
+            లగ్న కుండలి లేని వారికి స్వరోదయ శాస్త్రం, శిశు జనన సమయ గండ దోషాలకు బాలారిష్ట శాంతి, తక్షణ నిర్ణయాలకు ప్రశ్న-నిమిత్త శాస్త్రం, గ్రహాల వక్రగతి వేగ గణితం మరియు సూర్య సిద్ధాంత కాలచక్ర విజ్ఞానం — తెలుగు మరియు ఆంగ్లంలో ప్రాచీన మహర్షుల జ్ఞాన సంపద.
+          </p>
+        </div>
+
+        <div style="display:grid;gap:18px;margin-bottom:24px;">
+          ${VEDIC_CLASSICAL_ARTICLES.map(
+            (art) => `
+            <div style="padding:16px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;">
+              <span style="display:inline-block;padding:2px 8px;background:#fef3c7;color:#92400e;border-radius:4px;font-size:11px;font-weight:bold;margin-bottom:6px;">
+                ${escapeHtml(art.categoryTe)} • ${art.readTimeMinutes} నిమిషాల పఠనం
+              </span>
+              <h2 style="margin:0 0 6px;font-size:18px;color:#451a03;">
+                <a href="/${art.slug}" style="color:#451a03;text-decoration:none;">${escapeHtml(art.telugu.title)}</a>
+              </h2>
+              <p style="margin:0 0 10px;font-size:14px;color:#475569;">${escapeHtml(art.telugu.summary)}</p>
+              <a href="/${art.slug}" style="display:inline-block;padding:6px 14px;background:#d97706;color:#ffffff;border-radius:8px;font-size:13px;font-weight:bold;text-decoration:none;">
+                సంపూర్ణ వ్యాసం చదవండి →
+              </a>
+            </div>`
+          ).join('')}
+        </div>
+      </article>`;
+  }
+
   const guide = TOOL_PAGE_ORIGINAL_GUIDES[pathname];
 
   if (guide) {
@@ -2526,6 +2857,8 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
             <li><a href="/gochara-phalalu" style="color:#9a3412;font-weight:700;">గోచార ఫలాలు – శని, గురు, రాహు కేతు గోచారం</a></li>
             <li><a href="/dosha-pariharalu" style="color:#9a3412;font-weight:700;">ఏలినాటి శని, అష్టమ శని &amp; కుజ దోష పరిహారాలు</a></li>
             <li><a href="/dwadasa-rashi-rahasyalu" style="color:#9a3412;font-weight:700;">12 రాశుల దాంపత్యం (భార్య-భర్త), పిల్లల విద్యా స్వభావం, వృత్తి-భాగస్వామ్యం &amp; ఆరోగ్యం</a></li>
+            <li><a href="/why-are-geminis-so-powerful" style="color:#9a3412;font-weight:700;">మిథున రాశి వారు ఎందుకు అంత శక్తివంతులు? (Why Are Geminis So Powerful? – IQ, Superpowers &amp; Top 3 Zodiac Rankings)</a></li>
+            <li><a href="/who-is-libras-true-love" style="color:#9a3412;font-weight:700;">తుల రాశి వారి నిజమైన ప్రేమ ఎవరు? (Who Is Libra’s True Love? – Soulmate &amp; 4 Pillars of Astrology)</a></li>
             <li><a href="/panchangam/calendar" style="color:#9a3412;font-weight:700;">తెలుగు క్యాలెండర్ 2026 – నెలవారీ పంచాంగం</a></li>
           </ul>
         </section>

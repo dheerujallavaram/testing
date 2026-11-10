@@ -55,6 +55,17 @@ export function getCoreSitemapRoutes(): SitemapEntry[] {
     { path: '/privacy-policy', lastmod: '2026-10-10' },
     { path: '/terms-and-conditions', lastmod: '2026-10-10' },
     { path: '/disclaimer', lastmod: '2026-10-10' },
+    { path: '/vedic-articles', lastmod: todayIso },
+    { path: '/swarodaya-shastra', lastmod: todayIso },
+    { path: '/balarishta-dosha-shanti', lastmod: todayIso },
+    { path: '/prashna-nimitta-shastra', lastmod: todayIso },
+    { path: '/graha-vakra-gati', lastmod: todayIso },
+    { path: '/surya-siddhanta-kala-ganana', lastmod: todayIso },
+    { path: '/classical-astrology-faq', lastmod: todayIso },
+    { path: '/jyotisha-paribhasha-rahasyalu', lastmod: todayIso },
+    { path: '/hasta-samudrika-rekhala-vignanam', lastmod: todayIso },
+    { path: '/why-are-geminis-so-powerful', lastmod: todayIso },
+    { path: '/who-is-libras-true-love', lastmod: todayIso },
   ];
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React from 'react';
 import {
   Phone,
   MessageCircle,
@@ -15,7 +15,6 @@ import {
   Sun,
   Download,
   ShieldAlert,
-  Baby,
   Bell,
   Calendar,
   Clock,
@@ -38,16 +37,6 @@ import {
 import { DailySubhashithamCard } from './DailySubhashithamCard';
 import { DevoteeReviewsSection } from './DevoteeReviewsSection';
 
-const ShaniDoshaChecker = lazy(() =>
-  import('./ShaniDoshaChecker').then((m) => ({ default: m.ShaniDoshaChecker }))
-);
-const NakshatraBabyNames = lazy(() =>
-  import('./NakshatraBabyNames').then((m) => ({ default: m.NakshatraBabyNames }))
-);
-const VastuChakraGuide = lazy(() =>
-  import('./VastuChakraGuide').then((m) => ({ default: m.VastuChakraGuide }))
-);
-
 export interface GuruProfileHomeProps {
   currentDay: DayData;
   onNavigateToPanchangam: (isoDate?: string) => void;
@@ -68,7 +57,6 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
   onOpenBooking,
 }) => {
   const { t, tr } = useLanguage();
-  const [activeHomeTool, setActiveHomeTool] = useState<'shani' | 'babynames' | 'vastu'>('shani');
 
   const todayIso = currentDay.isoDate || getTodayIsoDateIST();
   const prevIso = addDaysIso(todayIso, -1);
@@ -491,135 +479,44 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
       </div>
 
       {/* ============================================================== */}
-      {/* 4B. 3 HIGH-DEMAND INTERACTIVE VEDIC TOOLS (SHANI, BABY, VASTU) */}
+      {/* 5. CLEAN CALLOUT TO THE DEDICATED VYASALU (ARTICLES) MENU      */}
       {/* ============================================================== */}
-      <section
-        id="home-interactive-tools"
-        aria-label="Interactive Shani Dosha, Baby Naming and Vastu Checkers"
-        className="bg-gradient-to-br from-[#fff9ed] via-white to-amber-50/80 rounded-3xl p-5 sm:p-8 border-2 border-amber-400/90 shadow-lg space-y-6 scroll-mt-24"
-      >
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b-2 border-amber-200/80 pb-5">
-          <GopuramSectionHeader
-            kicker={t('ఉచిత ఆన్‌లైన్ జ్యోతిష & వాస్తు గణనలు • Free Vedic Checkers', 'Free Interactive Vedic Checkers')}
-            title={t(
-              'ఏలినాటి శని చెకర్, 27 నక్షత్రాల పిల్లల పేర్లు & గృహ వాస్తు చక్రం',
-              'Elinati Shani Checker, 27 Nakshatra Baby Names & Gruha Vastu Guide'
+      <div className="bg-gradient-to-r from-[#fff8eb] via-white to-[#fff4db] rounded-3xl p-6 sm:p-8 border-2 border-amber-400/90 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+        <div className="space-y-1.5 max-w-2xl">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest text-amber-900 bg-amber-200/80 px-3 py-1 rounded-full border border-amber-400">
+            <BookOpen size={13} />
+            {t('వ్యాసాలు • వేద జ్యోతిష విజ్ఞాన సర్వస్వం', 'Vedic Articles & 1959 Archival Library')}
+          </span>
+          <h2 className="text-xl sm:text-2xl font-extrabold text-amber-950 font-telugu">
+            {t(
+              'ప్రాచీన వేద జ్యోతిష వ్యాసాలు, హస్త సాముద్రికం & 1959 డా. బి. వి. రామన్ ఆర్కైవ్',
+              'Explore Classical Vedic Shastra Treatises & 1959 Dr. B. V. Raman Archival Research'
             )}
-          />
-
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setActiveHomeTool('shani')}
-              className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border-2 transition-all cursor-pointer ${
-                activeHomeTool === 'shani'
-                  ? 'bg-gradient-to-r from-amber-900 to-amber-950 text-amber-100 border-amber-500 shadow-md'
-                  : 'bg-white text-amber-950 border-amber-300 hover:bg-amber-50'
-              }`}
-            >
-              <ShieldAlert size={16} className={activeHomeTool === 'shani' ? 'text-amber-300' : 'text-rose-600'} />
-              <span>{t('ఏలినాటి శని చెకర్', 'Shani Checker')}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveHomeTool('babynames')}
-              className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border-2 transition-all cursor-pointer ${
-                activeHomeTool === 'babynames'
-                  ? 'bg-gradient-to-r from-amber-900 to-amber-950 text-amber-100 border-amber-500 shadow-md'
-                  : 'bg-white text-amber-950 border-amber-300 hover:bg-amber-50'
-              }`}
-            >
-              <Baby size={16} className={activeHomeTool === 'babynames' ? 'text-amber-300' : 'text-amber-700'} />
-              <span>{t('27 నక్షత్రాల పిల్లల పేర్లు', '27 Star Baby Names')}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveHomeTool('vastu')}
-              className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border-2 transition-all cursor-pointer ${
-                activeHomeTool === 'vastu'
-                  ? 'bg-gradient-to-r from-amber-900 to-amber-950 text-amber-100 border-amber-500 shadow-md'
-                  : 'bg-white text-amber-950 border-amber-300 hover:bg-amber-50'
-              }`}
-            >
-              <Compass size={16} className={activeHomeTool === 'vastu' ? 'text-amber-300' : 'text-amber-700'} />
-              <span>{t('వాస్తు చక్రం', 'Vastu Guide')}</span>
-            </button>
-          </div>
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-700 font-telugu leading-relaxed">
+            {t(
+              'స్వరోదయ శాస్త్రం, బాలారిష్ట దోష శాంతి, ప్రశ్న శాస్త్రం, గ్రహ వక్రగతి, సూర్య సిద్ధాంతం, జ్యోతిష గూఢ పరిభాష మరియు హస్త సాముద్రిక వ్యాసాలన్నింటినీ "వ్యాసాలు" మెనూలో చదవండి.',
+              'Read all 8+ comprehensive bilingual treatises on Swarodaya, Balarishta, Horary Prashna, Palmistry, and 1959 Astrological Magazine research in our dedicated Articles section.'
+            )}
+          </p>
         </div>
 
-        <Suspense
-          fallback={
-            <div className="py-12 text-center text-sm font-bold text-amber-900 min-h-[320px] flex items-center justify-center">
-              జ్యోతిష సమాచారం లోడ్ అవుతోంది... • Loading Vedic Tool...
-            </div>
-          }
+        <a
+          href="/vedic-articles"
+          onClick={(e) => {
+            e.preventDefault();
+            try {
+              window.history.pushState({ tab: 'vyasalu', vedicArticles: true }, '', '/vedic-articles');
+              window.dispatchEvent(new PopStateEvent('popstate'));
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch {}
+          }}
+          className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-800 to-amber-950 hover:from-amber-900 hover:to-black text-amber-100 font-extrabold text-xs sm:text-sm shadow-lg transition-all cursor-pointer shrink-0 inline-flex items-center gap-2 border border-amber-500"
         >
-          {activeHomeTool === 'shani' && (
-            <ShaniDoshaChecker onOpenBooking={() => onOpenBooking()} />
-          )}
-          {activeHomeTool === 'babynames' && <NakshatraBabyNames />}
-          {activeHomeTool === 'vastu' && <VastuChakraGuide />}
-        </Suspense>
-      </section>
-
-      {/* ============================================================== */}
-      {/* 5. CITY LOCAL PANCHANGAM TIMINGS (HYDERABAD, VIJAYAWADA, VIZAG, USA) */}
-      {/* ============================================================== */}
-      <section
-        aria-label="City Local Telugu Panchangam Timings"
-        className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-amber-300 shadow-sm space-y-5"
-      >
-        <GopuramSectionHeader
-          kicker={t('నగరాల వారీగా ఖగోళ సూర్యోదయ గణనలు • Local City Panchangam', 'City Local Panchangam Timings')}
-          title={t(
-            'హైదరాబాద్, విజయవాడ, విశాఖపట్నం & అమెరికా (USA) నేటి పంచాంగ సమయాలు',
-            'Hyderabad, Vijayawada, Visakhapatnam & USA Local Panchangam Timings'
-          )}
-        />
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {cityCards.map((item) => (
-            <a
-              key={item.city.slug}
-              href={`/panchangam/${item.city.slug}`}
-              onClick={(e) => {
-                e.preventDefault();
-                if (onNavigateToCityPanchangam) onNavigateToCityPanchangam(item.city.slug);
-              }}
-              className="bg-amber-50/70 hover:bg-amber-100/80 rounded-2xl p-4 border-2 border-amber-200 hover:border-amber-400 transition-all flex flex-col justify-between space-y-3 group"
-            >
-              <div>
-                <div className="flex items-center justify-between text-xs font-bold text-amber-800">
-                  <span>{item.city.stateOrRegionTe}</span>
-                  <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-amber-900 text-amber-100">
-                    {item.city.tzLabel}
-                  </span>
-                </div>
-                <h3 className="text-lg font-extrabold text-amber-950 group-hover:text-orange-800 mt-1">
-                  {item.city.nameTe} పంచాంగం
-                </h3>
-                <div className="mt-2.5 space-y-1 text-xs text-slate-700">
-                  <p>
-                    <strong>సూర్యోదయం:</strong> {item.sunrise} • <strong>అస్తమయం:</strong> {item.sunset}
-                  </p>
-                  <p className="text-rose-900">
-                    <strong>రాహుకాలం:</strong> {item.rahukalam}
-                  </p>
-                  <p className="text-emerald-900">
-                    <strong>అభిజిత్:</strong> {item.abhijitMuhurtham}
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs font-extrabold text-amber-900 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                <span>స్థానిక సమయాలు చూడండి</span>
-                <ArrowRight size={13} />
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
+          <BookOpen size={16} className="text-amber-300" />
+          <span>{t('అన్ని వ్యాసాలు చదవండి (వ్యాసాలు మెనూ) →', 'Open All Articles (Vyasalu) →')}</span>
+        </a>
+      </div>
 
       {/* ============================================================== */}
       {/* 6. CORE SACRED SERVICES                                        */}

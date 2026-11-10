@@ -228,6 +228,86 @@ export const Footer: React.FC<FooterProps> = ({
               ))}
             </div>
           </div>
+
+          <div>
+            <h5 className="text-xs font-bold uppercase tracking-widest text-amber-300 mb-2.5 flex items-center gap-1.5">
+              <span className="text-amber-400">📜</span>
+              <span>
+                {t(
+                  'ప్రాచీన వేద శాస్త్ర రహస్యాలు & వ్యాసాలు • Classical Vedic Shastras & Research',
+                  'Authentic Classical Vedic Astrology Treatises'
+                )}
+              </span>
+            </h5>
+            <div className="flex flex-wrap gap-2 text-xs text-amber-100">
+              <a
+                href="/vedic-articles"
+                className="bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-700 hover:to-amber-600 px-3 py-1.5 rounded-full border border-amber-400/60 font-bold text-white transition-colors"
+              >
+                📚 {t('అన్ని వ్యాసాలు (వ్యాసాలు మెనూ)', 'All Vedic Articles Directory')}
+              </a>
+              <a
+                href="/swarodaya-shastra"
+                className="bg-amber-900/50 hover:bg-amber-800/80 px-3 py-1.5 rounded-full border border-amber-700/60 hover:text-amber-200 transition-colors"
+              >
+                ✦ {t('స్వరోదయ శాస్త్రం (శ్వాస నాడీ విజ్ఞానం)', 'Swarodaya Shastra')}
+              </a>
+              <a
+                href="/balarishta-dosha-shanti"
+                className="bg-amber-900/50 hover:bg-amber-800/80 px-3 py-1.5 rounded-full border border-amber-700/60 hover:text-amber-200 transition-colors"
+              >
+                ✦ {t('బాలారిష్ట దోషం & శిశు గండ శాంతి (1959 ఆర్కైవ్)', 'Balarishta Dosha Shanti')}
+              </a>
+              <a
+                href="/prashna-nimitta-shastra"
+                className="bg-amber-900/50 hover:bg-amber-800/80 px-3 py-1.5 rounded-full border border-amber-700/60 hover:text-amber-200 transition-colors"
+              >
+                ✦ {t('ప్రశ్న శాస్త్రం & శకున నిమిత్త విజ్ఞానం', 'Prashna & Nimitta Shastra')}
+              </a>
+              <a
+                href="/graha-vakra-gati"
+                className="bg-amber-900/50 hover:bg-amber-800/80 px-3 py-1.5 rounded-full border border-amber-700/60 hover:text-amber-200 transition-colors"
+              >
+                ✦ {t('గ్రహాల వక్రగతి రహస్యాలు & చేష్టా బలం', 'Graha Vakra Gati & Retrogression')}
+              </a>
+              <a
+                href="/surya-siddhanta-kala-ganana"
+                className="bg-amber-900/50 hover:bg-amber-800/80 px-3 py-1.5 rounded-full border border-amber-700/60 hover:text-amber-200 transition-colors"
+              >
+                ✦ {t('సూర్య సిద్ధాంత కాలచక్రం & ప్రాచీన భూత సంఖ్య', 'Surya Siddhanta Cosmic Time Cycles')}
+              </a>
+              <a
+                href="/classical-astrology-faq"
+                className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
+              >
+                📜 {t('క్లాసికల్ సందేహాలు & సమాధానాలు (1959 రామన్ ఆర్కైవ్)', 'Classical Astrology Difficulties Solved (1959 Archive)')}
+              </a>
+              <a
+                href="/jyotisha-paribhasha-rahasyalu"
+                className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
+              >
+                📜 {t('జ్యోతిష గూఢ పరిభాష – మాంది vs గుళిక (1959 ఓఝా ఆర్కైవ్)', 'Ambiguous Terms in Hindu Astrology (1959 Archive)')}
+              </a>
+              <a
+                href="/hasta-samudrika-rekhala-vignanam"
+                className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
+              >
+                🖐️ {t('హస్త సాముద్రిక శాస్త్రం – చేతి వేళ్ల రహస్యాలు (1959 దేశాయ్ ఆర్కైవ్)', 'Significance of Fingers in Palmistry (1959 Archive)')}
+              </a>
+              <a
+                href="/why-are-geminis-so-powerful"
+                className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
+              >
+                ✨ {t('మిథున రాశి వారు ఎందుకు అంత శక్తివంతులు? (Why Are Geminis So Powerful?)', 'Why Are Geminis So Powerful? (IQ, Soulmate & Zodiac Rankings)')}
+              </a>
+              <a
+                href="/who-is-libras-true-love"
+                className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
+              >
+                💖 {t('తుల రాశి వారి నిజమైన ప్రేమ ఎవరు? (Who Is Libra’s True Love?)', 'Who Is Libra’s True Love? (Soulmate & 4 Pillars of Astrology)')}
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* E-E-A-T Author Bio Verification */}

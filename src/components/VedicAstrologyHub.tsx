@@ -40,11 +40,16 @@ const DwadasaRashiVedicGuide = lazy(() =>
   import('./DwadasaRashiVedicGuide').then((m) => ({ default: m.DwadasaRashiVedicGuide }))
 );
 
+const VedicArticlesDirectory = lazy(() =>
+  import('./VedicArticlesDirectory').then((m) => ({ default: m.VedicArticlesDirectory }))
+);
+
 export type HubSectionId =
   | 'pontana'
   | 'rashiguide'
   | 'kundali'
   | 'research'
+  | 'shastras'
   | 'akshara'
   | 'babynames'
   | 'vastu'
@@ -202,6 +207,7 @@ export const HUB_SECTION_PATHS: Record<HubSectionId, string> = {
   pontana: '/vivaha-pontana',
   rashiguide: '/dwadasa-rashi-rahasyalu',
   kundali: '/janma-kundali',
+  shastras: '/vedic-articles',
   akshara: '/naama-nakshatra',
   babynames: '/telugu-baby-names',
   vastu: '/vastu-shastra-telugu',
@@ -266,8 +272,6 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
   const navButtons: { id: HubSectionId; labelTe: string; labelEn: string; icon: React.ComponentType<{ size?: number; className?: string }> }[] = [
     { id: 'kundali', labelTe: 'ఉచిత జన్మ కుండలి & మహాదశ', labelEn: 'Free Janma Kundali & Dasha', icon: ScrollText },
     { id: 'pontana', labelTe: 'వివాహ రాశి పొంతన (36 గుణాలు)', labelEn: 'Marriage Guna Milan (36 Pts)', icon: Heart },
-    { id: 'rashiguide', labelTe: '12 రాశుల దాంపత్యం • పిల్లలు • వృత్తి • ఆరోగ్యం', labelEn: '12 Rashi Spouse • Child • Career • Health', icon: BookOpen },
-    { id: 'research', labelTe: 'ఆస్ట్రోఇన్ఫర్మేటిక్స్ & రీసెర్చ్', labelEn: 'Astroinformatics & Research', icon: Cpu },
     { id: 'akshara', labelTe: 'పేరు మొదటి అక్షరంతో రాశి-నక్షత్రం', labelEn: 'Name First Letter Rashi Finder', icon: Search },
     { id: 'babynames', labelTe: '27 నక్షత్రాల పిల్లల పేర్లు', labelEn: '27 Nakshatra Baby Names', icon: Baby },
     { id: 'vastu', labelTe: 'గృహ వాస్తు చక్రం', labelEn: 'Gruha Vastu Compass', icon: Compass },
@@ -674,6 +678,15 @@ export const VedicAstrologyHub: React.FC<VedicAstrologyHubProps> = ({
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* SECTION: CLASSICAL VEDIC SHASTRA ARTICLES */}
+      {activeSection === 'shastras' && (
+        <div className="animate-fadeIn">
+          <Suspense fallback={<div className="py-12 text-center text-sm text-amber-900">వేద శాస్త్ర వ్యాసాలు లోడ్ అవుతోంది...</div>}>
+            <VedicArticlesDirectory onOpenBooking={onOpenBooking} />
+          </Suspense>
         </div>
       )}
 
