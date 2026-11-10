@@ -1868,13 +1868,22 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       breadcrumbName: 'నిబంధనలు మరియు షరతులు',
     },
     '/vedic-articles': {
-      primaryKeyword: 'వేద జ్యోతిష శాస్త్రాలు',
-      secondaryKeywords: ['vedic astrology articles', 'శాస్త్ర వ్యాసాలు', 'ప్రాచీన జ్యోతిష రహస్యాలు'],
-      title: 'వేద జ్యోతిష శాస్త్ర రహస్యాలు & ప్రాచీన పరిశోధనా వ్యాసాలు | Shastras',
+      primaryKeyword: 'వేద జ్యోతిష శాస్త్రాలు & వ్యాసాలు',
+      secondaryKeywords: [
+        'vedic astrology articles',
+        'శాస్త్ర వ్యాసాలు',
+        '1944 1959 BV Raman astrology archive',
+        'Pawan Kalyan raja yoga horoscope',
+        'FMGE medical astrology doctor yoga',
+        'Swapna shastra dream meaning in Telugu',
+        'Why are Geminis so powerful',
+        'Who is Libras true love',
+      ],
+      title: 'వేద జ్యోతిష వ్యాసాలు (14+ Articles) – 1944 & 1959 రామన్ ఆర్కైవ్, స్వప్న, ప్రశ్న & వైద్య జ్యోతిషం',
       description:
-        'ప్రాచీన వేద జ్యోతిష శాస్త్ర రహస్యాలు: స్వరోదయ శాస్త్రం, బాలారిష్ట దోష శాంతి, ప్రశ్న-నిమిత్త శాస్త్రం, గ్రహాల వక్రగతి మరియు సూర్య సిద్ధాంత కాలచక్రం.',
-      h1: 'వేద జ్యోతిష శాస్త్ర రహస్యాలు & ప్రాచీన పరిశోధనా వ్యాసాల భాండాగారం',
-      breadcrumbName: 'వేద శాస్త్రాలు',
+        '14+ ప్రాచీన & ట్రెండింగ్ వేద జ్యోతిష వ్యాసాలు: 1944 & 1959 డా. బి. వి. రామన్ ఆర్కైవ్, స్వరోదయ, బాలారిష్ట, ప్రశ్న, హస్తసాముద్రికం, స్వప్న శాస్త్రం, పవన్ కళ్యాణ్ రాజయోగం & FMGE వైద్య జ్యోతిషం.',
+      h1: 'వేద జ్యోతిష శాస్త్ర రహస్యాలు & ప్రాచీన పరిశోధనా వ్యాసాల భాండాగారం (14 Standalone Articles)',
+      breadcrumbName: 'వేద శాస్త్రాలు & వ్యాసాలు',
     },
   };
 
@@ -2053,6 +2062,22 @@ export function buildCleanJsonLdSchema(meta: PageSeoMetadata): Record<string, un
     });
   }
 
+  if (meta.canonical === `${SITE_URL}/vedic-articles`) {
+    graph.push({
+      '@type': 'ItemList',
+      '@id': `${SITE_URL}/vedic-articles#article-list`,
+      name: 'వేద జ్యోతిష శాస్త్ర రహస్యాలు & పరిశోధనా వ్యాసాలు (14 Standalone Vedic Astrology Treatises)',
+      numberOfItems: VEDIC_CLASSICAL_ARTICLES.length,
+      itemListElement: VEDIC_CLASSICAL_ARTICLES.map((art, idx) => ({
+        '@type': 'ListItem',
+        position: idx + 1,
+        url: `${SITE_URL}/${art.slug}`,
+        name: `${art.telugu.title} | ${art.english.title}`,
+        image: `${SITE_URL}${art.heroImage}`,
+      })),
+    });
+  }
+
   const articleMatch = VEDIC_CLASSICAL_ARTICLES.find(
     (a) => meta.canonical === `${SITE_URL}/${a.slug}`
   );
@@ -2063,11 +2088,23 @@ export function buildCleanJsonLdSchema(meta: PageSeoMetadata): Record<string, un
       headline: articleMatch.telugu.title,
       alternativeHeadline: articleMatch.english.title,
       description: articleMatch.telugu.metaDescription,
-      image: `${SITE_URL}${articleMatch.heroImage}`,
+      image: [
+        {
+          '@type': 'ImageObject',
+          url: `${SITE_URL}${articleMatch.heroImage}`,
+          width: 1280,
+          height: 720,
+          caption: articleMatch.imageAltTe,
+        },
+      ],
       inLanguage: ['te', 'en'],
       mainEntityOfPage: meta.canonical,
       datePublished: articleMatch.datePublished,
       dateModified: articleMatch.dateModified,
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['h1', 'h2', 'h3'],
+      },
       author: {
         '@type': 'Person',
         name: 'Jallavaram Sai Dheeraj Sharma',
@@ -2081,6 +2118,7 @@ export function buildCleanJsonLdSchema(meta: PageSeoMetadata): Record<string, un
         articleMatch.telugu.primaryKeyword,
         ...articleMatch.telugu.secondaryKeywords,
         articleMatch.english.primaryKeyword,
+        ...articleMatch.english.secondaryKeywords,
       ].join(', '),
       ...(articleMatch.archivalSource
         ? {
@@ -2318,12 +2356,19 @@ function renderRichToolGuideHtml(pathname: string): string {
           </div>
         </section>
 
-        <div style="padding-top:16px;border-top:1px solid #fef3c7;display:flex;flex-wrap:wrap;gap:12px;font-size:13px;">
-          <a href="/vedic-articles" style="color:#b45309;text-decoration:none;font-weight:bold;">← అన్ని వేద శాస్త్రాల భాండాగారం</a> • 
-          <a href="/why-are-geminis-so-powerful" style="color:#b45309;text-decoration:none;font-weight:bold;">Why Are Geminis So Powerful?</a> • 
-          <a href="/who-is-libras-true-love" style="color:#b45309;text-decoration:none;font-weight:bold;">Who Is Libra’s True Love?</a> • 
-          <a href="/panchangam" style="color:#b45309;text-decoration:none;font-weight:bold;">నేటి పంచాంగం</a> • 
-          <a href="/janma-kundali" style="color:#b45309;text-decoration:none;font-weight:bold;">ఉచిత జన్మ కుండలి</a>
+        <div style="padding-top:16px;border-top:1px solid #fef3c7;margin-top:20px;">
+          <h4 style="margin:0 0 10px;font-size:15px;color:#78350f;">ఇతర ప్రత్యేక వేద జ్యోతిష వ్యాసాలు (All Standalone Articles):</h4>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;font-size:13px;">
+            <a href="/vedic-articles" style="color:#b45309;text-decoration:none;font-weight:bold;">📚 అన్ని వ్యాసాలు (Directory)</a>
+            ${VEDIC_CLASSICAL_ARTICLES.filter((other) => other.slug !== article.slug)
+              .map(
+                (other) =>
+                  `• <a href="/${other.slug}" style="color:#b45309;text-decoration:none;font-weight:bold;">${escapeHtml(other.telugu.primaryKeyword)} (${escapeHtml(other.english.primaryKeyword)})</a>`
+              )
+              .join(' ')}
+            • <a href="/panchangam" style="color:#b45309;text-decoration:none;font-weight:bold;">నేటి పంచాంగం</a>
+            • <a href="/janma-kundali" style="color:#b45309;text-decoration:none;font-weight:bold;">ఉచిత జన్మ కుండలి PDF</a>
+          </div>
         </div>
       </article>`;
   }
@@ -2333,11 +2378,11 @@ function renderRichToolGuideHtml(pathname: string): string {
       <article aria-label="వేద జ్యోతిష శాస్త్ర రహస్యాలు" style="background:#ffffff;border:2px solid #b45309;border-radius:18px;padding:24px;margin-bottom:24px;color:#1e293b;line-height:1.7;">
         <div style="border-bottom:2px solid #fef3c7;padding-bottom:16px;margin-bottom:20px;">
           <span style="display:inline-block;padding:4px 12px;background:#fef3c7;color:#92400e;border-radius:9999px;font-size:12px;font-weight:700;text-transform:uppercase;border:1px solid #fde68a;">
-            ప్రాచీన వేద జ్యోతిష గ్రంథాలు • Authentic Classical Shastras
+            ప్రాచీన వేద జ్యోతిష గ్రంథాలు &amp; 1944–1959 ఆర్కైవ్ • 14 Standalone Treatises
           </span>
-          <h1 style="margin:12px 0 8px;font-size:26px;color:#451a03;line-height:1.3;">వేద జ్యోతిష శాస్త్ర రహస్యాలు &amp; ప్రాచీన పరిశోధనా వ్యాసాలు</h1>
+          <h1 style="margin:12px 0 8px;font-size:26px;color:#451a03;line-height:1.3;">వేద జ్యోతిష శాస్త్ర రహస్యాలు &amp; ప్రాచీన పరిశోధనా వ్యాసాలు (14 ప్రత్యేక వ్యాసాలు)</h1>
           <p style="font-size:15px;color:#78350f;margin:0;">
-            లగ్న కుండలి లేని వారికి స్వరోదయ శాస్త్రం, శిశు జనన సమయ గండ దోషాలకు బాలారిష్ట శాంతి, తక్షణ నిర్ణయాలకు ప్రశ్న-నిమిత్త శాస్త్రం, గ్రహాల వక్రగతి వేగ గణితం మరియు సూర్య సిద్ధాంత కాలచక్ర విజ్ఞానం — తెలుగు మరియు ఆంగ్లంలో ప్రాచీన మహర్షుల జ్ఞాన సంపద.
+            1944 &amp; 1959 డాక్టర్ బి. వి. రామన్ గారి "ది ఆస్ట్రాలాజికల్ మ్యాగజైన్" మరియు "జ్యోతిష విజ్ఞాన పత్రిక" ఆర్కైవ్ పరిశోధనలతో పాటు స్వరోదయ శాస్త్రం, బాలారిష్ట శాంతి, ప్రశ్న-నిమిత్త శాస్త్రం, హస్త సాముద్రికం, పవన్ కళ్యాణ్ రాజయోగ విశ్లేషణ, క్రికెట్/క్రీడా ప్రశ్న శాస్త్రం, స్వప్న శాస్త్రం మరియు FMGE వైద్య జ్యోతిషం — ప్రతి వ్యాసం ప్రత్యేక 16:9 చిత్రం మరియు సొంత పేజీ లింక్‌తో.
           </p>
         </div>
 
@@ -2345,15 +2390,23 @@ function renderRichToolGuideHtml(pathname: string): string {
           ${VEDIC_CLASSICAL_ARTICLES.map(
             (art) => `
             <div style="padding:16px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;">
+              <div style="margin-bottom:10px;border-radius:10px;overflow:hidden;border:1px solid #f59e0b;">
+                <a href="/${art.slug}">
+                  <img src="${escapeHtml(art.heroImage)}" alt="${escapeHtml(art.imageAltTe)}" referrerpolicy="no-referrer" style="width:100%;height:auto;display:block;" />
+                </a>
+              </div>
               <span style="display:inline-block;padding:2px 8px;background:#fef3c7;color:#92400e;border-radius:4px;font-size:11px;font-weight:bold;margin-bottom:6px;">
                 ${escapeHtml(art.categoryTe)} • ${art.readTimeMinutes} నిమిషాల పఠనం
               </span>
-              <h2 style="margin:0 0 6px;font-size:18px;color:#451a03;">
+              <h2 style="margin:0 0 4px;font-size:18px;color:#451a03;">
                 <a href="/${art.slug}" style="color:#451a03;text-decoration:none;">${escapeHtml(art.telugu.title)}</a>
               </h2>
+              <h3 style="margin:0 0 8px;font-size:14px;color:#78350f;font-weight:600;">
+                <a href="/${art.slug}" style="color:#78350f;text-decoration:none;">${escapeHtml(art.english.title)}</a>
+              </h3>
               <p style="margin:0 0 10px;font-size:14px;color:#475569;">${escapeHtml(art.telugu.summary)}</p>
               <a href="/${art.slug}" style="display:inline-block;padding:6px 14px;background:#d97706;color:#ffffff;border-radius:8px;font-size:13px;font-weight:bold;text-decoration:none;">
-                సంపూర్ణ వ్యాసం చదవండి →
+                సంపూర్ణ వ్యాసం చదవండి (Read Full Article) →
               </a>
             </div>`
           ).join('')}

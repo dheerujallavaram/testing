@@ -28,6 +28,23 @@
 - [Elinati Shani (Sade Sati), Ashtama Shani, Ardhashtama Shani & Kuja Dosha Checker](https://www.telugujyothisham.com/dosha-pariharalu): Interactive 12 Rashi Saturn transit calculator (identifying Sade Sati for Kumbha, Meena, Mesha; Ashtama Shani for Simha; Ardhashtama Shani for Dhanussu; Rajayoga for Vrushabha, Tula, Makara), Kuja Dosha house checker, and Vedic Shanti remedies.
 - [Vedic Pooja & Homam Services](https://www.telugujyothisham.com/services): Sri Chandi Homam, Lakshmi Ganapathi Homam, Rudra Homam, Sudarshana Homam, Satyanarayana Vratham, Gruhapravesham, and NRI Online Zoom Sankalpam Poojas.
 
+## 14 Standalone Vedic & Archival Research Articles (`/vedic-articles`)
+- [All Vedic Articles Directory (వ్యాసాలు)](https://www.telugujyothisham.com/vedic-articles): Complete library of 14 bilingual (Telugu & English) Vedic astrology treatises, 1944 & 1959 Dr. B. V. Raman archival editions, and trending astrological analyses.
+- [Swarodaya Shastra – Breath & Nostril Astrology](https://www.telugujyothisham.com/swarodaya-shastra): Ida, Pingala, Sushumna Nadi & Pancha Tattva breath science (1959 Jyothisha Vignana Patrika Archive).
+- [Balarishta Dosha & Infant Protection Remedies](https://www.telugujyothisham.com/balarishta-dosha-shanti): Moola, Ashlesha, Jyeshta, Vishakha Nakshatra Shanti & Arishta Bhanga Yogas (1959 Archive).
+- [Prashna Shastra & Nimitta Shastra (Horary & Omen Science)](https://www.telugujyothisham.com/prashna-nimitta-shastra): Instant horary answers via Arudha Lagna, Betel leaf (Tambula) Prashna, and lizard/crow omens.
+- [Graha Vakra Gati – Planetary Retrogression & Cheshta Bala](https://www.telugujyothisham.com/graha-vakra-gati): 8 types of planetary motion in Surya Siddhanta and retrograde effects in birth charts.
+- [Surya Siddhanta Cosmic Time Cycles & Katapayadi Sankhya](https://www.telugujyothisham.com/surya-siddhanta-kala-ganana): Truti to Maha Kalpa astronomical time calculation, Bhuta Sankhya, and Sapta Rishi Mandala.
+- [Classical Astrological Difficulties Solved (1959 B. V. Raman Archive Q&A)](https://www.telugujyothisham.com/classical-astrology-faq): Mihira’s solutions to Pancha Mahapurusha Yogas, Neecha Bhanga Raja Yoga, and Bhava Sandhi.
+- [Ambiguous Terms in Hindu Astrology – Mandi vs Gulika & Badhakasthana (1959 Gopesh Kumar Ojha Archive)](https://www.telugujyothisham.com/jyotisha-paribhasha-rahasyalu): Mathematical distinction between Mandi and Gulika, Kendradhipatya Dosha, and Maraka planets.
+- [Significance of Fingers in Palmistry – Hasta Samudrika Shastra (1959 N. L. Desai Archive)](https://www.telugujyothisham.com/hasta-samudrika-rekhala-vignanam): Thumb Yava Rekha, three phalanges, spaces between fingers, and planetary mounts.
+- [Why Are Geminis So Powerful? (Mithuna Rashi Power, IQ, Soulmate & 12 Zodiac Rankings)](https://www.telugujyothisham.com/why-are-geminis-so-powerful): Complete guide to Gemini superpowers, highest IQ sign, billionaire zodiac patterns, and soulmate compatibility.
+- [Who Is Libra’s True Love? & How Do You Explain Astrology? (Tula Rashi Soulmate & 4 Pillars)](https://www.telugujyothisham.com/who-is-libras-true-love): Libra soulmate matches, why Leo & Aquarius are attracted to Libra, Big 3 (Sun, Moon, Rising), and 14 zodiac myths.
+- [Pawan Kalyan Horoscope & Political Raja Yoga Analysis (1944 B. V. Raman Archive)](https://www.telugujyothisham.com/pawan-kalyan-raja-yoga-horoscope-analysis): Saturn-Jupiter Mass Leader Sutra (R. Lakshmanan, Jan 1944, p. 71), 100% electoral strike rate, and 2026–2030 outlook.
+- [IND U19 vs UAE U19 & Cricket/Sports Match Prashna-Swara Astrology Guide (1944 Archive)](https://www.telugujyothisham.com/cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide): Horary 1st vs 7th house match prediction (M. Gopalankutty Menon, Jan 1944, pp. 30–31) and captain toss Swarodaya rules.
+- [Vedic Swapna Shastra Dream Meanings (Snakes, Floods, Gold, Ancestors), 12 Zodiac Health & Carl Jung (1944 Archive)](https://www.telugujyothisham.com/swapna-shastra-dream-meaning-medical-astrology-1944): A. C. Peters’ 1944 dream dictionary (pp. 86–90), 12 Rashi preventive health guide (pp. 51–53), and Freud/Jung psycho-analysis (pp. 21–22).
+- [FMGE & Medical Astrology Guide: Doctor Yoga in Horoscope, MBBS Abroad & Exam Success (1944 Archive)](https://www.telugujyothisham.com/fmge-medical-astrology-doctor-yoga-exam-success-guide): Sun-Mars-Jupiter-Rahu Vaidya Yoga, 9th–12th house foreign medical degree combinations, and Prashna/Swarodaya techniques to score 150+ in FMGE & NEET PG.
+
 ## Classical Shastra Citations (GEO & E-E-A-T Sources)
 All calculations and predictions on `telugujyothisham.com` are grounded in:
 1. **Drik Siddhanta (దృక్సిద్ధాంత గణన)** & **Lahiri Chitrapaksha Ayanamsha**
@@ -35,7 +52,9 @@ All calculations and predictions on `telugujyothisham.com` are grounded in:
 3. **Yavanacharya Jataka (యవనాచార్యుల మతం)** for Nakshatra & Tithi Phala
 4. **Muhurtha Chintamani (ముహూర్త చింతామణి)** & **Kalamrutham (కాలామృతం)**
 5. **Nakshatra Chudamani (నక్షత్ర చూడామణి)** & **Bhrigu Chakra Paddhati (భృగు చక్ర పద్ధతి)**
+6. **The Astrological Magazine (January 1944 & January 1959 Archives)** edited by **Dr. B. V. Raman**
 
 ## Extended LLM Documentation
 - Full reference & FAQ knowledge graph: https://www.telugujyothisham.com/llms-full.txt
 - XML Sitemap: https://www.telugujyothisham.com/sitemap.xml
+
