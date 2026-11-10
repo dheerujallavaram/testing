@@ -20,6 +20,7 @@ import {
   Award,
   ScrollText,
   Bookmark,
+  Download,
 } from 'lucide-react';
 import {
   VEDIC_CLASSICAL_ARTICLES,
@@ -47,6 +48,7 @@ export const VedicArticleReader: React.FC<VedicArticleReaderProps> = ({
   );
   const [expandedFaqIndex, setExpandedFaqIndex] = useState<number | null>(0);
   const [copiedShare, setCopiedShare] = useState<boolean>(false);
+  const [sharingImage, setSharingImage] = useState<boolean>(false);
 
   useEffect(() => {
     // If global language changes, align default
@@ -76,9 +78,69 @@ export const VedicArticleReader: React.FC<VedicArticleReaderProps> = ({
     if (typeof window !== 'undefined') {
       const url = `${window.location.origin}/${article.slug}`;
       const text = encodeURIComponent(
-        `${currentContent.title}\n\nచదవండి:\n${url}`
+        `📖 *${currentContent.title}*\n\n${currentContent.summary}\n\n🔗 పూర్తి వ్యాసం & చిత్రం ఇక్కడ చూడండి:\n${url}`
       );
       window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    }
+  };
+
+  const handleShareWithImage = async () => {
+    if (typeof window === 'undefined') return;
+    const url = `${window.location.origin}/${article.slug}`;
+    const shareText = `${currentContent.title}\n\n${currentContent.summary}\n\nపూర్తి వ్యాసం చదవండి: ${url}`;
+
+    setSharingImage(true);
+    try {
+      if (navigator.share) {
+        try {
+          const response = await fetch(article.heroImage);
+          const blob = await response.blob();
+          const file = new File([blob], `${article.slug}.jpg`, {
+            type: blob.type || 'image/jpeg',
+          });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: currentContent.title,
+              text: shareText,
+              url,
+              files: [file],
+            });
+            setSharingImage(false);
+            return;
+          }
+        } catch {
+          // Fallback to URL + text share
+        }
+        await navigator.share({
+          title: currentContent.title,
+          text: shareText,
+          url,
+        });
+        setSharingImage(false);
+        return;
+      }
+    } catch {
+      // User cancelled or share failed
+    }
+    setSharingImage(false);
+    handleShareWhatsApp();
+  };
+
+  const handleDownloadImage = async () => {
+    if (typeof window === 'undefined') return;
+    try {
+      const response = await fetch(article.heroImage);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `${article.slug}-telugu-jyothisham.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      window.open(article.heroImage, '_blank');
     }
   };
 
@@ -104,9 +166,12 @@ export const VedicArticleReader: React.FC<VedicArticleReaderProps> = ({
             {isTe ? 'హోమ్' : 'Home'}
           </a>
           <span className="text-amber-400">/</span>
-          <span className="text-amber-800 font-semibold">
-            {isTe ? article.categoryTe : article.categoryEn}
-          </span>
+          <a
+            href="/vedic-articles"
+            className="hover:text-amber-700 underline font-semibold text-amber-800"
+          >
+            {isTe ? 'వ్యాసాలు (Articles)' : 'Articles'}
+          </a>
           <span className="text-amber-400">/</span>
           <span className="text-amber-950 font-bold truncate max-w-[200px] sm:max-w-xs">
             {currentContent.primaryKeyword}
@@ -143,7 +208,7 @@ export const VedicArticleReader: React.FC<VedicArticleReaderProps> = ({
       {/* Hero Header Banner */}
       <header className="relative bg-gradient-to-br from-[#2c0902] via-[#3a1005] to-[#1e0501] text-amber-50 rounded-3xl p-6 sm:p-10 border-2 border-amber-500/80 shadow-2xl overflow-hidden">
         <div className="absolute -right-16 -top-16 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 space-y-4">
+        <div className="relative z-10 space-y-5">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-400/40 uppercase tracking-wider">
               <Sparkles size={14} className="text-amber-400" />
@@ -167,8 +232,95 @@ export const VedicArticleReader: React.FC<VedicArticleReaderProps> = ({
             {currentContent.summary}
           </p>
 
+          {/* Dedicated 16:9 Article Hero Image & Share Bar */}
+          <div className="rounded-2xl overflow-hidden border-2 border-amber-400/80 shadow-2xl bg-black/40">
+            <div className="relative aspect-video w-full overflow-hidden">
+              <img
+                src={article.heroImage}
+                alt={isTe ? article.imageAltTe : article.imageAltEn}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2">
+                <span className="px-3 py-1 rounded-lg bg-black/70 backdrop-blur-sm text-amber-200 text-[11px] font-semibold border border-amber-400/40 font-telugu">
+                  {isTe ? article.imageAltTe : article.imageAltEn}
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-amber-500/90 text-amber-950 text-[11px] font-extrabold">
+                  telugujyothisham.com/{article.slug}
+                </span>
+              </div>
+            </div>
+
+            {/* Dedicated Share with Image & Link Action Bar */}
+            <div className="bg-amber-950/95 px-4 py-3 border-t border-amber-500/40 flex flex-wrap items-center justify-between gap-3">
+              <div className="text-xs text-amber-200 font-telugu flex items-center gap-2">
+                <Share2 size={15} className="text-amber-400 shrink-0" />
+                <span>
+                  {isTe
+                    ? 'ఈ వ్యాసాన్ని దాని ప్రత్యేక చిత్రం & లింక్‌తో మిత్రులకు షేర్ చేయండి:'
+                    : 'Share this standalone article with its dedicated image & link:'}
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleShareWithImage}
+                  disabled={sharingImage}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-amber-950 text-xs font-extrabold shadow transition-all cursor-pointer"
+                >
+                  <Share2 size={14} />
+                  <span>
+                    {sharingImage
+                      ? isTe
+                        ? 'షేర్ అవుతోంది...'
+                        : 'Sharing...'
+                      : isTe
+                      ? 'చిత్రం + లింక్ షేర్'
+                      : 'Share Image + Link'}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleShareWhatsApp}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow transition-all cursor-pointer"
+                >
+                  <MessageCircle size={14} />
+                  <span>WhatsApp</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDownloadImage}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 text-xs font-bold border border-amber-600/70 transition-all cursor-pointer"
+                  title={isTe ? 'వ్యాస చిత్రం డౌన్‌లోడ్ చేయండి' : 'Download Article Image'}
+                >
+                  <Download size={14} />
+                  <span>{isTe ? 'చిత్రం సేవ్' : 'Save Image'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-900/80 hover:bg-amber-800 text-amber-200 text-xs font-bold border border-amber-600/60 transition-all cursor-pointer"
+                  title={isTe ? 'లింక్ కాపీ చేయండి' : 'Copy link'}
+                >
+                  {copiedShare ? (
+                    <>
+                      <CheckCircle2 size={14} className="text-emerald-400" />
+                      <span>{isTe ? 'కాపీ అయింది!' : 'Copied!'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={14} />
+                      <span>{isTe ? 'లింక్ కాపీ' : 'Copy Link'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* Author Badge */}
-          <div className="pt-4 border-t border-amber-700/60 flex flex-wrap items-center justify-between gap-4">
+          <div className="pt-3 border-t border-amber-700/60 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-600 to-yellow-400 p-0.5 shadow-md shrink-0">
                 <div className="w-full h-full rounded-full bg-[#2c0902] flex items-center justify-center text-amber-300 font-bold text-sm">
@@ -185,35 +337,8 @@ export const VedicArticleReader: React.FC<VedicArticleReaderProps> = ({
                 </div>
               </div>
             </div>
-
-            {/* Quick Share buttons */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handleCopyLink}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-900/80 hover:bg-amber-800 text-amber-200 text-xs font-bold border border-amber-600/60 transition-all"
-                title={isTe ? 'లింక్ కాపీ చేయండి' : 'Copy link'}
-              >
-                {copiedShare ? (
-                  <>
-                    <CheckCircle2 size={14} className="text-emerald-400" />
-                    <span>{isTe ? 'కాపీ చేయబడింది!' : 'Copied!'}</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy size={14} />
-                    <span>{isTe ? 'లింక్ కాపీ' : 'Copy Link'}</span>
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={handleShareWhatsApp}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold shadow transition-all"
-              >
-                <MessageCircle size={14} />
-                <span>WhatsApp</span>
-              </button>
+            <div className="text-xs text-amber-300/90 font-mono">
+              🔗 {typeof window !== 'undefined' ? `${window.location.origin}/${article.slug}` : `https://www.telugujyothisham.com/${article.slug}`}
             </div>
           </div>
         </div>
@@ -240,13 +365,15 @@ export const VedicArticleReader: React.FC<VedicArticleReaderProps> = ({
                       : 'Scholarly Archival Citation & Historical Tribute'}
                   </span>
                   <span className="text-xs text-amber-800 font-semibold">
-                    {isTe ? 'ప్రాచీన జ్యోతిష పరిశోధనారత్నం – 1959 ప్రత్యేక ప్రచురణ' : '1959 Classical Astrology Research Landmark'}
+                    {isTe
+                      ? `ప్రాచీన జ్యోతిష పరిశోధనారత్నం – ${article.archivalSource.year} ప్రత్యేక ప్రచురణ`
+                      : `${article.archivalSource.year} Classical Astrology Research Landmark`}
                   </span>
                 </div>
               </div>
 
               <span className="px-3 py-1 rounded-full bg-amber-900 text-amber-100 text-xs font-bold shadow-sm">
-                వార్షిక సంచిక 1959 • Vol. 48 No. 1
+                {article.archivalSource.year} • {article.archivalSource.issue.split('–')[0].trim()}
               </span>
             </div>
 
@@ -571,7 +698,7 @@ export const VedicArticleReader: React.FC<VedicArticleReaderProps> = ({
           {/* Related Articles Exploration */}
           <section className="bg-gradient-to-r from-amber-100/80 via-[#fff8eb] to-amber-100/80 rounded-3xl p-6 border-2 border-amber-300 shadow-sm space-y-4">
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-amber-900">
-              {isTe ? 'ఇతర ప్రాచీన జ్యోతిష శాస్త్ర వ్యాసాలు' : 'Explore Other Classical Vedic Articles'}
+              {isTe ? 'ఇతర ప్రాచీన జ్యోతిష శాస్త్ర వ్యాసాలు (ప్రత్యేక పేజీలు)' : 'Explore Other Classical Vedic Articles (Standalone Pages)'}
             </h3>
             <div className="grid sm:grid-cols-2 gap-4">
               {otherArticles.map((other) => {
@@ -586,21 +713,30 @@ export const VedicArticleReader: React.FC<VedicArticleReaderProps> = ({
                         onNavigateArticle(other.slug);
                       }
                     }}
-                    className="p-4 rounded-2xl bg-white border border-amber-300 hover:border-amber-500 hover:shadow-md transition-all flex flex-col justify-between group"
+                    className="rounded-2xl bg-white border border-amber-300 hover:border-amber-500 hover:shadow-md transition-all flex flex-col justify-between group overflow-hidden"
                   >
-                    <div>
-                      <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider block mb-1">
+                    <div className="relative aspect-video w-full overflow-hidden bg-amber-950">
+                      <img
+                        src={other.heroImage}
+                        alt={isTe ? other.imageAltTe : other.imageAltEn}
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/75 text-amber-200 text-[10px] font-bold">
                         {isTe ? other.categoryTe : other.categoryEn}
                       </span>
+                    </div>
+                    <div className="p-4 flex-1 flex flex-col justify-between">
                       <h4 className="text-xs sm:text-sm font-bold text-amber-950 group-hover:text-amber-700 font-telugu line-clamp-2">
                         {otherContent.title}
                       </h4>
-                    </div>
-                    <div className="pt-3 flex items-center justify-between text-[11px] text-amber-900 font-semibold mt-2 border-t border-amber-100">
-                      <span>{other.readTimeMinutes} {isTe ? 'ని॥ పఠనం' : 'min read'}</span>
-                      <span className="inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform text-amber-700">
-                        {isTe ? 'చదవండి' : 'Read'} <ArrowRight size={13} />
-                      </span>
+                      <div className="pt-3 flex items-center justify-between text-[11px] text-amber-900 font-semibold mt-2 border-t border-amber-100">
+                        <span>{other.readTimeMinutes} {isTe ? 'ని॥ పఠనం' : 'min read'}</span>
+                        <span className="inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform text-amber-700">
+                          {isTe ? 'పేజీ తెరవండి' : 'Open Page'} <ArrowRight size={13} />
+                        </span>
+                      </div>
                     </div>
                   </a>
                 );

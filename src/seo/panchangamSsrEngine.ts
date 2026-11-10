@@ -1897,7 +1897,7 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       ogTitle: title,
       ogDescription: desc,
       ogUrl: canonical,
-      ogImage: defaultOgImage,
+      ogImage: `${SITE_URL}${articleMatch.heroImage}`,
       breadcrumbs: [
         { name: 'తెలుగు జ్యోతిషం (Home)', item: `${SITE_URL}/` },
         { name: 'వేద శాస్త్రాలు', item: `${SITE_URL}/vedic-articles` },
@@ -2063,6 +2063,7 @@ export function buildCleanJsonLdSchema(meta: PageSeoMetadata): Record<string, un
       headline: articleMatch.telugu.title,
       alternativeHeadline: articleMatch.english.title,
       description: articleMatch.telugu.metaDescription,
+      image: `${SITE_URL}${articleMatch.heroImage}`,
       inLanguage: ['te', 'en'],
       mainEntityOfPage: meta.canonical,
       datePublished: articleMatch.datePublished,
@@ -2163,6 +2164,9 @@ function renderRichToolGuideHtml(pathname: string): string {
             <span>రచన / విశ్లేషణ: <strong>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ</strong></span> • 
             <span>పఠన సమయం: <strong>${article.readTimeMinutes} నిమిషాలు</strong></span> • 
             <span>సంప్రదాయం: <strong>పరాశర &amp; సూర్య సిద్ధాంత వైదిక క్రమం</strong></span>
+          </div>
+          <div style="margin:16px 0 6px;border-radius:14px;overflow:hidden;border:2px solid #f59e0b;">
+            <img src="${escapeHtml(article.heroImage)}" alt="${escapeHtml(article.imageAltTe)}" referrerpolicy="no-referrer" style="width:100%;height:auto;display:block;" />
           </div>
         </div>
 

@@ -397,6 +397,30 @@ export function resolveVedicArticleSlugFromLocation(): string | null {
     pathname === '/how-do-you-explain-astrology'
   )
     return 'who-is-libras-true-love';
+  if (
+    pathname === '/pawan-kalyan-raja-yoga-horoscope-analysis' ||
+    pathname === '/pawan-kalyan-jathakam' ||
+    pathname === '/pawan-kalyan-astrology'
+  )
+    return 'pawan-kalyan-raja-yoga-horoscope-analysis';
+  if (
+    pathname === '/cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide' ||
+    pathname === '/ind-u19-vs-uae-u19-astrology' ||
+    pathname === '/cricket-prashna-shastra'
+  )
+    return 'cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide';
+  if (
+    pathname === '/swapna-shastra-dream-meaning-medical-astrology-1944' ||
+    pathname === '/swapna-shastra-telugu' ||
+    pathname === '/snake-dream-meaning-astrology'
+  )
+    return 'swapna-shastra-dream-meaning-medical-astrology-1944';
+  if (
+    pathname === '/fmge-medical-astrology-doctor-yoga-exam-success-guide' ||
+    pathname === '/fmge-exam-astrology' ||
+    pathname === '/doctor-yoga-in-kundali'
+  )
+    return 'fmge-medical-astrology-doctor-yoga-exam-success-guide';
   return null;
 }
 
@@ -781,6 +805,9 @@ function AppContent() {
         'hasta-samudrika-rekhala-vignanam',
         'why-are-geminis-so-powerful',
         'who-is-libras-true-love',
+        'pawan-kalyan-raja-yoga-horoscope-analysis',
+        'cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide',
+        'swapna-shastra-dream-meaning-medical-astrology-1944',
       ].includes(articleSlugMatch)
     ) {
       handleSelectVedicArticle(articleSlugMatch);
@@ -897,6 +924,7 @@ function AppContent() {
       canonicalUrl: meta.canonical,
       robots: meta.robots,
       lang: language,
+      ogImage: meta.ogImage,
     });
 
     if (typeof document !== 'undefined') {

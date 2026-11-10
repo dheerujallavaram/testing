@@ -10,6 +10,7 @@ export interface HeadMetaPayload {
   canonicalUrl: string;
   robots?: string;
   lang?: string;
+  ogImage?: string;
 }
 
 export interface FeaturedDailyRashiSnippet {
@@ -169,6 +170,10 @@ export function syncHeadMetaTags(payload: HeadMetaPayload): void {
   upsertMeta('meta[name="twitter:title"]', 'name', 'twitter:title', payload.title);
   upsertMeta('meta[name="twitter:description"]', 'name', 'twitter:description', payload.description);
   upsertMeta('meta[name="twitter:url"]', 'name', 'twitter:url', payload.canonicalUrl);
+  if (payload.ogImage) {
+    upsertMeta('meta[property="og:image"]', 'property', 'og:image', payload.ogImage);
+    upsertMeta('meta[name="twitter:image"]', 'name', 'twitter:image', payload.ogImage);
+  }
 }
 
 /**

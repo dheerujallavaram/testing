@@ -66,6 +66,10 @@ export function getCoreSitemapRoutes(): SitemapEntry[] {
     { path: '/hasta-samudrika-rekhala-vignanam', lastmod: todayIso },
     { path: '/why-are-geminis-so-powerful', lastmod: todayIso },
     { path: '/who-is-libras-true-love', lastmod: todayIso },
+    { path: '/pawan-kalyan-raja-yoga-horoscope-analysis', lastmod: todayIso },
+    { path: '/cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide', lastmod: todayIso },
+    { path: '/swapna-shastra-dream-meaning-medical-astrology-1944', lastmod: todayIso },
+    { path: '/fmge-medical-astrology-doctor-yoga-exam-success-guide', lastmod: todayIso },
   ];
 }
 

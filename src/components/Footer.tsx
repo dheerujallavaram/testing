@@ -306,6 +306,30 @@ export const Footer: React.FC<FooterProps> = ({
               >
                 💖 {t('తుల రాశి వారి నిజమైన ప్రేమ ఎవరు? (Who Is Libra’s True Love?)', 'Who Is Libra’s True Love? (Soulmate & 4 Pillars of Astrology)')}
               </a>
+              <a
+                href="/pawan-kalyan-raja-yoga-horoscope-analysis"
+                className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
+              >
+                👑 {t('పవన్ కళ్యాణ్ జాతక రాజయోగ విశ్లేషణ – శని-గురు కటాక్షం (1944 రామన్ ఆర్కైవ్)', 'Pawan Kalyan Horoscope & Political Raja Yoga (1944 Archive)')}
+              </a>
+              <a
+                href="/cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide"
+                className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
+              >
+                🏏 {t('IND U19 vs UAE U19 & క్రీడా ప్రశ్న-స్వర శాస్త్రం (1944 రామన్ ఆర్కైవ్)', 'IND U19 vs UAE U19 & Sports Prashna Astrology (1944 Archive)')}
+              </a>
+              <a
+                href="/swapna-shastra-dream-meaning-medical-astrology-1944"
+                className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
+              >
+                🐍 {t('స్వప్న శాస్త్రం (కలలో పాము, బంగారం, వరద) & 12 రాశుల ఆరోగ్యం (1944 ఆర్కైవ్)', 'Swapna Shastra Dream Meanings & 12 Zodiac Health (1944 Archive)')}
+              </a>
+              <a
+                href="/fmge-medical-astrology-doctor-yoga-exam-success-guide"
+                className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
+              >
+                🩺 {t('FMGE & వైద్య జ్యోతిషం – విదేశీ MBBS, డాక్టర్ యోగం & పరీక్షా విజయం (1944 ఆర్కైవ్)', 'FMGE & Medical Astrology – Doctor Yoga & Exam Success (1944 Archive)')}
+              </a>
             </div>
           </div>
         </div>
