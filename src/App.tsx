@@ -34,6 +34,7 @@ import {
   CityTimingConfig,
   buildCleanJsonLdSchema,
   generatePageMetadata,
+  getTodayIsoDateIST,
 } from './seo/panchangamSsrEngine';
 import { DailySubhashithamCard } from './components/DailySubhashithamCard';
 
@@ -119,6 +120,11 @@ const VedicArticleReader = lazy(() =>
 const VedicArticlesDirectory = lazy(() =>
   import('./components/VedicArticlesDirectory').then((m) => ({ default: m.VedicArticlesDirectory }))
 );
+const RashiPhalaluSeoEnrichment = lazy(() =>
+  import('./components/RashiPhalaluSeoEnrichment').then((m) => ({
+    default: m.RashiPhalaluSeoEnrichment,
+  }))
+);
 
 const SectionLoader: React.FC<{ minHeight?: string }> = ({ minHeight = 'min-h-[280px]' }) => (
   <div
@@ -173,6 +179,7 @@ const LazyViewportSection: React.FC<{
 export const TAB_PATHS: Record<NavTab, string> = {
   home: '/',
   panchangam: '/panchangam',
+  rashiphalalu: '/rashi-phalalu',
   vyasalu: '/vedic-articles',
   kartika: '/kartika-abhishekam',
   muhurtham: '/muhurtham',
@@ -295,6 +302,20 @@ export function resolveTabFromLocation(): NavTab {
     return 'vyasalu';
   }
   if (
+    pathname === '/rashi-phalalu' ||
+    pathname === '/neti-rashi-phalalu' ||
+    pathname === '/today-rashi-phalalu-in-telugu' ||
+    pathname === '/ee-roju-rashi-phalalu' ||
+    pathname === '/daily-horoscope-telugu' ||
+    pathname === '/gochara-phalalu' ||
+    pathname.startsWith('/gochara-phalalu/') ||
+    pathname === '/yelinati-shani' ||
+    hash === '#rashi-phalalu' ||
+    hash === '#dina-phalam'
+  ) {
+    return 'rashiphalalu';
+  }
+  if (
     pathname === '/panchangam' ||
     pathname.startsWith('/panchangam/') ||
     pathname.endsWith('/panchangam') ||
@@ -311,12 +332,8 @@ export function resolveTabFromLocation(): NavTab {
     pathname === '/ugadi-rashi-phalalu' ||
     pathname === '/festivals' ||
     pathname === '/dosha-pariharalu' ||
-    pathname === '/gochara-phalalu' ||
-    pathname.startsWith('/gochara-phalalu/') ||
-    pathname === '/yelinati-shani' ||
     Boolean(resolveCityTimingSlugFromLocation()) ||
     hash === '#panchangam' ||
-    hash === '#dina-phalam' ||
     hash === '#rashi-chakram' ||
     hash === '#muhurthalu' ||
     hash === '#panchangam-faq' ||
@@ -421,6 +438,11 @@ export function resolveVedicArticleSlugFromLocation(): string | null {
     pathname === '/doctor-yoga-in-kundali'
   )
     return 'fmge-medical-astrology-doctor-yoga-exam-success-guide';
+  if (pathname === '/dwadasa-rashi-rahasyalu') return 'dwadasa-rashi-rahasyalu';
+  if (pathname === '/neti-nakshatra-vyasam') return 'neti-nakshatra-vyasam';
+  if (pathname === '/neti-jyothisha-visleshana') return 'neti-jyothisha-visleshana';
+  if (pathname === '/astroinformatics-research' || pathname === '/research')
+    return 'astroinformatics-research';
   return null;
 }
 
@@ -504,6 +526,7 @@ function AppContent() {
   );
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
   const [selectedPoojaForBooking, setSelectedPoojaForBooking] = useState<PoojaService | null>(null);
+  const [jumpedRashiId, setJumpedRashiId] = useState<string | undefined>(undefined);
   const { t, tr, language } = useLanguage();
 
   const currentDay = getOrGenerateDayData(selectedDayId, WEEK_DATA);
@@ -903,6 +926,25 @@ function AppContent() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
+  // Automatic Daily IST Midnight Rollover (00:00 Asia/Kolkata) — updates date, Panchangam, 12-Rashi fortunes & SEO tags automatically every day
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let lastCheckedIstDate = getTodayIsoDateIST();
+    const intervalId = window.setInterval(() => {
+      const currentIstDate = getTodayIsoDateIST();
+      if (currentIstDate !== lastCheckedIstDate) {
+        lastCheckedIstDate = currentIstDate;
+        const isExplicitDateUrl = /^\/panchangam\/\d{4}-\d{2}-\d{2}\/?$/.test(
+          window.location.pathname
+        );
+        if (!isExplicitDateUrl) {
+          setSelectedDayId(currentIstDate);
+        }
+      }
+    }, 60_000);
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   // Synchronize generateMetadata() output and clean JSON-LD Schema on every route change
   useEffect(() => {
     if (selectedCity) return;
@@ -979,7 +1021,7 @@ function AppContent() {
   };
 
   return (
-    <div id="top" className="min-h-screen flex flex-col bg-[#faf7f2] text-[#2a1205] font-telugu">
+    <div id="top" className="min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col bg-[#faf7f2] text-[#2a1205] font-telugu">
       <Header
         activeTab={activeTab}
         onSelectTab={handleSelectTab}
@@ -987,7 +1029,7 @@ function AppContent() {
         onSelectSearchTopic={handleSelectSearchTopic}
       />
 
-      {!isAdminView && (
+      {!isAdminView && !activeArticleSlug && (
         <div className="no-print">
           <KartikaScrollingTicker
             onNavigateKartika={() => {
@@ -998,7 +1040,7 @@ function AppContent() {
         </div>
       )}
 
-      {!isAdminView && (
+      {!isAdminView && !activeArticleSlug && (
         <div className="no-print">
           <LiveSiteAnnouncementBanner
             onNavigateJathakam={() => {
@@ -1012,10 +1054,11 @@ function AppContent() {
       )}
 
       {activeArticleSlug ? (
-        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
+        <main className="flex-1 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full min-w-0 overflow-x-hidden">
           <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
             <VedicArticleReader
               articleSlug={activeArticleSlug}
+              currentDay={currentDay}
               onNavigateArticle={handleSelectVedicArticle}
               onNavigateHome={() => handleNavigateVedicDirectory()}
               onOpenBooking={() => handleOpenBooking()}
@@ -1023,7 +1066,7 @@ function AppContent() {
           </Suspense>
         </main>
       ) : activeTab === 'vyasalu' || isVedicDirectoryView ? (
-        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
+        <main className="flex-1 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full min-w-0 overflow-x-hidden">
           <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
             <VedicArticlesDirectory
               onSelectArticle={handleSelectVedicArticle}
@@ -1107,6 +1150,10 @@ function AppContent() {
             <GuruProfileHome
               currentDay={currentDay}
               onNavigateToPanchangam={handleNavigateToPanchangam}
+              onNavigateToRashiPhalalu={() => {
+                handleSelectTab('rashiphalalu');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
               onNavigateToCalendar={() => handleToggleCalendarRoute(true)}
               onNavigateToCityPanchangam={(citySlug) => handleSelectCityTimingRoute(citySlug)}
               onNavigateToJathakam={() => {
@@ -1236,13 +1283,23 @@ function AppContent() {
                     {t('ఎంచుకున్న రోజు వివరాలు • Selected Day Overview', 'Selected Day Overview')}
                   </span>
                   <h2 className="text-2xl sm:text-4xl font-bold text-amber-950 font-telugu mt-0.5">
-                    {tr(currentDay.label)} {t('పంచాంగం & రాశి ఫలాలు', 'Panchangam & Predictions')}
+                    {tr(currentDay.label)} {t('సంపూర్ణ నిత్య పంచాంగం', 'Daily Telugu Panchangam')}
                   </h2>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <p className="text-base sm:text-xl text-amber-900 font-bold font-telugu bg-amber-100/80 px-4 py-1.5 rounded-full border border-amber-300">
                     {tr(currentDay.teediVaram)}
                   </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleSelectTab('rashiphalalu');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-amber-950 font-extrabold text-xs sm:text-sm shadow-sm cursor-pointer transition-all"
+                  >
+                    {t('నేటి 12 రాశుల ఫలితాలు చూడండి →', 'View Today 12 Rashi Phalalu →')}
+                  </button>
                 </div>
               </div>
 
@@ -1257,9 +1314,9 @@ function AppContent() {
                       {
                         id: 'main' as PanchangamSubTab,
                         href: '/panchangam',
-                        badge: 'నిత్య పంచాంగం & ద్వాదశ రాశి ఫలాలు',
-                        titleTe: 'సంపూర్ణ పంచాంగం & రాశి ఫలాలు',
-                        titleEn: 'Panchangam & Daily Predictions',
+                        badge: 'తిథి, నక్షత్రం & రాహుకాలం',
+                        titleTe: 'సంపూర్ణ నిత్య పంచాంగం',
+                        titleEn: 'Complete Daily Panchangam',
                       },
                       {
                         id: 'gowri-hora' as PanchangamSubTab,
@@ -1368,40 +1425,40 @@ function AppContent() {
                     </Suspense>
                   </section>
 
-                  {/* నేటి దిన ఫలితం & ద్వాదశ రాశి ఫలాలు (PREDICTIONS NEXT) */}
-                  <div className="pt-6 border-t-4 border-amber-400/80">
-                    <div className="bg-gradient-to-r from-[#2c0902] via-amber-950 to-[#2c0902] text-white rounded-3xl p-5 sm:p-7 border-2 border-amber-500 shadow-lg mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  {/* ప్రత్యేక రాశి ఫలాల పేజీకి అంతర్గత లింక్ (Dedicated SEO Cross-Link to /rashi-phalalu) */}
+                  <div className="pt-4">
+                    <div className="bg-gradient-to-r from-[#2c0902] via-amber-950 to-[#2c0902] text-white rounded-3xl p-5 sm:p-7 border-2 border-amber-500 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div>
                         <span className="inline-block text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-400 text-amber-950 mb-2">
                           {t(
-                            'నేటి దిన ఫలితాలు & ద్వాదశ రాశి ఫలాలు • Daily Predictions & Horoscope',
-                            'Daily Predictions & 12-Rashi Horoscope'
+                            'ప్రత్యేక పేజీ • Dedicated Daily Horoscope Page (/rashi-phalalu)',
+                            'Dedicated Daily Horoscope Page (/rashi-phalalu)'
                           )}
                         </span>
-                        <h2 className="text-2xl sm:text-3xl font-extrabold font-telugu text-amber-100">
+                        <h2 className="text-xl sm:text-3xl font-extrabold font-telugu text-amber-100">
                           {t(
-                            'నేటి సమగ్ర దిన ఫలితం, ద్వాదశ రాశి ఫలాలు & నక్షత్ర విశ్లేషణ',
-                            'Comprehensive Daily Prediction, 12-Rashi Horoscope & Star Analysis'
+                            'నేటి ద్వాదశ రాశి ఫలాలు & గోచార విశ్లేషణ (మేషం నుండి మీనం వరకు)',
+                            'Today’s 12-Rashi Horoscope & Gochara Transit Predictions'
                           )}
                         </h2>
                         <p className="text-xs sm:text-sm text-amber-200/90 font-telugu mt-1">
                           {t(
-                            'నేటి పంచాంగం మరియు ముహూర్త సమయాల ఆధారంగా తిథి-నక్షత్ర దిన ఫలితం మరియు 12 రాశుల విస్తృత ఫలితాలను ఇక్కడ చదవండి.',
-                            'Explore today’s detailed daily predictions and 12-Rashi horoscopes calculated from today’s Panchangam below.'
+                            'మేషం, వృషభం, మిథునం, కర్కాటకం, సింహం, కన్య, తుల, వృశ్చికం, ధనుస్సు, మకరం, కుంభం మరియు మీన రాశుల నేటి దిన ఫలాలు, అదృష్ట సంఖ్యలు మరియు పరిహారాలను ప్రత్యేక రాశి ఫలాల పేజీలో చదవండి.',
+                            'Read today’s complete 12-Rashi predictions, lucky numbers, colors, and Vedic remedies on our dedicated Rashi Phalalu page.'
                           )}
                         </p>
                       </div>
                       <a
-                        href="#dina-phalam"
-                        className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 font-extrabold text-xs sm:text-sm shadow-md whitespace-nowrap shrink-0 self-start md:self-auto"
+                        href="/rashi-phalalu"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSelectTab('rashiphalalu');
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-amber-950 font-extrabold text-xs sm:text-sm shadow-md whitespace-nowrap shrink-0 self-start md:self-auto cursor-pointer"
                       >
-                        {t('12 రాశుల ఫలితాలు చూడండి ↓', 'Jump to 12 Rashis ↓')}
+                        {t('నేటి రాశి ఫలాలు పేజీ తెరవండి →', 'Open Today Rashi Phalalu Page →')}
                       </a>
-                    </div>
-
-                    <div className="space-y-8">
-                      <DayVisheshamCard day={currentDay} />
-                      <DailyHoroscope day={currentDay} />
                     </div>
                   </div>
                 </>
@@ -1417,6 +1474,101 @@ function AppContent() {
 
               <Suspense fallback={<SectionLoader minHeight="min-h-[320px]" />}>
                 <PanchangamFAQ />
+              </Suspense>
+
+              <ActionControls day={currentDay} onOpenBooking={() => handleOpenBooking()} />
+            </div>
+          )}
+
+          {/* TAB 2B: DEDICATED DAILY RASHI PHALALU PAGE (/rashi-phalalu, /gochara-phalalu, /yelinati-shani) */}
+          {activeTab === 'rashiphalalu' && (
+            <div className="space-y-8 min-w-0">
+              {/* Standalone SEO Hero Header for /rashi-phalalu */}
+              <div className="bg-gradient-to-r from-[#2c0902] via-amber-950 to-[#2c0902] text-white rounded-3xl p-5 sm:p-8 border-2 border-amber-500/90 shadow-xl">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                  <div className="space-y-2.5 max-w-3xl min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-amber-400 text-amber-950">
+                        {t('నేటి రాశి ఫలాలు • Today Rashi Phalalu in Telugu', 'Today Rashi Phalalu in Telugu')}
+                      </span>
+                      <span className="text-xs font-mono text-amber-300 bg-amber-900/70 px-3 py-1 rounded-full border border-amber-500/40">
+                        /rashi-phalalu
+                      </span>
+                    </div>
+                    <h1 className="text-2xl sm:text-4xl font-extrabold text-amber-100 leading-tight break-words">
+                      {generatePageMetadata(
+                        typeof window !== 'undefined' ? window.location.pathname : '/rashi-phalalu'
+                      ).h1}
+                    </h1>
+                    <p className="text-xs sm:text-base text-amber-200/90 leading-relaxed break-words">
+                      {t(
+                        'చంద్రుని నక్షత్ర సంచారం, తారాబలం, చంద్రబలం మరియు నవగ్రహ గోచార దృష్టి ఆధారంగా మేషం నుండి మీనం వరకు 12 రాశుల వారి నేటి దిన ఫలాలు, ఉద్యోగ-వ్యాపార-కుటుంబ ఫలితాలు మరియు ఆచరించవలసిన వైదిక పరిహారాలు.',
+                        'Authentic Drik-Siddhanta daily horoscope predictions for all 12 zodiac signs (Mesha to Meena) based on today’s lunar transit, Tarabalam, Chandrabalam, and planetary aspects.'
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                    <a
+                      href="/panchangam"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleSelectTab('panchangam');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="px-4 py-2.5 rounded-2xl bg-amber-900/90 hover:bg-amber-800 text-amber-100 border border-amber-400/60 font-bold text-xs sm:text-sm transition-all cursor-pointer"
+                    >
+                      {t('← నేటి పంచాంగం చూడండి', '← View Today Panchangam')}
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenBooking()}
+                      className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-amber-950 font-extrabold text-xs sm:text-sm shadow-md cursor-pointer transition-all"
+                    >
+                      {t('వ్యక్తిగత జాతక సంప్రదింపు', 'Personal Horoscope Consultation')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Day Selector so users can switch dates for Rashi Phalalu */}
+              <DaySelector
+                days={WEEK_DATA}
+                selectedDayId={selectedDayId}
+                onSelectDay={(dayId) => setSelectedDayId(dayId)}
+              />
+
+              {/* Today's Tithi-Nakshatra Dina Phalam & Special Remedy */}
+              <DayVisheshamCard day={currentDay} />
+
+              {/* Complete 12-Rashi Daily Horoscope (Mesha to Meena) */}
+              <DailyHoroscope day={currentDay} externalSelectedRashiId={jumpedRashiId} />
+
+              {/* SEO Enrichment: Live Chandrabalam/Chandrashtamam Dashboard, Instant Name/Nakshatra Rashi Finder, 12-Rashi Quick Table & FAQs */}
+              <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
+                <RashiPhalaluSeoEnrichment
+                  day={currentDay}
+                  onJumpToRashi={(rashiId) => {
+                    setJumpedRashiId(rashiId);
+                    const el = document.getElementById('dina-phalam');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                />
+              </Suspense>
+
+              {/* Monthly Gochara Phalalu & Yelinati Shani Interactive Checker */}
+              <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
+                <GocharaPhalaluView
+                  initialPathname={
+                    typeof window !== 'undefined' ? window.location.pathname : '/gochara-phalalu'
+                  }
+                  onNavigateGocharaRoute={(targetPath) => {
+                    try {
+                      window.history.pushState({ gocharaPath: targetPath }, '', targetPath);
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    } catch {}
+                  }}
+                />
               </Suspense>
 
               <ActionControls day={currentDay} onOpenBooking={() => handleOpenBooking()} />
@@ -1455,7 +1607,7 @@ function AppContent() {
       )}
 
       {/* Site-Wide Internal Links (Home, Today's Panchangam, 3+ Related Tools in Telugu) & Author Bio */}
-      {!isAdminView && (
+      {!isAdminView && !activeArticleSlug && (
         <div className="no-print">
           <AuthorBioAndInternalLinks
             onNavigateHome={() => handleSelectTab('home')}

@@ -320,8 +320,8 @@ export const ASTRO_SEARCH_TOPICS: AstroSearchTopic[] = [
       'భవిష్యత్తు',
       'ఫలితాలు',
     ],
-    targetTab: 'panchangam',
-    targetPath: '/panchangam',
+    targetTab: 'rashiphalalu',
+    targetPath: '/rashi-phalalu',
     scrollToElementId: 'dina-phalam',
   },
   {

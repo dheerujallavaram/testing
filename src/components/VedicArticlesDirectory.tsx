@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   BookOpen,
   Clock,
+  Sparkles,
   ArrowRight,
   Compass,
   Baby,
@@ -9,20 +10,19 @@ import {
   Activity,
   Flame,
   Award,
-  Sparkles,
-  Hand,
-  Scale,
-  Library,
   Star,
-  Telescope,
+  Cpu,
+  Library,
+  Scale,
+  Hand,
+  Copy,
+  CheckCircle2,
+  ExternalLink,
+  Share2,
 } from 'lucide-react';
-import { VEDIC_CLASSICAL_ARTICLES } from '../data/vedicArticlesData';
-import { DayData } from '../types/panchangam';
+import { VEDIC_CLASSICAL_ARTICLES, VedicClassicalArticle } from '../data/vedicArticlesData';
 import { useLanguage } from '../context/LanguageContext';
-import { DwadasaRashiVedicGuide } from './DwadasaRashiVedicGuide';
-import { DailyNakshatraArticle } from './DailyNakshatraArticle';
-import { DailyAstrologyInsights } from './DailyAstrologyInsights';
-import { AstroinformaticsResearch } from './AstroinformaticsResearch';
+import { DayData } from '../types/panchangam';
 
 export type ArticlesCategoryTab =
   | 'all'
@@ -39,15 +39,178 @@ interface VedicArticlesDirectoryProps {
   initialCategory?: ArticlesCategoryTab;
 }
 
+interface DirectoryCardItem {
+  slug: string;
+  heroImage: string;
+  imageAltTe: string;
+  imageAltEn: string;
+  categoryTe: string;
+  categoryEn: string;
+  readTimeMinutes: number;
+  titleTe: string;
+  titleEn: string;
+  summaryTe: string;
+  summaryEn: string;
+  keywordsTe: string[];
+  keywordsEn: string[];
+  sectionCount: number;
+  archivalBadge?: string;
+  archivalPublication?: string;
+  archivalYear?: number;
+  archivalEditor?: string;
+  archivalAuthorsTe?: string;
+  archivalAuthorsEn?: string;
+  filterGroup: ArticlesCategoryTab[];
+}
+
+export const SPECIAL_STANDALONE_ARTICLE_CARDS: DirectoryCardItem[] = [
+  {
+    slug: 'dwadasa-rashi-rahasyalu',
+    heroImage: '/assets/articles/libra_love_scales_1794331378605.jpg',
+    imageAltTe: '12 రాశుల దాంపత్యం, సంతానం, వృత్తి-భాగస్వామ్యం & ఆరోగ్య విజ్ఞాన సర్వస్వం',
+    imageAltEn: '12 Rashi Vedic Encyclopedia – Marriage, Children, Career & Health',
+    categoryTe: '12 రాశుల విజ్ఞాన సర్వస్వం',
+    categoryEn: '12 Rashi Encyclopedia',
+    readTimeMinutes: 20,
+    titleTe:
+      '12 రాశుల విజ్ఞాన సర్వస్వం: భార్య-భర్త మనస్తత్వం, పిల్లల విద్యా స్వభావం, వృత్తి-భాగస్వామ్యం & ఆరోగ్య రహస్యాలు',
+    titleEn:
+      '12 Rashi Vedic Encyclopedia: Spouse Psychology, Child Education, Business Partnerships & Health Guide',
+    summaryTe:
+      'మేషం నుండి మీనం వరకు 12 రాశుల వారి దాంపత్య జీవితం, పిల్లల పెంపకం, వ్యాపార భాగస్వామ్యం, ధన ఆకర్షణ, ఆరోగ్య సూత్రాలు మరియు పౌర్ణమి-అమావాస్య-శని ప్రభావాల సంపూర్ణ ప్రత్యేక గ్రంథం.',
+    summaryEn:
+      'Comprehensive standalone encyclopedia covering all 12 Zodiac signs: marriage psychology, parenting, career partnerships, wealth attraction, and health.',
+    keywordsTe: ['12 రాశుల రహస్యాలు', 'దాంపత్య మనస్తత్వం', 'రాశి ఫలితాలు'],
+    keywordsEn: ['12 Rashi Encyclopedia', 'Zodiac Spouse Psychology', 'Vedic Rashi Guide'],
+    sectionCount: 12,
+    filterGroup: ['all', 'rashiguide'],
+  },
+  {
+    slug: 'neti-nakshatra-vyasam',
+    heroImage: '/assets/articles/surya_siddhanta_kala_1794331370298.jpg',
+    imageAltTe: 'నేటి నక్షత్ర ప్రత్యేక వ్యాసం – కృష్ణ రావు & యవనాచార్య నక్షత్ర చూడామణి విశ్లేషణ',
+    imageAltEn: 'Today Nakshatra Special Article – Classical Star & Pada Analysis',
+    categoryTe: 'నేటి నక్షత్ర ప్రత్యేక వ్యాసం',
+    categoryEn: 'Daily Star Special Article',
+    readTimeMinutes: 14,
+    titleTe:
+      'నేటి నక్షత్ర ప్రత్యేక వ్యాసం: నక్షత్ర చూడామణి, యవనాచార్య మతం & 4 పాదాల సమగ్ర జీవన ఫలితాలు',
+    titleEn:
+      'Today’s Nakshatra Special Treatise: Nakshatra Chudamani, Yavanacharya Rules & 4-Pada Life Predictions',
+    summaryTe:
+      'ఈ రోజు నడుస్తున్న నక్షత్రం యొక్క అధిపతి, అధిష్టాన దేవత, 4 పాదాల ఫలితాలు, అనుకూల శుభకార్యాలు మరియు శాస్త్రోక్త పరిహారాలతో కూడిన ప్రత్యేక వ్యాసం.',
+    summaryEn:
+      'Dedicated daily treatise analyzing today’s ruling Nakshatra, deity, 4-Pada characteristics, auspicious activities, and classical Vedic remedies.',
+    keywordsTe: ['ఈ రోజు నక్షత్రం వ్యాసం', 'నక్షత్ర చూడామణి', 'యవనాచార్యుల మతం'],
+    keywordsEn: ['Today Nakshatra Article', 'Nakshatra Chudamani', 'Star Predictions'],
+    sectionCount: 6,
+    filterGroup: ['all', 'daily'],
+  },
+  {
+    slug: 'neti-jyothisha-visleshana',
+    heroImage: '/assets/articles/graha_vakra_retrograde_1794331368106.jpg',
+    imageAltTe: 'నేటి గ్రహ సంచార, కర్మ సిద్ధాంత & జీవన మార్గదర్శన వ్యాసం',
+    imageAltEn: 'Daily Planetary Transit, Karma Siddhanta & Life Guidance Article',
+    categoryTe: 'నేటి గ్రహ & జీవన విశ్లేషణ',
+    categoryEn: 'Daily Planetary & Life Insights',
+    readTimeMinutes: 15,
+    titleTe:
+      'నేటి గ్రహ సంచార & జీవన మార్గదర్శన వ్యాసం: తిథి-నక్షత్ర-యోగాల ఆధ్యాత్మిక మరియు లౌకిక సమన్వయం',
+    titleEn:
+      'Daily Planetary Transit & Life Guidance Treatise: Practical & Spiritual Alignment with Today’s Panchangam',
+    summaryTe:
+      'నేటి గ్రహస్థితి, తిథి, వారం, నక్షత్రం ఆధారంగా ఉద్యోగం, వ్యాపారం, కుటుంబం మరియు మానసిక ప్రశాంతత కోసం ఆచరించవలసిన వైదిక జీవన విధానం.',
+    summaryEn:
+      'Standalone daily astrological treatise translating today’s planetary transits, Tithi, and Nakshatra into actionable career, family, and spiritual guidance.',
+    keywordsTe: ['నేటి గ్రహ సంచారం', 'కర్మ సిద్ధాంతం', 'దినచర్య మార్గదర్శనం'],
+    keywordsEn: ['Daily Planetary Insights', 'Vedic Life Guidance', 'Graha Sancharam'],
+    sectionCount: 5,
+    filterGroup: ['all', 'daily'],
+  },
+  {
+    slug: 'astroinformatics-research',
+    heroImage: '/assets/articles/classical_jyotish_archive_1794331371569.jpg',
+    imageAltTe: 'వేద ఖగోళ గణితం & ఆస్ట్రో-ఇన్ఫర్మేటిక్స్ పరిశోధనా పత్రం',
+    imageAltEn: 'Vedic Astronomy & Astroinformatics Research Treatise',
+    categoryTe: 'ఖగోళ & ఆస్ట్రో-ఇన్ఫర్మేటిక్స్ పరిశోధన',
+    categoryEn: 'Astronomy & Astroinformatics Research',
+    readTimeMinutes: 18,
+    titleTe:
+      'వేద ఖగోళ గణితం & ఆస్ట్రో-ఇన్ఫర్మేటిక్స్ పరిశోధన: సూర్య సిద్ధాంతం, దృక్సిద్ధాంతం & NASA JPL Ephemeris తులనాత్మక విశ్లేషణ',
+    titleEn:
+      'Vedic Astronomy & Astroinformatics Research: Surya Siddhanta, Drik Siddhanta & Modern Ephemeris Precision',
+    summaryTe:
+      'ప్రాచీన భారతీయ సూర్య సిద్ధాంత గణితం, లహరి చిత్రపక్ష అయనాంశం మరియు ఆధునిక ఖగోళ శాస్త్ర (VSOP87 / NASA JPL Ephemeris) గణనల ఖచ్చితత్వాన్ని వివరించే ప్రత్యేక పరిశోధనా వ్యాసం.',
+    summaryEn:
+      'In-depth scientific treatise comparing classical Surya Siddhanta algorithms, Lahiri Chitrapaksha Ayanamsha, and modern astronomical ephemeris computation.',
+    keywordsTe: ['దృక్సిద్ధాంత గణితం', 'అయనాంశ పరిశోధన', 'సూర్య సిద్ధాంత ఖగోళం'],
+    keywordsEn: ['Vedic Astroinformatics', 'Drik Siddhanta Research', 'Lahiri Ayanamsha'],
+    sectionCount: 7,
+    filterGroup: ['all', 'research'],
+  },
+];
+
+function mapClassicalArticleToCard(article: VedicClassicalArticle): DirectoryCardItem {
+  const groups: ArticlesCategoryTab[] = ['all', 'shastras'];
+  if (
+    [
+      'balarishta-dosha-shanti',
+      'classical-astrology-faq',
+      'jyotisha-paribhasha-rahasyalu',
+      'hasta-samudrika-rekhala-vignanam',
+      'pawan-kalyan-raja-yoga-horoscope-analysis',
+      'cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide',
+      'swapna-shastra-dream-meaning-medical-astrology-1944',
+      'fmge-medical-astrology-doctor-yoga-exam-success-guide',
+    ].includes(article.slug)
+  ) {
+    groups.push('archive1959');
+  }
+  if (
+    ['why-are-geminis-so-powerful', 'who-is-libras-true-love'].includes(article.slug)
+  ) {
+    groups.push('rashiguide');
+  }
+
+  return {
+    slug: article.slug,
+    heroImage: article.heroImage,
+    imageAltTe: article.imageAltTe,
+    imageAltEn: article.imageAltEn,
+    categoryTe: article.categoryTe,
+    categoryEn: article.categoryEn,
+    readTimeMinutes: article.readTimeMinutes,
+    titleTe: article.telugu.title,
+    titleEn: article.english.title,
+    summaryTe: article.telugu.summary,
+    summaryEn: article.english.summary,
+    keywordsTe: article.telugu.secondaryKeywords,
+    keywordsEn: article.english.secondaryKeywords,
+    sectionCount: article.telugu.sections.length,
+    archivalBadge: article.archivalSource
+      ? `${article.archivalSource.year} BV Raman Archive`
+      : undefined,
+    archivalPublication: article.archivalSource?.publication,
+    archivalYear: article.archivalSource?.year,
+    archivalEditor: article.archivalSource?.editor,
+    archivalAuthorsTe: article.archivalSource?.originalArticles
+      .map((a) => a.authorTe)
+      .join(', '),
+    archivalAuthorsEn: article.archivalSource?.originalArticles
+      .map((a) => a.author)
+      .join(', '),
+    filterGroup: groups,
+  };
+}
+
 export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
   onSelectArticle,
-  onOpenBooking,
-  currentDay,
   initialCategory = 'all',
 }) => {
   const { language, t } = useLanguage();
   const isTe = language !== 'en';
   const [selectedCategory, setSelectedCategory] = useState<ArticlesCategoryTab>(initialCategory);
+  const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
 
   const iconsBySlug: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
     'swarodaya-shastra': Compass,
@@ -64,7 +227,16 @@ export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
     'cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide': Activity,
     'swapna-shastra-dream-meaning-medical-astrology-1944': Sparkles,
     'fmge-medical-astrology-doctor-yoga-exam-success-guide': Activity,
+    'dwadasa-rashi-rahasyalu': Sparkles,
+    'neti-nakshatra-vyasam': Star,
+    'neti-jyothisha-visleshana': Flame,
+    'astroinformatics-research': Cpu,
   };
+
+  const allCards: DirectoryCardItem[] = [
+    ...VEDIC_CLASSICAL_ARTICLES.map(mapClassicalArticleToCard),
+    ...SPECIAL_STANDALONE_ARTICLE_CARDS,
+  ];
 
   const categoryTabs: {
     id: ArticlesCategoryTab;
@@ -76,10 +248,10 @@ export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
   }[] = [
     {
       id: 'all',
-      labelTe: 'అన్ని వ్యాసాలు (14+)',
-      labelEn: 'All Articles (14+)',
-      badgeTe: 'సంపూర్ణ గ్రంథాలయం',
-      badgeEn: 'Complete Library',
+      labelTe: `అన్ని వ్యాసాలు (${allCards.length})`,
+      labelEn: `All Articles (${allCards.length})`,
+      badgeTe: 'ప్రత్యేక పేజీలు',
+      badgeEn: 'Standalone Pages',
       icon: BookOpen,
     },
     {
@@ -94,105 +266,86 @@ export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
       id: 'shastras',
       labelTe: 'ప్రాచీన వేద శాస్త్రాలు',
       labelEn: 'Classical Vedic Shastras',
-      badgeTe: '11 మూల శాస్త్రాలు',
-      badgeEn: '11 Core Treatises',
+      badgeTe: '14 మూల శాస్త్రాలు',
+      badgeEn: '14 Core Treatises',
       icon: ScrollText,
     },
     {
       id: 'rashiguide',
       labelTe: '12 రాశుల విజ్ఞాన సర్వస్వం',
       labelEn: '12 Rashi Encyclopedia',
-      badgeTe: 'ద్వాదశ రాశులు & ర్యాంకింగ్స్',
-      badgeEn: '12 Zodiacs & Rankings',
+      badgeTe: '3 ప్రత్యేక వ్యాసాలు',
+      badgeEn: '3 Zodiac Guides',
       icon: Sparkles,
     },
     {
       id: 'daily',
       labelTe: 'నేటి నక్షత్ర & గ్రహ వ్యాసాలు',
       labelEn: 'Daily Star & Planetary Articles',
-      badgeTe: 'నిత్య విశ్లేషణ',
-      badgeEn: 'Daily Insights',
+      badgeTe: '2 నిత్య వ్యాసాలు',
+      badgeEn: '2 Daily Treatises',
       icon: Star,
     },
     {
       id: 'research',
-      labelTe: 'వేద-ఖగోళ పరిశోధన',
+      labelTe: 'వేద ఖగోళ & ఆస్ట్రో-ఇన్ఫర్మేటిక్స్',
       labelEn: 'Vedic Astronomy Research',
-      badgeTe: 'సైంటిఫిక్ రీసెర్చ్',
-      badgeEn: 'Scientific Study',
-      icon: Telescope,
+      badgeTe: 'పరిశోధనా వ్యాసం',
+      badgeEn: 'Research Paper',
+      icon: Cpu,
     },
   ];
 
-  const filteredArticles = VEDIC_CLASSICAL_ARTICLES.filter((article) => {
-    if (selectedCategory === 'archive1959') {
-      return Boolean(article.archivalSource);
-    }
-    if (selectedCategory === 'shastras') {
-      return [
-        'swarodaya-shastra',
-        'balarishta-dosha-shanti',
-        'prashna-nimitta-shastra',
-        'graha-vakra-gati',
-        'surya-siddhanta-kala-ganana',
-        'why-are-geminis-so-powerful',
-        'who-is-libras-true-love',
-        'pawan-kalyan-raja-yoga-horoscope-analysis',
-        'cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide',
-        'swapna-shastra-dream-meaning-medical-astrology-1944',
-      ].includes(article.slug);
-    }
-    if (selectedCategory === 'rashiguide') {
-      return [
-        'why-are-geminis-so-powerful',
-        'who-is-libras-true-love',
-        'swapna-shastra-dream-meaning-medical-astrology-1944',
-      ].includes(article.slug);
-    }
-    return true;
-  });
+  const filteredCards = allCards.filter((card) =>
+    card.filterGroup.includes(selectedCategory)
+  );
 
-  const showTreatiseGrid =
-    selectedCategory === 'all' ||
-    selectedCategory === 'archive1959' ||
-    selectedCategory === 'shastras' ||
-    selectedCategory === 'rashiguide';
+  const handleCopyCardLink = (e: React.MouseEvent, slug: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (typeof window === 'undefined') return;
+    const fullUrl = `${window.location.origin}/${slug}`;
+    navigator.clipboard?.writeText(fullUrl).then(() => {
+      setCopiedSlug(slug);
+      setTimeout(() => setCopiedSlug(null), 2500);
+    });
+  };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8 w-full min-w-0 overflow-x-hidden">
       {/* Directory Header Banner */}
-      <div className="bg-gradient-to-r from-[#2c0902] via-[#3a1005] to-[#2c0902] text-amber-50 rounded-3xl p-6 sm:p-8 border-2 border-amber-500/80 shadow-xl space-y-4">
+      <div className="bg-gradient-to-r from-[#2c0902] via-[#3a1005] to-[#2c0902] text-amber-50 rounded-2xl sm:rounded-3xl p-4 sm:p-8 border-2 border-amber-500/80 shadow-xl space-y-3.5 sm:space-y-4 w-full min-w-0 overflow-hidden">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-400/40 uppercase tracking-widest">
+          <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[11px] sm:text-xs font-bold border border-amber-400/40 uppercase tracking-wider break-words">
             {t(
-              'వ్యాసాలు • వేద జ్యోతిష విజ్ఞాన సర్వస్వం • Complete Vedic Articles Hub',
-              'Vedic Astrology Articles & Classical Treatises Hub'
+              'వ్యాసాలు • ప్రతి వ్యాసానికి ప్రత్యేక పేజీ & సొంత లింక్',
+              'Vedic Astrology Articles • Every Article Opens on Its Own Dedicated URL'
             )}
           </span>
-          <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-200 text-xs font-bold border border-emerald-400/40">
+          <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-200 text-[11px] sm:text-xs font-bold border border-emerald-400/40">
             {t(
-              'తెలుగు & English • సవివరమైన 15–19 నిమిషాల సుదీర్ఘ వ్యాసాలు',
-              'Bilingual Telugu & English • Deep 15–19 Min Long-Form Treatises'
+              `మొత్తం ${allCards.length} ప్రత్యేక వ్యాసాలు`,
+              `${allCards.length} Standalone Bilingual Articles`
             )}
           </span>
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-extrabold text-amber-100 font-telugu leading-tight">
+        <h1 className="text-xl sm:text-4xl font-extrabold text-amber-100 font-telugu leading-snug sm:leading-tight break-words">
           {t(
-            'వేద జ్యోతిష వ్యాసాలు, 1944 & 1959 డా. బి. వి. రామన్ క్లాసికల్ ఆర్కైవ్ & సనాతన శాస్త్ర గ్రంథాలయం',
-            'Vedic Astrology Articles, 1944 & 1959 Classical Archive & Shastra Library'
+            'వేద జ్యోతిష వ్యాసాల గ్రంథాలయం – ఏ వ్యాసం ఆ వ్యాసానికే ప్రత్యేక పేజీ & షేరబుల్ లింక్',
+            'Vedic Astrology Articles Library – Dedicated Standalone Pages & Shareable Links'
           )}
         </h1>
 
-        <p className="text-xs sm:text-base text-amber-200/90 font-telugu max-w-4xl leading-relaxed">
+        <p className="text-xs sm:text-base text-amber-200/90 font-telugu max-w-4xl leading-relaxed break-words">
           {t(
-            'పాఠకులకు ఎటువంటి గందరగోళం లేకుండా వెబ్‌సైట్‌లోని సమస్త జ్యోతిష, ఖగోళ, హస్తసాముద్రిక, స్వరోదయ, స్వప్న శాస్త్ర, రాజయోగ, క్రీడా ప్రశ్న శాస్త్ర మరియు 1944 & 1959 డాక్టర్ బి. వి. రామన్ గారి "ది ఆస్ట్రాలాజికల్ మ్యాగజైన్" పరిశోధనా వ్యాసాలన్నింటినీ ఒకే చోట ("వ్యాసాలు" మెనూలో) పొందుపరిచాము.',
-            'All long-form Vedic astrology treatises, 1944 & 1959 Dr. B. V. Raman archival research papers, political Raja Yoga studies, sports Prashna guides, dream interpretation, palmistry, and 12-Rashi encyclopedias are organized cleanly in this unified Articles hub.'
+            'పాఠకులకు ఎటువంటి గందరగోళం లేకుండా ఇక్కడ కేవలం వ్యాసాల కార్డుల జాబితా మాత్రమే కనిపిస్తుంది. మీరు ఏ వ్యాసం కార్డుపై క్లిక్ చేసినా, ఆ ఒక్క వ్యాసం మాత్రమే తన సొంత ప్రత్యేక వెబ్ లింక్ (Unique URL) మరియు 16:9 చిత్రంతో ప్రత్యేక పేజీగా తెరుచుకుంటుంది.',
+            'To prevent any reading clutter, this directory displays only clean article cards. Clicking any card opens that single article on its own dedicated URL with its custom 16:9 image and instant link-sharing controls.'
           )}
         </p>
 
         {/* Category Filter Tabs */}
-        <div className="pt-2 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <div className="pt-2 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2">
           {categoryTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = selectedCategory === tab.id;
@@ -201,16 +354,16 @@ export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
                 key={tab.id}
                 type="button"
                 onClick={() => setSelectedCategory(tab.id)}
-                className={`flex flex-col items-start justify-between p-3 rounded-2xl border text-left transition-all cursor-pointer ${
+                className={`flex flex-col items-start justify-between p-2.5 sm:p-3 rounded-2xl border text-left transition-all cursor-pointer min-w-0 ${
                   isActive
-                    ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 border-amber-200 shadow-lg scale-[1.01]'
+                    ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 border-amber-200 shadow-lg'
                     : 'bg-amber-950/60 hover:bg-amber-900/70 text-amber-100 border-amber-700/60'
                 }`}
               >
-                <div className="flex items-center justify-between w-full gap-1 mb-1">
-                  <Icon size={16} className={isActive ? 'text-amber-950' : 'text-amber-400'} />
+                <div className="flex items-center justify-between w-full gap-1 mb-1 min-w-0">
+                  <Icon size={15} className={`${isActive ? 'text-amber-950' : 'text-amber-400'} shrink-0`} />
                   <span
-                    className={`text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${
+                    className={`text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full truncate ${
                       isActive
                         ? 'bg-amber-950/15 text-amber-950'
                         : 'bg-amber-500/20 text-amber-300'
@@ -219,7 +372,7 @@ export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
                     {isTe ? tab.badgeTe : tab.badgeEn}
                   </span>
                 </div>
-                <span className="text-xs font-extrabold font-telugu leading-snug">
+                <span className="text-xs font-extrabold font-telugu leading-snug break-words">
                   {isTe ? tab.labelTe : tab.labelEn}
                 </span>
               </button>
@@ -228,239 +381,220 @@ export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
         </div>
       </div>
 
-      {/* Special Archival Attribution Banner when viewing All or 1944/1959 Archive */}
-      {(selectedCategory === 'all' || selectedCategory === 'archive1959') && (
-        <div className="bg-gradient-to-r from-[#fff8eb] via-[#fffdf7] to-[#fff4db] rounded-3xl p-5 sm:p-6 border-2 border-amber-400/90 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-900 text-amber-100 text-[10px] font-extrabold uppercase tracking-widest">
-                {t('చారిత్రక గ్రంథ నివాళి • 1944 & 1959 Archival Tribute', '1944 & 1959 Classical Archival Tribute')}
-              </span>
-              <span className="text-xs font-bold text-amber-800">
-                The Astrological Magazine • Vol. 33 (Jan 1944) & Vol. 48 (Jan 1959) Annual Numbers
-              </span>
-            </div>
-            <h2 className="text-base sm:text-xl font-extrabold text-amber-950 font-telugu">
-              {t(
-                'డాక్టర్ బి. వి. రామన్ (Dr. B. V. Raman) గారి 1944 & 1959 వార్షిక సంచికల నుండి సేకరించిన 7 అపురూప పరిశోధనా వ్యాసాలు',
-                '7 Rare Classical Research Treatises Curated from Dr. B. V. Raman’s January 1944 & January 1959 Annual Numbers'
-              )}
-            </h2>
-            <p className="text-xs sm:text-sm text-gray-700 font-telugu leading-relaxed">
-              {t(
-                'ఆర్. లక్ష్మణన్ (ప్రజాస్వామ్య శని-గురు రాజయోగం - పవన్ కళ్యాణ్ కేస్ స్టడీ), ఎం. గోపాలన్‌కుట్టి మీనన్ (కేరళ ప్రశ్నమార్గ క్రీడా శ్వాస నాడి - IND U19 vs UAE U19 కేస్ స్టడీ), ఎ. సి. పీటర్స్ (స్వప్న శాస్త్ర కలల ఫలితాలు & కార్ల్ జంగ్ మనోవిశ్లేషణ), పండిట్ గోపేశ్ కుమార్ ఓఝా (జ్యోతిష గూఢ పరిభాష), ఎన్. ఎల్. దేశాయ్ (హస్త సాముద్రిక వేళ్ల రహస్యాలు), ప్రొ. ఎం. రామకృష్ణ భట్ (బాలారిష్ట శాంతి) మరియు మిహిర గార్ల మూల రచనలకు సవినయ కృతజ్ఞతా పూర్వక నివాళి.',
-                'Featuring expanded bilingual treatises honoring R. Lakshmanan, M. Gopalankutty Menon, A. C. Peters, Pt. Gopesh Kumar Ojha, N. L. Desai, Prof. M. Ramakrishna Bhat, Mihira, and Ram Dularey Gupta (Raman Publications, Bangalore).'
-              )}
-            </p>
-          </div>
-          {selectedCategory !== 'archive1959' && (
-            <button
-              type="button"
-              onClick={() => setSelectedCategory('archive1959')}
-              className="px-4 py-2.5 rounded-2xl bg-amber-900 hover:bg-amber-950 text-amber-100 font-bold text-xs whitespace-nowrap shrink-0 cursor-pointer shadow-sm"
+      {/* Pure Standalone Cards Grid — Zero Stacked Full Articles Below */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 min-w-0">
+        {filteredCards.map((card) => {
+          const IconComp = iconsBySlug[card.slug] || BookOpen;
+          const title = isTe ? card.titleTe : card.titleEn;
+          const summary = isTe ? card.summaryTe : card.summaryEn;
+          const keywords = isTe ? card.keywordsTe : card.keywordsEn;
+          const isCopied = copiedSlug === card.slug;
+
+          const handleQuickShareCard = async (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof window === 'undefined') return;
+            const articleUrl = `${window.location.origin}/${card.slug}`;
+            const shareText = `📖 ${title}\n\n${summary.slice(0, 140)}...\n\n🔗 ప్రత్యేక వ్యాసం లింక్:\n${articleUrl}`;
+
+            try {
+              if (navigator.share) {
+                try {
+                  const resp = await fetch(card.heroImage);
+                  const blob = await resp.blob();
+                  const file = new File([blob], `${card.slug}.jpg`, { type: 'image/jpeg' });
+                  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                      title,
+                      text: shareText,
+                      url: articleUrl,
+                      files: [file],
+                    });
+                    return;
+                  }
+                } catch {}
+                await navigator.share({
+                  title,
+                  text: shareText,
+                  url: articleUrl,
+                });
+                return;
+              }
+            } catch {}
+
+            const waText = encodeURIComponent(shareText);
+            window.open(`https://api.whatsapp.com/send?text=${waText}`, '_blank');
+          };
+
+          return (
+            <article
+              key={card.slug}
+              className="bg-white rounded-2xl sm:rounded-3xl border-2 border-amber-300/80 hover:border-amber-500 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group min-w-0"
             >
-              {t('1944 & 1959 ఆర్కైవ్ (7) చూడండి →', 'View 1944 & 1959 Archive (7) →')}
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* Grid of Long-Form Treatises */}
-      {showTreatiseGrid && (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredArticles.map((article) => {
-            const content = isTe ? article.telugu : article.english;
-            const IconComp = iconsBySlug[article.slug] || BookOpen;
-
-            const handleQuickShareCard = async (e: React.MouseEvent) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (typeof window === 'undefined') return;
-              const articleUrl = `${window.location.origin}/${article.slug}`;
-              const shareText = `${content.title}\n\n${content.summary.slice(0, 140)}...\n\nపూర్తి వ్యాసం చదవండి:\n${articleUrl}`;
-
-              try {
-                if (navigator.share) {
-                  try {
-                    const resp = await fetch(article.heroImage);
-                    const blob = await resp.blob();
-                    const file = new File([blob], `${article.slug}.jpg`, { type: 'image/jpeg' });
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                      await navigator.share({
-                        title: content.seoTitle || content.title,
-                        text: shareText,
-                        url: articleUrl,
-                        files: [file],
-                      });
-                      return;
+              <div className="min-w-0">
+                {/* Clickable 16:9 Article Hero Image */}
+                <a
+                  href={`/${card.slug}`}
+                  onClick={(e) => {
+                    if (onSelectArticle) {
+                      e.preventDefault();
+                      onSelectArticle(card.slug);
                     }
-                  } catch {}
-                  await navigator.share({
-                    title: content.seoTitle || content.title,
-                    text: shareText,
-                    url: articleUrl,
-                  });
-                  return;
-                }
-              } catch {}
+                  }}
+                  className="relative block aspect-video w-full overflow-hidden bg-[#2c0902]"
+                >
+                  <img
+                    src={card.heroImage}
+                    alt={isTe ? card.imageAltTe : card.imageAltEn}
+                    referrerPolicy="no-referrer"
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1e0501]/85 via-transparent to-black/25 pointer-events-none" />
 
-              const waText = encodeURIComponent(shareText);
-              window.open(`https://api.whatsapp.com/send?text=${waText}`, '_blank');
-            };
+                  {/* Top badges on image */}
+                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 min-w-0">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-amber-100 bg-amber-950/85 backdrop-blur-xs px-2 py-0.5 rounded-full border border-amber-400/50 shadow-sm truncate">
+                      <IconComp size={11} className="text-amber-400 shrink-0" />
+                      <span className="truncate">
+                        {card.archivalBadge
+                          ? card.archivalBadge
+                          : isTe
+                          ? 'ప్రత్యేక వ్యాస పేజీ'
+                          : 'Standalone Article'}
+                      </span>
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-100 bg-black/70 backdrop-blur-xs px-2 py-0.5 rounded-full border border-amber-300/40 shrink-0">
+                      <Clock size={10} className="text-amber-300" />
+                      {card.readTimeMinutes} {t('ని॥', 'm')}
+                    </span>
+                  </div>
 
-            return (
-              <article
-                key={article.slug}
-                className="bg-white rounded-3xl border-2 border-amber-300/80 hover:border-amber-500 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group"
-              >
-                <div>
-                  {/* Clickable 16:9 Article Hero Image */}
+                  {/* Bottom category & section count on image */}
+                  <div className="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between gap-2 min-w-0">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 drop-shadow truncate">
+                      {isTe ? card.categoryTe : card.categoryEn}
+                    </span>
+                    <span className="text-[10px] font-bold text-emerald-200 bg-emerald-950/85 px-2 py-0.5 rounded-full border border-emerald-400/40 shrink-0">
+                      {card.sectionCount} {t('అధ్యాయాలు', 'sections')}
+                    </span>
+                  </div>
+                </a>
+
+                <div className="p-4 sm:p-6 space-y-3 min-w-0">
                   <a
-                    href={`/${article.slug}`}
+                    href={`/${card.slug}`}
                     onClick={(e) => {
                       if (onSelectArticle) {
                         e.preventDefault();
-                        onSelectArticle(article.slug);
+                        onSelectArticle(card.slug);
                       }
                     }}
-                    className="relative block aspect-video w-full overflow-hidden bg-[#2c0902]"
+                    className="block min-w-0"
                   >
-                    <img
-                      src={article.heroImage}
-                      alt={isTe ? article.imageAltTe : article.imageAltEn}
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#1e0501]/85 via-transparent to-black/25 pointer-events-none" />
-
-                    {/* Top badges on image */}
-                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                      <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-amber-100 bg-amber-950/85 backdrop-blur-xs px-2.5 py-1 rounded-full border border-amber-400/50 shadow-sm">
-                        <IconComp size={12} className="text-amber-400" />
-                        {article.archivalSource
-                          ? `${article.archivalSource.year} BV Raman Archive`
-                          : isTe
-                          ? 'వేద శాస్త్ర గ్రంథం'
-                          : 'Vedic Treatise'}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-100 bg-black/70 backdrop-blur-xs px-2.5 py-1 rounded-full border border-amber-300/40">
-                        <Clock size={11} className="text-amber-300" />
-                        {article.readTimeMinutes} {t('ని॥ పఠనం', 'min read')}
-                      </span>
-                    </div>
-
-                    {/* Bottom category & section count on image */}
-                    <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 drop-shadow">
-                        {isTe ? article.categoryTe : article.categoryEn}
-                      </span>
-                      <span className="text-[10px] font-bold text-emerald-200 bg-emerald-950/85 px-2 py-0.5 rounded-full border border-emerald-400/40">
-                        {content.sections.length} {t('అధ్యాయాలు', 'sections')}
-                      </span>
-                    </div>
+                    <h2 className="text-base sm:text-lg font-extrabold text-amber-950 font-telugu group-hover:text-amber-800 leading-snug break-words">
+                      {title}
+                    </h2>
                   </a>
 
-                  <div className="p-5 sm:p-6 space-y-3.5">
-                    <a
-                      href={`/${article.slug}`}
-                      onClick={(e) => {
-                        if (onSelectArticle) {
-                          e.preventDefault();
-                          onSelectArticle(article.slug);
-                        }
-                      }}
-                      className="block"
-                    >
-                      <h3 className="text-base sm:text-lg font-extrabold text-amber-950 font-telugu group-hover:text-amber-800 leading-snug">
-                        {content.title}
-                      </h3>
-                    </a>
+                  <p className="text-xs sm:text-sm text-gray-700 font-telugu line-clamp-3 leading-relaxed">
+                    {summary}
+                  </p>
 
-                    <p className="text-xs sm:text-sm text-gray-700 font-telugu line-clamp-3 leading-relaxed">
-                      {content.summary}
-                    </p>
-
-                    {/* Archival Author Credit Pill if applicable */}
-                    {article.archivalSource && (
-                      <div className="bg-amber-50/90 rounded-2xl p-3 border border-amber-200/80 text-[11px] text-amber-950 space-y-0.5">
-                        <p className="font-extrabold text-amber-900">
-                          📚 {t('మూల ఆధారం:', 'Source:')} {article.archivalSource.publication} (
-                          {article.archivalSource.year})
-                        </p>
-                        <p className="text-gray-700">
-                          {t('సంపాదకులు:', 'Editor:')} {article.archivalSource.editor} •{' '}
-                          {article.archivalSource.originalArticles
-                            .map((a) => (isTe ? a.authorTe : a.author))
-                            .join(', ')}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Key Tags */}
-                    <div className="flex flex-wrap gap-1.5 pt-0.5">
-                      {content.secondaryKeywords.slice(0, 3).map((kw, kwIdx) => (
-                        <span
-                          key={kwIdx}
-                          className="text-[10px] font-semibold bg-amber-50 text-amber-900 px-2 py-0.5 rounded-lg border border-amber-200"
-                        >
-                          {kw}
-                        </span>
-                      ))}
+                  {/* Explicit Standalone URL Pill + 1-Click Copy Link */}
+                  <div className="bg-amber-50/95 rounded-xl px-3 py-2 border border-amber-300/80 flex items-center justify-between gap-2">
+                    <div className="truncate text-[11px] font-mono text-amber-900">
+                      <span className="font-bold text-amber-700">🔗 Link: </span>
+                      <span>/{card.slug}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={(e) => handleCopyCardLink(e, card.slug)}
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-900 hover:bg-amber-800 text-amber-100 text-[10px] font-bold cursor-pointer transition-colors"
+                        title={t('ఈ వ్యాసం లింక్ కాపీ చేయండి', 'Copy this article URL')}
+                      >
+                        {isCopied ? (
+                          <>
+                            <CheckCircle2 size={11} className="text-emerald-300" />
+                            <span>{t('కాపీ అయింది', 'Copied')}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={11} />
+                            <span>{t('లింక్ కాపీ', 'Copy URL')}</span>
+                          </>
+                        )}
+                      </button>
+                      <a
+                        href={`/${card.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-200/80 hover:bg-amber-300 text-amber-950 text-[10px] font-bold transition-colors"
+                        title={t('కొత్త ట్యాబ్‌లో తెరవండి', 'Open in new tab')}
+                      >
+                        <ExternalLink size={11} />
+                      </a>
                     </div>
                   </div>
+
+                  {/* Archival Author Credit Pill if applicable */}
+                  {card.archivalPublication && (
+                    <div className="bg-amber-50/70 rounded-2xl p-3 border border-amber-200/80 text-[11px] text-amber-950 space-y-0.5">
+                      <p className="font-extrabold text-amber-900">
+                        📚 {t('మూల ఆధారం:', 'Source:')} {card.archivalPublication} (
+                        {card.archivalYear})
+                      </p>
+                      <p className="text-gray-700">
+                        {t('సంపాదకులు:', 'Editor:')} {card.archivalEditor} •{' '}
+                        {isTe ? card.archivalAuthorsTe : card.archivalAuthorsEn}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Key Tags */}
+                  <div className="flex flex-wrap gap-1.5 pt-0.5">
+                    {keywords.slice(0, 3).map((kw, kwIdx) => (
+                      <span
+                        key={kwIdx}
+                        className="text-[10px] font-semibold bg-amber-50 text-amber-900 px-2 py-0.5 rounded-lg border border-amber-200"
+                      >
+                        {kw}
+                      </span>
+                    ))}
+                  </div>
                 </div>
+              </div>
 
-                <div className="p-5 sm:p-6 pt-0 border-t border-amber-100 mt-1 flex items-center gap-2">
-                  <a
-                    href={`/${article.slug}`}
-                    onClick={(e) => {
-                      if (onSelectArticle) {
-                        e.preventDefault();
-                        onSelectArticle(article.slug);
-                      }
-                    }}
-                    className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-white font-bold text-xs sm:text-sm shadow-md transition-all group-hover:translate-x-0.5"
-                  >
-                    <span>{t('సంపూర్ణ వ్యాసం చదవండి', 'Read Article Page')}</span>
-                    <ArrowRight size={15} />
-                  </a>
-                  <button
-                    type="button"
-                    onClick={handleQuickShareCard}
-                    title={t('చిత్రం & లింక్ షేర్ చేయండి', 'Share Article Image & Link')}
-                    className="py-3 px-3.5 rounded-2xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs shadow-md transition-all cursor-pointer shrink-0"
-                  >
-                    {t('షేర్ 📤', 'Share 📤')}
-                  </button>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      )}
-
-      {/* 12 Rashi Vedic Encyclopedia View */}
-      {(selectedCategory === 'rashiguide' || selectedCategory === 'all') && (
-        <div className="pt-4">
-          <DwadasaRashiVedicGuide onOpenBooking={onOpenBooking} />
-        </div>
-      )}
-
-      {/* Daily Nakshatra & Planetary Insights View */}
-      {(selectedCategory === 'daily' || selectedCategory === 'all') && currentDay && (
-        <div className="space-y-8 pt-4">
-          <DailyNakshatraArticle currentDay={currentDay} onOpenBooking={onOpenBooking} />
-          <DailyAstrologyInsights currentDay={currentDay} onOpenBooking={onOpenBooking} />
-        </div>
-      )}
-
-      {/* Vedic Astronomy & Astroinformatics Research View */}
-      {(selectedCategory === 'research' || selectedCategory === 'all') && (
-        <div className="pt-4">
-          <AstroinformaticsResearch />
-        </div>
-      )}
+              <div className="p-5 sm:p-6 pt-0 border-t border-amber-100 mt-1 flex items-center gap-2">
+                <a
+                  href={`/${card.slug}`}
+                  onClick={(e) => {
+                    if (onSelectArticle) {
+                      e.preventDefault();
+                      onSelectArticle(card.slug);
+                    }
+                  }}
+                  className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-white font-bold text-xs sm:text-sm shadow-md transition-all group-hover:translate-x-0.5"
+                >
+                  <span>{t('ఈ వ్యాసం పేజీ తెరవండి', 'Open Article Page')}</span>
+                  <ArrowRight size={15} />
+                </a>
+                <button
+                  type="button"
+                  onClick={handleQuickShareCard}
+                  title={t('చిత్రం & లింక్ షేర్ చేయండి', 'Share Article Image & Link')}
+                  className="inline-flex items-center gap-1.5 py-3 px-3.5 rounded-2xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs shadow-md transition-all cursor-pointer shrink-0"
+                >
+                  <Share2 size={14} />
+                  <span>{t('షేర్', 'Share')}</span>
+                </button>
+              </div>
+            </article>
+          );
+        })}
+      </div>
     </div>
   );
 };

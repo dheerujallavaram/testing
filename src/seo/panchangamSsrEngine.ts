@@ -18,6 +18,7 @@ import {
   LUNAR_AND_SHANI_MENTAL_GUIDES,
 } from '../data/dwadasaRashiVedicEncyclopedia';
 import { VEDIC_CLASSICAL_ARTICLES } from '../data/vedicArticlesData';
+import { getDailyRashiFortunes } from '../utils/panchangaLogic';
 
 export const SITE_URL = 'https://www.telugujyothisham.com';
 export const ISR_REVALIDATE_SECONDS = 86400;
@@ -501,6 +502,60 @@ export const TOOL_PAGE_ORIGINAL_GUIDES: Record<string, ToolGuideContent> = {
       {
         q: 'అమృత ఘడియలు ఎందుకు శుభప్రదం?',
         a: 'ప్రతి నక్షత్రంలో వర్జ్యం ముగిసిన తర్వాత నిర్దిష్ట విరామంలో వచ్చే 4 ఘడియల (96 నిమిషాల) శుభ కాలాన్ని అమృత ఘడియలు అంటారు. ఈ సమయంలో చేపట్టే పనులు నిర్విఘ్నంగా ఫలిస్తాయని ముహూర్త శాస్త్రం చెబుతోంది.',
+      },
+    ],
+  },
+  '/rashi-phalalu': {
+    primaryKeyword: 'రాశి ఫలాలు',
+    secondaryKeywords: [
+      'నేటి రాశి ఫలాలు',
+      'rashi phalalu',
+      'rasi phalalu',
+      'today rashi phalalu in telugu',
+      'rashi phalalu today in telugu',
+      'ఈ రోజు రాశి ఫలాలు',
+      'neti rashi phalalu',
+      'daily horoscope in telugu',
+      'ద్వాదశ రాశి ఫలాలు',
+      'mesha to meena rashi phalalu',
+    ],
+    authorPlaceholderTag: '{{AUTHOR_NOTE_DAILY_RASHI_PHALALU}}',
+    introTe:
+      'రాశి ఫలాలు – నేటి రాశి ఫలాలు (Rashi Phalalu Today in Telugu / Rasi Phalalu / Daily Horoscope in Telugu): దృక్సిద్ధాంత గణితం, చంద్రుని నిరయన నక్షత్ర సంచారం, తారాబలం, చంద్రబలం మరియు నవగ్రహ గోచార దృష్టి ఆధారంగా మేషం నుండి మీనం వరకు 12 రాశుల (Mesha, Vrushabha, Mithuna, Karkataka, Simha, Kanya, Tula, Vruschika, Dhanussu, Makara, Kumbha, Meena) నేటి దిన ఫలితాలు ఇక్కడ అందించబడ్డాయి. ప్రతి రాశికి ఉద్యోగం, వ్యాపారం, ఆర్థిక స్థితి, కుటుంబం, ఆరోగ్యం, నేడు చేయవలసిన పని, శుభ సమయం, అదృష్ట సంఖ్య మరియు వైదిక పరిహారాలను తెలుగు మరియు ఇంగ్లీష్ (Telugu & English) భాషలలో చదవండి.',
+    howItWorksTitle: 'దృక్సిద్ధాంత రాశి ఫలాలు (Rashi Phalalu) గణన ఎలా పనిచేస్తుంది?',
+    howItWorksTe:
+      'వేద జ్యోతిషశాస్త్రంలో దిన ఫలితాలు (Daily Rashi Phalalu in Telugu) ప్రధానంగా మీ జన్మ రాశి (Moon Sign) నుండి ఆ రోజు చంద్రుడు సంచరించే స్థానం (చంద్రబలం: 1, 3, 6, 7, 10, 11 స్థానాలు శుభప్రదం) మరియు మీ జన్మ నక్షత్రం నుండి ఆ రోజు నక్షత్రానికి గల తారాబలం ఆధారంగా లెక్కించబడతాయి.',
+    termsTitle: 'రాశి ఫలాలలో ముఖ్య జ్యోతిష సూత్రాలు (Key Horoscope Principles)',
+    termsListTe: [
+      {
+        term: 'చంద్రబలం (Chandrabalam – Lunar Transit Strength)',
+        meaning: 'జన్మ రాశి నుండి చంద్రుడు 1, 3, 6, 7, 10, 11 స్థానాలలో ఉన్నప్పుడు మానసిక ఉత్సాహం, కార్యసిద్ధి మరియు ధనలాభం కలుగుతాయి.',
+      },
+      {
+        term: 'చంద్రాష్టమం (Chandrashtamam – 8th House Moon)',
+        meaning: 'జన్మ రాశి నుండి చంద్రుడు 8వ రాశిలో ఉన్నప్పుడు (చంద్రాష్టమం) కొత్త ఒప్పందాలు, ప్రయాణాలలో ఓర్పు మరియు జాగ్రత్త అవసరం.',
+      },
+      {
+        term: 'గోచార ఫలం (Gochara Phalalu – Planetary Transit Impact)',
+        meaning: 'గురు, శని, రాహు-కేతువుల దీర్ఘకాలిక గోచార స్థితికి నేటి చంద్ర సంచారం తోడైనప్పుడు కలిగే తక్షణ దిన ఫలితం.',
+      },
+    ],
+    faqListTe: [
+      {
+        q: 'ఈ రోజు రాశి ఫలాలు (Today Rashi Phalalu in Telugu) ఎలా చూసుకోవాలి?',
+        a: 'ఈ పేజీలో మేషం నుండి మీనం వరకు 12 రాశుల నేటి రాశి ఫలాలు (Rashi Phalalu in Telugu & English) ఇవ్వబడ్డాయి. మీ జన్మ రాశిని లేదా మీ పేరులోని మొదటి అక్షరాన్ని ఎంచుకుని నేటి వృత్తి, ఆర్థిక, కుటుంబ ఫలితాలు, శుభ సమయం మరియు పరిహారం వెంటనే చూసుకోవచ్చు.',
+      },
+      {
+        q: 'రాశి ఫలాలు జన్మ రాశి ప్రకారం చూడాలా లేక పేరు రాశి (Naama Rashi) ప్రకారం చూడాలా?',
+        a: 'పుట్టిన తేదీ, సమయం మరియు జన్మ నక్షత్రం తెలిసిన వారు ఖచ్చితంగా జన్మ రాశి (Birth Moon Sign) ప్రకారం చూడాలి. జన్మ వివరాలు తెలియని వారు పిలిచే పేరులోని మొదటి అక్షరం ఆధారంగా వచ్చే నామ రాశి (Name Sign) ప్రకారం చూసుకోవచ్చు.',
+      },
+      {
+        q: 'What is Today Rashi Phalalu (Rasi Phalalu) in Telugu and how is it calculated?',
+        a: 'Today Rashi Phalalu (నేటి రాశి ఫలాలు) provides daily Vedic astrology predictions for all 12 zodiac signs (Mesha to Meena) calculated using Drik Siddhanta lunar transit (Gochara Chandrabalam), Nakshatra Tarabalam, and daily planetary aspects (Graha Drishti).',
+      },
+      {
+        q: 'చంద్రాష్టమం (Chandrashtamam) ఉన్న రోజున ఏమి చేయాలి?',
+        a: 'మీ రాశికి చంద్రుడు 8వ ఇంట ఉన్న రోజున (చంద్రాష్టమం) ముఖ్యమైన ఆర్థిక నిర్ణయాలు, వాదోపవాదాలు వాయిదా వేసి, శివ పంచాక్షరి మంత్ర జపం లేదా చంద్ర కవచ పారాయణ చేయడం వల్ల మానసిక ప్రశాంతత లభిస్తుంది.',
       },
     ],
   },
@@ -1611,6 +1666,24 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       h1: `నేటి పంచాంగం – ఈ రోజు పంచాంగం (${todayData.teediVaram})`,
       breadcrumbName: 'నేటి పంచాంగం',
     },
+    '/rashi-phalalu': {
+      primaryKeyword: 'రాశి ఫలాలు',
+      secondaryKeywords: [
+        'నేటి రాశి ఫలాలు',
+        'rashi phalalu',
+        'rasi phalalu',
+        'today rashi phalalu in telugu',
+        'rashi phalalu today in telugu',
+        'ఈ రోజు రాశి ఫలాలు',
+        'neti rashi phalalu',
+        'daily horoscope in telugu',
+        'ద్వాదశ రాశి ఫలాలు',
+      ],
+      title: 'రాశి ఫలాలు – నేటి రాశి ఫలాలు | Rashi Phalalu Today Telugu',
+      description: `రాశి ఫలాలు (Rashi Phalalu Today in Telugu / Rasi Phalalu): ఈ రోజు (${todayData.teediVaram}, ${cleanNak}) మేషం నుండి మీనం వరకు 12 రాశుల నేటి రాశి ఫలాలు, చంద్రబలం & శుభ సమయం.`,
+      h1: `రాశి ఫలాలు – నేటి రాశి ఫలాలు (Today Rashi Phalalu in Telugu – ${todayData.teediVaram})`,
+      breadcrumbName: 'రాశి ఫలాలు (Rashi Phalalu)',
+    },
     '/janma-kundali': {
       primaryKeyword: 'జన్మ కుండలి తెలుగులో',
       secondaryKeywords: [
@@ -2058,6 +2131,49 @@ export function buildCleanJsonLdSchema(meta: PageSeoMetadata): Record<string, un
           '@type': 'Answer',
           text: f.a,
         },
+      })),
+    });
+  }
+
+  const todayIsoForSchema = getTodayIsoDateIST();
+  graph.push({
+    '@type': 'WebPage',
+    '@id': `${meta.canonical}#webpage`,
+    url: meta.canonical,
+    name: meta.title,
+    headline: meta.h1,
+    description: meta.description,
+    inLanguage: ['te', 'en'],
+    datePublished: '2026-01-01',
+    dateModified: todayIsoForSchema,
+    isPartOf: {
+      '@id': `${SITE_URL}/#website`,
+    },
+    about: {
+      '@id': `${SITE_URL}/#organization`,
+    },
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', 'h2', '#rashi-phalalu-featured-snippet'],
+    },
+  });
+
+  if (meta.canonical === `${SITE_URL}/rashi-phalalu`) {
+    const todayData = getOrGenerateDayData(todayIsoForSchema, WEEK_DATA);
+    const rashiFortunes = getDailyRashiFortunes(todayData);
+    graph.push({
+      '@type': 'ItemList',
+      '@id': `${SITE_URL}/rashi-phalalu#12-rashi-sitelinks`,
+      name: `రాశి ఫలాలు – నేటి 12 రాశుల దిన ఫలాలు (Today Rashi Phalalu in Telugu & English – ${todayData.teediVaram})`,
+      description:
+        'మేషం నుండి మీనం వరకు 12 రాశుల నేటి రాశి ఫలాలు (Mesha, Vrushabha, Mithuna, Karkataka, Simha, Kanya, Tula, Vruschika, Dhanussu, Makara, Kumbha, Meena Daily Horoscope in Telugu & English).',
+      numberOfItems: rashiFortunes.length,
+      itemListElement: rashiFortunes.map((r, idx) => ({
+        '@type': 'ListItem',
+        position: idx + 1,
+        url: `${SITE_URL}/rashi-phalalu#rashi-${r.id}`,
+        name: `${r.teluguName} రాశి ఫలాలు (${r.englishName} Rashi Phalalu Today)`,
+        description: `${r.teluguName} రాశి (${r.statusLabel} / ${r.statusLabelEn}): ${r.grahaDrishtiPhalamTe} శుభ సమయం: ${r.luckyTimeWindowTe}, అదృష్ట సంఖ్య: #${r.luckyNumber}, పరిహారం: ${r.remedy}.`,
       })),
     });
   }
@@ -2784,6 +2900,41 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
   const toolGuideHtml = !isPanchangamOnlyRoute ? renderRichToolGuideHtml(pathname) : '';
   const gocharaHtml = renderGocharaServerSection(pathname);
   const rashiEncyclopediaHtml = renderDwadasaRashiEncyclopediaServerSection(pathname);
+  const rashiPhalaluSsrHtml =
+    pathname === '/rashi-phalalu'
+      ? (() => {
+          const fortunes = getDailyRashiFortunes(dayData);
+          return `
+        <section aria-label="Today Rashi Phalalu in Telugu and English - 12 Zodiac Signs" style="background:#ffffff;border:2px solid #f59e0b;border-radius:18px;padding:22px;margin-bottom:24px;">
+          <h2 style="margin:0 0 10px;font-size:22px;color:#451a03;">
+            రాశి ఫలాలు – నేటి ద్వాదశ రాశి ఫలాలు (Today Rashi Phalalu in Telugu &amp; English – ${escapeHtml(dayData.teediVaram)})
+          </h2>
+          <p style="margin:0 0 16px;font-size:15px;color:#334155;">
+            <strong>Google Featured Summary (తెలుగు &amp; English):</strong> ఈ రోజు (${escapeHtml(dayData.teediVaram)}, నక్షత్రం: ${escapeHtml(cityPanchangam.nakshatram)}) మేషం నుండి మీనం వరకు 12 రాశుల నేటి రాశి ఫలాలు (Rashi Phalalu Today in Telugu / Rasi Phalalu). Daily Telugu Horoscope predictions for all 12 Rasis with Chandrabalam, Lucky Time, Lucky Number, and Vedic Remedies:
+          </p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;">
+            ${fortunes
+              .map(
+                (r) => `
+              <article id="rashi-${escapeHtml(r.id)}" style="border:1px solid #fde68a;background:#fffbeb;border-radius:14px;padding:14px;">
+                <h3 style="margin:0 0 6px;font-size:17px;color:#78350f;">
+                  ${escapeHtml(r.teluguName)} రాశి ఫలాలు (${escapeHtml(r.englishName)} Rashi Phalalu) — <span style="color:#065f46;">${escapeHtml(r.statusLabel)} (${escapeHtml(r.statusLabelEn)})</span>
+                </h3>
+                <p style="margin:0 0 6px;font-size:14px;color:#1e293b;"><strong>తెలుగు ఫలితం:</strong> ${escapeHtml(r.grahaDrishtiPhalamTe)} ${escapeHtml(r.careerFinanceLine)}</p>
+                <p style="margin:0 0 6px;font-size:13.5px;color:#334155;"><strong>English Horoscope:</strong> ${escapeHtml(r.grahaDrishtiPhalamEn)}</p>
+                <p style="margin:0;font-size:13px;color:#9a3412;">
+                  <strong>శుభ సమయం (Lucky Time):</strong> ${escapeHtml(r.luckyTimeWindowTe)} | 
+                  <strong>శుభ రంగు (Color):</strong> ${escapeHtml(r.luckyColor)} | 
+                  <strong>సంఖ్య (#):</strong> #${escapeHtml(String(r.luckyNumber))} | 
+                  <strong>పరిహారం (Remedy):</strong> ${escapeHtml(r.remedy)}
+                </p>
+              </article>`
+              )
+              .join('')}
+          </div>
+        </section>`;
+        })()
+      : '';
 
   return `
       <main style="max-width:1140px;margin:0 auto;padding:24px 16px;font-family:'Noto Serif Telugu',Georgia,serif;color:#1e293b;line-height:1.65;">
@@ -2797,6 +2948,7 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
           <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
             <a href="/panchangam/${prevDate}" style="padding:6px 12px;background:#fff;border:1px solid #d97706;border-radius:8px;color:#78350f;text-decoration:none;font-weight:700;font-size:13px;">← నిన్నటి పంచాంగం (${prevDate})</a>
             <a href="/panchangam/${todayIso}" style="padding:6px 12px;background:#9a3412;border:1px solid #9a3412;border-radius:8px;color:#fff;text-decoration:none;font-weight:700;font-size:13px;">నేటి పంచాంగం (${todayIso})</a>
+            <a href="/rashi-phalalu" style="padding:6px 12px;background:#b45309;border:1px solid #f59e0b;border-radius:8px;color:#fff;text-decoration:none;font-weight:700;font-size:13px;">✨ నేటి రాశి ఫలాలు (Rashi Phalalu)</a>
             <a href="/panchangam/${nextDate}" style="padding:6px 12px;background:#fff;border:1px solid #d97706;border-radius:8px;color:#78350f;text-decoration:none;font-weight:700;font-size:13px;">రేపటి పంచాంగం (${nextDate}) →</a>
             <a href="/panchangam/calendar" style="padding:6px 12px;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;color:#78350f;text-decoration:none;font-weight:700;font-size:13px;">📅 తెలుగు క్యాలెండర్ 2026</a>
           </div>
@@ -2809,6 +2961,7 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
           </div>
         </nav>
 
+        ${rashiPhalaluSsrHtml}
         ${gocharaHtml}
         ${toolGuideHtml}
         ${rashiEncyclopediaHtml}

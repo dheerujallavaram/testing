@@ -575,8 +575,38 @@ export const DailyAstrologyInsights: React.FC<DailyAstrologyInsightsProps> = ({
             )}
           </div>
 
-          {/* Aspects Table */}
-          <div className="overflow-x-auto max-h-[460px] overflow-y-auto rounded-xl border border-amber-200 bg-white">
+          {/* Aspects View: Mobile Vertical Cards (< sm) + Desktop Table (sm+) */}
+          <div className="sm:hidden max-h-[460px] overflow-y-auto space-y-2.5 pr-1">
+            {displayedAspects.map((ev) => {
+              const fromMeta = PLANET_META[ev.fromPlanet];
+              const toMeta = PLANET_META[ev.toPlanet];
+              const aspMeta = ASPECT_META[ev.aspect];
+              return (
+                <div
+                  key={ev.id}
+                  className="bg-white rounded-xl p-3.5 border border-amber-200 shadow-2xs space-y-1.5"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <span className="text-xs font-bold text-amber-950">
+                      📅 {formatTeluguDateFriendly(ev.isoDate)} • 🕒 {formatTeluguTime12Hr(ev.time)}
+                    </span>
+                    <span className="inline-block bg-amber-100 text-amber-950 border border-amber-300 font-bold px-2 py-0.5 rounded-md text-[11px]">
+                      {aspMeta.labelTe}
+                    </span>
+                  </div>
+                  <div className="text-xs font-extrabold text-amber-900">
+                    {fromMeta.icon} {fromMeta.nameTe} <span className="text-amber-700">→</span>{' '}
+                    {toMeta.icon} {toMeta.nameTe}
+                  </div>
+                  <p className="text-stone-700 text-xs leading-relaxed break-words pt-1 border-t border-amber-100">
+                    {formatAspectInsightTe(ev)}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="hidden sm:block overflow-x-auto max-h-[460px] overflow-y-auto rounded-xl border border-amber-200 bg-white">
             <table className="w-full text-left border-collapse">
               <thead className="bg-amber-100/90 text-amber-950 text-xs uppercase sticky top-0 z-10 border-b border-amber-300">
                 <tr>
@@ -611,7 +641,7 @@ export const DailyAstrologyInsights: React.FC<DailyAstrologyInsightsProps> = ({
                           {aspMeta.labelTe}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-stone-700 text-xs leading-relaxed">
+                      <td className="py-2.5 px-3 text-stone-700 text-xs leading-relaxed break-words">
                         {formatAspectInsightTe(ev)}
                       </td>
                     </tr>

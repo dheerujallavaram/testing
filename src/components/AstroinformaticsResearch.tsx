@@ -434,8 +434,42 @@ export const AstroinformaticsResearch: React.FC<{ onOpenBooking?: () => void }> 
           </div>
         </div>
 
-        {/* Detailed Table */}
-        <div className="overflow-x-auto rounded-2xl border border-amber-200 bg-white shadow-2xs">
+        {/* Detailed Comparison: Stacked Cards on Mobile (< sm), Table on Desktop (sm+) */}
+        <div className="sm:hidden space-y-3">
+          {COMPARISON_TABLE.map((row, idx) => (
+            <div
+              key={idx}
+              className="rounded-2xl border border-amber-300 bg-white p-4 space-y-2 shadow-2xs"
+            >
+              <div className="pb-2 border-b border-amber-200 font-bold text-amber-950 text-sm break-words">
+                {language === 'te' ? row.metricTe : row.metricEn}
+              </div>
+              <div className="text-xs text-slate-700 space-y-1.5">
+                <div>
+                  <span className="font-bold text-amber-800 block">
+                    {t('సాంప్రదాయ పట్టిక పద్ధతి:', 'Manual Table Method:')}
+                  </span>
+                  <span className="break-words">
+                    {language === 'te' ? row.traditionalTe : row.traditionalEn}
+                  </span>
+                </div>
+                <div className="bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/80">
+                  <span className="font-bold text-emerald-900 block">
+                    {t('ఆస్ట్రోఇన్ఫర్మేటిక్స్ (ఈ వెబ్‌సైట్):', 'Astroinformatics Engine:')}
+                  </span>
+                  <span className="font-semibold text-emerald-950 break-words">
+                    {language === 'te' ? row.computationalTe : row.computationalEn}
+                  </span>
+                </div>
+                <div className="text-amber-900 font-bold pt-1">
+                  ✓ {language === 'te' ? row.advantageTe : row.advantageEn}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden sm:block overflow-x-auto max-w-full rounded-2xl border border-amber-200 bg-white shadow-2xs">
           <table className="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr className="bg-amber-100/80 text-amber-950 border-b border-amber-200">
@@ -448,16 +482,16 @@ export const AstroinformaticsResearch: React.FC<{ onOpenBooking?: () => void }> 
             <tbody className="divide-y divide-amber-100">
               {COMPARISON_TABLE.map((row, idx) => (
                 <tr key={idx} className="hover:bg-amber-50/50">
-                  <td className="py-3 px-3 sm:px-4 font-bold text-amber-950">
+                  <td className="py-3 px-3 sm:px-4 font-bold text-amber-950 break-words">
                     {language === 'te' ? row.metricTe : row.metricEn}
                   </td>
-                  <td className="py-3 px-3 sm:px-4 text-slate-600">
+                  <td className="py-3 px-3 sm:px-4 text-slate-600 break-words">
                     {language === 'te' ? row.traditionalTe : row.traditionalEn}
                   </td>
-                  <td className="py-3 px-3 sm:px-4 font-semibold text-emerald-950 bg-amber-50/40">
+                  <td className="py-3 px-3 sm:px-4 font-semibold text-emerald-950 bg-amber-50/40 break-words">
                     {language === 'te' ? row.computationalTe : row.computationalEn}
                   </td>
-                  <td className="py-3 px-3 sm:px-4 text-amber-900 font-bold">
+                  <td className="py-3 px-3 sm:px-4 text-amber-900 font-bold break-words">
                     ✓ {language === 'te' ? row.advantageTe : row.advantageEn}
                   </td>
                 </tr>

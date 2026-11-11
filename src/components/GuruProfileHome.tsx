@@ -40,6 +40,7 @@ import { DevoteeReviewsSection } from './DevoteeReviewsSection';
 export interface GuruProfileHomeProps {
   currentDay: DayData;
   onNavigateToPanchangam: (isoDate?: string) => void;
+  onNavigateToRashiPhalalu?: () => void;
   onNavigateToCalendar?: () => void;
   onNavigateToCityPanchangam?: (citySlug: 'hyderabad' | 'vijayawada' | 'visakhapatnam' | 'usa') => void;
   onNavigateToJathakam?: () => void;
@@ -51,6 +52,7 @@ export interface GuruProfileHomeProps {
 export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
   currentDay,
   onNavigateToPanchangam,
+  onNavigateToRashiPhalalu,
   onNavigateToCalendar,
   onNavigateToCityPanchangam,
   onNavigateToJathakam,
@@ -401,17 +403,31 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             ))}
           </div>
 
-          <a
-            href={`/panchangam/${todayIso}`}
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigateToPanchangam(todayIso);
-            }}
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-800 to-amber-950 hover:from-amber-700 hover:to-amber-900 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer shrink-0"
-          >
-            <span>{t('నేటి సంపూర్ణ పంచాంగం & 12 రాశుల ఫలితాలు', 'View Full Panchangam & 12 Rashi Predictions')}</span>
-            <ArrowRight size={15} className="text-amber-300" />
-          </a>
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <a
+              href={`/panchangam/${todayIso}`}
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigateToPanchangam(todayIso);
+              }}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-800 to-amber-950 hover:from-amber-700 hover:to-amber-900 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+            >
+              <span>{t('నేటి సంపూర్ణ పంచాంగం', 'Full Daily Panchangam')}</span>
+              <ArrowRight size={15} className="text-amber-300" />
+            </a>
+            <a
+              href="/rashi-phalalu"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onNavigateToRashiPhalalu) onNavigateToRashiPhalalu();
+              }}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-amber-950 font-extrabold text-xs sm:text-sm shadow-md border border-amber-500 transition-all cursor-pointer"
+            >
+              <Sparkles size={15} className="text-amber-900" />
+              <span>{t('నేటి 12 రాశుల ఫలితాలు', 'Today 12 Rashi Phalalu')}</span>
+              <ArrowRight size={15} />
+            </a>
+          </div>
         </div>
       </section>
 

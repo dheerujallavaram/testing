@@ -22,7 +22,7 @@ import { OmEmblem } from './OmEmblem';
 import { useLanguage } from '../context/LanguageContext';
 import { ASTRO_SEARCH_TOPICS, AstroSearchTopic, searchAstroTopics } from '../data/astroSearchIndex';
 
-export type NavTab = 'home' | 'panchangam' | 'vyasalu' | 'kartika' | 'muhurtham' | 'jathakam' | 'awards' | 'services' | 'about' | 'contact';
+export type NavTab = 'home' | 'panchangam' | 'rashiphalalu' | 'vyasalu' | 'kartika' | 'muhurtham' | 'jathakam' | 'awards' | 'services' | 'about' | 'contact';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -71,6 +71,13 @@ export const Header: React.FC<HeaderProps> = ({
   }[] = [
     { id: 'home', label: t('హోమ్ పేజీ', 'Home'), shortLabelTe: 'హోమ్', shortLabelEn: 'Home', icon: Home },
     { id: 'panchangam', label: t('నేటి పంచాంగం', 'Panchangam'), shortLabelTe: 'పంచాంగం', shortLabelEn: 'Panchangam', icon: Calendar },
+    {
+      id: 'rashiphalalu',
+      label: t('నేటి రాశి ఫలాలు', 'Rashi Phalalu'),
+      shortLabelTe: 'రాశి ఫలాలు',
+      shortLabelEn: 'Rashi Phalalu',
+      icon: Sparkles,
+    },
     {
       id: 'vyasalu',
       label: t('వ్యాసాలు (జ్యోతిష విజ్ఞానం)', 'Articles (Vedic Treatises)'),

@@ -122,7 +122,7 @@ export const DwadasaRashiVedicGuide: React.FC<DwadasaRashiVedicGuideProps> = ({
       </header>
 
       {/* Interactive Category Filter Bar */}
-      <div className="flex flex-wrap items-center gap-2 bg-amber-50/90 p-2 rounded-2xl border border-amber-200">
+      <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2 bg-amber-50/90 p-2 rounded-2xl border border-amber-200">
         {categoryTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeCategory === tab.id;
@@ -131,14 +131,14 @@ export const DwadasaRashiVedicGuide: React.FC<DwadasaRashiVedicGuideProps> = ({
               key={tab.id}
               type="button"
               onClick={() => setActiveCategory(tab.id)}
-              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`inline-flex items-center gap-2 px-3.5 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-colors cursor-pointer min-w-0 ${
                 isActive
                   ? 'bg-amber-900 text-amber-50 shadow-xs'
                   : 'text-amber-950 hover:bg-amber-100/80'
               }`}
             >
-              <Icon size={15} className={isActive ? 'text-amber-300' : 'text-amber-700'} />
-              <span>{language === 'te' ? tab.labelTe : tab.labelEn}</span>
+              <Icon size={15} className={`${isActive ? 'text-amber-300' : 'text-amber-700'} shrink-0`} />
+              <span className="truncate">{language === 'te' ? tab.labelTe : tab.labelEn}</span>
             </button>
           );
         })}
@@ -157,15 +157,15 @@ export const DwadasaRashiVedicGuide: React.FC<DwadasaRashiVedicGuideProps> = ({
             <button
               type="button"
               onClick={() => setShowAllRashisOverview(!showAllRashisOverview)}
-              className="text-xs font-bold text-amber-900 underline hover:text-amber-700 cursor-pointer whitespace-nowrap"
+              className="text-xs font-bold text-amber-900 underline hover:text-amber-700 cursor-pointer"
             >
               {showAllRashisOverview
                 ? t('ఒక్క రాశి వివరాలు మాత్రమే చూడండి', 'Show Single Selected Rashi')
-                : t('12 రాశుల జాబితా ఒకేసారి చదవండి (SEO Full View)', 'View All 12 Rashis Together')}
+                : t('12 రాశుల జాబితా ఒకేసారి చదవండి', 'View All 12 Rashis Together')}
             </button>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2.5">
             {DWADASA_RASHI_VEDIC_ENCYCLOPEDIA.map((rashi) => {
               const isSelected = selectedRashiId === rashi.id;
               return (
@@ -176,7 +176,7 @@ export const DwadasaRashiVedicGuide: React.FC<DwadasaRashiVedicGuideProps> = ({
                     setSelectedRashiId(rashi.id);
                     setShowAllRashisOverview(false);
                   }}
-                  className={`flex items-center gap-2.5 p-3 rounded-2xl border text-left transition-all cursor-pointer ${
+                  className={`flex items-center gap-2.5 p-2.5 sm:p-3 rounded-2xl border text-left transition-all cursor-pointer min-w-0 ${
                     isSelected
                       ? 'bg-gradient-to-r from-[#3b0a0a] to-amber-950 text-amber-100 border-amber-500 shadow-md'
                       : 'bg-amber-50/40 hover:bg-amber-100/60 text-amber-950 border-amber-200'
@@ -189,7 +189,7 @@ export const DwadasaRashiVedicGuide: React.FC<DwadasaRashiVedicGuideProps> = ({
                   >
                     <RashiGlyph rashi={rashi.id} size={17} />
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs sm:text-sm font-extrabold truncate">
                       {language === 'te' ? rashi.rashiNameTe : rashi.rashiNameEn.split(' ')[0]}
                     </p>

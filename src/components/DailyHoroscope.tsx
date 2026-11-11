@@ -14,6 +14,7 @@ import { useLanguage, Language } from '../context/LanguageContext';
 
 interface DailyHoroscopeProps {
   day: DayData;
+  externalSelectedRashiId?: string;
 }
 
 const RASHI_EXTRA_META: Record<
@@ -34,12 +35,19 @@ const RASHI_EXTRA_META: Record<
   meenam: { syllablesTe: 'దీ, దూ, థ, ఝ, ఞ, దే, దో, చా, చీ', luckyDirectionTe: 'ఈశాన్యం (North-East)', luckyDirectionEn: 'North-East' },
 };
 
-export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
+export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day, externalSelectedRashiId }) => {
   const [filter, setFilter] = useState<'all' | 'favorable' | 'mixed' | 'caution'>('all');
   const [selectedRashiId, setSelectedRashiId] = useState<string>('all');
   const [downloadingRashiId, setDownloadingRashiId] = useState<string | null>(null);
   const [downloadedRashiId, setDownloadedRashiId] = useState<string | null>(null);
   const { language, t, tr } = useLanguage();
+
+  React.useEffect(() => {
+    if (externalSelectedRashiId) {
+      setSelectedRashiId(externalSelectedRashiId);
+      setFilter('all');
+    }
+  }, [externalSelectedRashiId]);
 
   const moonRashiIdx = findMoonRashiIndex(day);
   const moonRashiMeta = RASHI_META_LIST[moonRashiIdx] || RASHI_META_LIST[0];
@@ -216,7 +224,8 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day }) => {
           return (
             <div
               key={rashi.id}
-              className={`rounded-2xl border-2 p-5 transition-all hover:shadow-md flex flex-col justify-between ${
+              id={`rashi-${rashi.id}`}
+              className={`scroll-mt-28 rounded-2xl border-2 p-5 transition-all hover:shadow-md flex flex-col justify-between ${
                 isFav
                   ? 'bg-gradient-to-br from-emerald-50/70 via-white to-emerald-50/30 border-emerald-300/90'
                   : isCaution
