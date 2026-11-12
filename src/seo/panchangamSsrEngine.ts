@@ -714,36 +714,41 @@ export const TOOL_PAGE_ORIGINAL_GUIDES: Record<string, ToolGuideContent> = {
     ],
   },
   '/vivaha-pontana': {
-    primaryKeyword: 'వివాహ పొంతన',
+    primaryKeyword: 'వివాహ పొంతన 22 పొంతనలు',
     secondaryKeywords: [
       'marriage matching in telugu',
+      '22 porutham matching in telugu',
       'pelli pontana',
-      'అష్టకూట గుణ మిలనం',
-      '36 గుణాలు',
+      'అష్టకూట గుణ మిలనం 36 గుణాలు',
+      'రజ్జు నాడీ వేధ దోష పరిహారాలు',
     ],
     authorPlaceholderTag: '{{AUTHOR_NOTE_VIVAHA_PONTANA_VERDICT}}',
     introTe:
-      'వివాహ పొంతన (marriage matching in telugu & pelli pontana): సనాతన హిందూ వివాహ సంప్రదాయంలో వధూవరుల మధ్య మానసిక అనుబంధం, ఆరోగ్యం, సంతానం మరియు దీర్ఘకాల దాంపత్య సౌఖ్యం కోసం వారిద్దరి జన్మ నక్షత్రాలు, పాదాలు మరియు చంద్ర రాశుల ఆధారంగా చేసే శాస్త్రోక్త పరిశీలనను 36 గుణాల అష్టకూట గుణ మిలనం అంటారు. ఇందులో 36 గుణాలతో పాటు దక్షిణ భారత రజ్జు పొంతన, నాడి దోష మినహాయింపులు మరియు కుజ దోష శాతం కూడా పరిశీలించబడతాయి.',
-    howItWorksTitle: '36 గుణాల అష్టకూట వివాహ పొంతన ఎలా లెక్కిస్తారు? (How This Works)',
+      'వివాహ పొంతన (marriage matching in telugu & 22 porutham matching): సనాతన హిందూ వివాహ సంప్రదాయంలో వధూవరుల మధ్య మానసిక అనుబంధం, ఆరోగ్యం, సంతానం, దీర్ఘాయుష్షు మరియు సంసార ఐశ్వర్యం కోసం 36 గుణాల అష్టకూట మిలనంతో పాటు దక్షిణ భారతీయ ప్రాచీన 22 పొంతనల (దిన, గణ, మాహేంద్ర, స్త్రీదీర్ఘ, యోని, రాశి, రాశ్యాధిపతి, వశ్య, రజ్జు, వేధ, నాడీ, వృక్ష, లగ్న, ఆయుల్, లింగ, కేంద్ర, వర్ణ, వాసి, నాట్టు, సేవక, కూడలి, పంచ పక్షి) సమగ్ర గుణమేళనం ఇక్కడ స్వయంచాలకంగా గణించబడుతుంది.',
+    howItWorksTitle: '36 గుణాల అష్టకూటం & 22 పొంతనల మహామేళనం ఎలా లెక్కిస్తారు? (How This Works)',
     howItWorksTe:
-      'వరుడు మరియు వధువు యొక్క జన్మ నక్షత్రం, నక్షత్ర పాదం మరియు చంద్ర రాశిని ఎంచుకున్నప్పుడు శాస్త్రంలో పేర్కొన్న 8 కూటాలకు (వర్ణ 1, వశ్య 2, తార 3, యోని 4, గ్రహమైత్రి 5, గణ 6, భకూట 7, నాడి 8 — మొత్తం 36 గుణాలు) మార్కులు కేటాయించబడతాయి.',
-    termsTitle: 'అష్టకూట వివాహ పొంతనలోని ముఖ్య పదాలు (Key Terms)',
+      'వధువు మరియు వరుడి జన్మ రాశి, జన్మ నక్షత్రం, మరియు పాదాలను ఎంచుకోగానే సాంప్రదాయక 8 కూటాలు (36 గుణాలు) మరియు దక్షిణ భారతీయ 22 ప్రాచీన పొంతనల పట్టిక క్షణాల్లో ప్రత్యక్షమవుతుంది. ఏక రజ్జు దోషం, నాడీ దోషం, భకూట షష్టాష్టక దోషాలకు గల శాస్త్రోక్త మినహాయింపులు (Exceptions) మరియు కుజ దోష శాతాన్ని కూడా ఈ వ్యవస్థ విశ్లేషిస్తుంది.',
+    termsTitle: 'వివాహ పొంతనలోని 22 ముఖ్య ప్రమాణాలు (Key 22 Poruthams)',
     termsListTe: [
       {
-        term: 'నాడి కూటం (Nadi Koota – 8 గుణాలు)',
-        meaning: 'ఆది, మధ్య, అంత్య నాడులు వధూవరుల ఆరోగ్య సమతుల్యతను సూచిస్తాయి. ఇద్దరిదీ వేర్వేరు నాడి అయితే పూర్తి 8 గుణాలు వస్తాయి.',
+        term: 'రజ్జు పొంతన (Rajju – మాంగల్య బలం)',
+        meaning: 'పాద, కటి, నాభి, కంఠ, శిరో రజ్జువులలో వధూవరుల నక్షత్రాలు వేర్వేరుగా ఉండాలి. ఇది దీర్ఘ సుమంగళీ యోగానికి ప్రధాన మూలస్తంభం.',
       },
       {
-        term: 'భకూట & గ్రహమైత్రి (Bhakoot 7 + Graha Maitri 5)',
-        meaning: 'రాశుల పరస్పర స్థితి కుటుంబ వృద్ధిని, రాశ్యాధిపతుల మైత్రి మానసిక అవగాహనను సూచిస్తాయి.',
+        term: 'నాడీ పొంతన (Nadi – త్రిదోష సామ్యం & సంతానం)',
+        meaning: 'వాత, పిత్త, కఫ నాడుల సమతుల్యత వల్ల ఆరోగ్యకరమైన, తేజోవంతమైన సంతాన ప్రాప్తి లభిస్తుంది.',
       },
       {
-        term: 'రజ్జు పొంతన (South Indian Rajju Check)',
-        meaning: 'పాద, ఊరు, నాభి, కంఠ, శిరో రజ్జువులలో వధూవరుల నక్షత్రాలు ఒకే రజ్జువులో పడకుండా పరిశీలించే దక్షిణ భారత పద్ధతి.',
+        term: 'దిన & మాహేంద్ర పొంతన (Dina & Mahendra)',
+        meaning: 'ఆయురారోగ్యాలు, నిత్య సుఖం, వంశాభివృద్ధి మరియు సుదీర్ఘ కుటుంబ ఐశ్వర్యం.',
       },
       {
-        term: 'కుజ దోష సమతుల్యత (Kuja Dosha Balancing)',
-        meaning: 'లగ్నం నుండి 1, 2, 4, 7, 8, 12 స్థానాలలో కుజ స్థితిని మరియు గురు దృష్టి పరిహారాన్ని తులనాత్మకంగా పరిశీలించడం.',
+        term: 'యోని & వశ్య పొంతన (Yoni & Vasiya)',
+        meaning: '14 జంతు యోనుల మధ్య సహజ వైరం లేకుండా పరస్పర దాంపత్య ఆకర్షణ మరియు అంకితభావం.',
+      },
+      {
+        term: 'వృక్ష, ఆయుల్ & పంచ పక్షి పొంతన (Vruksha, Ayul & Pakshi)',
+        meaning: 'వంశ వృక్ష విస్తరణ, శతాయుర్దాయ యోగం మరియు సిద్ధుల పంచభూత పంచ పక్షి ప్రాణశక్తి సమన్వయం.',
       },
     ],
     faqListTe: [
@@ -2920,6 +2925,15 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
                 <h3 style="margin:0 0 6px;font-size:17px;color:#78350f;">
                   ${escapeHtml(r.teluguName)} రాశి ఫలాలు (${escapeHtml(r.englishName)} Rashi Phalalu) — <span style="color:#065f46;">${escapeHtml(r.statusLabel)} (${escapeHtml(r.statusLabelEn)})</span>
                 </h3>
+                <p style="margin:0 0 6px;font-size:13px;color:#451a03;background:#fef3c7;padding:6px 10px;border-left:3px solid #b45309;border-radius:6px;">
+                  <strong>📜 శాస్త్ర ప్రమాణం (${escapeHtml(r.classicalCitationTe)}):</strong> <em>${escapeHtml(r.classicalShlokaTe)}</em> — ${escapeHtml(r.phaladeepikaMeaningTe)}
+                </p>
+                <p style="margin:0 0 6px;font-size:13px;color:#065f46;">
+                  <strong>⚖️ ఫలదీపిక గోచార వేధ గణితం:</strong> ${escapeHtml(r.vedhaBadgeTe)} — ${escapeHtml(r.vedhaExplanationTe)}
+                </p>
+                <p style="margin:0 0 6px;font-size:13px;color:#78350f;">
+                  <strong>🔱 భృగు నంది నాడి &amp; చంద్రకళా నాడి:</strong> ${escapeHtml(r.bhriguNadiCircuitTe)}
+                </p>
                 <p style="margin:0 0 6px;font-size:14px;color:#1e293b;"><strong>తెలుగు ఫలితం:</strong> ${escapeHtml(r.grahaDrishtiPhalamTe)} ${escapeHtml(r.careerFinanceLine)}</p>
                 <p style="margin:0 0 6px;font-size:13.5px;color:#334155;"><strong>English Horoscope:</strong> ${escapeHtml(r.grahaDrishtiPhalamEn)}</p>
                 <p style="margin:0;font-size:13px;color:#9a3412;">

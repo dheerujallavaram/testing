@@ -37,93 +37,102 @@ import {
   getTodayIsoDateIST,
 } from './seo/panchangamSsrEngine';
 import { DailySubhashithamCard } from './components/DailySubhashithamCard';
+import { RashiPhalaluSeoEnrichment } from './components/RashiPhalaluSeoEnrichment';
 
 export type PanchangamSubTab = 'main' | 'gowri-hora' | 'tarabalam' | 'sankalpam';
 
-const RashiChakra = lazy(() =>
+function lazyWithRetry<T extends React.ComponentType<any>>(
+  importer: () => Promise<{ default: T }>
+): React.LazyExoticComponent<T> {
+  return lazy(async () => {
+    try {
+      return await importer();
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      return await importer();
+    }
+  });
+}
+
+const RashiChakra = lazyWithRetry(() =>
   import('./components/RashiChakra').then((m) => ({ default: m.RashiChakra }))
 );
-const LagnaPramanalu = lazy(() =>
+const LagnaPramanalu = lazyWithRetry(() =>
   import('./components/LagnaPramanalu').then((m) => ({ default: m.LagnaPramanalu }))
 );
-const ChandraNavatara = lazy(() =>
+const ChandraNavatara = lazyWithRetry(() =>
   import('./components/ChandraNavatara').then((m) => ({ default: m.ChandraNavatara }))
 );
-const GowriHoraPanchangam = lazy(() =>
+const GowriHoraPanchangam = lazyWithRetry(() =>
   import('./components/GowriHoraPanchangam').then((m) => ({ default: m.GowriHoraPanchangam }))
 );
-const TarabalamCalculator = lazy(() =>
+const TarabalamCalculator = lazyWithRetry(() =>
   import('./components/TarabalamCalculator').then((m) => ({ default: m.TarabalamCalculator }))
 );
-const DailySankalpamStotra = lazy(() =>
+const DailySankalpamStotra = lazyWithRetry(() =>
   import('./components/DailySankalpamStotra').then((m) => ({ default: m.DailySankalpamStotra }))
 );
-const VedicAstrologyHub = lazy(() =>
+const VedicAstrologyHub = lazyWithRetry(() =>
   import('./components/VedicAstrologyHub').then((m) => ({ default: m.VedicAstrologyHub }))
 );
-const JanmaKundaliGenerator = lazy(() =>
+const JanmaKundaliGenerator = lazyWithRetry(() =>
   import('./components/JanmaKundaliGenerator').then((m) => ({ default: m.JanmaKundaliGenerator }))
 );
-const SampleJathakamPage = lazy(() =>
+const SampleJathakamPage = lazyWithRetry(() =>
   import('./components/SampleJathakamPage').then((m) => ({ default: m.SampleJathakamPage }))
 );
-const GocharaPhalaluView = lazy(() =>
+const GocharaPhalaluView = lazyWithRetry(() =>
   import('./components/GocharaPhalaluView').then((m) => ({ default: m.GocharaPhalaluView }))
 );
-const DailyNakshatraArticle = lazy(() =>
+const DailyNakshatraArticle = lazyWithRetry(() =>
   import('./components/DailyNakshatraArticle').then((m) => ({ default: m.DailyNakshatraArticle }))
 );
-const DailyAstrologyInsights = lazy(() =>
+const DailyAstrologyInsights = lazyWithRetry(() =>
   import('./components/DailyAstrologyInsights').then((m) => ({ default: m.DailyAstrologyInsights }))
 );
-const PanchangamFAQ = lazy(() =>
+const PanchangamFAQ = lazyWithRetry(() =>
   import('./components/PanchangamFAQ').then((m) => ({ default: m.PanchangamFAQ }))
 );
-const PoojaBookingModal = lazy(() =>
+const PoojaBookingModal = lazyWithRetry(() =>
   import('./components/PoojaBookingModal').then((m) => ({ default: m.PoojaBookingModal }))
 );
-const CityAstrologyPage = lazy(() =>
+const CityAstrologyPage = lazyWithRetry(() =>
   import('./components/CityAstrologyPage').then((m) => ({ default: m.CityAstrologyPage }))
 );
-const AwardsSection = lazy(() =>
+const AwardsSection = lazyWithRetry(() =>
   import('./components/AwardsSection').then((m) => ({ default: m.AwardsSection }))
 );
-const UpcomingRitualCountdown = lazy(() =>
+const UpcomingRitualCountdown = lazyWithRetry(() =>
   import('./components/UpcomingRitualCountdown').then((m) => ({
     default: m.UpcomingRitualCountdown,
   }))
 );
-const PoojaServicesSection = lazy(() =>
+const PoojaServicesSection = lazyWithRetry(() =>
   import('./components/PoojaServicesSection').then((m) => ({ default: m.PoojaServicesSection }))
 );
-const AboutGurujiSection = lazy(() =>
+const AboutGurujiSection = lazyWithRetry(() =>
   import('./components/AboutGurujiSection').then((m) => ({ default: m.AboutGurujiSection }))
 );
-const ContactSection = lazy(() =>
+const ContactSection = lazyWithRetry(() =>
   import('./components/ContactSection').then((m) => ({ default: m.ContactSection }))
 );
-const AdminDashboard = lazy(() =>
+const AdminDashboard = lazyWithRetry(() =>
   import('./components/AdminDashboard').then((m) => ({ default: m.AdminDashboard }))
 );
-const MuhurthamCalculator = lazy(() =>
+const MuhurthamCalculator = lazyWithRetry(() =>
   import('./components/MuhurthamCalculator').then((m) => ({ default: m.MuhurthamCalculator }))
 );
-const KartikaAbhishekamPage = lazy(() =>
+const KartikaAbhishekamPage = lazyWithRetry(() =>
   import('./components/KartikaAbhishekamPage').then((m) => ({ default: m.KartikaAbhishekamPage }))
 );
-const DwadasaRashiVedicGuide = lazy(() =>
+const DwadasaRashiVedicGuide = lazyWithRetry(() =>
   import('./components/DwadasaRashiVedicGuide').then((m) => ({ default: m.DwadasaRashiVedicGuide }))
 );
-const VedicArticleReader = lazy(() =>
+const VedicArticleReader = lazyWithRetry(() =>
   import('./components/VedicArticleReader').then((m) => ({ default: m.VedicArticleReader }))
 );
-const VedicArticlesDirectory = lazy(() =>
+const VedicArticlesDirectory = lazyWithRetry(() =>
   import('./components/VedicArticlesDirectory').then((m) => ({ default: m.VedicArticlesDirectory }))
-);
-const RashiPhalaluSeoEnrichment = lazy(() =>
-  import('./components/RashiPhalaluSeoEnrichment').then((m) => ({
-    default: m.RashiPhalaluSeoEnrichment,
-  }))
 );
 
 const SectionLoader: React.FC<{ minHeight?: string }> = ({ minHeight = 'min-h-[280px]' }) => (
@@ -1161,6 +1170,7 @@ function AppContent() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               onNavigateToAwards={handleNavigateToAwards}
+              onNavigateToArticle={handleSelectVedicArticle}
               onOpenBooking={(service) => handleOpenBooking(service)}
               onSelectCity={handleSelectCity}
             />
@@ -1585,7 +1595,9 @@ function AppContent() {
                   onOpenBooking={(service) => handleOpenBooking(service)}
                   onSelectDate={(isoDate) => handleSelectIsoDateRoute(isoDate)}
                 />
-                <PoojaServicesSection onSelectService={(service) => handleOpenBooking(service)} />
+                <PoojaServicesSection
+                  onSelectService={(service) => handleOpenBooking(service)}
+                />
               </div>
             </Suspense>
           )}

@@ -127,6 +127,12 @@ export function generateRobotsTxt(): string {
     `User-agent: *`,
     `Allow: /`,
     ``,
+    `User-agent: Mediapartners-Google`,
+    `Allow: /`,
+    ``,
+    `User-agent: Google-AdSense`,
+    `Allow: /`,
+    ``,
     `Sitemap: ${SITE_URL}/sitemap.xml`,
     ``,
   ].join('\n');

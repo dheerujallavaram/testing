@@ -11,6 +11,7 @@ import {
 import { downloadRashiStatusCardImage } from '../utils/panchangamImageGenerator';
 import { RashiMedallion, RashiGlyph } from './RashiGlyph';
 import { useLanguage, Language } from '../context/LanguageContext';
+import { computeDailyJHoraYogiAndPakshi } from '../utils/jhoraAdvancedEngine';
 
 interface DailyHoroscopeProps {
   day: DayData;
@@ -51,6 +52,7 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day, externalSel
 
   const moonRashiIdx = findMoonRashiIndex(day);
   const moonRashiMeta = RASHI_META_LIST[moonRashiIdx] || RASHI_META_LIST[0];
+  const jhoraDaily = computeDailyJHoraYogiAndPakshi(day);
 
   const rashiCards = getDailyRashiFortunes(day);
 
@@ -155,6 +157,67 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day, externalSel
             {t('చంద్రాష్టమం / జాగ్రత్త', 'Chandrashtamam / Caution')}
           </button>
         </div>
+      </div>
+
+      {/* Daily Yogi–Sahayogi–Avayogi & Pancha Pakshi Shastra Strip */}
+      <div className="mb-5 rounded-2xl bg-gradient-to-r from-[#2b0902] via-[#3c1104] to-[#2b0902] text-amber-50 p-4 border-2 border-amber-400/80 shadow-md space-y-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-500/35 pb-2">
+          <span className="text-xs font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+            <span>🔱 {t('దృక్సిద్ధాంత నేటి యోగి–అవయోగి & సిద్ధుల పంచ పక్షి ప్రమాణం', 'Drik Siddhanta Daily Yogi–Avayogi & Pancha Pakshi Shastra')}</span>
+          </span>
+          <span className="text-[11px] font-mono text-amber-200 bg-amber-900/70 px-2.5 py-0.5 rounded-md border border-amber-400/40">
+            {t('యోగి స్ఫుటం:', 'Yogi Sphuta:')} {jhoraDaily.yogiSphutaDeg}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+          <div className="bg-emerald-950/80 border border-emerald-500/40 rounded-xl p-2.5">
+            <span className="text-[10.5px] font-bold text-emerald-300 block">
+              ★ {t('నేటి యోగి నక్షత్రం & యోగి గ్రహం:', 'Yogi Nakshatra & Planet:')}
+            </span>
+            <strong className="text-white text-xs sm:text-sm">
+              {language === 'en'
+                ? `${jhoraDaily.yogiNakshatraEn} • ${jhoraDaily.yogiPlanetEn}`
+                : `${jhoraDaily.yogiNakshatraTe} • ${jhoraDaily.yogiPlanetTe}`}
+            </strong>
+          </div>
+
+          <div className="bg-amber-900/60 border border-amber-400/40 rounded-xl p-2.5">
+            <span className="text-[10.5px] font-bold text-amber-300 block">
+              ✨ {t('నేటి సహయోగి గ్రహం (మిత్ర బలం):', 'Sahayogi Planet (Ally):')}
+            </span>
+            <strong className="text-white text-xs sm:text-sm">
+              {language === 'en' ? jhoraDaily.sahayogiPlanetEn : jhoraDaily.sahayogiPlanetTe}
+            </strong>
+          </div>
+
+          <div className="bg-rose-950/80 border border-rose-500/40 rounded-xl p-2.5">
+            <span className="text-[10.5px] font-bold text-rose-300 block">
+              ⚠️ {t('నేటి అవయోగి నక్షత్రం & గ్రహం:', 'Avayogi Nakshatra & Planet:')}
+            </span>
+            <strong className="text-white text-xs sm:text-sm">
+              {language === 'en'
+                ? `${jhoraDaily.avayogiNakshatraEn} • ${jhoraDaily.avayogiPlanetEn}`
+                : `${jhoraDaily.avayogiNakshatraTe} • ${jhoraDaily.avayogiPlanetTe}`}
+            </strong>
+          </div>
+
+          <div className="bg-amber-950/90 border border-amber-400/50 rounded-xl p-2.5">
+            <span className="text-[10.5px] font-bold text-amber-300 block">
+              🦅 {t('పంచ పక్షి అధికార పక్షి & పాలన:', 'Pancha Pakshi Ruling Bird:')}
+            </span>
+            <strong className="text-white text-xs block">
+              {language === 'en' ? jhoraDaily.rulingPakshiEn : jhoraDaily.rulingPakshiTe}
+            </strong>
+            <span className="text-[10px] text-amber-200">
+              {t('పాలన:', 'Ruling:')} {language === 'en' ? jhoraDaily.pakshiPalanaWindowEn : jhoraDaily.pakshiPalanaWindowTe}
+            </span>
+          </div>
+        </div>
+
+        <p className="text-[11.5px] text-amber-100/95 leading-relaxed">
+          {language === 'en' ? jhoraDaily.yogiGuidanceEn : jhoraDaily.yogiGuidanceTe}
+        </p>
       </div>
 
       {/* Quick 12-Rashi & Name First-Syllable Selector Bar */}
@@ -335,6 +398,51 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({ day, externalSel
                           </span>
                         </span>
                       )}
+                    </div>
+                  </div>
+
+                  {/* Classical Shastra Grantha Pramana & Bhrigu Nandi Nadi Box */}
+                  <div className="bg-gradient-to-br from-[#fffaf0] via-amber-50/90 to-orange-50/70 p-3 rounded-xl border-2 border-amber-300/90 shadow-xs space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-1 border-b border-amber-200/90 pb-1.5">
+                      <span className="text-[11px] font-extrabold text-amber-950 flex items-center gap-1">
+                        <span>📜 {t('ప్రాచీన గ్రంథ శ్లోక ప్రమాణం', 'Classical Shastra Citation')}</span>
+                      </span>
+                      <span className="text-[10px] font-bold bg-amber-900 text-amber-100 px-2 py-0.5 rounded-md">
+                        {language === 'en' ? rashi.classicalCitationEn : rashi.classicalCitationTe}
+                      </span>
+                    </div>
+
+                    <blockquote className="text-[11.5px] font-bold text-amber-950 bg-amber-100/70 border-l-3 border-amber-700 pl-2.5 py-1 rounded-r-lg italic leading-relaxed">
+                      {language === 'en' ? rashi.classicalShlokaEn : rashi.classicalShlokaTe}
+                    </blockquote>
+
+                    <p className="text-[11.5px] text-slate-800 leading-relaxed">
+                      <strong className="text-amber-950">{t('ఫలదీపిక తాత్పర్యం:', 'Phaladeepika Sutra:')} </strong>
+                      {language === 'en' ? rashi.phaladeepikaMeaningEn : rashi.phaladeepikaMeaningTe}
+                    </p>
+
+                    <div className="bg-white/90 border border-amber-300/80 rounded-lg p-2 space-y-1">
+                      <div className="flex flex-wrap items-center justify-between gap-1">
+                        <span className="text-[10.5px] font-extrabold text-amber-900 uppercase tracking-wide">
+                          ⚖️ {t('గోచార వేధ గణిత పరిశీలన:', 'Gochara Vedha Check:')}
+                        </span>
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-950 border border-emerald-300">
+                          {language === 'en' ? rashi.vedhaBadgeEn : rashi.vedhaBadgeTe}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-700 leading-relaxed">
+                        {language === 'en' ? rashi.vedhaExplanationEn : rashi.vedhaExplanationTe}
+                      </p>
+                    </div>
+
+                    <div className="bg-amber-950/90 text-amber-100 rounded-lg p-2 space-y-1 border border-amber-700/70">
+                      <p className="text-[11px] leading-relaxed">
+                        <strong className="text-amber-300">🔱 </strong>
+                        {language === 'en' ? rashi.bhriguNadiCircuitEn : rashi.bhriguNadiCircuitTe}
+                      </p>
+                      <p className="text-[10.5px] text-amber-200/90 leading-relaxed border-t border-amber-800/80 pt-1">
+                        {language === 'en' ? rashi.chandraKalaNadiSecretEn : rashi.chandraKalaNadiSecretTe}
+                      </p>
                     </div>
                   </div>
 

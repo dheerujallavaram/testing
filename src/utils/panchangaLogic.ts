@@ -4,6 +4,10 @@ import {
   getRashiDailyGrahaDrishtiPhalam,
   getDailyGrahaTransitShareLines,
 } from '../data/planetaryMovements2026';
+import {
+  CLASSICAL_GOCHARA_SUTRAS_BY_HOUSE,
+  evaluateClassicalGocharaVedhaAndNadi,
+} from '../data/classicalGranthaSutras';
 
 export interface TaraResult {
   taraNumber: number;
@@ -151,6 +155,21 @@ export interface RashiDailyFortune {
   vedicSymbolNameEn: string;
   lordEn: string;
   luckyColorEn: string;
+  // Classical Grantha & Nadi Enrichment
+  classicalShlokaTe: string;
+  classicalShlokaEn: string;
+  classicalCitationTe: string;
+  classicalCitationEn: string;
+  phaladeepikaMeaningTe: string;
+  phaladeepikaMeaningEn: string;
+  vedhaBadgeTe: string;
+  vedhaBadgeEn: string;
+  vedhaExplanationTe: string;
+  vedhaExplanationEn: string;
+  bhriguNadiCircuitTe: string;
+  bhriguNadiCircuitEn: string;
+  chandraKalaNadiSecretTe: string;
+  chandraKalaNadiSecretEn: string;
 }
 
 export const RASHI_META_LIST = [
@@ -617,6 +636,9 @@ export function getDailyRashiFortunes(day: DayData): RashiDailyFortune[] {
     ].join('\n');
 
     const drishtiInfo = getRashiDailyGrahaDrishtiPhalam(day.isoDate, rashi.id);
+    const classicalSutra =
+      CLASSICAL_GOCHARA_SUTRAS_BY_HOUSE[gocharaHouse] || CLASSICAL_GOCHARA_SUTRAS_BY_HOUSE[1];
+    const vedhaAndNadi = evaluateClassicalGocharaVedhaAndNadi(day, idx, gocharaHouse);
 
     return {
       ...rashi,
@@ -662,6 +684,20 @@ export function getDailyRashiFortunes(day: DayData): RashiDailyFortune[] {
       vedicSymbolNameEn: rashi.vedicSymbolNameEn,
       lordEn: rashi.lordEn,
       luckyColorEn: rashi.luckyColorEn,
+      classicalShlokaTe: classicalSutra.sanskritShlokaTe,
+      classicalShlokaEn: classicalSutra.sanskritShlokaEn,
+      classicalCitationTe: classicalSutra.granthaCitationTe,
+      classicalCitationEn: classicalSutra.granthaCitationEn,
+      phaladeepikaMeaningTe: classicalSutra.phaladeepikaMeaningTe,
+      phaladeepikaMeaningEn: classicalSutra.phaladeepikaMeaningEn,
+      vedhaBadgeTe: vedhaAndNadi.vedhaBadgeTe,
+      vedhaBadgeEn: vedhaAndNadi.vedhaBadgeEn,
+      vedhaExplanationTe: vedhaAndNadi.vedhaExplanationTe,
+      vedhaExplanationEn: vedhaAndNadi.vedhaExplanationEn,
+      bhriguNadiCircuitTe: vedhaAndNadi.bhriguNadiCircuitTe,
+      bhriguNadiCircuitEn: vedhaAndNadi.bhriguNadiCircuitEn,
+      chandraKalaNadiSecretTe: vedhaAndNadi.chandraKalaNadiSecretTe,
+      chandraKalaNadiSecretEn: vedhaAndNadi.chandraKalaNadiSecretEn,
     };
   });
 }
@@ -844,6 +880,9 @@ export function generateHoroscopeShareText(
       `👑 *రాశి అధిపతి:* ${rashi.lord} | *గోచారం:* ${rashi.navagrahaTransitLabel}`,
       ``,
       `✨ *గ్రహ దృష్టి ఫలితం:* ${rashi.grahaDrishtiPhalamTe}`,
+      `📜 *శాస్త్ర ప్రమాణం (${rashi.classicalCitationTe}):* ${rashi.classicalShlokaTe}`,
+      `⚖️ *గోచార వేధ పరిశీలన:* ${rashi.vedhaBadgeTe}`,
+      `🔱 *భృగు నంది నాడి రహస్యం:* ${rashi.bhriguNadiCircuitTe}`,
       `✅ *నేడు చేయవలసిన పని:* ${rashi.doTodayTe}`,
       `⚠️ *నేడు జాగ్రత్త:* ${rashi.avoidTodayTe}`,
       `⏰ *నేటి శుభ సమయం:* ${rashi.luckyTimeWindowTe}`,

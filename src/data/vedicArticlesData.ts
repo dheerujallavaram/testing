@@ -4253,7 +4253,200 @@ export const VEDIC_CLASSICAL_ARTICLES: VedicClassicalArticle[] = [
       ],
     },
   },
+  // ARTICLE: ASHTAGRANTHA PARASHARA, PHALADEEPIKA GOCHARA VEDHA & BHRIGU NANDI NADI SECRETS
+  {
+    slug: 'ashtagrantha-parashara-nadi-jyotisha-rahasyalu',
+    category: 'Classical Granthas & Nadi',
+    categoryTe: 'అష్ట మహా గ్రంథాలు & నాడీ శాస్త్రం',
+    categoryEn: '8 Classical Treatises & Nadi Shastra',
+    readTimeMinutes: 24,
+    datePublished: '2026-11-11',
+    dateModified: '2026-11-11',
+    heroImage: '/assets/articles/parashara_hora_rashi_1794331400226.jpg',
+    imageAltTe: 'అష్ట మహా జ్యోతిష గ్రంథాల రహస్యాలు – బృహత్ పరాశర హోరా శాస్త్రం, ఫలదీపిక గోచార వేధ & భృగు నంది నాడి',
+    imageAltEn: '8 Classical Vedic Astrology Treatises – BPHS, Phaladeepika Gochara Vedha & Bhrigu Nandi Nadi',
+    author: {
+      nameTe: 'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ',
+      nameEn: 'Brahmasri Jallavaram Sai Dheeraj Sharma',
+      titleTe: 'శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయం, హైదరాబాద్',
+      titleEn: 'Sri Lakshmi Ganapathi Jyothishalayam, Hyderabad',
+    },
+    telugu: {
+      title: 'అష్ట మహా జ్యోతిష గ్రంథాల రహస్యాలు: పరాశర హోరా శాస్త్రం, ఫలదీపిక గోచార వేధ & భృగు నంది నాడి సమగ్ర ప్రమాణ దర్శిని',
+      seoTitle: 'అష్ట మహా జ్యోతిష గ్రంథాలు: బృహత్ పరాశర హోరా శాస్త్రం, ఫలదీపిక గోచార వేధ & భృగు నంది నాడి | Telugu Jyothisham',
+      metaDescription:
+        'బృహత్ పరాశర హోరా శాస్త్రం, మంత్రేశ్వరుని ఫలదీపిక (గోచార వేధ & విపరీత వేధ సూత్రాలు), వరాహమిహిరుని బృహజ్జాతకం, సారావళి, ఉత్తర కాలామృతం మరియు భృగు నంది నాడి తాళపత్ర రహస్యాల సమగ్ర తెలుగు పరిశోధనా వ్యాసం.',
+      primaryKeyword: 'బృహత్ పరాశర హోరా శాస్త్రం తెలుగు',
+      secondaryKeywords: [
+        'ఫలదీపిక గోచార వేధ నియమాలు',
+        'భృగు నంది నాడి జ్యోతిష్యం తెలుగు',
+        'వరాహమిహిర బృహజ్జాతకం శ్లోకాలు',
+        'ఉత్తర కాలామృతం విపరీత రాజయోగం',
+        'గోచార ఫలాలు వేధ స్థానాలు',
+        'సారావళి జాతక పారిజాతం',
+      ],
+      summary:
+        'భారతీయ వేద జ్యోతిష్య శాస్త్రానికి మూలస్తంభాలైన ఎనిమిది ప్రాచీన సంస్కృత మహా గ్రంథాలు — బృహత్ పరాశర హోరా శాస్త్రం, ఫలదీపిక, బృహజ్జాతకం, సారావళి, జాతక పారిజాతం, ఉత్తర కాలామృతం, సర్వార్థ చింతామణి మరియు భృగు నంది నాడి — ఆధారంగా రోజువారీ రాశి ఫలాలు మరియు జన్మ కుండలి ఫలితాలను ఎలా గణిస్తారో వివరించే ప్రామాణిక పరిశోధనా గ్రంథం.',
+      sections: [
+        {
+          heading: '1. వేద జ్యోతిష్య శాస్త్రంలో అష్ట మహా గ్రంథాల ప్రమాణ వైభవం',
+          subheading: 'పరాశర మహర్షి నుండి మంత్రేశ్వరుడు మరియు భృగు నాడి వరకు శాస్త్ర పరంపర',
+          content:
+            'జ్యోతిష్యం అనేది కేవలం ఊహాగానం కాదు; అది ఖగోళ గణితం (Drik Siddhanta) మరియు మహర్షుల దివ్య దృష్టితో రచించబడిన శ్లోక సూత్రాల సమ్మేళనం. శ్రీ లక్ష్మీ గణపతి జ్యోతిష్యాలయంలో ప్రతిరోజూ అందించే ద్వాదశ రాశి ఫలితాలు మరియు బృహత్ జాతక కుండలి విశ్లేషణలు ఎనిమిది ప్రామాణిక గ్రంథాల సమన్వయంతో రూపొందించబడతాయి:\n1. మహర్షి పరాశరుని "బృహత్ పరాశర హోరా శాస్త్రం" (BPHS - 97 అధ్యాయాలు)\n2. ఆచార్య వరాహమిహిరుని "బృహజ్జాతకం & బృహత్ సంహిత"\n3. రాజా కల్యాణ వర్మ రచించిన "సారావళి" (55 అధ్యాయాలు)\n4. ఆచార్య మంత్రేశ్వరుని "ఫలదీపిక" (28 అధ్యాయాలు)\n5. వైద్యనాథ దీక్షితుల "జాతక పారిజాతం" (18 అధ్యాయాలు)\n6. వెంకటేశ దైవజ్ఞుని "సర్వార్థ చింతామణి" (16 అధ్యాయాలు)\n7. మహాకవి కాళిదాసు "ఉత్తర కాలామృతం"\n8. మహర్షి భృగువు & అచ్యుత పండితుని "భృగు నంది నాడి & దేవకేరళం (చంద్రకళా నాడి)"',
+          shloka: {
+            sanskrit: 'హోరేతి శాస్త్రం విపులం పరాశరమునిర్మతమ్ | జన్మకాలగ్రహస్థిత్యా ఫలం వక్ష్యామి తత్త్వతః ||',
+            meaning:
+              'మహర్షి పరాశరునిచే ఉపదేశించబడిన హోరా శాస్త్రం ద్వారా జన్మకాల గ్రహ స్థితి మరియు గోచార గమనాన్ని సమన్వయం చేసి జీవుని పూర్వపుణ్య కర్మఫలాన్ని తత్త్వపూర్వకంగా నిర్ణయించవచ్చు.',
+          },
+        },
+        {
+          heading: '2. ఫలదీపిక (26వ అధ్యాయం): గోచార వేధ & విపరీత వేధ గణిత రహస్యాలు',
+          subheading: 'చంద్రుడు శుభ స్థానంలో ఉన్నా ఒక్కోసారి ఫలితం ఎందుకు ఆలస్యమవుతుంది? (Vedha Sthana Matrix)',
+          content:
+            'మంత్రేశ్వరుని ఫలదీపిక (26వ అధ్యాయం, శ్లోకాలు 18–31) మరియు వరాహమిహిరుని బృహత్ సంహిత (104వ అధ్యాయం) ప్రకారం జన్మ రాశి నుండి చంద్రుడు 1, 3, 6, 7, 10, 11 స్థానాలలో సంచరించేటప్పుడు శుభ ఫలితాలను ఇస్తాడు. అయితే ఆయా స్థానాలకు ఎదురుగా ఉండే "వేధ స్థానం"లో వేరొక గ్రహం సంచరిస్తే ఆ శుభ ఫలితానికి ఆటంకం (గోచార వేధ) కలుగుతుంది.\n\nఅదే విధంగా చంద్రుడు 2, 4, 5, 8, 9, 12 స్థానాలలో ఉన్నప్పుడు ఎదురయ్యే మిశ్రమ ఫలితాలను వేధ స్థానంలోని శుభగ్రహం అడ్డుకుని "విపరీత వేధ" (Vipareeta Vedha) ద్వారా రక్షణ కవచంగా మారుస్తుంది! ముఖ్యంగా "పితాపుత్రౌ తథా సౌరిశశాంకౌ నైవ వేధకౌ" అనే సూత్రం ప్రకారం చంద్రునికి మరియు బుధునికి మధ్య ఎన్నడూ వేధ దోషం ఉండదు (తండ్రీకొడుకుల సంబంధం).',
+          shloka: {
+            sanskrit: 'సౌఖ్యం తేజోఽర్థలాభం జయమపి చ యశః సంపదారోగ్యమిష్టమ్ | శత్రుఘ్నం చాపి చంద్రః సృజతి నిజగృహాత్ త్ర్యాయషట్సప్తదశైకాదశస్థః ||',
+            meaning:
+              'జన్మ రాశి నుండి 1, 3, 6, 7, 10, 11 స్థానాలలో చంద్రుడు వేధ రహితంగా సంచరించేటప్పుడు సౌఖ్యం, తేజస్సు, ధనలాభం, శత్రుజయం, కీర్తి మరియు ఆరోగ్యాన్ని ప్రసాదిస్తాడు.',
+          },
+          table: {
+            headers: ['గ్రహం (Planet)', 'శుభ గోచార స్థానాలు (జన్మ రాశి నుండి)', 'వేధ స్థానాలు (Paired Vedha Houses)', 'వేధ అపవాదం (No-Vedha Exception)'],
+            rows: [
+              ['చంద్రుడు (Moon)', '1, 3, 6, 7, 10, 11 స్థానాలు', '5, 9, 12, 2, 4, 8 స్థానాలు', 'బుధునితో వేధ ఉండదు (Moon–Mercury Exception)'],
+              ['సూర్యుడు (Sun)', '3, 6, 10, 11 స్థానాలు', '9, 12, 4, 5 స్థానాలు', 'శనితో వేధ ఉండదు (Sun–Saturn Father-Son Exception)'],
+              ['గురుడు (Jupiter)', '2, 5, 7, 9, 11 స్థానాలు', '12, 4, 3, 10, 8 స్థానాలు', 'గురు దృష్టి సర్వ దోష నివారిణి'],
+              ['శుక్రుడు (Venus)', '1, 2, 3, 4, 5, 8, 9, 11, 12 స్థానాలు', '8, 7, 1, 10, 9, 5, 11, 6, 3 స్థానాలు', 'లక్ష్మీ కటాక్ష కారకుడు'],
+              ['శని / కుజ / రాహు-కేతు', '3, 6, 11 ఉపచయ స్థానాలు', '12, 9, 5 స్థానాలు', 'సూర్యునితో శనికి వేధ ఉండదు'],
+            ],
+          },
+        },
+        {
+          heading: '3. భృగు నంది నాడి & చంద్రకళా నాడి: త్రికోణ (1-5-9) గ్రహ సర్క్యూట్ సూత్రాలు',
+          subheading: 'భావాధిపత్యంతో నిమిత్తం లేకుండా ఖచ్చితమైన సంఘటనలను (Events) పట్టుకునే నాడీ రహస్యం',
+          content:
+            'పరాశర విధానంలో భావాధిపతులకు ప్రాధాన్యత ఉంటే, మహర్షి భృగువు ప్రసాదించిన "భృగు నంది నాడి"లో గ్రహ కారకత్వాలకు మరియు 1-5-9 త్రికోణ సంబంధాలకు అగ్రస్థానం ఉంటుంది:\n• కర్మకారకుడు శని (Saturn): వృత్తి, ఉద్యోగం, జీవనోపాధికి మూల కేంద్రం.\n• జీవకారకుడు గురువు (Jupiter): జాతకుని ఆత్మ, గౌరవం, సంతానం మరియు ధర్మం.\n• ధన & కళత్ర కారకుడు శుక్రుడు (Venus): సంపద, గృహం, వాహనం మరియు వివాహ సౌఖ్యం.\n• బుద్ధి & వాణిజ్య కారకుడు బుధుడు (Mercury): విద్య, వ్యాపారం, కమ్యూనికేషన్ మరియు భూమి.\n• ప్రయాణ & తక్షణ ట్రిగ్గర్ చంద్రుడు (Moon): గోచారంలో చంద్రుడు ప్రతి రెండుంపావు రోజులకు ఒక రాశిని దాటుతూ గురు-శని-శుక్ర గ్రహాలతో త్రికోణ సంబంధం ఏర్పరిచిన రోజున ఆయా ఫలితాలను తక్షణమే వెలుగులోకి తెస్తాడు.',
+          keyPoints: [
+            'గురు + శని త్రికోణ బంధం (Dharma-Karma Nadi Yoga): వృత్తిలో స్థిరత్వం, సమాజంలో ఉన్నత గౌరవం మరియు ధర్మబద్ధమైన ఆదాయం.',
+            'శని + శుక్ర త్రికోణ బంధం (Karma-Dhana Nadi Yoga): ఉద్యోగ/వ్యాపారాల ద్వారా అఖండ ధనలాభం, నూతన గృహ-వాహన ప్రాప్తి.',
+            'శని + బుధ + రాహు సంబంధం: సాఫ్ట్‌వేర్, ఇంజనీరింగ్, విదేశీ వాణిజ్యం మరియు ఆధునిక సాంకేతిక రంగాలలో అద్భుత విజయం.',
+            'గురు + చంద్ర సంబంధం (Jeeva-Mano Yoga): సంక్షోభ సమయాలలో దైవానుగ్రహం, మాతృ ఆశీస్సులు మరియు శుభవార్తల శ్రవణం.',
+          ],
+        },
+        {
+          heading: '4. ఉత్తర కాలామృతం & సారావళి: విపరీత రాజయోగం మరియు గ్రహ దృష్టి రహస్యాలు',
+          subheading: 'కష్టాలను విజయంగా మార్చే కాళిదాసు మరియు కల్యాణ వర్మ సూత్రాలు',
+          content:
+            'మహాకవి కాళిదాసు తన "ఉత్తర కాలామృతం" (ఖండం 4) లో దుఃస్థానాధిపతులైన 6, 8, 12 అధిపతులు ఆయా స్థానాలలోనే నిలిచినప్పుడు "హర్ష, సరళ, విమల" అనే విపరీత రాజయోగాలు ఏర్పడతాయని వివరించారు. అలాగే రాజా కల్యాణ వర్మ తన "సారావళి"లో చంద్రునిపై గురు, శుక్ర, బుధ, రవి, కుజ, శనుల దృష్టి పడినప్పుడు కలిగే సూక్ష్మ ఫలితాలను విపులంగా నిరూపించారు.',
+        },
+      ],
+      remedies: [
+        {
+          title: 'అష్ట మహా గ్రంథ సమ్మత నవగ్రహ & వేధ నివారణ శాంతి విధానం',
+          description:
+            'గోచారంలో పాక్షిక వేధ లేదా చంద్రాష్టమ ప్రభావం ఉన్నప్పుడు పరాశర హోరా శాస్త్రం మరియు ఉత్తర కాలామృతం సూచించిన సాత్విక పరిహారాలు:',
+          mantra: 'ఓం త్ర్యంబకం యజామహే సుగంధిం పుష్టివర్ధనమ్ | ఉర్వారొకమివ బంధనాన్మృత్యోర్ముక్షీయ మామృతాత్ || ఓం నమో భగవతే వాసుదేవాయ ||',
+          ritualSteps: [
+            'ప్రతి ఉదయం సూర్యోదయ సమయంలో తూర్పు ముఖంగా నిలబడి ఆదిత్య హృదయ శ్లోకం లేదా గాయత్రీ మంత్రం జపించాలి.',
+            'చంద్రాష్టమం లేదా వేధ ఉన్న రోజులలో శివాలయంలో అభిషేకం లేదా తెల్లని పుష్పాలతో అర్చన జరిపించాలి.',
+            'గురు-శని గోచార అనుకూలత కొరకు గోమాతకు గ్రాసం/బెల్లం సమర్పించడం మరియు అన్నదానంలో పాల్గొనడం శ్రేయస్కరం.',
+          ],
+        },
+      ],
+      faqs: [
+        {
+          question: 'గోచార వేధ (Gochara Vedha) అంటే ఏమిటి?',
+          answer:
+            'జన్మ రాశి నుండి చంద్రుడు లేదా ఇతర గ్రహాలు శుభ స్థానాలలో (ఉదాహరణకు 1, 3, 6, 7, 10, 11) సంచరిస్తున్నప్పటికీ, వాటికి నిర్దేశించబడిన జత స్థానంలో (5, 9, 12, 2, 4, 8) మరొక గ్రహం ఉంటే ఆ శుభ ఫలితానికి కలిగే తాత్కాలిక అడ్డంకిని "గోచార వేధ" అంటారు.',
+        },
+        {
+          question: 'చంద్రునికి ఏ గ్రహంతో వేధ దోషం ఉండదు?',
+          answer:
+            'మంత్రేశ్వరుని ఫలదీపిక (26.31) ప్రకారం చంద్రునికి మరియు బుధునికి మధ్య వేధ దోషం ఉండదు ("పితాపుత్రౌ నైవ వేధకౌ"). అలాగే సూర్యునికి మరియు శనికి మధ్య కూడా వేధ ఉండదు.',
+        },
+        {
+          question: 'భృగు నంది నాడిలో వృత్తి (Career) మరియు ధనలాభాన్ని ఏ గ్రహాలతో చూస్తారు?',
+          answer:
+            'భృగు నంది నాడిలో శనిని "కర్మకారకుడు" (ఉద్యోగం/వృత్తి) గాను, శుక్ర-బుధులను "ధన-వ్యాపార కారకులు" గాను, గురువును "జీవకారకుడు" గాను పరిగణించి వాటి 1-5-9 త్రికోణ సంబంధాల ద్వారా ఫలితాలను నిర్ణయిస్తారు.',
+        },
+      ],
+    },
+    english: {
+      title: 'Secrets of the 8 Classical Jyotisha Treatises: Brihat Parashara Hora Shastra, Phaladeepika Gochara Vedha & Bhrigu Nandi Nadi',
+      seoTitle: '8 Classical Vedic Astrology Books: BPHS, Phaladeepika Gochara Vedha & Bhrigu Nandi Nadi | Telugu Jyothisham',
+      metaDescription:
+        'Comprehensive scholarly guide to the 8 foundational Sanskrit astrology treatises: Brihat Parashara Hora Shastra, Phaladeepika Gochara Vedha rules, Brihat Jataka, Saravali, Uttara Kalamrita, and Bhrigu Nandi Nadi.',
+      primaryKeyword: 'Brihat Parashara Hora Shastra and Phaladeepika Gochara Vedha',
+      secondaryKeywords: [
+        'Phaladeepika Gochara Vedha table',
+        'Bhrigu Nandi Nadi planetary circuits',
+        'Varahamihira Brihat Samhita Gochara',
+        'Uttara Kalamrita Vipareeta Raja Yoga',
+        'Saravali Chandra Drishti Phala',
+      ],
+      summary:
+        'An authoritative treatise synthesizing the eight supreme classical texts of Vedic Astrology—Brihat Parashara Hora Shastra, Phaladeepika, Brihat Jataka, Saravali, Jataka Parijata, Uttara Kalamrita, Sarvartha Chintamani, and Bhrigu Nandi Nadi—explaining how mathematical Gochara Vedha and Nadi circuits power accurate predictions.',
+      sections: [
+        {
+          heading: '1. The Eight Pillars of Classical Jyotisha Shastra',
+          subheading: 'From Maharshi Parashara to Mantreswara and Palm-Leaf Nadi Granthas',
+          content:
+            'Authentic Vedic astrology rests upon astronomical precision (Drik Siddhanta) combined with the mathematical sutras of eight classical Sanskrit treatises:\n1. Brihat Parashara Hora Shastra (BPHS) by Maharshi Parashara\n2. Brihat Jataka & Brihat Samhita by Acharya Varahamihira\n3. Saravali by King Kalyana Varma\n4. Phaladeepika by Acharya Mantreswara\n5. Jataka Parijata by Vaidyanatha Dikshita\n6. Sarvartha Chintamani by Venkatesha Daivagna\n7. Uttara Kalamrita by Mahakavi Kalidasa\n8. Bhrigu Nandi Nadi & Deva Keralam (Chandra Kala Nadi)',
+          shloka: {
+            sanskrit: 'Horeti shastram vipulam Parashara-munirmatam | Janmakala-grahasthitya phalam vakshyami tattvatah ||',
+            meaning:
+              'Through the vast science of Hora taught by Sage Parashara, the fruits of karma are revealed by synthesizing natal planetary placements with transits.',
+          },
+        },
+        {
+          heading: '2. Phaladeepika (Chapter 26): Mathematical Rules of Gochara Vedha & Vipareeta Vedha',
+          subheading: 'Why Auspicious Transits Are Sometimes Obstructed and How Vipareeta Vedha Protects',
+          content:
+            'According to Acharya Mantreswara’s Phaladeepika (Chapter 26, Verses 18–31), the Moon is auspicious in the 1st, 3rd, 6th, 7th, 10th, and 11th houses from Janma Rashi. However, if another planet simultaneously occupies the paired Vedha house (5, 9, 12, 2, 4, 8), it obstructs the transit—with the notable classical exception that Mercury and Moon never cause Vedha to each other. Conversely, when the Moon is in houses 2, 4, 5, 8, 9, or 12, planetary presence in the paired house triggers Vipareeta Vedha, converting challenges into protection.',
+          table: {
+            headers: ['Planet', 'Auspicious Gochara Houses', 'Paired Vedha Houses', 'Classical Exception'],
+            rows: [
+              ['Moon (Chandra)', '1, 3, 6, 7, 10, 11', '5, 9, 12, 2, 4, 8', 'No Vedha between Moon & Mercury'],
+              ['Sun (Surya)', '3, 6, 10, 11', '9, 12, 4, 5', 'No Vedha between Sun & Saturn'],
+              ['Jupiter (Guru)', '2, 5, 7, 9, 11', '12, 4, 3, 10, 8', 'Jupiter aspect neutralizes afflictions'],
+              ['Venus (Shukra)', '1, 2, 3, 4, 5, 8, 9, 11, 12', '8, 7, 1, 10, 9, 5, 11, 6, 3', 'Natural bestower of prosperity'],
+            ],
+          },
+        },
+        {
+          heading: '3. Bhrigu Nandi Nadi: Trinal (1-5-9) Planetary Karakatva Circuits',
+          subheading: 'Event Pinpointing Using Karma-Karaka Saturn and Jeeva-Karaka Jupiter',
+          content:
+            'In Bhrigu Nandi Nadi, planets act as living significators across 1-5-9 trinal circuits regardless of house lordship: Saturn signifies Career (Karma), Jupiter signifies Self and Wisdom (Jeeva), Venus signifies Wealth and Marriage, Mercury signifies Intellect and Trade, and the transiting Moon acts as the daily hour-hand triggering concrete life events.',
+        },
+      ],
+      remedies: [
+        {
+          title: 'Classical Vedic Remedy for Gochara Vedha & Lunar Harmony',
+          description:
+            'Reciting the Maha Mrityunjaya Mantra and Sri Vishnu Sahasranamam harmonizes planetary transits and removes Gochara Vedha obstructions.',
+          mantra: 'Om Tryambakam Yajamahe Sugandhim Pushtivardhanam | Urvarukamiva Bandhanan Mrityor Mukshiya Mamritat ||',
+          ritualSteps: [
+            'Chant the prescribed Rashi mantra 11 or 21 times during morning prayers.',
+            'Offer white flowers or milk abhishekam to Lord Shiva on Mondays and during Chandrashtamam.',
+          ],
+        },
+      ],
+      faqs: [
+        {
+          question: 'What is Gochara Vedha in Vedic Astrology?',
+          answer:
+            'Gochara Vedha is a mathematical planetary obstruction described in Phaladeepika Chapter 26 where a planet in a paired house blocks or modifies the transit effect of another planet.',
+        },
+        {
+          question: 'Which planet does not cause Vedha to the Moon?',
+          answer:
+            'Mercury (Budha) never causes Vedha obstruction to the Moon due to their father-son relationship in Vedic lore.',
+        },
+      ],
+    },
+  },
 ];
+
 
 
 

@@ -45,6 +45,7 @@ export interface GuruProfileHomeProps {
   onNavigateToCityPanchangam?: (citySlug: 'hyderabad' | 'vijayawada' | 'visakhapatnam' | 'usa') => void;
   onNavigateToJathakam?: () => void;
   onNavigateToAwards?: () => void;
+  onNavigateToArticle?: (slug: string) => void;
   onOpenBooking: (service?: PoojaService) => void;
   onSelectCity?: (citySlug: string) => void;
 }
@@ -56,6 +57,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
   onNavigateToCalendar,
   onNavigateToCityPanchangam,
   onNavigateToJathakam,
+  onNavigateToArticle,
   onOpenBooking,
 }) => {
   const { t, tr } = useLanguage();
@@ -493,45 +495,152 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
           <span>{t('ఉచిత కుండలి నివేదిక పొందండి', 'Generate Kundali Now')}</span>
         </a>
       </div>
+      {/* ============================================================== */}
+      {/* 5. FEATURED VEDIC ARTICLES & SHASTRA TREATISES (EDITORIAL)     */}
+      {/* ============================================================== */}
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-amber-200/80 pb-4">
+          <div>
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
+              <BookOpen size={13} />
+              {t('జ్యోతిష విజ్ఞాన వ్యాసాలు • Classical Research Library', 'Classical Vedic Shastra Articles')}
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-amber-950 font-telugu mt-2">
+              {t('ప్రాచీన వేద జ్యోతిష వ్యాసాలు & శాస్త్ర గ్రంథాలు', 'Featured Classical Vedic Astrology Treatises')}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
+              {t(
+                'బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారిచే ప్రామాణిక గ్రంథాల ఆధారంగా రచించబడిన విశిష్ట పరిశోధనాత్మక వ్యాసాలు.',
+                'Scholarly, authentic Vedic research treatises and scriptural guidelines written by Brahmasri Jallavaram Sai Dheeraj Sharma.'
+              )}
+            </p>
+          </div>
 
-      {/* ============================================================== */}
-      {/* 5. CLEAN CALLOUT TO THE DEDICATED VYASALU (ARTICLES) MENU      */}
-      {/* ============================================================== */}
-      <div className="bg-gradient-to-r from-[#fff8eb] via-white to-[#fff4db] rounded-3xl p-6 sm:p-8 border-2 border-amber-400/90 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-        <div className="space-y-1.5 max-w-2xl">
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest text-amber-900 bg-amber-200/80 px-3 py-1 rounded-full border border-amber-400">
-            <BookOpen size={13} />
-            {t('వ్యాసాలు • వేద జ్యోతిష విజ్ఞాన సర్వస్వం', 'Vedic Articles & 1959 Archival Library')}
-          </span>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-amber-950 font-telugu">
-            {t(
-              'ప్రాచీన వేద జ్యోతిష వ్యాసాలు, హస్త సాముద్రికం & 1959 డా. బి. వి. రామన్ ఆర్కైవ్',
-              'Explore Classical Vedic Shastra Treatises & 1959 Dr. B. V. Raman Archival Research'
-            )}
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-700 font-telugu leading-relaxed">
-            {t(
-              'స్వరోదయ శాస్త్రం, బాలారిష్ట దోష శాంతి, ప్రశ్న శాస్త్రం, గ్రహ వక్రగతి, సూర్య సిద్ధాంతం, జ్యోతిష గూఢ పరిభాష మరియు హస్త సాముద్రిక వ్యాసాలన్నింటినీ "వ్యాసాలు" మెనూలో చదవండి.',
-              'Read all 8+ comprehensive bilingual treatises on Swarodaya, Balarishta, Horary Prashna, Palmistry, and 1959 Astrological Magazine research in our dedicated Articles section.'
-            )}
-          </p>
+          <a
+            href="/vedic-articles"
+            onClick={(e) => {
+              e.preventDefault();
+              try {
+                window.history.pushState({ tab: 'vyasalu', vedicArticles: true }, '', '/vedic-articles');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } catch {}
+            }}
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-900 hover:bg-amber-800 text-amber-100 font-bold text-xs rounded-xl transition shadow-xs shrink-0 self-start sm:self-auto cursor-pointer"
+          >
+            <span>{t('అన్ని వ్యాసాలు (14+) →', 'View All Articles (14+) →')}</span>
+          </a>
         </div>
 
-        <a
-          href="/vedic-articles"
-          onClick={(e) => {
-            e.preventDefault();
-            try {
-              window.history.pushState({ tab: 'vyasalu', vedicArticles: true }, '', '/vedic-articles');
-              window.dispatchEvent(new PopStateEvent('popstate'));
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch {}
-          }}
-          className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-800 to-amber-950 hover:from-amber-900 hover:to-black text-amber-100 font-extrabold text-xs sm:text-sm shadow-lg transition-all cursor-pointer shrink-0 inline-flex items-center gap-2 border border-amber-500"
-        >
-          <BookOpen size={16} className="text-amber-300" />
-          <span>{t('అన్ని వ్యాసాలు చదవండి (వ్యాసాలు మెనూ) →', 'Open All Articles (Vyasalu) →')}</span>
-        </a>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* Article Card 1 */}
+          <article className="bg-white rounded-2xl border-2 border-amber-200/90 hover:border-amber-400 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-[11px] font-bold text-amber-800">
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300">స్వరోదయం</span>
+                <span className="flex items-center gap-1 text-slate-500"><Clock size={12} /> 18 నిమిషాలు</span>
+              </div>
+              <h3 className="text-base font-bold text-amber-950 group-hover:text-amber-800 transition line-clamp-2">
+                స్వరోదయ శాస్త్రం – శ్వాస నాడీ విజ్ఞానం, పంచభూత తత్త్వాలు &amp; నిత్య విజయ రహస్యాలు
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                ఇడా (చంద్ర), పింగళ (సూర్య), సుషుమ్నా నాడీ గమనం, పంచభూత తత్త్వాలు మరియు ప్రతి పనిలోనూ నిశ్చయ విజయం సాధించే ప్రాతఃకాల శ్వాస పరీక్షా విధి.
+              </p>
+            </div>
+            <a
+              href="/swarodaya-shastra"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onNavigateToArticle) onNavigateToArticle('swarodaya-shastra');
+              }}
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 group-hover:text-amber-700 cursor-pointer pt-3 border-t border-amber-100"
+            >
+              <span>పూర్తి వ్యాసం చదవండి</span>
+              <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+            </a>
+          </article>
+
+          {/* Article Card 2 */}
+          <article className="bg-white rounded-2xl border-2 border-amber-200/90 hover:border-amber-400 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-[11px] font-bold text-amber-800">
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300">దోష పరిహారం</span>
+                <span className="flex items-center gap-1 text-slate-500"><Clock size={12} /> 22 నిమిషాలు</span>
+              </div>
+              <h3 className="text-base font-bold text-amber-950 group-hover:text-amber-800 transition line-clamp-2">
+                బాలారిష్ట దోష శాంతి – నవజాత శిశు గ్రహ దోషాలు &amp; ఆయుర్దాయ శాస్త్ర ప్రమాణాలు
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                జాతక పారిజాతం మరియు బృహత్పరాశర హోరా శాస్త్రాల ప్రకారం శిశువులకు సంభవించే బాలారిష్ట యోగాలు మరియు మృత్యుంజయ శాంతి ప్రక్రియలు.
+              </p>
+            </div>
+            <a
+              href="/balarishta-dosha-shanti"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onNavigateToArticle) onNavigateToArticle('balarishta-dosha-shanti');
+              }}
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 group-hover:text-amber-700 cursor-pointer pt-3 border-t border-amber-100"
+            >
+              <span>పూర్తి వ్యాసం చదవండి</span>
+              <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+            </a>
+          </article>
+
+          {/* Article Card 3 */}
+          <article className="bg-white rounded-2xl border-2 border-amber-200/90 hover:border-amber-400 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-[11px] font-bold text-amber-800">
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300">సాముద్రికం</span>
+                <span className="flex items-center gap-1 text-slate-500"><Clock size={12} /> 19 నిమిషాలు</span>
+              </div>
+              <h3 className="text-base font-bold text-amber-950 group-hover:text-amber-800 transition line-clamp-2">
+                హస్త సాముద్రిక రేఖల విజ్ఞానం – ఆయుష్షు, ధన, భాగ్య రేఖల శాస్త్రీయ రహస్యాలు
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                చేతిలోని ఆయుర్రేఖ, మాతృరేఖ, పితృరేఖ, శని భాగ్యరేఖ, రవి కీర్తిరేఖల గుహ్య సంకేతాలు మరియు పర్వతాల ప్రాశస్త్య విశ్లేషణ.
+              </p>
+            </div>
+            <a
+              href="/hasta-samudrika-rekhala-vignanam"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onNavigateToArticle) onNavigateToArticle('hasta-samudrika-rekhala-vignanam');
+              }}
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 group-hover:text-amber-700 cursor-pointer pt-3 border-t border-amber-100"
+            >
+              <span>పూర్తి వ్యాసం చదవండి</span>
+              <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+            </a>
+          </article>
+
+          {/* Article Card 4 */}
+          <article className="bg-white rounded-2xl border-2 border-amber-300 hover:border-amber-500 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-[11px] font-bold text-amber-900">
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-200 border border-amber-400">అష్ట మహా గ్రంథాలు &amp; నాడి</span>
+                <span className="flex items-center gap-1 text-slate-500"><Clock size={12} /> 24 నిమిషాలు</span>
+              </div>
+              <h3 className="text-base font-bold text-amber-950 group-hover:text-amber-800 transition line-clamp-2">
+                అష్ట మహా జ్యోతిష గ్రంథాల రహస్యాలు – పరాశర, ఫలదీపిక గోచార వేధ &amp; భృగు నంది నాడి
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                బృహత్ పరాశర హోరా శాస్త్రం, మంత్రేశ్వరుని ఫలదీపిక గోచార వేధ/విపరీత వేధ గణిత సూత్రాలు, సారావళి మరియు భృగు నంది నాడి 1-5-9 సర్క్యూట్ రహస్యాలు.
+              </p>
+            </div>
+            <a
+              href="/ashtagrantha-parashara-nadi-jyotisha-rahasyalu"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onNavigateToArticle) onNavigateToArticle('ashtagrantha-parashara-nadi-jyotisha-rahasyalu');
+              }}
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 group-hover:text-amber-700 cursor-pointer pt-3 border-t border-amber-100"
+            >
+              <span>పూర్తి వ్యాసం చదవండి</span>
+              <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+            </a>
+          </article>
+        </div>
       </div>
 
       {/* ============================================================== */}

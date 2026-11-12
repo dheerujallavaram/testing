@@ -8,12 +8,14 @@ interface PoojaServicesSectionProps {
   onSelectService: (service: PoojaService) => void;
 }
 
-export const PoojaServicesSection: React.FC<PoojaServicesSectionProps> = ({ onSelectService }) => {
+export const PoojaServicesSection: React.FC<PoojaServicesSectionProps> = ({
+  onSelectService,
+}) => {
   const { t, language } = useLanguage();
 
   return (
     <section id="services" className="my-8 scroll-mt-24 font-telugu">
-      <div className="text-center max-w-3xl mx-auto mb-10">
+      <div className="text-center max-w-3xl mx-auto mb-8">
         <span className="text-xs uppercase tracking-widest font-semibold text-amber-800 font-display bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
           {t('వైదిక క్రతువులు & హోమాలు', 'Authentic Vedic Homams & Rituals')}
         </span>

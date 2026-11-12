@@ -62,6 +62,11 @@ import {
   getRashiEncyclopediaByIdOrIndex,
   LUNAR_AND_SHANI_MENTAL_GUIDES,
 } from '../data/dwadasaRashiVedicEncyclopedia';
+import { evaluateEightClassicalGranthasForKundali } from '../data/classicalGranthaSutras';
+import { computeKundaliJHoraSphutasAndJaimini } from '../utils/jhoraAdvancedEngine';
+import { computeDivineVedicProReport } from '../utils/divineVedicProEngine';
+import { computePhalitaSynthesis } from '../utils/phalitaSynthesisEngine';
+import { computePersonalHoroscopeVastu } from '../utils/dakshinaBharatiyaMarriageAndVastuEngine';
 
 interface JanmaKundaliGeneratorProps {
   onOpenBooking?: () => void;
@@ -248,6 +253,23 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
       execSummary,
       naadiTransitReport: generateCompleteNaadiTransitReport(chartData.planets, lagnaIdx, birthDate),
       chandraRashiEncyclopedia: getRashiEncyclopediaByIdOrIndex(moonIdx),
+      eightClassicalGranthas: evaluateEightClassicalGranthasForKundali({
+        lagnaRashiIndex: lagnaIdx,
+        moonRashiIndex: moonIdx,
+        sunRashiIndex: sunIdx,
+        nakshatraNameTe: chartData.nakshatraName,
+        nakshatraNameEn: chartData.nakshatraName,
+        planetRashis: chartData.planets.map((p) => ({
+          id: p.id,
+          nameTe: p.nameTe,
+          nameEn: p.nameEn,
+          rashiIndex: p.rashiIdx,
+        })),
+      }),
+      jhoraMaster: computeKundaliJHoraSphutasAndJaimini(chartData.planets, lagnaIdx),
+      divinePro: computeDivineVedicProReport(chartData.planets, lagnaIdx, birthDate, birthTime),
+      phalita: computePhalitaSynthesis(chartData.planets, lagnaIdx, birthDate, activeDasha?.lordTe),
+      personalVastu: computePersonalHoroscopeVastu(moonIdx),
     };
   }, [chartData, birthDate, birthTime, selectedCity]);
 
@@ -3384,6 +3406,873 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({ pr
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* ================================================================= */}
+          {/* CHAPTER 20: 8 CLASSICAL JYOTISHA GRANTHAS BIRTH CHART SYNTHESIS   */}
+          {/* ================================================================= */}
+          <div className="mt-6 pt-5 border-t-2 border-amber-400 space-y-4 print-card">
+            <div className="bg-gradient-to-r from-[#2c0902] via-amber-950 to-[#2c0902] text-amber-100 rounded-2xl p-4 sm:p-5 border border-amber-500">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-300 block">
+                {t(
+                  'అధ్యాయం 20 • అష్ట మహా గ్రంథ ప్రమాణ విశ్లేషణ (Classical Shastra Decrees)',
+                  'Chapter 20 • 8 Classical Sanskrit Treatises Synthesis'
+                )}
+              </span>
+              <h4 className="text-lg sm:text-xl font-extrabold text-white mt-0.5">
+                {t(
+                  `${name} గారి జన్మ కుండలిపై 8 ప్రాచీన జ్యోతిష మహా గ్రంథాల శ్లోక ప్రమాణ తీర్పు`,
+                  `8 Immortal Sanskrit Treatises Evaluation for ${name}'s Birth Chart`
+                )}
+              </h4>
+              <p className="text-xs text-amber-200/90 mt-1 leading-relaxed">
+                {t(
+                  'బృహత్ పరాశర హోరా శాస్త్రం, ఫలదీపిక, బృహజ్జాతకం, సారావళి, జాతక పారిజాతం, ఉత్తర కాలామృతం, సర్వార్థ చింతామణి మరియు భృగు నంది నాడి గ్రంథాల ఆధారంగా మీ గ్రహ స్థితి విశ్లేషణ.',
+                  'Personalized scriptural decrees derived from BPHS, Phaladeepika, Brihat Jataka, Saravali, Jataka Parijata, Uttara Kalamrita, Sarvartha Chintamani, and Bhrigu Nandi Nadi.'
+                )}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {predictions.eightClassicalGranthas.map((decree) => (
+                <div
+                  key={decree.granthaId}
+                  className="rounded-2xl border-2 border-amber-300 bg-[#fffdf8] p-4 space-y-2.5 shadow-2xs print-card"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-2 border-b border-amber-200 pb-2">
+                    <div>
+                      <h5 className="text-sm sm:text-base font-extrabold text-amber-950">
+                        {t(decree.granthaNameTe, decree.granthaNameEn)}
+                      </h5>
+                      <span className="text-[11px] font-bold text-amber-800">
+                        {t(decree.authorTe, decree.authorEn)} • {t(decree.chapterRefTe, decree.chapterRefEn)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <blockquote className="text-xs font-bold text-amber-950 bg-amber-100/75 border-l-3 border-amber-700 pl-3 py-1.5 rounded-r-xl italic">
+                    {decree.sanskritShlokaTe}
+                  </blockquote>
+
+                  <div className="text-xs font-extrabold text-emerald-950 bg-emerald-50/90 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                    ★ {t(decree.sutraHeadlineTe, decree.sutraHeadlineEn)}
+                  </div>
+
+                  <p className="text-xs text-slate-800 leading-relaxed">
+                    {t(decree.personalizedAnalysisTe, decree.personalizedAnalysisEn)}
+                  </p>
+
+                  <div className="pt-1.5 border-t border-amber-200/80 text-[11px] text-amber-950 font-medium">
+                    <strong>🔱 {t('గ్రంథ మార్గదర్శనం:', 'Scriptural Guidance:')} </strong>
+                    <span>{t(decree.practicalGuidanceTe, decree.practicalGuidanceEn)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CHAPTER 21: Jaimini Chara Karakas, Arudha/Upapada Lagna, Indu Lagna & Bhrigu Bindu */}
+          <div className="rounded-3xl border-2 border-indigo-400 bg-gradient-to-br from-[#eef2ff] via-[#fffbeb] to-[#f5f3ff] p-4 sm:p-6 shadow-md space-y-5 print-card">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-indigo-200 pb-3">
+              <div>
+                <span className="text-[11px] font-extrabold text-indigo-900 bg-indigo-100 border border-indigo-300 px-3 py-1 rounded-full inline-block mb-1">
+                  {t('అధ్యాయం 21 • జైమిని మహర్షి చర కారక & విశేష స్ఫుట సిద్ధాంతం', 'Chapter 21 • Maharshi Jaimini Chara Karaka & Special Sphuta Engine')}
+                </span>
+                <h4 className="text-lg sm:text-xl font-extrabold text-indigo-950">
+                  {t(
+                    'జైమిని సప్త చర కారకములు • ఆరూఢ (AL) & ఉపపాద (UL) లగ్నములు • ఇందు లగ్నం • భృగు బిందువు',
+                    'Jaimini 7 Chara Karakas • Arudha (AL) & Upapada (UL) • Indu Lagna • Bhrigu Bindu'
+                  )}
+                </h4>
+                <p className="text-xs text-indigo-900 font-medium mt-0.5">
+                  {t(
+                    'మహర్షి జైమిని ఉపదేశ సూత్రములు, భృగు నంది నాడి మరియు పరాశర స్ఫుట గణిత ఆధారంగా మీ జాతక విశేష రహస్య విశ్లేషణ.',
+                    'Computed using Maharshi Jaimini Upadesha Sutras, Bhrigu Nandi Nadi & Parashara Sphuta mathematics.'
+                  )}
+                </p>
+              </div>
+              {predictions.jhoraMaster.charaKarakas[0] && (
+                <div className="text-xs font-extrabold text-amber-950 bg-amber-100 border border-amber-300 px-3 py-1.5 rounded-xl shrink-0">
+                  👑 {t('ఆత్మకారక గ్రహం (AK):', 'Atmakaraka (AK):')} {t(predictions.jhoraMaster.charaKarakas[0].planetTe, predictions.jhoraMaster.charaKarakas[0].planetEn)} ({predictions.jhoraMaster.charaKarakas[0].degreeInSign})
+                </div>
+              )}
+            </div>
+
+            {/* 4 Key Special Lagnas & Destiny Points Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              {/* Arudha Lagna (AL) */}
+              <div className="rounded-2xl border border-indigo-200 bg-white/95 p-3.5 shadow-sm space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-indigo-900 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
+                    🏛️ {t('ఆరూఢ లగ్నం (AL - జైమిని మాయా/కీర్తి లగ్నం)', 'Arudha Lagna (AL - Public Image & Status)')}
+                  </span>
+                  <span className="text-sm font-black text-indigo-950">
+                    {t(predictions.jhoraMaster.arudhaLagna.rashiTe, predictions.jhoraMaster.arudhaLagna.rashiEn)}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-800 leading-relaxed">
+                  {t(predictions.jhoraMaster.arudhaLagna.meaningTe, predictions.jhoraMaster.arudhaLagna.meaningEn)}
+                </p>
+              </div>
+
+              {/* Upapada Lagna (UL) */}
+              <div className="rounded-2xl border border-rose-200 bg-white/95 p-3.5 shadow-sm space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-rose-900 bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-full">
+                    💍 {t('ఉపపాద లగ్నం (UL - వివాహ & దాంపత్య పీఠం)', 'Upapada Lagna (UL - Spouse & Marriage)')}
+                  </span>
+                  <span className="text-sm font-black text-rose-950">
+                    {t(predictions.jhoraMaster.upapadaLagna.rashiTe, predictions.jhoraMaster.upapadaLagna.rashiEn)}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-800 leading-relaxed">
+                  {t(predictions.jhoraMaster.upapadaLagna.meaningTe, predictions.jhoraMaster.upapadaLagna.meaningEn)}
+                </p>
+              </div>
+
+              {/* Indu Lagna (Wealth Ascendant) */}
+              <div className="rounded-2xl border border-emerald-200 bg-white/95 p-3.5 shadow-sm space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-emerald-900 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                    💰 {t('ఇందు లగ్నం (ధన/కోటీశ్వర యోగ పీఠం)', 'Indu Lagna (Kalidasa Wealth Ascendant)')}
+                  </span>
+                  <span className="text-sm font-black text-emerald-950">
+                    {t(predictions.jhoraMaster.induLagna.rashiTe, predictions.jhoraMaster.induLagna.rashiEn)} ({predictions.jhoraMaster.induLagna.totalKalas} {t('కళలు', 'Kalas')})
+                  </span>
+                </div>
+                <p className="text-xs text-slate-800 leading-relaxed">
+                  {t(predictions.jhoraMaster.induLagna.meaningTe, predictions.jhoraMaster.induLagna.meaningEn)}
+                </p>
+              </div>
+
+              {/* Bhrigu Bindu (Rahu-Moon Midpoint) */}
+              <div className="rounded-2xl border border-amber-300 bg-white/95 p-3.5 shadow-sm space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-amber-900 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
+                    🎯 {t('భృగు బిందువు (రాహు-చంద్ర పూర్వజన్మ కర్మ బిందువు)', 'Bhrigu Bindu (Rahu-Moon Destiny Point)')}
+                  </span>
+                  <span className="text-sm font-black text-amber-950">
+                    {t(predictions.jhoraMaster.bhriguBindu.rashiTe, predictions.jhoraMaster.bhriguBindu.rashiEn)} ({t(`${predictions.jhoraMaster.bhriguBindu.houseFromLagna}వ భావం`, `H${predictions.jhoraMaster.bhriguBindu.houseFromLagna}`)})
+                  </span>
+                </div>
+                <p className="text-xs text-slate-800 leading-relaxed">
+                  {t(predictions.jhoraMaster.bhriguBindu.meaningTe, predictions.jhoraMaster.bhriguBindu.meaningEn)}
+                </p>
+              </div>
+            </div>
+
+            {/* Jaimini 7 Chara Karakas Table */}
+            <div className="rounded-2xl border border-indigo-200 bg-white/95 p-3.5 shadow-sm space-y-2.5">
+              <h5 className="text-sm font-extrabold text-indigo-950">
+                📜 {t('జైమిని సప్త చర కారక పట్టిక (Jaimini 7 Chara Karakas)', 'Jaimini 7 Chara Karakas Table')}
+              </h5>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                {predictions.jhoraMaster.charaKarakas.map((ck) => (
+                  <div
+                    key={ck.karakaCode}
+                    className={`rounded-xl border p-2.5 space-y-1 ${
+                      ck.karakaCode === 'AK'
+                        ? 'border-amber-400 bg-amber-50/80'
+                        : 'border-slate-200 bg-slate-50/70'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-black text-indigo-950 bg-indigo-100 px-2 py-0.5 rounded-md">
+                        {ck.karakaCode} • {t(ck.karakaTitleTe, ck.karakaTitleEn)}
+                      </span>
+                      <span className="text-xs font-extrabold text-amber-900">
+                        {ck.degreeInSign}
+                      </span>
+                    </div>
+                    <div className="text-xs font-extrabold text-slate-900">
+                      {t(ck.planetTe, ck.planetEn)} ({t(ck.rashiTe, ck.rashiEn)})
+                    </div>
+                    <p className="text-[11px] text-slate-700 leading-snug">
+                      {t(ck.significanceTe, ck.significanceEn)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Natal Yogi-Avayogi & Special Sphutas */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              <div className="rounded-2xl border border-emerald-300 bg-emerald-50/60 p-3.5 space-y-1.5">
+                <div className="text-xs font-extrabold text-emerald-950">
+                  🌟 {t('జన్మ యోగి – సహయోగి – అవయోగి గ్రహములు (Natal Yogi & Avayogi):', 'Natal Yogi, Sahayogi & Avayogi Planets:')}
+                </div>
+                <div className="flex flex-wrap gap-2 text-xs font-bold">
+                  <span className="bg-emerald-100 text-emerald-950 border border-emerald-300 px-2.5 py-1 rounded-lg">
+                    {t('జన్మ యోగి:', 'Natal Yogi:')} {t(predictions.jhoraMaster.natalYogiProfile.yogiPlanetTe, predictions.jhoraMaster.natalYogiProfile.yogiPlanetEn)} ({t(predictions.jhoraMaster.natalYogiProfile.yogiNakshatraTe, predictions.jhoraMaster.natalYogiProfile.yogiNakshatraEn)})
+                  </span>
+                  <span className="bg-amber-100 text-amber-950 border border-amber-300 px-2.5 py-1 rounded-lg">
+                    {t('సహయోగి:', 'Sahayogi:')} {t(predictions.jhoraMaster.natalYogiProfile.sahayogiPlanetTe, predictions.jhoraMaster.natalYogiProfile.sahayogiPlanetEn)}
+                  </span>
+                  <span className="bg-rose-100 text-rose-950 border border-rose-300 px-2.5 py-1 rounded-lg">
+                    {t('అవయోగి:', 'Avayogi:')} {t(predictions.jhoraMaster.natalYogiProfile.avayogiPlanetTe, predictions.jhoraMaster.natalYogiProfile.avayogiPlanetEn)}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-800 leading-relaxed">
+                  {t(predictions.jhoraMaster.natalYogiProfile.meaningTe, predictions.jhoraMaster.natalYogiProfile.meaningEn)}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-amber-300 bg-amber-50/60 p-3.5 space-y-1.5">
+                <div className="text-xs font-extrabold text-amber-950">
+                  🔱 {t('సంతాన బీజ-క్షేత్ర స్ఫుటములు & త్రిస్ఫుట గణితం:', 'Santana Beeja-Kshetra & Trisphuta Points:')}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                  <div className="bg-white/90 border border-amber-200 rounded-lg p-2">
+                    <div className="text-[11px] font-extrabold text-amber-950">
+                      {t('బీజ స్ఫుటం (పురుష)', 'Beeja Sphuta')}
+                    </div>
+                    <div className="text-xs font-black text-indigo-900">
+                      {t(predictions.jhoraMaster.santanaAndAyurSphutas.beejaSphutaRashiTe, predictions.jhoraMaster.santanaAndAyurSphutas.beejaSphutaRashiEn)}
+                    </div>
+                  </div>
+                  <div className="bg-white/90 border border-amber-200 rounded-lg p-2">
+                    <div className="text-[11px] font-extrabold text-amber-950">
+                      {t('క్షేత్ర స్ఫుటం (స్త్రీ)', 'Kshetra Sphuta')}
+                    </div>
+                    <div className="text-xs font-black text-indigo-900">
+                      {t(predictions.jhoraMaster.santanaAndAyurSphutas.kshetraSphutaRashiTe, predictions.jhoraMaster.santanaAndAyurSphutas.kshetraSphutaRashiEn)}
+                    </div>
+                  </div>
+                  <div className="bg-white/90 border border-amber-200 rounded-lg p-2">
+                    <div className="text-[11px] font-extrabold text-amber-950">
+                      {t('త్రిస్ఫుటం (ఆయుర్బలం)', 'Trisphuta')}
+                    </div>
+                    <div className="text-xs font-black text-indigo-900">
+                      {t(predictions.jhoraMaster.santanaAndAyurSphutas.trisphutaRashiTe, predictions.jhoraMaster.santanaAndAyurSphutas.trisphutaRashiEn)}
+                    </div>
+                  </div>
+                </div>
+                <p className="text-[11px] text-slate-700 leading-snug">
+                  {t(predictions.jhoraMaster.santanaAndAyurSphutas.santanaMeaningTe, predictions.jhoraMaster.santanaAndAyurSphutas.santanaMeaningEn)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CHAPTER 22: Sarvashtakavarga (337 Bindu Matrix), Shadbala, Tajika Varshaphal Muntha, Ratna-Rudraksha Shastra & Papasamyam */}
+          <div className="rounded-3xl border-2 border-amber-500 bg-gradient-to-br from-[#fffbeb] via-[#fef3c7]/60 to-[#fff7ed] p-4 sm:p-6 shadow-md space-y-6 print-card">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-amber-300 pb-3">
+              <div>
+                <span className="text-[11px] font-extrabold text-amber-950 bg-amber-200/80 border border-amber-400 px-3 py-1 rounded-full inline-block mb-1">
+                  {t(
+                    'అధ్యాయం 22 • అష్టకవర్గ • షడ్బలం • తాజిక వర్షఫల్ • రత్న-రుద్రాక్ష శాస్త్రం',
+                    'Chapter 22 • Sarvashtakavarga • Shadbala • Tajika Varshaphal • Ratna-Rudraksha Shastra'
+                  )}
+                </span>
+                <h4 className="text-lg sm:text-xl font-extrabold text-[#451a03]">
+                  {t(
+                    'సర్వాష్టకవర్గ (337 బిందు పట్టిక) • సప్తగ్రహ షడ్బల గ్రాఫ్ • వర్షఫల్ ముంథా • రత్న-రుద్రాక్ష-యంత్ర సిఫార్సు',
+                    'Sarvashtakavarga (337 Bindu Matrix) • Shadbala Strength • Annual Muntha • Gemstone & Rudraksha Prescription'
+                  )}
+                </h4>
+              </div>
+              <div className="text-xs font-extrabold text-emerald-950 bg-emerald-100 border border-emerald-300 px-3 py-1.5 rounded-xl shrink-0">
+                🔢 {t('మొత్తం సర్వాష్టకవర్గ బిందువులు:', 'Total SAV Bindus:')} {predictions.divinePro.totalSavBindus} / 337
+              </div>
+            </div>
+
+            {/* MODULE 22A: Sarvashtakavarga 12-Rashi Bindu Table */}
+            <div className="rounded-2xl border border-amber-300 bg-white/95 p-3.5 sm:p-4 shadow-sm space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <h5 className="text-sm sm:text-base font-extrabold text-amber-950">
+                  📊 {t('1. భిన్నాష్టకవర్గ & సర్వాష్టకవర్గ ద్వాదశ రాశి బిందు పట్టిక (Parashara Ashtakavarga)', '1. Bhinnashtakavarga & Sarvashtakavarga 12-Rashi Bindu Matrix')}
+                </h5>
+                <span className="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
+                  {t('28+ బిందువులు = శుభ/రాజయోగ బలం', '28+ Bindus = Auspicious Strength')}
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-amber-100/90 text-amber-950 font-extrabold border-b border-amber-300">
+                      <th className="py-2 px-2">{t('రాశి (భావం)', 'Sign (House)')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('సూర్య', 'Sun')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('చంద్ర', 'Moon')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('కుజ', 'Mars')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('బుధ', 'Merc')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('గురు', 'Jup')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('శుక్ర', 'Ven')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('శని', 'Sat')}</th>
+                      <th className="py-2 px-2 text-center bg-amber-200/80">{t('మొత్తం (SAV)', 'Total SAV')}</th>
+                      <th className="py-2 px-2">{t('ఫలిత స్థాయి', 'Verdict')}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-amber-100">
+                    {predictions.divinePro.ashtakavargaRows.map((row) => (
+                      <tr
+                        key={row.rashiIdx}
+                        className={
+                          row.sarvaBindus >= 30
+                            ? 'bg-emerald-50/70 font-semibold'
+                            : row.sarvaBindus < 25
+                            ? 'bg-rose-50/50'
+                            : 'bg-white'
+                        }
+                      >
+                        <td className="py-1.5 px-2 font-extrabold text-slate-900">
+                          {t(row.rashiTe, row.rashiEn)}{' '}
+                          <span className="text-[10px] text-amber-800 font-bold">
+                            ({t(`${row.houseFromLagna}వ భావం`, `H${row.houseFromLagna}`)})
+                          </span>
+                        </td>
+                        <td className="py-1.5 px-1.5 text-center">{row.sunBindus}</td>
+                        <td className="py-1.5 px-1.5 text-center">{row.moonBindus}</td>
+                        <td className="py-1.5 px-1.5 text-center">{row.marsBindus}</td>
+                        <td className="py-1.5 px-1.5 text-center">{row.mercuryBindus}</td>
+                        <td className="py-1.5 px-1.5 text-center">{row.jupiterBindus}</td>
+                        <td className="py-1.5 px-1.5 text-center">{row.venusBindus}</td>
+                        <td className="py-1.5 px-1.5 text-center">{row.saturnBindus}</td>
+                        <td className="py-1.5 px-2 text-center font-black text-sm text-amber-950 bg-amber-100/60">
+                          {row.sarvaBindus}
+                        </td>
+                        <td className="py-1.5 px-2 text-[11px] text-slate-700">
+                          {t(row.verdictTe, row.verdictEn)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-950 leading-relaxed">
+                <strong>💰 {t('కర్మ (10) – లాభ (11) – వ్యయ (12) బిందు నిష్పత్తి:', '10th–11th–12th Wealth Bindu Equation:')} </strong>
+                {t(predictions.divinePro.dhanaLabhaVyayaFormula.summaryTe, predictions.divinePro.dhanaLabhaVyayaFormula.summaryEn)}
+              </div>
+            </div>
+
+            {/* MODULE 22B: Shadbala (Six-Fold Planetary Strength) */}
+            <div className="rounded-2xl border border-indigo-200 bg-white/95 p-3.5 sm:p-4 shadow-sm space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <h5 className="text-sm sm:text-base font-extrabold text-indigo-950">
+                  ⚖️ {t('2. సప్తగ్రహ షడ్బల పట్టిక & ఇష్ట-కష్ట ఫల నిష్పత్తి (Shadbala 6-Fold Strength)', '2. Seven-Planet Shadbala & Ishta-Kashta Phala Table')}
+                </h5>
+                <div className="flex flex-wrap gap-2 text-[11px] font-bold">
+                  <span className="bg-emerald-100 text-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                    🏆 {t('అత్యధిక బల గ్రహం:', 'Strongest:')} {t(predictions.divinePro.strongestPlanetTe, predictions.divinePro.strongestPlanetEn)}
+                  </span>
+                  <span className="bg-rose-100 text-rose-950 px-2.5 py-0.5 rounded-full border border-rose-300">
+                    ⚡ {t('శాంతి అవసరమైన గ్రహం:', 'Needs Boost:')} {t(predictions.divinePro.weakestPlanetTe, predictions.divinePro.weakestPlanetEn)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-indigo-50 text-indigo-950 font-extrabold border-b border-indigo-200">
+                      <th className="py-2 px-2">{t('గ్రహం', 'Planet')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('స్థాన బలం', 'Sthana')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('దిగ్బలం', 'Dig')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('కాల బలం', 'Kala')}</th>
+                      <th className="py-2 px-1.5 text-center">{t('చేష్టా బలం', 'Cheshta')}</th>
+                      <th className="py-2 px-2 text-center bg-indigo-100/70">{t('మొత్తం రూపములు (అవసరం)', 'Rupas (Req)')}</th>
+                      <th className="py-2 px-2">{t('షడ్బల శాతం', 'Strength %')}</th>
+                      <th className="py-2 px-2">{t('ఇష్ట / కష్ట ఫలం', 'Ishta / Kashta')}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {predictions.divinePro.shadbalaRows.map((sb) => (
+                      <tr key={sb.planetId} className="hover:bg-slate-50/80">
+                        <td className="py-2 px-2 font-extrabold text-slate-900">
+                          {t(sb.planetTe, sb.planetEn)}
+                        </td>
+                        <td className="py-2 px-1.5 text-center">{sb.sthanaBala}</td>
+                        <td className="py-2 px-1.5 text-center">{sb.digBala}</td>
+                        <td className="py-2 px-1.5 text-center">{sb.kalaBala}</td>
+                        <td className="py-2 px-1.5 text-center">{sb.cheshtaBala}</td>
+                        <td className="py-2 px-2 text-center font-extrabold text-indigo-950 bg-indigo-50/50">
+                          {sb.totalRupas} <span className="text-[10px] text-slate-500">/ {sb.requiredRupas}</span>
+                        </td>
+                        <td className="py-2 px-2">
+                          <div className="flex items-center gap-2">
+                            <div className="w-20 h-2 bg-slate-200 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full ${
+                                  sb.strengthRatioPct >= 105
+                                    ? 'bg-emerald-600'
+                                    : sb.strengthRatioPct >= 90
+                                    ? 'bg-amber-500'
+                                    : 'bg-rose-500'
+                                }`}
+                                style={{ width: `${Math.min(100, Math.round(sb.strengthRatioPct * 0.75))}%` }}
+                              />
+                            </div>
+                            <span className="font-extrabold text-slate-900">{sb.strengthRatioPct}%</span>
+                          </div>
+                        </td>
+                        <td className="py-2 px-2 text-[11px] font-bold">
+                          <span className="text-emerald-700">{sb.ishtaPhalaPct}% శుభం</span> •{' '}
+                          <span className="text-rose-700">{sb.kashtaPhalaPct}% కష్టం</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* MODULE 22C & 22E: Tajika Varshaphal Muntha + Papasamyam & Kalasarpa/Pitru Dosha Audit */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Tajika Varshaphal Muntha Card */}
+              <div className="rounded-2xl border border-amber-300 bg-white/95 p-4 shadow-sm space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-amber-950 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-full">
+                    ☀️ {t('3. తాజిక వర్షఫల్ & ముంథా (Annual Solar Return)', '3. Tajika Varshaphal & Muntha')}
+                  </span>
+                  <span className="text-xs font-black text-indigo-950">
+                    {t(`${predictions.divinePro.varshaphal.varshaYearNumber}వ వర్ష ప్రవేశం`, `Year ${predictions.divinePro.varshaphal.varshaYearNumber}`)}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs bg-amber-50/80 border border-amber-200 rounded-xl p-2.5">
+                  <div>
+                    <span className="text-slate-600 block text-[11px]">{t('ఈ సంవత్సర ముంథా రాశి:', 'Annual Muntha Sign:')}</span>
+                    <strong className="text-amber-950 font-extrabold">
+                      {t(predictions.divinePro.varshaphal.munthaRashiTe, predictions.divinePro.varshaphal.munthaRashiEn)} ({t(`${predictions.divinePro.varshaphal.munthaHouseFromLagna}వ భావం`, `H${predictions.divinePro.varshaphal.munthaHouseFromLagna}`)})
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-600 block text-[11px]">{t('వర్షేశ్వరుడు (Year Lord):', 'Varshapati (Year Lord):')}</span>
+                    <strong className="text-indigo-950 font-extrabold">
+                      {t(predictions.divinePro.varshaphal.varshapatiTe, predictions.divinePro.varshaphal.varshapatiEn)}
+                    </strong>
+                  </div>
+                </div>
+                <div className="text-xs font-extrabold text-emerald-900 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                  ✨ {t(predictions.divinePro.varshaphal.tajikaYogaTe, predictions.divinePro.varshaphal.tajikaYogaEn)}
+                </div>
+                <p className="text-xs text-slate-800 leading-relaxed">
+                  {t(predictions.divinePro.varshaphal.munthaPredictionTe, predictions.divinePro.varshaphal.munthaPredictionEn)}
+                </p>
+              </div>
+
+              {/* Papasamyam & Kalasarpa / Pitru Dosha Audit Card */}
+              <div className="rounded-2xl border border-rose-300 bg-white/95 p-4 shadow-sm space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-rose-950 bg-rose-100 border border-rose-300 px-2.5 py-1 rounded-full">
+                    🛡️ {t('4. పాపసామ్యం, కాలసర్ప & పితృ దోష తనిఖీ', '4. Papasamyam, Kalasarpa & Pitru Dosha Audit')}
+                  </span>
+                  <span className="text-xs font-black text-rose-900">
+                    {t('మొత్తం పాప పాయింట్లు:', 'Total Papa Points:')} {predictions.divinePro.doshaAudit.totalPapaPoints}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center text-xs bg-rose-50/70 border border-rose-200 rounded-xl p-2">
+                  <div>
+                    <span className="text-[10px] text-slate-600 block">{t('లగ్నం నుండి', 'From Lagna')}</span>
+                    <strong className="text-rose-950 font-black">{predictions.divinePro.doshaAudit.fromLagnaPoints}</strong>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-600 block">{t('చంద్రుని నుండి', 'From Moon')}</span>
+                    <strong className="text-rose-950 font-black">{predictions.divinePro.doshaAudit.fromMoonPoints}</strong>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-600 block">{t('శుక్రుని నుండి', 'From Venus')}</span>
+                    <strong className="text-rose-950 font-black">{predictions.divinePro.doshaAudit.fromVenusPoints}</strong>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-800 leading-snug">
+                  <strong>• {t('కాలసర్ప స్థితి:', 'Kalasarpa Status:')} </strong>
+                  {t(predictions.divinePro.doshaAudit.kalasarpaStatusTe, predictions.divinePro.doshaAudit.kalasarpaStatusEn)}
+                </p>
+                <p className="text-xs text-slate-800 leading-snug">
+                  <strong>• {t('పితృ కర్మ స్థితి:', 'Pitru Karma Status:')} </strong>
+                  {t(predictions.divinePro.doshaAudit.pitruDoshaStatusTe, predictions.divinePro.doshaAudit.pitruDoshaStatusEn)}
+                </p>
+              </div>
+            </div>
+
+            {/* MODULE 22D: Ratna, Rudraksha & Yantra Shastra Prescription Matrix */}
+            <div className="rounded-2xl border-2 border-emerald-300 bg-white/95 p-4 shadow-sm space-y-3.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-200 pb-2">
+                <h5 className="text-sm sm:text-base font-extrabold text-emerald-950">
+                  💎 {t('5. రత్న, రుద్రాక్ష & యంత్ర శాస్త్ర సిఫార్సు పట్టిక (Gemstone, Rudraksha & Yantra Prescription)', '5. Personalized Gemstone, Rudraksha & Yantra Prescription')}
+                </h5>
+                <span className="text-[11px] font-bold text-emerald-900 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                  {t('లగ్న (1) • పంచమ (5) • నవమ (9) త్రికోణ అధిపతుల ఆధారంగా', 'Based on 1st, 5th & 9th Trikona Lords')}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                {[
+                  predictions.divinePro.gemPrescriptions.lifeStone,
+                  predictions.divinePro.gemPrescriptions.luckyBhagyaStone,
+                  predictions.divinePro.gemPrescriptions.panchamaYogaStone,
+                ].map((gem) => (
+                  <div
+                    key={gem.roleEn}
+                    className="rounded-2xl border border-emerald-200 bg-gradient-to-b from-emerald-50/50 to-white p-3.5 space-y-2 shadow-sm"
+                  >
+                    <div className="text-xs font-extrabold text-emerald-950 bg-emerald-100/90 border border-emerald-300 px-2.5 py-1 rounded-lg">
+                      💍 {t(gem.roleTe, gem.roleEn)}
+                    </div>
+                    <div className="text-sm font-black text-amber-950">
+                      {t(gem.gemNameTe, gem.gemNameEn)}
+                    </div>
+                    <div className="text-[11px] text-slate-700 space-y-1">
+                      <div>
+                        <strong>{t('ఉపరత్నం:', 'Sub-stone:')}</strong> {t(gem.subStoneTe, gem.subStoneEn)}
+                      </div>
+                      <div>
+                        <strong>{t('లోహం & వేలు:', 'Metal & Finger:')}</strong> {t(gem.metalTe, gem.metalEn)} • {t(gem.fingerTe, gem.fingerEn)}
+                      </div>
+                      <div>
+                        <strong>{t('బరువు & ధారణ సమయం:', 'Weight & Timing:')}</strong> {gem.caratWeight} • {t(gem.wearingDayTe, gem.wearingDayEn)}
+                      </div>
+                      <div className="pt-1 border-t border-emerald-100 text-indigo-950 font-semibold">
+                        📿 <strong>{t('రుద్రాక్ష:', 'Rudraksha:')}</strong> {t(gem.rudrakshaTe, gem.rudrakshaEn)}
+                      </div>
+                      <div className="text-amber-900 font-semibold">
+                        🔱 <strong>{t('యంత్రం:', 'Yantra:')}</strong> {t(gem.yantraTe, gem.yantraEn)}
+                      </div>
+                      <div className="text-[10px] bg-amber-50 border border-amber-200 rounded-lg p-1.5 text-amber-950 font-bold">
+                        🕉️ {gem.mantraTe}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs text-rose-950 font-semibold">
+                🚫 <strong>{t('ధరించకూడని రత్నాలు (Forbidden / Caution Stones):', 'Stones to Avoid Without Trial:')} </strong>
+                {t(predictions.divinePro.gemPrescriptions.forbiddenStonesTe, predictions.divinePro.gemPrescriptions.forbiddenStonesEn)}
+              </div>
+            </div>
+          </div>
+
+          {/* CHAPTER 23: PHALADIPIKA 5-LAYER CLASSICAL SYNTHESIS & REAL-LIFE WEIGHED DECISION PREDICTORS */}
+          <div className="rounded-3xl border-2 border-teal-500 bg-gradient-to-br from-[#f0fdf4] via-white to-[#ecfeff] p-4 sm:p-6 shadow-md space-y-6 print-card">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-teal-200 pb-3">
+              <div>
+                <span className="text-[11px] font-extrabold text-teal-900 bg-teal-100 border border-teal-300 px-3 py-1 rounded-full inline-block mb-1">
+                  {t(
+                    'అధ్యాయం 23 • మంత్రేశ్వర ఫలదీపిక 5-అంచెల సంశ్లేషణ & నిజ జీవిత నిర్ణయ గణితం',
+                    'Chapter 23 • Mantreshwara Phaladipika 5-Layer Synthesis & Weighed Life Answers'
+                  )}
+                </span>
+                <h4 className="text-lg sm:text-xl font-extrabold text-teal-950">
+                  {t(
+                    'ఉద్యోగమా? వ్యాపారమా? • ప్రేమ వివాహమా? పెద్దలు కుదిర్చిన పెళ్లా? • ఫలదీపిక దశా కాల నిర్ణయం',
+                    'Job vs Business • Love vs Arranged Marriage • 5-Layer Classical Timing'
+                  )}
+                </h4>
+              </div>
+              <div className="text-xs font-extrabold text-teal-950 bg-teal-100/90 border border-teal-300 px-3 py-1.5 rounded-xl shrink-0">
+                ⚖️ {t('శాస్త్రీయ వెయిటేజ్ పద్ధతి', 'Classical 5-Layer Weighting')}
+              </div>
+            </div>
+
+            {/* TWO WEIGHED DECISION BOXES (CAREER & MARRIAGE) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Box 1: Career (Employment vs Business) */}
+              <div className="rounded-2xl border-2 border-teal-300 bg-white/95 p-4 shadow-sm space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-teal-950 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-full">
+                    💼 {t(predictions.phalita.careerAnswer.questionTe, predictions.phalita.careerAnswer.questionEn)}
+                  </span>
+                  <span className="text-xs font-bold text-amber-900">
+                    {t(predictions.phalita.careerAnswer.confidenceTe, predictions.phalita.careerAnswer.confidenceEn)}
+                  </span>
+                </div>
+
+                {/* Score Bar */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs font-extrabold">
+                    <span className="text-blue-800">
+                      {t(predictions.phalita.careerAnswer.choiceATe, predictions.phalita.careerAnswer.choiceAEn)} ({predictions.phalita.careerAnswer.pctA}%)
+                    </span>
+                    <span className="text-amber-800">
+                      {t(predictions.phalita.careerAnswer.choiceBTe, predictions.phalita.careerAnswer.choiceBEn)} ({predictions.phalita.careerAnswer.pctB}%)
+                    </span>
+                  </div>
+                  <div className="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden flex border border-slate-300">
+                    <div
+                      className="bg-blue-600 h-full transition-all"
+                      style={{ width: `${predictions.phalita.careerAnswer.pctA}%` }}
+                    />
+                    <div
+                      className="bg-amber-500 h-full transition-all"
+                      style={{ width: `${predictions.phalita.careerAnswer.pctB}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Winner Verdict */}
+                <div className="rounded-xl bg-teal-50 border border-teal-200 p-2.5 space-y-1 text-xs">
+                  <div className="font-black text-teal-950 flex items-center gap-1.5">
+                    <span>🏆 {t('జ్యోతిష్య నిర్ధారణ:', 'Astrological Verdict:')}</span>
+                    <span className="text-sm text-teal-900 font-extrabold">
+                      {t(predictions.phalita.careerAnswer.winnerTe, predictions.phalita.careerAnswer.winnerEn)}
+                    </span>
+                  </div>
+                  <p className="text-slate-800 leading-relaxed">
+                    {t(predictions.phalita.careerAnswer.verdictTe, predictions.phalita.careerAnswer.verdictEn)}
+                  </p>
+                </div>
+
+                {/* Timing Window */}
+                <div className="text-[11px] font-bold text-indigo-950 bg-indigo-50/80 border border-indigo-200 rounded-lg p-2">
+                  ⏳ <strong>{t('కార్యసిద్ధి కాల నిర్ణయం (Timed Window):', 'Timed Delivery Window:')} </strong>
+                  {t(predictions.phalita.careerAnswer.timingWindowTe, predictions.phalita.careerAnswer.timingWindowEn)}
+                </div>
+
+                {/* Factor details */}
+                <div className="space-y-1.5 pt-1">
+                  <span className="text-[11px] font-extrabold text-slate-700 block">
+                    {t('నిర్ధారణకు దోహదపడిన ప్రధాన గ్రహ స్థానాలు:', 'Key Planetary Factors Weighed:')}
+                  </span>
+                  {predictions.phalita.careerAnswer.factors.map((f, idx) => (
+                    <div key={idx} className="text-[11px] text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-2 leading-relaxed">
+                      <strong className={f.favors === 'A' ? 'text-blue-900' : 'text-amber-900'}>
+                        {f.favors === 'A' ? '• [ఉద్యోగం]' : '• [వ్యాపారం]'} {t(f.titleTe, f.titleEn)}:
+                      </strong>{' '}
+                      {t(f.reasonTe, f.reasonEn)}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="text-[10px] text-teal-950 font-mono italic bg-teal-50/50 p-1.5 rounded-lg border border-teal-100">
+                  {predictions.phalita.careerAnswer.sanskritSutraTe}
+                </div>
+              </div>
+
+              {/* Box 2: Marriage (Love vs Arranged) */}
+              <div className="rounded-2xl border-2 border-rose-300 bg-white/95 p-4 shadow-sm space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-rose-950 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-full">
+                    💍 {t(predictions.phalita.marriageAnswer.questionTe, predictions.phalita.marriageAnswer.questionEn)}
+                  </span>
+                  <span className="text-xs font-bold text-amber-900">
+                    {t(predictions.phalita.marriageAnswer.confidenceTe, predictions.phalita.marriageAnswer.confidenceEn)}
+                  </span>
+                </div>
+
+                {/* Score Bar */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs font-extrabold">
+                    <span className="text-pink-700">
+                      {t(predictions.phalita.marriageAnswer.choiceATe, predictions.phalita.marriageAnswer.choiceAEn)} ({predictions.phalita.marriageAnswer.pctA}%)
+                    </span>
+                    <span className="text-emerald-800">
+                      {t(predictions.phalita.marriageAnswer.choiceBTe, predictions.phalita.marriageAnswer.choiceBEn)} ({predictions.phalita.marriageAnswer.pctB}%)
+                    </span>
+                  </div>
+                  <div className="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden flex border border-slate-300">
+                    <div
+                      className="bg-pink-500 h-full transition-all"
+                      style={{ width: `${predictions.phalita.marriageAnswer.pctA}%` }}
+                    />
+                    <div
+                      className="bg-emerald-600 h-full transition-all"
+                      style={{ width: `${predictions.phalita.marriageAnswer.pctB}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Winner Verdict */}
+                <div className="rounded-xl bg-rose-50 border border-rose-200 p-2.5 space-y-1 text-xs">
+                  <div className="font-black text-rose-950 flex items-center gap-1.5">
+                    <span>🏆 {t('జ్యోతిష్య నిర్ధారణ:', 'Astrological Verdict:')}</span>
+                    <span className="text-sm text-rose-900 font-extrabold">
+                      {t(predictions.phalita.marriageAnswer.winnerTe, predictions.phalita.marriageAnswer.winnerEn)}
+                    </span>
+                  </div>
+                  <p className="text-slate-800 leading-relaxed">
+                    {t(predictions.phalita.marriageAnswer.verdictTe, predictions.phalita.marriageAnswer.verdictEn)}
+                  </p>
+                </div>
+
+                {/* Timing Window */}
+                <div className="text-[11px] font-bold text-indigo-950 bg-indigo-50/80 border border-indigo-200 rounded-lg p-2">
+                  ⏳ <strong>{t('దాంపత్య కాల నిర్ణయం (Timed Window):', 'Timed Delivery Window:')} </strong>
+                  {t(predictions.phalita.marriageAnswer.timingWindowTe, predictions.phalita.marriageAnswer.timingWindowEn)}
+                </div>
+
+                {/* Factor details */}
+                <div className="space-y-1.5 pt-1">
+                  <span className="text-[11px] font-extrabold text-slate-700 block">
+                    {t('నిర్ధారణకు దోహదపడిన ప్రధాన గ్రహ స్థానాలు:', 'Key Planetary Factors Weighed:')}
+                  </span>
+                  {predictions.phalita.marriageAnswer.factors.map((f, idx) => (
+                    <div key={idx} className="text-[11px] text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-2 leading-relaxed">
+                      <strong className={f.favors === 'A' ? 'text-pink-900' : 'text-emerald-900'}>
+                        {f.favors === 'A' ? '• [ప్రేమ/స్వయం ఎంపిక]' : '• [పెద్దల పెళ్లి]'} {t(f.titleTe, f.titleEn)}:
+                      </strong>{' '}
+                      {t(f.reasonTe, f.reasonEn)}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="text-[10px] text-rose-950 font-mono italic bg-rose-50/50 p-1.5 rounded-lg border border-rose-100">
+                  {predictions.phalita.marriageAnswer.sanskritSutraTe}
+                </div>
+              </div>
+            </div>
+
+            {/* 5-LAYER DOMAIN SYNTHESIS CARDS */}
+            <div className="space-y-3">
+              <h5 className="text-sm sm:text-base font-extrabold text-teal-950">
+                🏛️ {t('ఫలదీపిక 5-అంచెల సంశ్లేషణ ఫలితాలు (5-Layer Domain Syntheses)', 'Phaladipika 5-Layer Domain Syntheses')}
+              </h5>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                {predictions.phalita.domainSyntheses.map((d) => (
+                  <div
+                    key={d.domainKey}
+                    className="rounded-2xl border border-teal-200 bg-white/95 p-3.5 space-y-2.5 shadow-sm"
+                  >
+                    <div className="flex items-center justify-between border-b border-teal-100 pb-1.5">
+                      <span className="text-xs font-black text-teal-950">
+                        {t(d.domainTitleTe, d.domainTitleEn)}
+                      </span>
+                      <span className="text-xs font-black text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200">
+                        {d.compositeScore} / 100
+                      </span>
+                    </div>
+
+                    <p className="text-xs font-bold text-slate-900 leading-snug">
+                      {t(d.verdictTe, d.verdictEn)}
+                    </p>
+
+                    <div className="grid grid-cols-5 gap-1 text-center text-[10px] bg-teal-50/70 border border-teal-200 rounded-lg p-1.5">
+                      <div>
+                        <span className="text-slate-500 block">భావేశ</span>
+                        <strong>{d.bhaveshaScore}/40</strong>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">కారక</span>
+                        <strong>{d.karakaScore}/25</strong>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">వర్గ</span>
+                        <strong>{d.divisionalScore}/15</strong>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">బిందు</span>
+                        <strong>{d.ashtakavargaScore}/10</strong>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">దశా</span>
+                        <strong>{d.dashaScore}/10</strong>
+                      </div>
+                    </div>
+
+                    <div className="text-[11px] text-slate-700 space-y-1">
+                      <div className="text-indigo-950 font-bold">
+                        ⏱️ {t(d.activeDashaWindowTe, d.activeDashaWindowEn)}
+                      </div>
+                      <div className="text-amber-950">
+                        🔱 <strong>{t('శాంతి మార్గం:', 'Remedial Path:')}</strong> {t(d.practicalGuidanceTe, d.practicalGuidanceEn)}
+                      </div>
+                      <div className="text-[10px] text-slate-500 font-mono italic">
+                        {d.shlokaRefTe}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* CHAPTER 24: PERSONALISED HOROSCOPE VASTU SHASTRA & KUBERA SPATIAL HARMONY */}
+          <div className="rounded-3xl border-2 border-orange-500 bg-gradient-to-br from-[#fff7ed] via-white to-[#fef3c7] p-4 sm:p-6 shadow-md space-y-6 print-card">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-orange-300 pb-3">
+              <div>
+                <span className="text-[11px] font-extrabold text-orange-950 bg-orange-100 border border-orange-300 px-3 py-1 rounded-full inline-block mb-1">
+                  {t(
+                    'అధ్యాయం 24 • జన్మ రాశి వైదిక వాస్తు విజ్ఞానం & కుబేర స్థాన అమరిక',
+                    'Chapter 24 • Personal Horoscope Vastu & Kubera Spatial Alignment'
+                  )}
+                </span>
+                <h4 className="text-lg sm:text-xl font-extrabold text-[#7c2d12]">
+                  {t(
+                    `${predictions.personalVastu.rashiTe} రాశి వ్యక్తిగత గృహ వాస్తు • శుభ సింహద్వారం • శయన దిశ • ధన మూల`,
+                    `${predictions.personalVastu.rashiEn} Personal Vastu • Main Entrance • Sleep Alignment • Wealth Vault`
+                  )}
+                </h4>
+                <p className="text-xs text-orange-900 font-medium mt-0.5">
+                  {t(
+                    'సాధారణ వాస్తు కాకుండా, మీ జన్మ రాశి మరియు పాలక గ్రహం ఆధారంగా ప్రాచీన దక్షిణ భారతీయ వాస్తు ప్రమాణాలు.',
+                    'Grounded in your natal Moon sign and planetary lordship per classical Dakshina Bharatiya Vastu Siddhanta.'
+                  )}
+                </p>
+              </div>
+              <div className="text-xs font-extrabold text-orange-950 bg-orange-100/90 border border-orange-300 px-3 py-1.5 rounded-xl shrink-0">
+                🧭 {t('పాలక గ్రహం:', 'Ruling Planet:')} {t(predictions.personalVastu.rulingPlanetTe, predictions.personalVastu.rulingPlanetEn)}
+              </div>
+            </div>
+
+            {/* 6 Key Spatial Cardinal Points Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              {/* Card 1: Favourable Direction & Sleep Orientation */}
+              <div className="rounded-2xl border border-orange-200 bg-white/95 p-3.5 space-y-2 shadow-xs">
+                <span className="text-xs font-black text-orange-900 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-full inline-block">
+                  🛏️ {t('అనుకూల దిశ & శయన సంకల్పం', 'Favourable Direction & Sleep')}
+                </span>
+                <div className="text-sm font-extrabold text-slate-900">
+                  {t(predictions.personalVastu.favourableDirectionTe, predictions.personalVastu.favourableDirectionEn)}
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed">
+                  {t(predictions.personalVastu.sleepHeadOrientationTe, predictions.personalVastu.sleepHeadOrientationEn)}
+                </p>
+              </div>
+
+              {/* Card 2: Main Entrance (Simhadwaram) */}
+              <div className="rounded-2xl border border-amber-300 bg-white/95 p-3.5 space-y-2 shadow-xs">
+                <span className="text-xs font-black text-amber-950 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full inline-block">
+                  🚪 {t('శుభ సింహద్వారం (Main Entrance)', 'Auspicious Main Entrance')}
+                </span>
+                <p className="text-xs text-slate-800 leading-relaxed font-medium">
+                  {t(predictions.personalVastu.mainEntranceTe, predictions.personalVastu.mainEntranceEn)}
+                </p>
+              </div>
+
+              {/* Card 3: Pooja Sanctuary */}
+              <div className="rounded-2xl border border-emerald-300 bg-white/95 p-3.5 space-y-2 shadow-xs">
+                <span className="text-xs font-black text-emerald-950 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full inline-block">
+                  🪔 {t('పూజాగది & దైవ దిశ', 'Pooja Room & Sanctuary')}
+                </span>
+                <p className="text-xs text-slate-800 leading-relaxed font-medium">
+                  {t(predictions.personalVastu.poojaRoomTe, predictions.personalVastu.poojaRoomEn)}
+                </p>
+              </div>
+
+              {/* Card 4: Kitchen / Agni Sthanam */}
+              <div className="rounded-2xl border border-rose-300 bg-white/95 p-3.5 space-y-2 shadow-xs">
+                <span className="text-xs font-black text-rose-950 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full inline-block">
+                  🔥 {t('వంటగది & అగ్ని మూల', 'Kitchen & Agni Corner')}
+                </span>
+                <p className="text-xs text-slate-800 leading-relaxed font-medium">
+                  {t(predictions.personalVastu.kitchenDirectionTe, predictions.personalVastu.kitchenDirectionEn)}
+                </p>
+              </div>
+
+              {/* Card 5: Wealth Vault / Kubera Sthanam */}
+              <div className="rounded-2xl border border-indigo-300 bg-white/95 p-3.5 space-y-2 shadow-xs">
+                <span className="text-xs font-black text-indigo-950 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full inline-block">
+                  💰 {t('ధన నిల్వ బీరువా / కుబేర స్థానం', 'Wealth Locker & Kubera Corner')}
+                </span>
+                <p className="text-xs text-slate-800 leading-relaxed font-medium">
+                  {t(predictions.personalVastu.wealthCornerTe, predictions.personalVastu.wealthCornerEn)}
+                </p>
+              </div>
+
+              {/* Card 6: Lucky Colours & Simple Vastu Remedy */}
+              <div className="rounded-2xl border border-teal-300 bg-white/95 p-3.5 space-y-2 shadow-xs">
+                <span className="text-xs font-black text-teal-950 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-full inline-block">
+                  🎨 {t('అనుకూల రంగులు & వాస్తు పరిహారం', 'Harmonious Colours & Remedy')}
+                </span>
+                <div className="text-xs text-slate-800 font-bold">
+                  {t(predictions.personalVastu.luckyColoursTe, predictions.personalVastu.luckyColoursEn)}
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed">
+                  {t(predictions.personalVastu.practicalRemedyTe, predictions.personalVastu.practicalRemedyEn)}
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Royal Pandit Blessing, Signature & Website Seal at End of Report */}

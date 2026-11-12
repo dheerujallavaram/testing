@@ -15,6 +15,7 @@ import {
 import { RASHI_CHART_ORDER } from '../data/panchangamData';
 import { useLanguage } from '../context/LanguageContext';
 import { getRashiEncyclopediaByIdOrIndex } from '../data/dwadasaRashiVedicEncyclopedia';
+import { computeComplete22PoruthamMatching } from '../utils/dakshinaBharatiyaMarriageAndVastuEngine';
 
 export interface RashiCompatibilityProps {
   defaultBrideRashi?: string;
@@ -621,6 +622,17 @@ export const RashiCompatibilityTool: React.FC<RashiCompatibilityProps> = ({
     };
   }, [brideNakId, bridePada, groomNakId, groomPada, brideRashi, groomRashi, brideKujaHouse, groomKujaHouse, result.totalScore, result.kootas]);
 
+  const full22PoruthamReport = useMemo(() => {
+    const brideMeta = RASHI_METADATA[brideRashi] || RASHI_METADATA.mesham;
+    const groomMeta = RASHI_METADATA[groomRashi] || RASHI_METADATA.vrushabham;
+    return computeComplete22PoruthamMatching(
+      brideNakId - 1,
+      groomNakId - 1,
+      brideMeta.index - 1,
+      groomMeta.index - 1
+    );
+  }, [brideNakId, groomNakId, brideRashi, groomRashi]);
+
   const brideObj = RASHI_CHART_ORDER.find((r) => r.key === brideRashi) || RASHI_CHART_ORDER[0];
   const groomObj = RASHI_CHART_ORDER.find((r) => r.key === groomRashi) || RASHI_CHART_ORDER[1];
   const brideEncyclopedia = useMemo(() => getRashiEncyclopediaByIdOrIndex(brideRashi), [brideRashi]);
@@ -1059,6 +1071,99 @@ export const RashiCompatibilityTool: React.FC<RashiCompatibilityProps> = ({
                 : deepShastricAnalysis.kujaVerdictEn}
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* DAKSHINA BHARATIYA 22-PORUTHAM (22-KOOTA) CLASSICAL MARRIAGE REPORT */}
+      <div className="bg-gradient-to-br from-[#fffbeb] via-[#fff] to-[#fef3c7]/60 border-2 border-amber-400 rounded-3xl p-5 sm:p-7 shadow-md space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-amber-300 pb-3">
+          <div>
+            <span className="text-[11px] font-extrabold text-amber-950 bg-amber-200/90 border border-amber-400 px-3 py-1 rounded-full inline-block mb-1">
+              {t('దక్షిణ భారతీయ ప్రాచీన వైదిక సంప్రదాయం', 'Classical Dakshina Bharatiya Tradition')}
+            </span>
+            <h4 className="text-xl sm:text-2xl font-extrabold text-amber-950">
+              {t(
+                'సంపూర్ణ 22 పొంతనల మహా గుణమేళన చక్రం (Complete 22-Porutham Analysis)',
+                'Complete 22-Porutham Marriage Matching Report'
+              )}
+            </h4>
+            <p className="text-xs text-slate-700 mt-0.5">
+              {t(
+                'దిన, గణ, మాహేంద్ర, రజ్జు, వేధ, నాడీలతో పాటు వృక్ష, ఆయుల్, లింగ, కేంద్ర, వర్ణ, వాసి, సేవక, కూడలి, పంచ పక్షి సమగ్ర పరిశీలన.',
+                'Full 22 classical checks including Vruksha, Ayul, Linga, Kendra, Varna, Vaasi, Sevaka, Koodali & Pancha Pakshi.'
+              )}
+            </p>
+          </div>
+          <div className="bg-amber-950 text-amber-200 px-5 py-3 rounded-2xl border-2 border-amber-400 text-center shrink-0">
+            <span className="text-[11px] uppercase tracking-wider block text-amber-300 font-bold">
+              {t('22 పొంతనల స్కోర్', '22-Porutham Score')}
+            </span>
+            <span className="text-2xl sm:text-3xl font-black text-amber-300 font-mono">
+              {full22PoruthamReport.matchedCount} <span className="text-sm text-amber-100">/ 22 ({full22PoruthamReport.scorePct}%)</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Suitability Banner */}
+        <div className="rounded-2xl bg-amber-100/80 border border-amber-300 p-3.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm">
+          <div className="font-extrabold text-amber-950 flex items-center gap-2">
+            <span>⚜️ {t('వివాహ అనుకూలత స్థాయి:', 'Suitability Verdict:')}</span>
+            <span className="text-emerald-950 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300 font-black">
+              {t(full22PoruthamReport.overallSuitabilityTe, full22PoruthamReport.overallSuitabilityEn)}
+            </span>
+          </div>
+          <div className="text-amber-900 font-semibold text-xs">
+            {t(full22PoruthamReport.summaryGuidanceTe, full22PoruthamReport.summaryGuidanceEn)}
+          </div>
+        </div>
+
+        {/* 22 Poruthams Responsive Table */}
+        <div className="overflow-x-auto rounded-2xl border border-amber-300 bg-white shadow-xs">
+          <table className="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr className="bg-amber-900 text-amber-100 font-extrabold border-b border-amber-400">
+                <th className="py-2.5 px-3">#</th>
+                <th className="py-2.5 px-3">{t('పొంతన పేరు', 'Porutham Name')}</th>
+                <th className="py-2.5 px-2 text-center">{t('ఫలితం', 'Match')}</th>
+                <th className="py-2.5 px-2 text-center">{t('స్కోర్', 'Score')}</th>
+                <th className="py-2.5 px-3">{t('శాస్త్రీయ ప్రాముఖ్యత', 'Significance')}</th>
+                <th className="py-2.5 px-3">{t('వివరణ & నిర్ధారణ', 'Verdict')}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-amber-100">
+              {full22PoruthamReport.poruthamList.map((item) => (
+                <tr
+                  key={item.number}
+                  className={item.matched ? 'bg-white hover:bg-emerald-50/40' : 'bg-rose-50/40 hover:bg-rose-50/70'}
+                >
+                  <td className="py-2 px-3 font-mono font-bold text-slate-500">{item.number}</td>
+                  <td className="py-2 px-3 font-extrabold text-amber-950">
+                    {t(item.nameTe, item.nameEn)}
+                  </td>
+                  <td className="py-2 px-2 text-center">
+                    {item.matched ? (
+                      <span className="inline-block px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        ✓ శుభం
+                      </span>
+                    ) : (
+                      <span className="inline-block px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                        ✗ సాధారణం
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-2 px-2 text-center font-mono font-black text-amber-950">
+                    {item.score} / {item.maxScore}
+                  </td>
+                  <td className="py-2 px-3 text-slate-600 text-xs leading-snug">
+                    {t(item.significanceTe, item.significanceEn)}
+                  </td>
+                  <td className="py-2 px-3 font-medium text-slate-800 text-xs leading-snug">
+                    {t(item.verdictTe, item.verdictEn)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 

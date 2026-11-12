@@ -347,17 +347,87 @@ export const StandaloneLegalPage: React.FC<StandaloneLegalPageProps> = ({
       <article className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-amber-200 shadow-sm space-y-4 text-sm sm:text-base text-slate-800 leading-relaxed">
         {activeDoc === 'privacy' && (
           <>
+            <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 mb-4">
+              <p className="font-bold text-amber-950">
+                Effective Date: 2026 | Website: https://www.telugujyothisham.com | Publisher: శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం
+              </p>
+              <p className="text-xs sm:text-sm text-slate-700 mt-1">
+                శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం (www.telugujyothisham.com) భక్తులు మరియు వెబ్‌సైట్ సందర్శకుల వ్యక్తిగత గోప్యతను గౌరవిస్తుంది మరియు రక్షిస్తుంది.
+              </p>
+            </div>
+
             <h2 className="text-lg font-extrabold text-amber-950">
-              1. భక్తుల సమాచార గోప్యత (Information We Collect)
+              1. భక్తుల సమాచార సేకరణ (Information We Collect)
             </h2>
             <p>
-              <strong>www.telugujyothisham.com</strong> నందు నేటి పంచాంగం, రాశి ఫలాలు, ఉచిత జన్మ కుండలి, 36 గుణాల వివాహ పొంతన మరియు నక్షత్ర పిల్లల పేర్లను చూసుకోవడానికి ఎటువంటి వ్యక్తిగత రిజిస్ట్రేషన్ అవసరం లేదు. మీరు స్వచ్ఛందంగా పూజా సంకల్పం లేదా జాతక పరిశీలన కొరకు అందించే జన్మ వివరాలు కేవలం వైదిక సేవ కొరకు మాత్రమే ఉపయోగించబడతాయి.
+              <strong>www.telugujyothisham.com</strong> నందు నేటి తెలుగు పంచాంగం, ద్వాదశ రాశి ఫలాలు, ఉచిత జన్మ కుండలి, 36 గుణాల వివాహ పొంతన, నక్షత్ర పిల్లల పేర్లు మరియు జ్యోతిష్య వ్యాసాలను పరిశీలించడానికి ఎటువంటి రిజిస్ట్రేషన్ లేదా లాగిన్ అవసరం లేదు. మీరు స్వచ్ఛందంగా పూజా సంకల్పం, హోమం లేదా జాతక సంప్రదింపుల కొరకు అందించే వివరాలు (పేరు, గోత్రం, నక్షత్రం, పుట్టిన తేదీ/సమయం) కేవలం సదరు వైదిక సేవల కొరకు మాత్రమే వినియోగించబడతాయి.
             </p>
+
             <h2 className="text-lg font-extrabold text-amber-950">
-              2. కుకీలు &amp; Google AdSense విధానం (Cookies &amp; Advertising)
+              2. Google AdSense &amp; కుకీల విధానం (Google AdSense &amp; DoubleClick DART Cookies Policy)
             </h2>
             <p>
-              ఈ వెబ్‌సైట్ Google AdSense ద్వారా ప్రకటనలను ప్రదర్శించవచ్చు. Google మరియు దాని భాగస్వాములు వినియోగదారుల గత సందర్శనల ఆధారంగా ప్రకటనలను చూపడానికి కుకీలను (DART cookies) ఉపయోగిస్తారు. వినియోగదారులు Google Ads Settings ద్వారా వ్యక్తిగతీకరించిన ప్రకటనలను నియంత్రించవచ్చు.
+              ఈ వెబ్‌సైట్ నిర్వహణ ఖర్చుల కొరకు మూడవ పక్ష ప్రకటన సేవలైన <strong>Google AdSense</strong> ప్రకటనలను ప్రదర్శించవచ్చు. Google AdSense నిబంధనల ప్రకారం:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-xs sm:text-sm">
+              <li>
+                <strong>Third-Party Vendors:</strong> Google తో సహా ఇతర మూడవ పక్ష ప్రచురణకర్తలు వినియోగదారులు మా వెబ్‌సైట్‌ను లేదా ఇంటర్నెట్‌లోని ఇతర సైట్‌లను గతంలో సందర్శించిన వివరాల ఆధారంగా ప్రకటనలను అందించడానికి కుకీలను (Cookies) ఉపయోగిస్తారు.
+              </li>
+              <li>
+                <strong>DoubleClick DART Cookie:</strong> Google తన ప్రకటన కుకీలను ఉపయోగించడం ద్వారా మా వినియోగదారులకు వారి ఆసక్తులకు అనుగుణమైన ప్రకటనలను ప్రదర్శించగలదు.
+              </li>
+              <li>
+                <strong>Opt-Out (వ్యక్తిగతీకరించిన ప్రకటనల నియంత్రణ):</strong> వినియోగదారులు తమ బ్రౌజర్‌లో వ్యక్తిగతీకరించిన ప్రకటనలను నిలిపివేయడానికి Google ప్రకటనల సెట్టింగ్‌ల పేజీని సందర్శించవచ్చు:{' '}
+                <a
+                  href="https://adssettings.google.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-amber-800 underline font-bold"
+                >
+                  https://adssettings.google.com/
+                </a>{' '}
+                లేదా నెట్‌వర్క్ అడ్వర్టైజింగ్ పోర్టల్:{' '}
+                <a
+                  href="https://www.aboutads.info/choices/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-amber-800 underline font-bold"
+                >
+                  www.aboutads.info
+                </a>.
+              </li>
+            </ul>
+
+            <h2 className="text-lg font-extrabold text-amber-950">
+              3. లాగ్ ఫైల్స్ &amp; వెబ్ అనలిటిక్స్ (Log Files &amp; Web Analytics)
+            </h2>
+            <p>
+              సాధారణ వెబ్‌సైట్ల వలెనే telugujyothisham.com సర్వర్ లాగ్ ఫైల్స్ (IP అడ్రస్, బ్రౌజర్ రకం, ఇంటర్నెట్ సర్వీస్ ప్రొవైడర్, తేదీ మరియు సమయం, పేజీల సందర్శన సమయం) ను కేవలం సైట్ సాంకేతిక భద్రత, వేగం మరియు వినియోగదారుల అనుభవాన్ని మెరుగుపరచడానికి మాత్రమే ఉపయోగిస్తుంది. ఈ వివరాలు ఏ విధమైన వ్యక్తిగత గుర్తింపుతో ముడిపడి ఉండవు.
+            </p>
+
+            <h2 className="text-lg font-extrabold text-amber-950">
+              4. పిల్లల సమాచార రక్షణ (Children&apos;s Online Privacy Protection - COPPA)
+            </h2>
+            <p>
+              మా వెబ్‌సైట్ 13 సంవత్సరాల కంటే తక్కువ వయస్సు గల పిల్లల నుండి ఎటువంటి వ్యక్తిగత సమాచారాన్ని ఉద్దేశపూర్వకంగా సేకరించదు. తల్లిదండ్రులు లేదా సంరక్షకులు తమ పిల్లల వివరాలు నమోదు కాకుండా పర్యవేక్షించవలసిందిగా కోరడమైనది.
+            </p>
+
+            <h2 className="text-lg font-extrabold text-amber-950">
+              5. డేటా గోప్యత &amp; భద్రతా హామీ (Data Confidentiality Guarantee)
+            </h2>
+            <p>
+              భక్తులు సమర్పించిన వ్యక్తిగత వివరాలను, ఫోన్ నంబర్లను ఎట్టి పరిస్థితుల్లోనూ ఏ ఇతర మూడవ పక్ష సంస్థలకు విక్రయించము లేదా వ్యాపార ప్రయోజనాలకు ఉపయోగించము. మీ సమాచారం పూర్తిగా సురక్షితం.
+            </p>
+
+            <h2 className="text-lg font-extrabold text-amber-950">
+              6. సంప్రదింపు అధికారి (Grievance &amp; Contact Officer)
+            </h2>
+            <p>
+              గోప్యతా విధానంపై ఏవైనా సందేహాలు లేదా సలహాలు ఉన్నచో నేరుగా మా జ్యోతిషాలయాన్ని సంప్రదించవచ్చు:
+              <br />
+              <strong>చిరునామా:</strong> పసుమాముల, హయత్‌నగర్, హైదరాబాద్, తెలంగాణ – 501505
+              <br />
+              <strong>ఈమెయిల్:</strong> astrologer@telugujyothisham.com | <strong>ఫోన్:</strong> +91 89779 86166
             </p>
           </>
         )}

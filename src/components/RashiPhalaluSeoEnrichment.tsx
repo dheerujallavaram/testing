@@ -21,6 +21,10 @@ import {
 } from '../utils/panchangaLogic';
 import { RashiGlyph } from './RashiGlyph';
 import { useLanguage } from '../context/LanguageContext';
+import {
+  EIGHT_CLASSICAL_GRANTHAS,
+  CLASSICAL_GOCHARA_SUTRAS_BY_HOUSE,
+} from '../data/classicalGranthaSutras';
 
 interface RashiPhalaluSeoEnrichmentProps {
   day: DayData;
@@ -985,6 +989,259 @@ export const RashiPhalaluSeoEnrichment: React.FC<RashiPhalaluSeoEnrichmentProps>
                   <td className="py-3 px-4 text-amber-950 font-semibold">
                     {language === 'en' ? r.mantraEn : r.mantraTe}
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* ===================================================================== */}
+      {/* 3B. 8 CLASSICAL GRANTHAS VAULT & PHALADEEPIKA GOCHARA VEDHA MATRIX    */}
+      {/* ===================================================================== */}
+      <section
+        aria-label="అష్ట మహా జ్యోతిష గ్రంథాల గోచార & వేధ ప్రమాణ పీఠిక"
+        className="bg-gradient-to-br from-[#230701] via-[#350d04] to-[#1e0501] text-amber-50 border-2 border-amber-500/80 rounded-3xl p-5 sm:p-8 shadow-xl space-y-6"
+      >
+        <div className="border-b border-amber-500/40 pb-4 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+          <div className="space-y-1.5">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/50 text-amber-300 text-xs font-extrabold uppercase tracking-wider">
+              <BookOpen size={14} />
+              <span>
+                {t(
+                  'అష్ట మహా గ్రంథ ప్రమాణం • Classical Jyotisha Grantha Vault',
+                  '8 Classical Jyotisha Treatises Authority'
+                )}
+              </span>
+            </span>
+            <h2 className="text-xl sm:text-3xl font-extrabold text-amber-200 font-telugu">
+              {t(
+                'మా రాశి ఫలాలు & కుండలి గణనకు ఆధారమైన 8 ప్రాచీన జ్యోతిష మహా గ్రంథాలు',
+                'The 8 Classical Sanskrit Treatises Powering Our Daily Predictions'
+              )}
+            </h2>
+            <p className="text-xs sm:text-sm text-amber-100/85 max-w-3xl leading-relaxed">
+              {t(
+                'సాధారణ ఊహాగానాలకు భిన్నంగా, బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారి మార్గదర్శనంలో మహర్షి పరాశరుడు, వరాహమిహిరుడు, మంత్రేశ్వరుడు, కల్యాణ వర్మ, కాళిదాసు మరియు భృగు నంది నాడి తాళపత్ర గ్రంథాలలోని అసలైన సంస్కృత శ్లోక సూత్రాల ఆధారంగా ప్రతి రాశి ఫలితం గణించబడుతుంది.',
+                'Unlike generic horoscopes, every prediction on Telugu Jyothisham is synthesized from eight foundational Sanskrit treatises and Nadi palm-leaf manuscripts.'
+              )}
+            </p>
+          </div>
+          <div className="bg-amber-950/90 border border-amber-400/50 rounded-2xl px-4 py-2.5 text-xs text-amber-200 shrink-0">
+            <strong className="text-amber-300 block">
+              {t('వేధ అపవాద సూత్రం (Phaladeepika 26.31):', 'Classical Vedha Exception:')}
+            </strong>
+            <span>“పితాపుత్రౌ తథా సౌరిశశాంకౌ నైవ వేధకౌ” (చంద్ర-బుధులకు వేధ దోషం ఉండదు)</span>
+          </div>
+        </div>
+
+        {/* 8 Classical Books Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {EIGHT_CLASSICAL_GRANTHAS.map((g, idx) => (
+            <div
+              key={g.id}
+              className="bg-amber-950/65 border border-amber-500/40 rounded-2xl p-4 sm:p-5 space-y-2.5 hover:border-amber-400 transition-all"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider">
+                    #{idx + 1} • {language === 'en' ? g.authorEn : g.authorTe}
+                  </span>
+                  <h3 className="text-base sm:text-lg font-extrabold text-white font-telugu mt-0.5">
+                    {language === 'en' ? g.titleEn : g.titleTe}
+                  </h3>
+                </div>
+                <span className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-200 border border-amber-400/40 shrink-0">
+                  {language === 'en' ? g.eraEn.split('•')[0] : g.eraTe.split('•')[0]}
+                </span>
+              </div>
+
+              <blockquote className="text-xs font-bold text-amber-200 bg-black/35 border-l-3 border-amber-400 pl-3 py-1.5 rounded-r-xl italic">
+                {g.signatureShlokaTe}
+              </blockquote>
+
+              <p className="text-xs text-amber-100/90 leading-relaxed">
+                {language === 'en' ? g.signatureShlokaMeaningEn : g.signatureShlokaMeaningTe}
+              </p>
+
+              <div className="pt-1.5 border-t border-amber-500/25 text-[11px] text-amber-300/95">
+                <strong>{t('దిన ఫలాలలో వినియోగం:', 'Role in Daily Predictions:')} </strong>
+                <span className="text-amber-100/90">
+                  {language === 'en' ? g.howUsedInPredictionsEn : g.howUsedInPredictionsTe}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Phaladeepika 12-House Gochara & Vedha Sthana Reference Table */}
+        <div className="bg-white text-slate-900 rounded-2xl p-4 sm:p-6 border-2 border-amber-400 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200 pb-3">
+            <div>
+              <h3 className="text-base sm:text-xl font-extrabold text-amber-950 font-telugu">
+                {t(
+                  'ఫలదీపిక (26వ అధ్యాయం) ద్వాదశ భావ చంద్ర గోచార & వేధ స్థాన పట్టిక',
+                  'Phaladeepika (Ch. 26) 12-House Lunar Transit & Vedha Obstruction Matrix'
+                )}
+              </h3>
+              <p className="text-xs text-slate-600">
+                {t(
+                  'జన్మ రాశి నుండి చంద్రుడు ఏ స్థానంలో ఉంటే ఏ స్థానం "వేధ" (అడ్డంకి) కలిగిస్తుందో తెలిపే ప్రామాణిక గణిత పట్టిక',
+                  'Authoritative mathematical table showing the paired Vedha house and classical Sanskrit shloka for each lunar transit house'
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto rounded-xl border border-amber-200">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="bg-amber-950 text-amber-100">
+                  <th className="py-2.5 px-3 font-bold">{t('గోచార స్థానం', 'Gochara House')}</th>
+                  <th className="py-2.5 px-3 font-bold">{t('శుభ/మిశ్రమ స్థితి', 'Base Nature')}</th>
+                  <th className="py-2.5 px-3 font-bold">{t('వేధ స్థానం (Vedha)', 'Paired Vedha House')}</th>
+                  <th className="py-2.5 px-3 font-bold">{t('మూల శ్లోక ప్రమాణం & ఫలితం', 'Classical Shloka & Sutra')}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-amber-200/70">
+                {Object.values(CLASSICAL_GOCHARA_SUTRAS_BY_HOUSE).map((s) => (
+                  <tr key={s.house} className={s.house % 2 === 0 ? 'bg-amber-50/40' : 'bg-white'}>
+                    <td className="py-2.5 px-3 font-extrabold text-amber-950 whitespace-nowrap">
+                      {s.house}వ స్థానం
+                    </td>
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      <span
+                        className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-bold border ${
+                          s.isAuspiciousGochara
+                            ? 'bg-emerald-50 text-emerald-900 border-emerald-300'
+                            : 'bg-amber-50 text-amber-900 border-amber-300'
+                        }`}
+                      >
+                        {s.isAuspiciousGochara
+                          ? t('శుభ గోచారం', 'Auspicious')
+                          : t('మిశ్రమం / విపరీత వేధ రక్ష', 'Moderate / Vipareeta Vedha')}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 font-bold text-rose-900 whitespace-nowrap">
+                      {s.vedhaPairHouse}వ స్థానం ({s.house} ↔ {s.vedhaPairHouse})
+                    </td>
+                    <td className="py-2.5 px-3 space-y-1">
+                      <div className="font-bold text-amber-950 italic">{s.sanskritShlokaTe}</div>
+                      <div className="text-slate-700">
+                        {language === 'en' ? s.phaladeepikaMeaningEn : s.phaladeepikaMeaningTe}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ===================================================================== */}
+      {/* 3C. 12-RASHI RATNA, RUDRAKSHA, YANTRA & ASHTAKAVARGA SEO VAULT        */}
+      {/* ===================================================================== */}
+      <section
+        aria-label="ద్వాదశ రాశుల రత్న, రుద్రాక్ష & యంత్ర శాస్త్ర పట్టిక"
+        className="bg-gradient-to-br from-[#ecfdf5] via-white to-[#fffbeb] border-2 border-emerald-400 rounded-3xl p-4 sm:p-6 shadow-md space-y-4"
+      >
+        <div className="border-b border-emerald-200 pb-3">
+          <span className="inline-block text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-900 text-emerald-100">
+            రత్న శాస్త్రం • రుద్రాక్ష ధారణ • సర్వాష్టకవర్గ &amp; షడ్బల ప్రమాణములు
+          </span>
+          <h2 className="text-lg sm:text-2xl font-extrabold text-emerald-950 font-telugu mt-2">
+            {t(
+              'మేషం నుండి మీనం వరకు 12 రాశుల అదృష్ట రత్నం, రుద్రాక్ష, లోహం & బీజ మంత్ర పట్టిక',
+              '12 Rashi Lucky Gemstone (Ratna), Rudraksha, Metal & Beeja Mantra Reference Table'
+            )}
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-700 mt-1">
+            {t(
+              'జాతకంలో గ్రహ షడ్బలం (Shadbala) తక్కువగా ఉన్నప్పుడు లేదా సర్వాష్టకవర్గ (Sarvashtakavarga) గోచార బలం పెంచుకోవడానికి లగ్న/రాశి అధిపతి ప్రకారం ధరించవలసిన శాస్త్రీయ రత్నాలు మరియు రుద్రాక్షలు.',
+              'Classical Vedic Ratna & Rudraksha guide for strengthening planetary Shadbala and Sarvashtakavarga transit results across all 12 Zodiac Signs.'
+            )}
+          </p>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr className="bg-emerald-900 text-amber-100 font-extrabold">
+                <th className="py-2.5 px-3">{t('రాశి / లగ్నం', 'Rashi / Lagna')}</th>
+                <th className="py-2.5 px-3">{t('అధిపతి', 'Ruling Planet')}</th>
+                <th className="py-2.5 px-3">{t('ప్రధాన రత్నం (ఉపరత్నం)', 'Primary Gem (Sub-stone)')}</th>
+                <th className="py-2.5 px-3">{t('లోహం & వేలు', 'Metal & Finger')}</th>
+                <th className="py-2.5 px-3">{t('శుభ రుద్రాక్ష & వారం', 'Rudraksha & Day')}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-emerald-100 bg-white">
+              {[
+                {
+                  rashiTe: 'మేషం & వృశ్చికం',
+                  rashiEn: 'Aries & Scorpio',
+                  lordTe: 'కుజుడు (Mars)',
+                  gemTe: 'ఎర్ర పగడం (Red Coral / రెడ్ కార్నీలియన్)',
+                  metalTe: 'బంగారం / రాగి • ఉంగరపు వేలు',
+                  rudraTe: '3 ముఖి రుద్రాక్ష • మంగళవారం',
+                },
+                {
+                  rashiTe: 'వృషభం & తుల',
+                  rashiEn: 'Taurus & Libra',
+                  lordTe: 'శుక్రుడు (Venus)',
+                  gemTe: 'వజ్రం / శ్వేత పుష్యరాగం (ఒపల్ / స్ఫటికం)',
+                  metalTe: 'వెండి / ప్లాటినం • మధ్య లేదా ఉంగరపు వేలు',
+                  rudraTe: '6 ముఖి రుద్రాక్ష • శుక్రవారం',
+                },
+                {
+                  rashiTe: 'మిథునం & కన్య',
+                  rashiEn: 'Gemini & Virgo',
+                  lordTe: 'బుధుడు (Mercury)',
+                  gemTe: 'జాతి పచ్చ (Emerald / పెరిడాట్)',
+                  metalTe: 'బంగారం / పంచలోహం • చిటికెన వేలు',
+                  rudraTe: '4 ముఖి రుద్రాక్ష • బుధవారం',
+                },
+                {
+                  rashiTe: 'కర్కాటకం',
+                  rashiEn: 'Cancer',
+                  lordTe: 'చంద్రుడు (Moon)',
+                  gemTe: 'సహజ ముత్యం (Natural Pearl / చంద్రకాంతమణి)',
+                  metalTe: 'వెండి (Silver) • చిటికెన వేలు',
+                  rudraTe: '2 ముఖి రుద్రాక్ష • సోమవారం',
+                },
+                {
+                  rashiTe: 'సింహం',
+                  rashiEn: 'Leo',
+                  lordTe: 'సూర్యుడు (Sun)',
+                  gemTe: 'మాణిక్యం (Natural Ruby / రెడ్ గార్నెట్)',
+                  metalTe: 'బంగారం / రాగి • ఉంగరపు వేలు',
+                  rudraTe: '1 ముఖి లేదా 12 ముఖి రుద్రాక్ష • ఆదివారం',
+                },
+                {
+                  rashiTe: 'ధనుస్సు & మీనం',
+                  rashiEn: 'Sagittarius & Pisces',
+                  lordTe: 'గురువు (Jupiter)',
+                  gemTe: 'కనకపుష్యరాగం (Yellow Sapphire / సిట్రిన్)',
+                  metalTe: 'బంగారం (22K Gold) • చూపుడు వేలు',
+                  rudraTe: '5 ముఖి రుద్రాక్ష • గురువారం',
+                },
+                {
+                  rashiTe: 'మకరం & కుంభం',
+                  rashiEn: 'Capricorn & Aquarius',
+                  lordTe: 'శని (Saturn)',
+                  gemTe: 'ఇంద్రనీలం (Blue Sapphire / అమెథిస్ట్)',
+                  metalTe: 'వెండి / పంచలోహం • మధ్య వేలు',
+                  rudraTe: '7 ముఖి లేదా 14 ముఖి రుద్రాక్ష • శనివారం',
+                },
+              ].map((item, i) => (
+                <tr key={i} className="hover:bg-emerald-50/60">
+                  <td className="py-2.5 px-3 font-extrabold text-emerald-950">
+                    {language === 'en' ? item.rashiEn : item.rashiTe}
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-amber-900">{item.lordTe}</td>
+                  <td className="py-2.5 px-3 font-semibold text-slate-900">{item.gemTe}</td>
+                  <td className="py-2.5 px-3 text-slate-700">{item.metalTe}</td>
+                  <td className="py-2.5 px-3 font-semibold text-indigo-950">{item.rudraTe}</td>
                 </tr>
               ))}
             </tbody>
