@@ -1,18 +1,67 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Clock, Sun, Moon, Sparkles, ShieldAlert, Award, Volume2, Square } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Clock, Sun, Moon, Sparkles, ShieldAlert, Award, Volume2, Square, Film, Download, Loader2, Copy, Check, Hash } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import { useLanguage } from '../context/LanguageContext';
+import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
+import {
+  DailyReelResult,
+  generateDailyPanchangamReelVideo,
+  generateDailyVideoSocialPack,
+} from '../utils/dailyPanchangamVideoRecorder';
+import { downloadDailyPanchangamCardImage } from '../utils/panchangamImageGenerator';
 
 export interface PanchangamQuickSummaryProps {
   day: DayData;
 }
 
 export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ day }) => {
-  const { t, tr } = useLanguage();
+  const { language, t, tr } = useLanguage();
+  const { isGuruAdmin } = useIsGuruAdmin();
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
   const [speechSupported, setSpeechSupported] = useState<boolean>(false);
+  const [isRecordingReel, setIsRecordingReel] = useState<boolean>(false);
+  const [reelProgress, setReelProgress] = useState<number>(0);
+  const [reelStatus, setReelStatus] = useState<string>('');
+  const [reelResult, setReelResult] = useState<DailyReelResult | null>(null);
+  const [showSocialPack, setShowSocialPack] = useState<boolean>(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
   const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
   const cleanNakshatra = day.panchanga.nakshatram.split('-')[0]?.trim() || day.panchanga.nakshatram;
+
+  const socialPack = useMemo(
+    () => generateDailyVideoSocialPack(day, 'panchangam', language),
+    [day, language]
+  );
+
+  const handleCopySocialField = async (key: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(key);
+      setTimeout(() => setCopiedField(null), 2500);
+    } catch {}
+  };
+
+  const handleDownloadPanchangamVideo = async (langChoice: 'te' | 'en') => {
+    if (isRecordingReel) return;
+    setIsRecordingReel(true);
+    setReelProgress(0);
+    setReelResult(null);
+    setReelStatus(
+      langChoice === 'en' ? 'Preparing 60s Panchangam Reel...' : '60 సెకన్ల పంచాంగం వీడియో సిద్ధమవుతోంది...'
+    );
+    try {
+      const res = await generateDailyPanchangamReelVideo(day, langChoice, (pct, label) => {
+        setReelProgress(pct);
+        setReelStatus(label);
+      });
+      setReelResult(res);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsRecordingReel(false);
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -138,6 +187,50 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
             </button>
           )}
 
+          {/* ADMIN ONLY: Prominent Panchangam 60s Video, Social Captions/Hashtags & Photo Download */}
+          {isGuruAdmin && (
+            <>
+              <button
+                type="button"
+                disabled={isRecordingReel}
+                onClick={() => handleDownloadPanchangamVideo(language === 'en' ? 'en' : 'te')}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-rose-600 via-amber-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 disabled:opacity-60 text-white border-2 border-amber-200 shadow-lg transition-all cursor-pointer"
+                title={t('60 సెకన్ల పంచాంగం 9:16 వీడియో డౌన్‌లోడ్ (Admin Only)', 'Download 60s 9:16 Panchangam Reel Video (Admin Only)')}
+              >
+                {isRecordingReel ? (
+                  <Loader2 size={16} className="animate-spin text-amber-200" />
+                ) : (
+                  <Film size={16} className="text-amber-100" />
+                )}
+                <span>
+                  {isRecordingReel
+                    ? `${reelProgress}% • ${t('వీడియో రికార్డ్ అవుతోంది...', 'Recording 60s Reel...')}`
+                    : t('🔒 అడ్మిన్: పంచాంగం వీడియో (60s)', '🔒 Admin: Panchangam Video (60s)')}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowSocialPack((prev) => !prev)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-amber-900/95 hover:bg-amber-800 text-amber-200 border border-amber-400/80 shadow-md transition-all cursor-pointer"
+                title={t('నేటి పంచాంగం వీడియో క్యాప్షన్ & Hashtags (Admin Only)', 'Daily Panchangam Video Caption & Hashtags (Admin Only)')}
+              >
+                <Hash size={15} className="text-amber-300" />
+                <span>{t('🔒 క్యాప్షన్ & Hashtags', '🔒 Caption & Hashtags')}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => downloadDailyPanchangamCardImage(day, language)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-amber-900/90 hover:bg-amber-800 text-amber-100 border border-amber-400/70 shadow-md transition-all cursor-pointer"
+                title={t('పంచాంగం వాట్సాప్ స్టేటస్ ఫోటో కార్డ్ డౌన్‌లోడ్', 'Download Panchangam Status Card')}
+              >
+                <Download size={15} className="text-amber-300" />
+                <span>{t('🔒 ఫోటో కార్డ్', '🔒 Status Card')}</span>
+              </button>
+            </>
+          )}
+
           <div className="flex items-center gap-2 bg-amber-900/70 border border-amber-500/50 rounded-2xl px-4 py-2 text-xs text-amber-200">
             <Award size={16} className="text-amber-400" />
             <span>
@@ -146,6 +239,105 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
           </div>
         </div>
       </div>
+
+      {/* Admin-Only Daily Panchangam Video Caption & Hashtags Drawer */}
+      {isGuruAdmin && showSocialPack && (
+        <div className="relative z-10 mt-4 bg-amber-950/95 border-2 border-amber-400/80 rounded-2xl p-4 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-700/60 pb-2.5">
+            <span className="text-xs sm:text-sm font-extrabold text-amber-300">
+              📋 అడ్మిన్ మాత్రమే: నేటి పంచాంగం వీడియో టైటిల్, క్యాప్షన్ & Hashtags ({day.teediVaram})
+            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleCopySocialField('full', socialPack.fullPostText)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs cursor-pointer shadow-sm"
+              >
+                {copiedField === 'full' ? <Check size={14} /> : <Copy size={14} />}
+                <span>
+                  {copiedField === 'full'
+                    ? 'మొత్తం కాపీ అయింది ✓'
+                    : 'మొత్తం కాపీ చేయండి (Title + Caption + Hashtags)'}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCopySocialField('title', socialPack.youtubeTitle)}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-800 hover:bg-amber-700 text-amber-100 border border-amber-500/60 font-bold text-xs cursor-pointer"
+              >
+                {copiedField === 'title' ? <Check size={13} /> : <Copy size={13} />}
+                <span>{copiedField === 'title' ? 'టైటిల్ కాపీ ✓' : 'టైటిల్ కాపీ'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCopySocialField('tags', socialPack.hashtags)}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-800 hover:bg-amber-700 text-amber-100 border border-amber-500/60 font-bold text-xs cursor-pointer"
+              >
+                {copiedField === 'tags' ? <Check size={13} /> : <Hash size={13} />}
+                <span>{copiedField === 'tags' ? 'Hashtags కాపీ ✓' : 'Hashtags మాత్రమే కాపీ'}</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-2 text-xs">
+            <div className="bg-black/40 border border-amber-700/50 rounded-xl p-2.5">
+              <div className="text-[11px] font-bold text-amber-400 mb-1">🎬 YouTube Shorts / Reels టైటిల్:</div>
+              <p className="text-amber-50 font-bold select-all">{socialPack.youtubeTitle}</p>
+            </div>
+
+            <div className="bg-black/40 border border-amber-700/50 rounded-xl p-2.5">
+              <div className="text-[11px] font-bold text-amber-400 mb-1">📝 వీడియో క్యాప్షన్ / డిస్క్రిప్షన్ (మన వెబ్‌సైట్ సేవలతో):</div>
+              <pre className="text-amber-100/95 whitespace-pre-wrap font-telugu leading-relaxed select-all max-h-44 overflow-y-auto">
+                {socialPack.caption}
+              </pre>
+            </div>
+
+            <div className="bg-black/40 border border-amber-700/50 rounded-xl p-2.5">
+              <div className="text-[11px] font-bold text-amber-400 mb-1">#️⃣ డైలీ ట్రెండింగ్ Hashtags:</div>
+              <p className="text-amber-300 font-mono text-[11px] leading-relaxed select-all">
+                {socialPack.hashtags}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Live Progress / Ready Video Bar on Panchangam Page */}
+      {isGuruAdmin && (isRecordingReel || reelResult) && (
+        <div className="relative z-10 mt-4 bg-amber-950/90 border border-amber-400/70 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {isRecordingReel ? (
+            <div className="w-full space-y-1.5">
+              <div className="flex items-center justify-between text-xs font-bold text-amber-200">
+                <span>🎬 {reelStatus}</span>
+                <span>{reelProgress}%</span>
+              </div>
+              <div className="w-full h-2.5 bg-amber-900 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-rose-500 to-amber-400 transition-all duration-150"
+                  style={{ width: `${reelProgress}%` }}
+                />
+              </div>
+            </div>
+          ) : reelResult ? (
+            <>
+              <div className="text-xs sm:text-sm font-bold text-emerald-300">
+                ✅ {t('60 సెకన్ల పంచాంగం వీడియో సిద్ధమైంది & డౌన్‌లోడ్ అయింది!', '60s Panchangam Reel Video Ready!')}{' '}
+                <span className="text-amber-200/80 font-normal">({reelResult.filename})</span>
+              </div>
+              <a
+                href={reelResult.url}
+                download={reelResult.filename}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shrink-0"
+              >
+                <Download size={14} />
+                <span>{t('మళ్ళీ సేవ్ చేయండి', 'Save Video Again')}</span>
+              </a>
+            </>
+          ) : null}
+        </div>
+      )}
 
       {/* Zero-Click Definition List (<dl>) for Google Featured Snippets */}
       <dl className="relative z-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-5 text-xs">

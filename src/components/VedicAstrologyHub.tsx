@@ -20,7 +20,6 @@ import { RashiCompatibilityTool } from './RashiCompatibilityTool';
 import { WEEK_DATA } from '../data/panchangamData';
 import { useLanguage } from '../context/LanguageContext';
 import { RashiGlyph } from './RashiGlyph';
-
 const JanmaKundaliGenerator = lazy(() =>
   import('./JanmaKundaliGenerator').then((m) => ({ default: m.JanmaKundaliGenerator }))
 );

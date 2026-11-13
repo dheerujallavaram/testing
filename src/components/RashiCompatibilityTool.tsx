@@ -16,6 +16,7 @@ import { RASHI_CHART_ORDER } from '../data/panchangamData';
 import { useLanguage } from '../context/LanguageContext';
 import { getRashiEncyclopediaByIdOrIndex } from '../data/dwadasaRashiVedicEncyclopedia';
 import { computeComplete22PoruthamMatching } from '../utils/dakshinaBharatiyaMarriageAndVastuEngine';
+import { DualKundaliMilanPanel } from './DualKundaliMilanPanel';
 
 export interface RashiCompatibilityProps {
   defaultBrideRashi?: string;
@@ -453,6 +454,7 @@ export const RashiCompatibilityTool: React.FC<RashiCompatibilityProps> = ({
   onConsultGuruji,
 }) => {
   const { language, t } = useLanguage();
+  const [matchMode, setMatchMode] = useState<'star' | 'dual_kundali'>('star');
   const [brideRashi, setBrideRashi] = useState<string>(defaultBrideRashi);
   const [groomRashi, setGroomRashi] = useState<string>(defaultGroomRashi);
 
@@ -668,6 +670,36 @@ export const RashiCompatibilityTool: React.FC<RashiCompatibilityProps> = ({
         </div>
       </div>
 
+      {/* Mode Switcher: Quick Nakshatra/Rashi Match vs Full Birth-Chart Dual Kundali Milan + PDF */}
+      <div className="flex flex-wrap gap-2 bg-amber-50 p-1.5 rounded-2xl border border-amber-300 no-print">
+        <button
+          type="button"
+          onClick={() => setMatchMode('star')}
+          className={`flex-1 min-w-[200px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer ${
+            matchMode === 'star'
+              ? 'bg-amber-900 text-amber-100 shadow-sm'
+              : 'text-amber-950 hover:bg-amber-100'
+          }`}
+        >
+          ⭐ {t('నక్షత్ర & రాశి పొంతన (36 గుణాలు / 22 పొంతనలు)', 'Star & Rashi Match (36 Gunas / 22 Poruthams)')}
+        </button>
+        <button
+          type="button"
+          onClick={() => setMatchMode('dual_kundali')}
+          className={`flex-1 min-w-[200px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer ${
+            matchMode === 'dual_kundali'
+              ? 'bg-amber-900 text-amber-100 shadow-sm'
+              : 'text-amber-950 hover:bg-amber-100'
+          }`}
+        >
+          💍 {t('పూర్తి జన్మకుండలి పొంతన (D1/D9 + కుజదోష + పాపసామ్య + PDF)', 'Full Birth-Chart Kundali Milan (D1/D9 + Kuja + PDF)')}
+        </button>
+      </div>
+
+      {matchMode === 'dual_kundali' ? (
+        <DualKundaliMilanPanel />
+      ) : (
+        <>
       {/* Two Rashi + Nakshatra + Pada + Kuja Selectors */}
       <div className="grid sm:grid-cols-2 gap-6 bg-amber-50/60 p-5 rounded-2xl border border-amber-200/80">
         {/* Input 1: Bride / Partner 1 */}
@@ -1254,6 +1286,8 @@ export const RashiCompatibilityTool: React.FC<RashiCompatibilityProps> = ({
             <ArrowRight size={15} />
           </button>
         </div>
+      )}
+        </>
       )}
     </div>
   );

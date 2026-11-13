@@ -11,6 +11,7 @@
     "generate:sitemap": "tsx scripts/generate-sitemap.ts",
     "bot:start": "tsx scripts/telegramBot.ts",
     "bot:daily": "tsx scripts/sendDailyPanchangam.ts",
+    "video:daily": "tsx scripts/generateDailyPanchangamReel.ts",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
@@ -35,7 +36,8 @@
     "esbuild": "^0.28.0",
     "eslint": "^10.13.0",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vite-plugin-pwa": "^2.0.0"
   },
   "overrides": {
     "esbuild": "^0.28.0"

@@ -3,14 +3,19 @@ import { ShieldCheck, Compass, Calendar, BookOpen, Heart, Baby, MapPin, Phone, M
 import { useLanguage } from '../context/LanguageContext';
 import { HubSectionId } from './VedicAstrologyHub';
 import { LegalDocType } from './LegalComplianceModal';
-import { getTodayIsoDateIST } from '../seo/panchangamSsrEngine';
+import {
+  CityTimingConfig,
+  SUPPORTED_CITY_CONFIGS,
+  SUPPORTED_CITY_SLUGS,
+  getTodayIsoDateIST,
+} from '../seo/panchangamSsrEngine';
 
 export interface AuthorBioAndInternalLinksProps {
   onNavigateHome: () => void;
   onNavigatePanchangam: (isoDate?: string) => void;
   onNavigateCalendar: () => void;
   onNavigateHubSection: (section: HubSectionId, path: string) => void;
-  onSelectCityTiming: (citySlug: 'hyderabad' | 'vijayawada' | 'visakhapatnam' | 'usa') => void;
+  onSelectCityTiming: (citySlug: CityTimingConfig['slug']) => void;
   onNavigateAbout: () => void;
   onNavigateContact: () => void;
   onOpenLegal: (doc: LegalDocType) => void;
@@ -101,10 +106,10 @@ export const AuthorBioAndInternalLinks: React.FC<AuthorBioAndInternalLinksProps>
             <BookOpen size={16} className="text-amber-700 shrink-0 mt-0.5" />
             <div>
               <span className="font-extrabold text-amber-950 group-hover:text-orange-800 block">
-                పుట్టిన తేదీతో ఉచిత తెలుగు జాతకం (Jathakam by Date of Birth)
+                పుట్టిన తేదీతో 25-అధ్యాయాల ఉచిత జాతకం (Jathakam PDF)
               </span>
               <span className="text-xs text-slate-600">
-                దక్షిణ భారత రాశి చక్రం (D1), నవాంశ (D9) &amp; 120 ఏళ్ల వింశోత్తరి మహాదశ
+                D1 రాశి, D9 నవాంశ, షోడశవర్గ, భావార్థ రత్నాకర &amp; 300 రాజయోగాలు
               </span>
             </div>
           </a>
@@ -120,10 +125,48 @@ export const AuthorBioAndInternalLinks: React.FC<AuthorBioAndInternalLinksProps>
             <Heart size={16} className="text-amber-700 shrink-0 mt-0.5" />
             <div>
               <span className="font-extrabold text-amber-950 group-hover:text-orange-800 block">
-                36 గుణాల అష్టకూట వివాహ పొంతన (Vivaha Pontana Telugu)
+                36 గుణాల &amp; 22-పొంతనల వివాహ పొంతన (Vivaha Pontana)
               </span>
               <span className="text-xs text-slate-600">
-                వధూవరుల నక్షత్ర పొంతన, నాడి, రజ్జు మరియు కుజ దోష పరిశీలన
+                అష్టకూట 36 గుణములు + దక్షిణాది 22 పొంతనలు, రజ్జు, నాడీ &amp; కుజ దోషం
+              </span>
+            </div>
+          </a>
+
+          <a
+            href="/muhurtham"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigateHubSection('muhurtham', '/muhurtham');
+            }}
+            className="flex items-start gap-2.5 p-3.5 rounded-2xl bg-white hover:bg-amber-100/70 border border-amber-200 hover:border-amber-400 transition-all group"
+          >
+            <Compass size={16} className="text-amber-700 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-extrabold text-amber-950 group-hover:text-orange-800 block">
+                వివాహ, గృహప్రవేశ శుభ ముహూర్తాలు (Shubha Muhurtham)
+              </span>
+              <span className="text-xs text-slate-600">
+                పెళ్లి, గృహప్రవేశం, అన్నప్రాశన, నామకరణం &amp; వ్యాపార ముహూర్త నిర్ణయం
+              </span>
+            </div>
+          </a>
+
+          <a
+            href="/rashi-phalalu"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigateHubSection('rashiguide', '/rashi-phalalu');
+            }}
+            className="flex items-start gap-2.5 p-3.5 rounded-2xl bg-white hover:bg-amber-100/70 border border-amber-200 hover:border-amber-400 transition-all group"
+          >
+            <BookOpen size={16} className="text-amber-700 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-extrabold text-amber-950 group-hover:text-orange-800 block">
+                నేటి ద్వాదశ రాశి ఫలాలు (Daily 12 Rashi Phalalu)
+              </span>
+              <span className="text-xs text-slate-600">
+                మేషం నుండి మీనం వరకు 12 రాశుల దిన, వార, మాస &amp; గురు-శని గోచార ఫలితాలు
               </span>
             </div>
           </a>
@@ -139,10 +182,25 @@ export const AuthorBioAndInternalLinks: React.FC<AuthorBioAndInternalLinksProps>
             <Baby size={16} className="text-amber-700 shrink-0 mt-0.5" />
             <div>
               <span className="font-extrabold text-amber-950 group-hover:text-orange-800 block">
-                27 నక్షత్రాల తెలుగు పిల్లల పేర్లు (Telugu Baby Names by Nakshatra)
+                27 నక్షత్రాల తెలుగు పిల్లల పేర్లు (Telugu Baby Names)
               </span>
               <span className="text-xs text-slate-600">
-                అశ్విని నుండి రేవతి వరకు 4 పాదాల నామ అక్షరాలతో పిల్లల పేర్లు
+                అశ్విని నుండి రేవతి వరకు 4 పాదాల నామ అక్షరాలతో సంప్రదాయ పేర్లు
+              </span>
+            </div>
+          </a>
+
+          <a
+            href="/bhavartha-ratnakara-300-raja-yogalu-ayurveda-jyotisham"
+            className="flex items-start gap-2.5 p-3.5 rounded-2xl bg-white hover:bg-amber-100/70 border border-amber-200 hover:border-amber-400 transition-all group"
+          >
+            <FileText size={16} className="text-amber-700 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-extrabold text-amber-950 group-hover:text-orange-800 block">
+                భావార్థ రత్నాకర &amp; 300 రాజయోగాల గ్రంథం (Vedic Shastra)
+              </span>
+              <span className="text-xs text-slate-600">
+                12 లగ్నాల ధన సూత్రాలు, ఆయుర్వేద వైద్య జ్యోతిషం &amp; 16 ప్రాచీన వ్యాసాలు
               </span>
             </div>
           </a>
@@ -173,26 +231,22 @@ export const AuthorBioAndInternalLinks: React.FC<AuthorBioAndInternalLinksProps>
             <MapPin size={13} className="text-amber-700" />
             <span>నగరాల వారీగా నేటి పంచాంగ సమయాలు:</span>
           </span>
-          {(
-            [
-              { slug: 'hyderabad', label: 'హైదరాబాద్ నేటి పంచాంగం (Hyderabad)' },
-              { slug: 'vijayawada', label: 'విజయవాడ నేటి పంచాంగం (Vijayawada)' },
-              { slug: 'visakhapatnam', label: 'విశాఖపట్నం నేటి పంచాంగం (Visakhapatnam)' },
-              { slug: 'usa', label: 'అమెరికా తెలుగు పంచాంగం (USA EST/CST/PST)' },
-            ] as const
-          ).map((c) => (
-            <a
-              key={c.slug}
-              href={`/panchangam/${c.slug}`}
-              onClick={(e) => {
-                e.preventDefault();
-                onSelectCityTiming(c.slug);
-              }}
-              className="px-3 py-1 rounded-full bg-white hover:bg-amber-100 text-amber-950 border border-amber-300 font-bold transition-colors"
-            >
-              {c.label}
-            </a>
-          ))}
+          {SUPPORTED_CITY_SLUGS.map((slug) => {
+            const cfg = SUPPORTED_CITY_CONFIGS[slug];
+            return (
+              <a
+                key={slug}
+                href={`/panchangam/${slug}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSelectCityTiming(slug);
+                }}
+                className="px-3 py-1 rounded-full bg-white hover:bg-amber-100 text-amber-950 border border-amber-300 font-bold transition-colors"
+              >
+                {cfg.nameTe} ({cfg.nameEn.split(' ')[0]})
+              </a>
+            );
+          })}
         </div>
       </nav>
 

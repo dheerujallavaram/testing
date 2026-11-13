@@ -24,6 +24,9 @@ const SEO_HUB_LINKS: { section: HubSectionId; path: string; labelTe: string; lab
   { section: 'pontana', path: '/gowri-panchangam', labelTe: 'గౌరీ పంచాంగం & హోరా చక్రం', labelEn: 'Today Gowri Panchangam & Hora Timings' },
   { section: 'pontana', path: '/tarabalam-chandrabalam', labelTe: 'తారాబలం & చంద్రబలం క్యాలిక్యులేటర్', labelEn: 'Tarabalam & Chandrabalam Calculator' },
   { section: 'pontana', path: '/nitya-sankalpam', labelTe: 'నేటి పూజా సంకల్పం మంత్రం (India & USA)', labelEn: 'Today Telugu Pooja Sankalpam' },
+  { section: 'kundali', path: '/prashna-kundali', labelTe: '1–249 KP ప్రశ్న కుండలి & సబ్-లార్డ్ (Horary KP)', labelEn: '1–249 KP Horary Prashna Kundali Predictor' },
+  { section: 'kundali', path: '/ratna-rudraksha', labelTe: 'లగ్న రత్నం, రుద్రాక్ష & దోష పరిహార సలహాదారు', labelEn: 'Lagna Ratna (Gemstone) & Rudraksha Advisor' },
+  { section: 'muhurtham', path: '/festivals-calendar', labelTe: '12 నెలల తెలుగు పండుగలు, ఏకాదశి & ప్రదోష క్యాలెండర్', labelEn: '12-Month Telugu Festivals & Vrata Calendar' },
   { section: 'akshara', path: '/naama-nakshatra', labelTe: 'పేరు మొదటి అక్షరంతో రాశి & నక్షత్రం', labelEn: 'Naama Nakshatra Rashi Finder' },
   { section: 'ugadi', path: '/ugadi-rashi-phalalu', labelTe: 'శ్రీ పరాభవ నామ సంవత్సర ఉగాది రాశి ఫలాలు', labelEn: 'Ugadi Yearly Horoscope 2026-2027' },
   { section: 'muhurtham', path: '/shubha-muhurthalu', labelTe: 'శుభ ముహూర్తాలు & పండుగల క్యాలెండర్', labelEn: 'Auspicious Muhurthams & Festivals' },
@@ -256,7 +259,7 @@ export const Footer: React.FC<FooterProps> = ({
                 href="/balarishta-dosha-shanti"
                 className="bg-amber-900/50 hover:bg-amber-800/80 px-3 py-1.5 rounded-full border border-amber-700/60 hover:text-amber-200 transition-colors"
               >
-                ✦ {t('బాలారిష్ట దోషం & శిశు గండ శాంతి (1959 ఆర్కైవ్)', 'Balarishta Dosha Shanti')}
+                ✦ {t('బాలారిష్ట దోషం & శిశు గండ శాంతి (పరాశర-ఫలదీపిక)', 'Balarishta Dosha Shanti')}
               </a>
               <a
                 href="/prashna-nimitta-shastra"
@@ -280,19 +283,19 @@ export const Footer: React.FC<FooterProps> = ({
                 href="/classical-astrology-faq"
                 className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
               >
-                📜 {t('క్లాసికల్ సందేహాలు & సమాధానాలు (1959 రామన్ ఆర్కైవ్)', 'Classical Astrology Difficulties Solved (1959 Archive)')}
+                📜 {t('క్లాసికల్ సందేహాలు & సమాధానాలు (పరాశర-వరాహమిహిర ప్రమాణాలు)', 'Classical Astrology Difficulties Solved (Parashara & Varahamihira)')}
               </a>
               <a
                 href="/jyotisha-paribhasha-rahasyalu"
                 className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
               >
-                📜 {t('జ్యోతిష గూఢ పరిభాష – మాంది vs గుళిక (1959 ఓఝా ఆర్కైవ్)', 'Ambiguous Terms in Hindu Astrology (1959 Archive)')}
+                📜 {t('జ్యోతిష గూఢ పరిభాష – మాంది vs గుళిక (పరాశర-జైమిని-ఉత్తర కాలామృతం)', 'Ambiguous Terms in Hindu Astrology (Parashara & Uttara Kalamrita)')}
               </a>
               <a
                 href="/hasta-samudrika-rekhala-vignanam"
                 className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
               >
-                🖐️ {t('హస్త సాముద్రిక శాస్త్రం – చేతి వేళ్ల రహస్యాలు (1959 దేశాయ్ ఆర్కైవ్)', 'Significance of Fingers in Palmistry (1959 Archive)')}
+                🖐️ {t('హస్త సాముద్రిక శాస్త్రం – చేతి వేళ్ల రహస్యాలు (సముద్ర-గర్గ మహర్షి మతం)', 'Significance of Fingers in Palmistry (Samudrika Shastra)')}
               </a>
               <a
                 href="/why-are-geminis-so-powerful"
@@ -310,25 +313,25 @@ export const Footer: React.FC<FooterProps> = ({
                 href="/pawan-kalyan-raja-yoga-horoscope-analysis"
                 className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
               >
-                👑 {t('పవన్ కళ్యాణ్ జాతక రాజయోగ విశ్లేషణ – శని-గురు కటాక్షం (1944 రామన్ ఆర్కైవ్)', 'Pawan Kalyan Horoscope & Political Raja Yoga (1944 Archive)')}
+                👑 {t('పవన్ కళ్యాణ్ జాతక రాజయోగ విశ్లేషణ – శని-గురు కటాక్షం (పరాశర-ఫలదీపిక)', 'Pawan Kalyan Horoscope & Political Raja Yoga (Parashara & Phaladeepika)')}
               </a>
               <a
                 href="/cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide"
                 className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
               >
-                🏏 {t('IND U19 vs UAE U19 & క్రీడా ప్రశ్న-స్వర శాస్త్రం (1944 రామన్ ఆర్కైవ్)', 'IND U19 vs UAE U19 & Sports Prashna Astrology (1944 Archive)')}
+                🏏 {t('IND U19 vs UAE U19 & క్రీడా ప్రశ్న-స్వర శాస్త్రం (ప్రశ్నమార్గ & శివ స్వరోదయం)', 'IND U19 vs UAE U19 & Sports Prashna Astrology (Prasnamarga & Swarodaya)')}
               </a>
               <a
                 href="/swapna-shastra-dream-meaning-medical-astrology-1944"
                 className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
               >
-                🐍 {t('స్వప్న శాస్త్రం (కలలో పాము, బంగారం, వరద) & 12 రాశుల ఆరోగ్యం (1944 ఆర్కైవ్)', 'Swapna Shastra Dream Meanings & 12 Zodiac Health (1944 Archive)')}
+                🐍 {t('స్వప్న శాస్త్రం (కలలో పాము, బంగారం, వరద) & 12 రాశుల ఆరోగ్యం (బృహత్ సంహిత)', 'Swapna Shastra Dream Meanings & 12 Zodiac Health (Brihat Samhita)')}
               </a>
               <a
                 href="/fmge-medical-astrology-doctor-yoga-exam-success-guide"
                 className="bg-amber-900/70 hover:bg-amber-800 px-3 py-1.5 rounded-full border border-yellow-500/60 text-yellow-300 hover:text-yellow-100 transition-colors font-semibold"
               >
-                🩺 {t('FMGE & వైద్య జ్యోతిషం – విదేశీ MBBS, డాక్టర్ యోగం & పరీక్షా విజయం (1944 ఆర్కైవ్)', 'FMGE & Medical Astrology – Doctor Yoga & Exam Success (1944 Archive)')}
+                🩺 {t('FMGE & వైద్య జ్యోతిషం – విదేశీ MBBS, డాక్టర్ యోగం (ధన్వంతరి-ప్రశ్నమార్గ)', 'FMGE & Medical Astrology – Doctor Yoga & Exam Success (Prasnamarga)')}
               </a>
             </div>
           </div>

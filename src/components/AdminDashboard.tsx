@@ -22,6 +22,11 @@ import {
   Search,
   Printer,
   Save,
+  Film,
+  Download,
+  Loader2,
+  Copy,
+  Hash,
 } from 'lucide-react';
 import {
   auth,
@@ -47,6 +52,18 @@ import { ALL_RASHIS, NAKSHATRAS, POOJA_SERVICES } from '../data/panchangamData';
 import { computeAccurateJanmaKundali } from '../utils/astronomyPanchangam';
 import { DayData } from '../types/panchangam';
 import { OmEmblem } from './OmEmblem';
+import {
+  DailyReelResult,
+  generateDailyPanchangamReelVideo,
+  generateDailyRashiReelVideo,
+  generateDailySubhashithamReelVideo,
+  generateDailyVideoSocialPack,
+  generateSubhashithamSocialPack,
+  getSpotlightRashiIndex,
+} from '../utils/dailyPanchangamVideoRecorder';
+import { getDailyRashiFortunes } from '../utils/panchangaLogic';
+import { DAILY_SUBHASHITHALU } from './DailySubhashithamCard';
+import { downloadDailyPanchangamCardImage } from '../utils/panchangamImageGenerator';
 
 export interface ClientKundaliPrefill {
   name: string;
@@ -86,6 +103,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [authError, setAuthError] = useState<string>('');
   const [activeSubTab, setActiveSubTab] = useState<'bookings' | 'kundali' | 'announcements'>('bookings');
   const [statusFeedback, setStatusFeedback] = useState<string>('');
+  const [isRecordingAdminVideo, setIsRecordingAdminVideo] = useState<boolean>(false);
+  const [adminVideoProgress, setAdminVideoProgress] = useState<number>(0);
+  const [adminVideoStatus, setAdminVideoStatus] = useState<string>('');
+  const [adminVideoResult, setAdminVideoResult] = useState<DailyReelResult | null>(null);
+  const [adminSocialKind, setAdminSocialKind] = useState<'panchangam' | 'rashi' | 'subhashitham' | null>(null);
+  const [adminSpotlightRashiId, setAdminSpotlightRashiId] = useState<string>('auto');
 
   // Firestore Real-time States
   const [bookings, setBookings] = useState<BookingInquiryDoc[]>([]);
@@ -283,6 +306,97 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setTimeout(() => setStatusFeedback(''), 4000);
   };
 
+  const todaySubhashitham = useMemo(() => {
+    const str = currentDay.isoDate || new Date().toISOString().slice(0, 10);
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash * 31 + str.charCodeAt(i)) % DAILY_SUBHASHITHALU.length;
+    }
+    return DAILY_SUBHASHITHALU[Math.abs(hash) % DAILY_SUBHASHITHALU.length] || DAILY_SUBHASHITHALU[0];
+  }, [currentDay.isoDate]);
+
+  const adminRashiCards = useMemo(() => getDailyRashiFortunes(currentDay), [currentDay]);
+  const adminAutoSpotIdx = useMemo(
+    () => getSpotlightRashiIndex(currentDay, adminRashiCards, 'auto'),
+    [currentDay, adminRashiCards]
+  );
+  const adminActiveSpotIdx = useMemo(
+    () => getSpotlightRashiIndex(currentDay, adminRashiCards, adminSpotlightRashiId),
+    [currentDay, adminRashiCards, adminSpotlightRashiId]
+  );
+  const adminAutoSpotRashi = adminRashiCards[adminAutoSpotIdx] || adminRashiCards[0];
+  const adminActiveSpotRashi = adminRashiCards[adminActiveSpotIdx] || adminRashiCards[0];
+
+  const adminSocialPack = useMemo(() => {
+    if (adminSocialKind === 'subhashitham') {
+      return generateSubhashithamSocialPack(todaySubhashitham, 'te');
+    }
+    return generateDailyVideoSocialPack(
+      currentDay,
+      adminSocialKind || 'panchangam',
+      'te',
+      adminSpotlightRashiId
+    );
+  }, [currentDay, adminSocialKind, todaySubhashitham, adminSpotlightRashiId]);
+
+  const handleCopyAdminSocial = async (label: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast(`✅ ${label} కాపీ చేయబడింది!`);
+    } catch {}
+  };
+
+  const handleDownloadAdminReel = async (
+    kind: 'panchangam' | 'rashi' | 'subhashitham',
+    langChoice: 'te' | 'en'
+  ) => {
+    if (isRecordingAdminVideo) return;
+    setIsRecordingAdminVideo(true);
+    setAdminVideoProgress(0);
+    setAdminVideoResult(null);
+    setAdminVideoStatus(
+      kind === 'subhashitham'
+        ? '30 సెకన్ల సుభాషితం & జీవన సందేశం 9:16 వీడియో రికార్డ్ అవుతోంది...'
+        : kind === 'panchangam'
+          ? '60 సెకన్ల పంచాంగం 9:16 వీడియో రికార్డ్ అవుతోంది...'
+          : `60 సెకన్ల రాశి ఫలాల వీడియో (${adminActiveSpotRashi.teluguName} పూర్తి ఫలితం + 12 రాశులు) రికార్డ్ అవుతోంది...`
+    );
+    try {
+      const res =
+        kind === 'subhashitham'
+          ? await generateDailySubhashithamReelVideo(todaySubhashitham, 'both', (pct, label) => {
+              setAdminVideoProgress(pct);
+              setAdminVideoStatus(label);
+            })
+          : kind === 'rashi'
+            ? await generateDailyRashiReelVideo(
+                currentDay,
+                langChoice,
+                (pct, label) => {
+                  setAdminVideoProgress(pct);
+                  setAdminVideoStatus(label);
+                },
+                adminSpotlightRashiId
+              )
+            : await generateDailyPanchangamReelVideo(
+                currentDay,
+                langChoice,
+                (pct, label) => {
+                  setAdminVideoProgress(pct);
+                  setAdminVideoStatus(label);
+                }
+              );
+      setAdminVideoResult(res);
+      showToast(
+        `✅ ${kind === 'subhashitham' ? '30 సెకన్ల సుభాషితం' : '60 సెకన్ల'} వీడియో డౌన్‌లోడ్ అయింది: ${res.filename}`
+      );
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsRecordingAdminVideo(false);
+    }
+  };
+
   const handleGoogleSignIn = async () => {
     setAuthError('');
     try {
@@ -457,19 +571,236 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <span>వెబ్‌సైట్‌కు తిరిగి వెళ్ళండి</span>
             </button>
 
-            {user && (
-              <button
-                type="button"
-                onClick={() => signOutAdmin()}
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-900/80 hover:bg-rose-800 text-rose-100 border border-rose-600/50 text-xs sm:text-sm font-bold transition-colors cursor-pointer"
-              >
-                <LogOut size={16} />
-                <span>లాగ్ అవుట్ (Sign Out)</span>
-              </button>
-            )}
+              {user && (
+                <button
+                  type="button"
+                  onClick={() => signOutAdmin()}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-900/80 hover:bg-rose-800 text-rose-100 border border-rose-600/50 text-xs sm:text-sm font-bold transition-colors cursor-pointer"
+                >
+                  <LogOut size={16} />
+                  <span>లాగ్ అవుట్ (Sign Out)</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Admin Daily 60s Video Download Studio (Panchangam & 12-Rashi Phalalu) + Captions/Hashtags */}
+        <div className="bg-gradient-to-r from-[#2b0902] via-amber-950 to-[#2b0902] text-white rounded-3xl p-5 sm:p-6 border-2 border-amber-400/80 shadow-lg space-y-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/50 text-amber-300 text-xs font-extrabold uppercase tracking-wider">
+                <Film size={13} />
+                <span>అడ్మిన్ వీడియో స్టూడియో • 60 SECONDS 9:16 REELS / SHORTS / STATUS</span>
+              </span>
+              <h2 className="text-lg sm:text-2xl font-extrabold text-amber-100 mt-1.5">
+                🎬 నేటి పంచాంగం & 12 రాశి ఫలాల 60s వీడియో + క్యాప్షన్ & Hashtags ({currentDay.teediVaram})
+              </h2>
+              <p className="text-xs sm:text-sm text-amber-200/85 mt-0.5">
+                స్టార్టింగ్‌లో వెబ్‌సైట్ యానిమేషన్ (0–6.5s) • 🌟 నేటి విశేష రాశి ({adminActiveSpotRashi.teluguName}) పూర్తి ఫలితం (6.5–24s) • మిగతా 11 రాశులు + వెబ్‌సైట్ లింక్ (24–50s) • మన సేవల యాడ్ (50–60s)
+              </p>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <span className="text-xs font-extrabold text-amber-300">
+                  🎯 నేటి రాశి ఫలాల వీడియోలో పూర్తి ఫలితం చూపే రాశి (రోజుకొక రాశి):
+                </span>
+                <select
+                  value={adminSpotlightRashiId}
+                  onChange={(e) => setAdminSpotlightRashiId(e.target.value)}
+                  className="bg-amber-950 text-amber-100 border border-amber-400/80 rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none cursor-pointer"
+                >
+                  <option value="auto">
+                    🔄 ఆటోమేటిక్: రోజుకొక రాశి (నేడు: {adminAutoSpotRashi.symbol} {adminAutoSpotRashi.teluguName} రాశి)
+                  </option>
+                  {adminRashiCards.map((rc) => (
+                    <option key={rc.id} value={rc.id}>
+                      {rc.symbol} {rc.teluguName} రాశి ({rc.englishName}) — సంపూర్ణ ఫలితం
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              <button
+                type="button"
+                disabled={isRecordingAdminVideo}
+                onClick={() => handleDownloadAdminReel('panchangam', 'te')}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-gradient-to-r from-rose-600 via-amber-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 disabled:opacity-60 text-white border-2 border-amber-200 font-extrabold text-xs sm:text-sm shadow-lg transition-all cursor-pointer"
+              >
+                {isRecordingAdminVideo ? (
+                  <Loader2 size={17} className="animate-spin text-amber-200" />
+                ) : (
+                  <Film size={17} className="text-amber-100" />
+                )}
+                <span>🎬 పంచాంగం వీడియో డౌన్‌లోడ్ (60s)</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={isRecordingAdminVideo}
+                onClick={() => handleDownloadAdminReel('rashi', 'te')}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 disabled:opacity-60 text-amber-950 border-2 border-amber-100 font-extrabold text-xs sm:text-sm shadow-lg transition-all cursor-pointer"
+              >
+                {isRecordingAdminVideo ? (
+                  <Loader2 size={17} className="animate-spin text-amber-950" />
+                ) : (
+                  <Film size={17} className="text-amber-950" />
+                )}
+                <span>🎬 {adminActiveSpotRashi.teluguName} పూర్తి ఫలితం + 12 రాశుల వీడియో (60s)</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={isRecordingAdminVideo}
+                onClick={() => handleDownloadAdminReel('subhashitham', 'te')}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 disabled:opacity-60 text-slate-950 border-2 border-emerald-100 font-extrabold text-xs sm:text-sm shadow-lg transition-all cursor-pointer"
+              >
+                {isRecordingAdminVideo ? (
+                  <Loader2 size={17} className="animate-spin text-slate-950" />
+                ) : (
+                  <Film size={17} className="text-slate-950" />
+                )}
+                <span>🎬 నేటి సుభాషితం వీడియో (30s)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setAdminSocialKind((prev) => (prev === 'panchangam' ? null : 'panchangam'))
+                }
+                className="inline-flex items-center gap-1.5 px-3.5 py-3 rounded-2xl bg-amber-900 hover:bg-amber-800 text-amber-200 border border-amber-400/70 font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+              >
+                <Hash size={15} className="text-amber-300" />
+                <span>పంచాంగం క్యాప్షన్ & Hashtags</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setAdminSocialKind((prev) => (prev === 'rashi' ? null : 'rashi'))
+                }
+                className="inline-flex items-center gap-1.5 px-3.5 py-3 rounded-2xl bg-amber-900 hover:bg-amber-800 text-amber-200 border border-amber-400/70 font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+              >
+                <Hash size={15} className="text-amber-300" />
+                <span>12 రాశుల క్యాప్షన్ & Hashtags</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setAdminSocialKind((prev) => (prev === 'subhashitham' ? null : 'subhashitham'))
+                }
+                className="inline-flex items-center gap-1.5 px-3.5 py-3 rounded-2xl bg-amber-900 hover:bg-amber-800 text-amber-200 border border-amber-400/70 font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+              >
+                <Hash size={15} className="text-amber-300" />
+                <span>సుభాషితం క్యాప్షన్ & Hashtags</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => downloadDailyPanchangamCardImage(currentDay, 'te')}
+                className="inline-flex items-center gap-1.5 px-4 py-3 rounded-2xl bg-amber-900 hover:bg-amber-800 text-amber-100 border border-amber-500/70 font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+              >
+                <Download size={16} className="text-amber-300" />
+                <span>పంచాంగం ఫోటో కార్డ్</span>
+              </button>
+            </div>
+          </div>
+
+          {adminSocialKind && (
+            <div className="bg-black/45 border border-amber-400/70 rounded-2xl p-4 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-700/60 pb-2">
+                <span className="text-xs sm:text-sm font-extrabold text-amber-300">
+                  📋{' '}
+                  {adminSocialKind === 'subhashitham'
+                    ? '30s సుభాషితం వీడియో'
+                    : adminSocialKind === 'rashi'
+                      ? '12 రాశి ఫలాల వీడియో'
+                      : 'పంచాంగం వీడియో'}{' '}
+                  టైటిల్, క్యాప్షన్ & Hashtags
+                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleCopyAdminSocial('మొత్తం పోస్ట్ (Title + Caption + Hashtags)', adminSocialPack.fullPostText)
+                    }
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs cursor-pointer"
+                  >
+                    <Copy size={13} />
+                    <span>మొత్తం కాపీ చేయండి (Title + Caption + Hashtags)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyAdminSocial('వీడియో టైటిల్', adminSocialPack.youtubeTitle)}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-800 hover:bg-amber-700 text-amber-100 border border-amber-500/60 font-bold text-xs cursor-pointer"
+                  >
+                    <Copy size={13} />
+                    <span>టైటిల్ కాపీ</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyAdminSocial('Hashtags', adminSocialPack.hashtags)}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-800 hover:bg-amber-700 text-amber-100 border border-amber-500/60 font-bold text-xs cursor-pointer"
+                  >
+                    <Hash size={13} />
+                    <span>Hashtags కాపీ</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2 text-xs">
+                <div className="bg-amber-950/80 border border-amber-700/50 rounded-xl p-2.5">
+                  <div className="text-[11px] font-bold text-amber-400 mb-0.5">🎬 వీడియో టైటిల్:</div>
+                  <p className="text-amber-50 font-bold select-all">{adminSocialPack.youtubeTitle}</p>
+                </div>
+                <div className="bg-amber-950/80 border border-amber-700/50 rounded-xl p-2.5">
+                  <div className="text-[11px] font-bold text-amber-400 mb-0.5">📝 వీడియో క్యాప్షన్ / డిస్క్రిప్షన్:</div>
+                  <pre className="text-amber-100 whitespace-pre-wrap font-telugu leading-relaxed select-all max-h-40 overflow-y-auto">
+                    {adminSocialPack.caption}
+                  </pre>
+                </div>
+                <div className="bg-amber-950/80 border border-amber-700/50 rounded-xl p-2.5">
+                  <div className="text-[11px] font-bold text-amber-400 mb-0.5">#️⃣ ట్రెండింగ్ Hashtags:</div>
+                  <p className="text-amber-300 font-mono text-[11px] leading-relaxed select-all">
+                    {adminSocialPack.hashtags}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isRecordingAdminVideo && (
+            <div className="bg-amber-950/90 border border-amber-500/60 rounded-2xl p-3.5 space-y-1.5">
+              <div className="flex items-center justify-between text-xs font-bold text-amber-200">
+                <span>{adminVideoStatus}</span>
+                <span>{adminVideoProgress}%</span>
+              </div>
+              <div className="w-full h-2.5 bg-amber-900 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-400 transition-all duration-150"
+                  style={{ width: `${adminVideoProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {!isRecordingAdminVideo && adminVideoResult && (
+            <div className="bg-emerald-950/90 border border-emerald-400/70 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="text-xs sm:text-sm font-bold text-emerald-200">
+                ✅ 60 సెకన్ల వీడియో సిద్ధమైంది: <span className="font-mono text-amber-200">{adminVideoResult.filename}</span>
+              </div>
+              <a
+                href={adminVideoResult.url}
+                download={adminVideoResult.filename}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shrink-0"
+              >
+                <Download size={14} />
+                <span>మళ్ళీ సేవ్ చేయండి</span>
+              </a>
+            </div>
+          )}
+        </div>
 
       {/* Feedback Toast */}
       {statusFeedback && (

@@ -32,12 +32,16 @@ import {
 } from './components/AuthorBioAndInternalLinks';
 import {
   CityTimingConfig,
+  SUPPORTED_CITY_CONFIGS,
   buildCleanJsonLdSchema,
   generatePageMetadata,
   getTodayIsoDateIST,
+  matchCityTimingSlugFromPath,
+  matchNakshatraSlugFromPath,
 } from './seo/panchangamSsrEngine';
 import { DailySubhashithamCard } from './components/DailySubhashithamCard';
 import { RashiPhalaluSeoEnrichment } from './components/RashiPhalaluSeoEnrichment';
+import { OfflineIndicator } from './components/OfflineIndicator';
 
 export type PanchangamSubTab = 'main' | 'gowri-hora' | 'tarabalam' | 'sankalpam';
 
@@ -77,6 +81,9 @@ const VedicAstrologyHub = lazyWithRetry(() =>
 );
 const JanmaKundaliGenerator = lazyWithRetry(() =>
   import('./components/JanmaKundaliGenerator').then((m) => ({ default: m.JanmaKundaliGenerator }))
+);
+const NakshatraSeoPage = lazyWithRetry(() =>
+  import('./components/NakshatraSeoPage').then((m) => ({ default: m.NakshatraSeoPage }))
 );
 const SampleJathakamPage = lazyWithRetry(() =>
   import('./components/SampleJathakamPage').then((m) => ({ default: m.SampleJathakamPage }))
@@ -133,6 +140,9 @@ const VedicArticleReader = lazyWithRetry(() =>
 );
 const VedicArticlesDirectory = lazyWithRetry(() =>
   import('./components/VedicArticlesDirectory').then((m) => ({ default: m.VedicArticlesDirectory }))
+);
+const VrataFestivalsCalendarView = lazyWithRetry(() =>
+  import('./components/VrataFestivalsCalendarView').then((m) => ({ default: m.VrataFestivalsCalendarView }))
 );
 
 const SectionLoader: React.FC<{ minHeight?: string }> = ({ minHeight = 'min-h-[280px]' }) => (
@@ -221,11 +231,12 @@ function resolveCalendarViewFromLocation(): boolean {
 
 function resolveCityTimingSlugFromLocation(): CityTimingConfig['slug'] | null {
   if (typeof window === 'undefined') return null;
-  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '');
-  const m = pathname.match(
-    /^\/(?:panchangam|panchangam\/city|neti-panchangam-in)[/-](hyderabad|vijayawada|visakhapatnam|usa)$/
-  );
-  return m ? (m[1] as CityTimingConfig['slug']) : null;
+  return matchCityTimingSlugFromPath(window.location.pathname);
+}
+
+function resolveNakshatraSlugFromLocation(): string | null {
+  if (typeof window === 'undefined') return null;
+  return matchNakshatraSlugFromPath(window.location.pathname);
 }
 
 export function resolveCityFromLocation(): CitySEOData | null {
@@ -290,6 +301,8 @@ export function resolveTabFromLocation(): NavTab {
     pathname === '/mee-jatakam' ||
     pathname.endsWith('/mee-jatakam') ||
     pathname === '/janma-kundali' ||
+    pathname === '/prashna-kundali' ||
+    pathname === '/ratna-rudraksha' ||
     hash === '#jathakam' ||
     hash === '#mee-jatakam'
   ) {
@@ -312,6 +325,7 @@ export function resolveTabFromLocation(): NavTab {
   }
   if (
     pathname === '/rashi-phalalu' ||
+    pathname.startsWith('/rashi-phalalu/') ||
     pathname === '/neti-rashi-phalalu' ||
     pathname === '/today-rashi-phalalu-in-telugu' ||
     pathname === '/ee-roju-rashi-phalalu' ||
@@ -341,6 +355,8 @@ export function resolveTabFromLocation(): NavTab {
     pathname === '/ugadi-rashi-phalalu' ||
     pathname === '/festivals' ||
     pathname === '/dosha-pariharalu' ||
+    pathname === '/kuja-dosha' ||
+    pathname === '/kaal-sarp-dosha' ||
     Boolean(resolveCityTimingSlugFromLocation()) ||
     hash === '#panchangam' ||
     hash === '#rashi-chakram' ||
@@ -383,7 +399,12 @@ export function resolveHubSectionFromLocation(): HubSectionId {
   if (pathname === '/ugadi-rashi-phalalu') return 'ugadi';
   if (pathname === '/shubha-muhurthalu' || pathname === '/festivals') return 'muhurtham';
   if (pathname === '/vastu-shastra-telugu') return 'vastu';
-  if (pathname === '/dosha-pariharalu') return 'dosha';
+  if (
+    pathname === '/dosha-pariharalu' ||
+    pathname === '/kuja-dosha' ||
+    pathname === '/kaal-sarp-dosha'
+  )
+    return 'dosha';
   if (pathname === '/dwadasa-rashi-rahasyalu') return 'rashiguide';
   if (pathname === '/astroinformatics-research' || pathname === '/research') return 'research';
   if (pathname === '/vedic-articles' || pathname === '/shastras') return 'shastras';
@@ -447,6 +468,10 @@ export function resolveVedicArticleSlugFromLocation(): string | null {
     pathname === '/doctor-yoga-in-kundali'
   )
     return 'fmge-medical-astrology-doctor-yoga-exam-success-guide';
+  if (pathname === '/ashtagrantha-parashara-nadi-jyotisha-rahasyalu')
+    return 'ashtagrantha-parashara-nadi-jyotisha-rahasyalu';
+  if (pathname === '/bhavartha-ratnakara-300-raja-yogalu-ayurveda-jyotisham')
+    return 'bhavartha-ratnakara-300-raja-yogalu-ayurveda-jyotisham';
   if (pathname === '/dwadasa-rashi-rahasyalu') return 'dwadasa-rashi-rahasyalu';
   if (pathname === '/neti-nakshatra-vyasam') return 'neti-nakshatra-vyasam';
   if (pathname === '/neti-jyothisha-visleshana') return 'neti-jyothisha-visleshana';
@@ -492,6 +517,25 @@ export function resolveSampleJathakamFromLocation(): boolean {
   return pathname === '/sample-jathakam' || pathname === '/sample-report' || hash === '#sample-jathakam';
 }
 
+export function resolveInitialRashiSlugFromLocation(): string | undefined {
+  if (typeof window === 'undefined') return undefined;
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+  const m = pathname.match(
+    /^\/(?:rashi-phalalu|gochara-phalalu)\/(mesham|vrushabham|mithunam|karkatakam|simham|kanya|tula|vruschikam|dhanussu|makaram|kumbham|meenam)$/
+  );
+  return m ? m[1] : undefined;
+}
+
+export function resolveFestivalsCalendarFromLocation(): boolean {
+  if (typeof window === 'undefined') return false;
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+  return (
+    pathname === '/festivals-calendar' ||
+    pathname === '/vrata-calendar' ||
+    pathname === '/ekadashi-calendar'
+  );
+}
+
 const LEGAL_DOC_PATHS: Record<LegalDocType, string> = {
   privacy: '/privacy-policy',
   terms: '/terms-and-conditions',
@@ -533,12 +577,42 @@ function AppContent() {
   const [activeCityTimingSlug, setActiveCityTimingSlug] = useState<CityTimingConfig['slug'] | null>(
     () => resolveCityTimingSlugFromLocation()
   );
+  const [activeNakshatraSlug, setActiveNakshatraSlug] = useState<string | null>(() =>
+    resolveNakshatraSlugFromLocation()
+  );
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
   const [selectedPoojaForBooking, setSelectedPoojaForBooking] = useState<PoojaService | null>(null);
-  const [jumpedRashiId, setJumpedRashiId] = useState<string | undefined>(undefined);
+  const [jumpedRashiId, setJumpedRashiId] = useState<string | undefined>(() =>
+    resolveInitialRashiSlugFromLocation()
+  );
+  const [isFestivalsCalendarView, setIsFestivalsCalendarView] = useState<boolean>(() =>
+    resolveFestivalsCalendarFromLocation()
+  );
   const { t, tr, language } = useLanguage();
 
   const currentDay = getOrGenerateDayData(selectedDayId, WEEK_DATA);
+
+  const handleSelectNakshatra = useCallback((slug: string) => {
+    setSelectedCity(null);
+    setActiveLegalDoc(null);
+    setIsAdminView(false);
+    setIsCalendarView(false);
+    setIsSampleJathakamView(false);
+    setIsFestivalsCalendarView(false);
+    setIsVedicDirectoryView(false);
+    setActiveArticleSlug(null);
+    setActiveCityTimingSlug(null);
+    setActiveNakshatraSlug(slug);
+    if (typeof window !== 'undefined') {
+      try {
+        const targetPath = `/nakshatra/${slug}`;
+        if (window.location.pathname !== targetPath) {
+          window.history.pushState({ nakshatraSlug: slug }, '', targetPath);
+        }
+      } catch {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
 
   const handleSelectVedicArticle = useCallback((slug: string) => {
     setSelectedCity(null);
@@ -547,6 +621,7 @@ function AppContent() {
     setIsCalendarView(false);
     setIsSampleJathakamView(false);
     setIsVedicDirectoryView(false);
+    setActiveNakshatraSlug(null);
     setActiveArticleSlug(slug);
     if (typeof window !== 'undefined') {
       try {
@@ -566,6 +641,7 @@ function AppContent() {
     setIsCalendarView(false);
     setIsSampleJathakamView(false);
     setActiveArticleSlug(null);
+    setActiveNakshatraSlug(null);
     setIsVedicDirectoryView(false);
     setActiveTab('vyasalu');
     if (typeof window !== 'undefined') {
@@ -584,6 +660,7 @@ function AppContent() {
     setIsAdminView(false);
     setIsCalendarView(false);
     setActiveArticleSlug(null);
+    setActiveNakshatraSlug(null);
     setIsVedicDirectoryView(false);
     setIsSampleJathakamView(true);
     if (typeof window !== 'undefined') {
@@ -601,6 +678,7 @@ function AppContent() {
     setActiveLegalDoc(null);
     setIsSampleJathakamView(false);
     setActiveArticleSlug(null);
+    setActiveNakshatraSlug(null);
     setIsVedicDirectoryView(false);
     setIsAdminView(true);
     if (typeof window !== 'undefined') {
@@ -619,9 +697,14 @@ function AppContent() {
     setIsAdminView(false);
     setIsCalendarView(false);
     setIsSampleJathakamView(false);
+    setIsFestivalsCalendarView(false);
     setActiveArticleSlug(null);
     setIsVedicDirectoryView(false);
     setActiveCityTimingSlug(null);
+    setActiveNakshatraSlug(null);
+    if (tab === 'rashiphalalu') {
+      setJumpedRashiId(undefined);
+    }
     setActiveTab(tab);
     if (tab === 'panchangam') {
       setPanchangamSubTab('main');
@@ -636,11 +719,56 @@ function AppContent() {
     }
   }, []);
 
+  const handleToggleFestivalsCalendarRoute = useCallback((show = true) => {
+    setSelectedCity(null);
+    setActiveLegalDoc(null);
+    setIsAdminView(false);
+    setIsCalendarView(false);
+    setIsSampleJathakamView(false);
+    setActiveArticleSlug(null);
+    setActiveNakshatraSlug(null);
+    setIsVedicDirectoryView(false);
+    setIsFestivalsCalendarView(show);
+    if (typeof window !== 'undefined') {
+      const targetPath = show ? '/festivals-calendar' : '/panchangam';
+      try {
+        if (window.location.pathname !== targetPath) {
+          window.history.pushState({ festivalsCalendar: show }, '', targetPath);
+        }
+      } catch {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+
+  const handleSelectRashiRoute = useCallback((rashiId: string) => {
+    const cleanId = rashiId === 'all' ? undefined : rashiId;
+    setSelectedCity(null);
+    setActiveLegalDoc(null);
+    setIsAdminView(false);
+    setIsCalendarView(false);
+    setIsFestivalsCalendarView(false);
+    setIsSampleJathakamView(false);
+    setActiveArticleSlug(null);
+    setActiveNakshatraSlug(null);
+    setIsVedicDirectoryView(false);
+    setActiveTab('rashiphalalu');
+    setJumpedRashiId(cleanId);
+    if (typeof window !== 'undefined') {
+      const targetPath = cleanId ? `/rashi-phalalu/${cleanId}` : '/rashi-phalalu';
+      try {
+        if (window.location.pathname !== targetPath) {
+          window.history.pushState({ tab: 'rashiphalalu', rashiId: cleanId }, '', targetPath);
+        }
+      } catch {}
+    }
+  }, []);
+
   const handleSelectIsoDateRoute = useCallback((isoDate: string) => {
     setSelectedCity(null);
     setActiveLegalDoc(null);
     setIsAdminView(false);
     setIsCalendarView(false);
+    setActiveNakshatraSlug(null);
     setActiveTab('panchangam');
     setPanchangamSubTab('main');
     setSelectedDayId(isoDate);
@@ -659,6 +787,7 @@ function AppContent() {
     setSelectedCity(null);
     setActiveLegalDoc(null);
     setIsAdminView(false);
+    setActiveNakshatraSlug(null);
     setActiveTab('panchangam');
     setPanchangamSubTab('main');
     setIsCalendarView(show);
@@ -678,6 +807,7 @@ function AppContent() {
     setActiveLegalDoc(null);
     setIsAdminView(false);
     setIsCalendarView(false);
+    setActiveNakshatraSlug(null);
     setActiveTab('panchangam');
     setPanchangamSubTab('main');
     setActiveCityTimingSlug(citySlug);
@@ -696,6 +826,7 @@ function AppContent() {
     setSelectedCity(null);
     setActiveLegalDoc(null);
     setIsCalendarView(false);
+    setActiveNakshatraSlug(null);
     setActiveTab('panchangam');
     setPanchangamSubTab(subTab);
     if (typeof window !== 'undefined') {
@@ -716,18 +847,48 @@ function AppContent() {
         handleToggleCalendarRoute(true);
         return;
       }
+      if (path === '/festivals-calendar') {
+        handleToggleFestivalsCalendarRoute(true);
+        return;
+      }
       if (path === '/sample-jathakam' || path === '/sample-report') {
         handleNavigateToSampleJathakam();
         return;
       }
-      if (section === 'kundali' || path === '/janma-kundali' || path === '/mee-jatakam') {
+      if (
+        section === 'kundali' ||
+        path === '/janma-kundali' ||
+        path === '/mee-jatakam' ||
+        path === '/prashna-kundali' ||
+        path === '/ratna-rudraksha'
+      ) {
         setIsSampleJathakamView(false);
+        setIsFestivalsCalendarView(false);
+        setActiveArticleSlug(null);
+        setActiveNakshatraSlug(null);
+        setIsVedicDirectoryView(false);
         setActiveTab('jathakam');
         if (typeof window !== 'undefined') {
           try {
             window.history.pushState({ tab: 'jathakam' }, '', path);
           } catch {}
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          setTimeout(() => {
+            if (path === '/prashna-kundali') {
+              const el = document.getElementById('prashna-kundali-tool');
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+              }
+            }
+            if (path === '/ratna-rudraksha') {
+              const el = document.getElementById('chapter-29');
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+              }
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 180);
         }
         return;
       }
@@ -745,6 +906,8 @@ function AppContent() {
         return;
       }
       setIsSampleJathakamView(false);
+      setIsFestivalsCalendarView(false);
+      setActiveNakshatraSlug(null);
       setActiveTab('panchangam');
       setIsCalendarView(false);
       if (path === '/gowri-panchangam') {
@@ -767,23 +930,25 @@ function AppContent() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     },
-    [handleToggleCalendarRoute, handleNavigateToSampleJathakam]
+    [
+      handleToggleCalendarRoute,
+      handleToggleFestivalsCalendarRoute,
+      handleNavigateToSampleJathakam,
+      handleNavigateVedicDirectory,
+    ]
   );
 
   const handleSelectCity = useCallback(
     (citySlug: string, routePath?: string) => {
       const norm = citySlug.toLowerCase();
-      if (
-        norm === 'hyderabad' ||
-        norm === 'vijayawada' ||
-        norm === 'visakhapatnam' ||
-        norm === 'usa'
-      ) {
-        handleSelectCityTimingRoute(norm);
+      if (norm in SUPPORTED_CITY_CONFIGS) {
+        setActiveNakshatraSlug(null);
+        handleSelectCityTimingRoute(norm as CityTimingConfig['slug']);
         return;
       }
       const city = findCityBySlug(citySlug);
       if (city) {
+        setActiveNakshatraSlug(null);
         setSelectedCity(city);
         setActiveLegalDoc(null);
         const targetPath = routePath || `/telugu-astrologer-in-${city.slug}`;
@@ -805,6 +970,7 @@ function AppContent() {
   const handleOpenLegal = useCallback((doc: LegalDocType) => {
     setSelectedCity(null);
     setIsAdminView(false);
+    setActiveNakshatraSlug(null);
     setActiveLegalDoc(doc);
     if (typeof window !== 'undefined') {
       try {
@@ -824,6 +990,11 @@ function AppContent() {
     setIsCalendarView(false);
 
     const rawPath = topic.targetPath.toLowerCase().replace(/\/+$/, '') || '/';
+    const nakMatch = matchNakshatraSlugFromPath(rawPath);
+    if (nakMatch) {
+      handleSelectNakshatra(nakMatch);
+      return;
+    }
     const articleSlugMatch = rawPath.startsWith('/') ? rawPath.slice(1) : rawPath;
     if (
       [
@@ -840,6 +1011,9 @@ function AppContent() {
         'pawan-kalyan-raja-yoga-horoscope-analysis',
         'cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide',
         'swapna-shastra-dream-meaning-medical-astrology-1944',
+        'fmge-medical-astrology-doctor-yoga-exam-success-guide',
+        'ashtagrantha-parashara-nadi-jyotisha-rahasyalu',
+        'bhavartha-ratnakara-300-raja-yogalu-ayurveda-jyotisham',
       ].includes(articleSlugMatch)
     ) {
       handleSelectVedicArticle(articleSlugMatch);
@@ -856,8 +1030,28 @@ function AppContent() {
       return;
     }
 
+    if (
+      rawPath === '/festivals-calendar' ||
+      rawPath === '/vrata-calendar' ||
+      rawPath === '/ekadashi-calendar'
+    ) {
+      handleToggleFestivalsCalendarRoute(true);
+      return;
+    }
+
+    const rashiRouteMatch = rawPath.match(
+      /^\/rashi-phalalu\/(mesham|vrushabham|mithunam|karkatakam|simham|kanya|tula|vruschikam|dhanussu|makaram|kumbham|meenam)$/
+    );
+    if (rashiRouteMatch) {
+      handleSelectRashiRoute(rashiRouteMatch[1]);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     setActiveArticleSlug(null);
+    setActiveNakshatraSlug(null);
     setIsVedicDirectoryView(false);
+    setIsFestivalsCalendarView(false);
     setActiveTab(topic.targetTab);
 
     if (topic.panchangamSubTab) {
@@ -896,7 +1090,7 @@ function AppContent() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 120);
     }
-  }, [handleNavigateVedicDirectory, handleSelectVedicArticle]);
+  }, [handleNavigateVedicDirectory, handleSelectNakshatra, handleSelectVedicArticle, handleToggleFestivalsCalendarRoute, handleSelectRashiRoute]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -908,6 +1102,10 @@ function AppContent() {
         if (matches.length > 0) {
           handleSelectSearchTopic(matches[0]);
         }
+      } else if (window.location.pathname.toLowerCase().replace(/\/+$/, '') === '/prashna-kundali') {
+        setTimeout(() => {
+          document.getElementById('prashna-kundali-tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 350);
       }
     } catch {}
   }, [handleSelectSearchTopic]);
@@ -920,8 +1118,11 @@ function AppContent() {
       setActiveLegalDoc(resolveLegalDocFromLocation());
       setIsAdminView(resolveAdminFromLocation());
       setIsSampleJathakamView(resolveSampleJathakamFromLocation());
+      setIsFestivalsCalendarView(resolveFestivalsCalendarFromLocation());
+      setJumpedRashiId(resolveInitialRashiSlugFromLocation());
       setIsCalendarView(resolveCalendarViewFromLocation());
       setActiveCityTimingSlug(resolveCityTimingSlugFromLocation());
+      setActiveNakshatraSlug(resolveNakshatraSlugFromLocation());
       setSelectedDayId(resolveInitialIsoDateFromLocation());
       setActiveArticleSlug(resolveVedicArticleSlugFromLocation());
       setIsVedicDirectoryView(resolveVedicDirectoryFromLocation());
@@ -994,7 +1195,10 @@ function AppContent() {
     selectedCity,
     selectedDayId,
     isCalendarView,
+    isFestivalsCalendarView,
+    jumpedRashiId,
     activeCityTimingSlug,
+    activeNakshatraSlug,
     activeLegalDoc,
   ]);
 
@@ -1074,6 +1278,18 @@ function AppContent() {
             />
           </Suspense>
         </main>
+      ) : activeNakshatraSlug ? (
+        <main className="flex-1 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full min-w-0 overflow-x-hidden">
+          <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
+            <NakshatraSeoPage
+              nakshatraSlug={activeNakshatraSlug}
+              onSelectNakshatra={handleSelectNakshatra}
+              onNavigateRashi={handleSelectRashiRoute}
+              onNavigateHubSection={handleNavigateHubSection}
+              onOpenBooking={() => handleOpenBooking()}
+            />
+          </Suspense>
+        </main>
       ) : activeTab === 'vyasalu' || isVedicDirectoryView ? (
         <main className="flex-1 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full min-w-0 overflow-x-hidden">
           <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
@@ -1101,6 +1317,23 @@ function AppContent() {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
               }}
+            />
+          </Suspense>
+        </main>
+      ) : isFestivalsCalendarView ? (
+        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
+          <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
+            <VrataFestivalsCalendarView
+              onSelectDateForPanchangam={(isoDate) => {
+                setIsFestivalsCalendarView(false);
+                handleSelectIsoDateRoute(isoDate);
+              }}
+              onNavigateSankalpam={() => {
+                setIsFestivalsCalendarView(false);
+                handleSelectPanchangamSubTab('sankalpam');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onOpenBooking={(service) => handleOpenBooking(service)}
             />
           </Suspense>
         </main>
@@ -1201,8 +1434,8 @@ function AppContent() {
                   </h1>
                   <p className="text-xs sm:text-base text-amber-200/90 leading-relaxed">
                     {t(
-                      'మీ పుట్టిన తేదీ, సమయం, ప్రాంతం ఆధారంగా దృక్సిద్ధాంత రాశి చక్రం (D1), నవాంశ చక్రం (D9), సూర్య-చంద్ర ఆత్మ-మనస్సు విశ్లేషణ, పంచభూత గ్రహ బలం, 1 నుండి 12 స్థానాల సంపూర్ణ ఫలితాలు, భృగు చక్ర పద్ధతి 96 ఏళ్ల కాలచక్ర గమనం, వింశోత్తరి మహాదశ మరియు అదృష్ట రత్న/రుద్రాక్ష పరిహారాలు.',
-                      'Enter your birth details below to generate your D1 Rashi Chart, D9 Navamsha, 8-Section Brihat Jataka Horoscope Report, all 12 House predictions, Bhrigu Chakra Paddhati 96-year life progression, and Vedic remedies.'
+                      'మీ పుట్టిన తేదీ, సమయం, ప్రాంతం ఆధారంగా 37 అధ్యాయాల దృక్సిద్ధాంత దక్షిణ/ఉత్తర/తూర్పు భారత చక్రాలు, షోడశవర్గ D1–D60, సుదర్శన చక్రం, ప్రత్యంతర దశ & డబుల్ ట్రాన్సిట్, తాజిక వర్షఫల్, అష్టోత్తరి-యోగిని దశలు, BTR సమయ శుద్ధి & లైవ్ ఖగోళ గ్రహ రాడార్.',
+                      'Generate your 37-Chapter Horoscope with South/North/East Charts, D1–D60 Shodashavarga, Sudarshana Chakra, Pratyantardasha & Double Transit, Tajika Varshaphal, Ashtottari & Yogini Dashas, Birth Time Rectification & Live Sky Radar.'
                     )}
                   </p>
                 </div>
@@ -1493,7 +1726,7 @@ function AppContent() {
           {/* TAB 2B: DEDICATED DAILY RASHI PHALALU PAGE (/rashi-phalalu, /gochara-phalalu, /yelinati-shani) */}
           {activeTab === 'rashiphalalu' && (
             <div className="space-y-8 min-w-0">
-              {/* Standalone SEO Hero Header for /rashi-phalalu */}
+              {/* Standalone SEO Hero Header for /rashi-phalalu & /rashi-phalalu/:slug */}
               <div className="bg-gradient-to-r from-[#2c0902] via-amber-950 to-[#2c0902] text-white rounded-3xl p-5 sm:p-8 border-2 border-amber-500/90 shadow-xl">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
                   <div className="space-y-2.5 max-w-3xl min-w-0">
@@ -1502,7 +1735,7 @@ function AppContent() {
                         {t('నేటి రాశి ఫలాలు • Today Rashi Phalalu in Telugu', 'Today Rashi Phalalu in Telugu')}
                       </span>
                       <span className="text-xs font-mono text-amber-300 bg-amber-900/70 px-3 py-1 rounded-full border border-amber-500/40">
-                        /rashi-phalalu
+                        {jumpedRashiId ? `/rashi-phalalu/${jumpedRashiId}` : '/rashi-phalalu'}
                       </span>
                     </div>
                     <h1 className="text-2xl sm:text-4xl font-extrabold text-amber-100 leading-tight break-words">
@@ -1512,28 +1745,27 @@ function AppContent() {
                     </h1>
                     <p className="text-xs sm:text-base text-amber-200/90 leading-relaxed break-words">
                       {t(
-                        'చంద్రుని నక్షత్ర సంచారం, తారాబలం, చంద్రబలం మరియు నవగ్రహ గోచార దృష్టి ఆధారంగా మేషం నుండి మీనం వరకు 12 రాశుల వారి నేటి దిన ఫలాలు, ఉద్యోగ-వ్యాపార-కుటుంబ ఫలితాలు మరియు ఆచరించవలసిన వైదిక పరిహారాలు.',
-                        'Authentic Drik-Siddhanta daily horoscope predictions for all 12 zodiac signs (Mesha to Meena) based on today’s lunar transit, Tarabalam, Chandrabalam, and planetary aspects.'
+                        'చంద్రుని నక్షత్ర సంచారం, తారాబలం, చంద్రబలం మరియు నవగ్రహ గోచార దృష్టి ఆధారంగా మేషం నుండి మీనం వరకు 12 రాశుల నేటి, రేపటి, వార & మాస ఫలాలు మరియు ఆచరించవలసిన వైదిక పరిహారాలు.',
+                        'Authentic Drik-Siddhanta Today, Tomorrow, Weekly & Monthly horoscope predictions for all 12 zodiac signs (Mesha to Meena) with per-star Tarabalam.'
                       )}
                     </p>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2.5 shrink-0">
                     <a
-                      href="/panchangam"
+                      href="/festivals-calendar"
                       onClick={(e) => {
                         e.preventDefault();
-                        handleSelectTab('panchangam');
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        handleToggleFestivalsCalendarRoute(true);
                       }}
-                      className="px-4 py-2.5 rounded-2xl bg-amber-900/90 hover:bg-amber-800 text-amber-100 border border-amber-400/60 font-bold text-xs sm:text-sm transition-all cursor-pointer"
+                      className="px-4 py-2.5 rounded-2xl bg-amber-900/90 hover:bg-amber-800 text-amber-100 border border-amber-400/60 font-bold text-xs sm:text-sm whitespace-nowrap transition-all cursor-pointer"
                     >
-                      {t('← నేటి పంచాంగం చూడండి', '← View Today Panchangam')}
+                      {t('📅 12 నెలల వ్రతాలు & పండుగలు', '📅 12-Month Vrata Calendar')}
                     </a>
                     <button
                       type="button"
                       onClick={() => handleOpenBooking()}
-                      className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-amber-950 font-extrabold text-xs sm:text-sm shadow-md cursor-pointer transition-all"
+                      className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-amber-950 font-extrabold text-xs sm:text-sm shadow-md whitespace-nowrap cursor-pointer transition-all"
                     >
                       {t('వ్యక్తిగత జాతక సంప్రదింపు', 'Personal Horoscope Consultation')}
                     </button>
@@ -1552,14 +1784,18 @@ function AppContent() {
               <DayVisheshamCard day={currentDay} />
 
               {/* Complete 12-Rashi Daily Horoscope (Mesha to Meena) */}
-              <DailyHoroscope day={currentDay} externalSelectedRashiId={jumpedRashiId} />
+              <DailyHoroscope
+                day={currentDay}
+                externalSelectedRashiId={jumpedRashiId}
+                onSelectRashiRoute={handleSelectRashiRoute}
+              />
 
               {/* SEO Enrichment: Live Chandrabalam/Chandrashtamam Dashboard, Instant Name/Nakshatra Rashi Finder, 12-Rashi Quick Table & FAQs */}
               <Suspense fallback={<SectionLoader minHeight="min-h-[420px]" />}>
                 <RashiPhalaluSeoEnrichment
                   day={currentDay}
                   onJumpToRashi={(rashiId) => {
-                    setJumpedRashiId(rashiId);
+                    handleSelectRashiRoute(rashiId);
                     const el = document.getElementById('dina-phalam');
                     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }}
@@ -1636,6 +1872,7 @@ function AppContent() {
 
       <div className="no-print">
         <FloatingWhatsApp />
+        <OfflineIndicator />
       </div>
 
       {isBookingOpen && (

@@ -42,6 +42,7 @@ import {
 import { auth, db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { DailyAbhishekamVideoLive } from './DailyAbhishekamVideoLive';
+import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
 
 interface FamilyMemberEntry {
   name: string;
@@ -74,6 +75,7 @@ const SANKALPA_PURPOSES = [
 
 export const KartikaAbhishekamPage: React.FC = () => {
   const { t, language } = useLanguage();
+  const { isGuruAdmin } = useIsGuruAdmin();
 
   // Form State
   const [primaryName, setPrimaryName] = useState('');
@@ -640,14 +642,16 @@ export const KartikaAbhishekamPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={handleCopyUpi}
-                      className="px-3.5 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-all shrink-0 cursor-pointer shadow"
-                    >
-                      <Copy size={13} />
-                      {copiedUpi ? 'కాపీ అయింది! (7013079166@kotakbank)' : 'UPI ID కాపీ చేయండి'}
-                    </button>
+                    {isGuruAdmin && (
+                      <button
+                        type="button"
+                        onClick={handleCopyUpi}
+                        className="px-3.5 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-all shrink-0 cursor-pointer shadow"
+                      >
+                        <Copy size={13} />
+                        {copiedUpi ? 'కాపీ అయింది! (7013079166@kotakbank)' : '🔒 UPI ID కాపీ చేయండి'}
+                      </button>
+                    )}
                   </div>
 
                   {/* QR Code and 1-Tap Pay Action */}
@@ -729,13 +733,15 @@ export const KartikaAbhishekamPage: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between bg-amber-950/60 p-2 rounded-lg">
                   <span className="text-amber-200 font-mono text-[11px]">{UPI_ID}</span>
-                  <button
-                    type="button"
-                    onClick={handleCopyUpi}
-                    className="text-[10px] text-amber-400 hover:underline font-bold"
-                  >
-                    {copiedUpi ? 'కాపీ అయింది!' : 'కాపీ'}
-                  </button>
+                  {isGuruAdmin && (
+                    <button
+                      type="button"
+                      onClick={handleCopyUpi}
+                      className="text-[10px] text-amber-400 hover:underline font-bold"
+                    >
+                      {copiedUpi ? 'కాపీ అయింది!' : '🔒 కాపీ'}
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -851,14 +857,16 @@ export const KartikaAbhishekamPage: React.FC = () => {
                 <Share2 size={16} />
                 WhatsApp లో షేర్ చేయండి ➔
               </a>
-              <button
-                type="button"
-                onClick={handleCopyPromoText}
-                className="w-full sm:w-auto px-4 py-3 rounded-xl bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 border border-emerald-400/40 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shrink-0"
-              >
-                <Copy size={14} />
-                {copiedPromo ? 'కాపీ అయింది!' : 'యాడ్ స్క్రిప్ట్ కాపీ'}
-              </button>
+              {isGuruAdmin && (
+                <button
+                  type="button"
+                  onClick={handleCopyPromoText}
+                  className="w-full sm:w-auto px-4 py-3 rounded-xl bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 border border-emerald-400/40 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                >
+                  <Copy size={14} />
+                  {copiedPromo ? 'కాపీ అయింది!' : '🔒 యాడ్ స్క్రిప్ట్ కాపీ'}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -1144,23 +1152,25 @@ export const KartikaAbhishekamPage: React.FC = () => {
                           <BookOpen size={12} />
                           నిత్య జప మంత్రం:
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => handleCopyMantra(rashi.rashiId, rashi.specialMantraTe)}
-                          className="text-[10.5px] text-amber-300 hover:text-white flex items-center gap-1 cursor-pointer bg-amber-900/50 px-2 py-0.5 rounded border border-amber-500/30 transition-colors"
-                        >
-                          {isMantraCopied ? (
-                            <>
-                              <Check size={11} className="text-emerald-400" />
-                              <span className="text-emerald-300 font-bold">కాపీ అయింది</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy size={11} />
-                              <span>మంత్రం కాపీ</span>
-                            </>
-                          )}
-                        </button>
+                        {isGuruAdmin && (
+                          <button
+                            type="button"
+                            onClick={() => handleCopyMantra(rashi.rashiId, rashi.specialMantraTe)}
+                            className="text-[10.5px] text-amber-300 hover:text-white flex items-center gap-1 cursor-pointer bg-amber-900/50 px-2 py-0.5 rounded border border-amber-500/30 transition-colors"
+                          >
+                            {isMantraCopied ? (
+                              <>
+                                <Check size={11} className="text-emerald-400" />
+                                <span className="text-emerald-300 font-bold">కాపీ అయింది</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy size={11} />
+                                <span>🔒 మంత్రం కాపీ</span>
+                              </>
+                            )}
+                          </button>
+                        )}
                       </div>
                       <p className="font-serif italic text-[11.5px] text-amber-200 leading-relaxed">
                         {rashi.specialMantraTe}
@@ -1283,23 +1293,25 @@ export const KartikaAbhishekamPage: React.FC = () => {
                       <span className="text-[11px] font-bold uppercase tracking-wide text-amber-300 block">
                         🕉️ నిత్య జపం కొరకు ప్రత్యేక శివ మంత్రం:
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => handleCopyMantra(selectedRashi.rashiId, selectedRashi.specialMantraTe)}
-                        className="text-[11px] text-amber-300 hover:text-white flex items-center gap-1 cursor-pointer bg-amber-900/50 px-2 py-0.5 rounded border border-amber-500/30"
-                      >
-                        {copiedMantraId === selectedRashi.rashiId ? (
-                          <>
-                            <Check size={12} className="text-emerald-400" />
-                            <span className="text-emerald-300 font-bold">కాపీ అయింది</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy size={12} />
-                            <span>మంత్రం కాపీ</span>
-                          </>
-                        )}
-                      </button>
+                      {isGuruAdmin && (
+                        <button
+                          type="button"
+                          onClick={() => handleCopyMantra(selectedRashi.rashiId, selectedRashi.specialMantraTe)}
+                          className="text-[11px] text-amber-300 hover:text-white flex items-center gap-1 cursor-pointer bg-amber-900/50 px-2 py-0.5 rounded border border-amber-500/30"
+                        >
+                          {copiedMantraId === selectedRashi.rashiId ? (
+                            <>
+                              <Check size={12} className="text-emerald-400" />
+                              <span className="text-emerald-300 font-bold">కాపీ అయింది</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={12} />
+                              <span>🔒 మంత్రం కాపీ</span>
+                            </>
+                          )}
+                        </button>
+                      )}
                     </div>
                     <p className="font-serif italic text-xs sm:text-sm text-amber-200 leading-relaxed">
                       {selectedRashi.specialMantraTe}

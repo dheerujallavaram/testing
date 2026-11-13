@@ -23,6 +23,7 @@ import {
 import { VEDIC_CLASSICAL_ARTICLES, VedicClassicalArticle } from '../data/vedicArticlesData';
 import { useLanguage } from '../context/LanguageContext';
 import { DayData } from '../types/panchangam';
+import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
 
 export type ArticlesCategoryTab =
   | 'all'
@@ -88,7 +89,7 @@ export const SPECIAL_STANDALONE_ARTICLE_CARDS: DirectoryCardItem[] = [
   {
     slug: 'neti-nakshatra-vyasam',
     heroImage: '/assets/articles/surya_siddhanta_kala_1794331370298.jpg',
-    imageAltTe: 'నేటి నక్షత్ర ప్రత్యేక వ్యాసం – కృష్ణ రావు & యవనాచార్య నక్షత్ర చూడామణి విశ్లేషణ',
+    imageAltTe: 'నేటి నక్షత్ర ప్రత్యేక వ్యాసం – నక్షత్ర చూడామణి & యవనాచార్య మత విశ్లేషణ',
     imageAltEn: 'Today Nakshatra Special Article – Classical Star & Pada Analysis',
     categoryTe: 'నేటి నక్షత్ర ప్రత్యేక వ్యాసం',
     categoryEn: 'Daily Star Special Article',
@@ -188,17 +189,17 @@ function mapClassicalArticleToCard(article: VedicClassicalArticle): DirectoryCar
     keywordsEn: article.english.secondaryKeywords,
     sectionCount: article.telugu.sections.length,
     archivalBadge: article.archivalSource
-      ? `${article.archivalSource.year} BV Raman Archive`
+      ? 'ఆర్ష గ్రంథ సంకలనం'
       : undefined,
     archivalPublication: article.archivalSource?.publication,
     archivalYear: article.archivalSource?.year,
-    archivalEditor: article.archivalSource?.editor,
-    archivalAuthorsTe: article.archivalSource?.originalArticles
-      .map((a) => a.authorTe)
-      .join(', '),
-    archivalAuthorsEn: article.archivalSource?.originalArticles
-      .map((a) => a.author)
-      .join(', '),
+    archivalEditor: undefined,
+    archivalAuthorsTe: article.archivalSource
+      ? 'బృహత్ పరాశర హోరా శాస్త్రం, జైమిని సూత్రాలు, బృహజ్జాతకం, ఉత్తర కాలామృతం & ప్రశ్నమార్గ'
+      : undefined,
+    archivalAuthorsEn: article.archivalSource
+      ? 'Brihat Parashara Hora Shastra, Jaimini Sutras, Brihat Jataka, Uttara Kalamrita & Prasna Marga'
+      : undefined,
     filterGroup: groups,
   };
 }
@@ -208,6 +209,7 @@ export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
   initialCategory = 'all',
 }) => {
   const { language, t } = useLanguage();
+  const { isGuruAdmin } = useIsGuruAdmin();
   const isTe = language !== 'en';
   const [selectedCategory, setSelectedCategory] = useState<ArticlesCategoryTab>(initialCategory);
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
@@ -256,10 +258,10 @@ export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
     },
     {
       id: 'archive1959',
-      labelTe: '1944 & 1959 డా. బి. వి. రామన్ ఆర్కైవ్',
-      labelEn: '1944 & 1959 Dr. B.V. Raman Archive',
-      badgeTe: '8 చారిత్రక వ్యాసాలు',
-      badgeEn: '8 Archival Classics',
+      labelTe: 'ఆర్ష గ్రంథ & నాడీ సంకలనం',
+      labelEn: 'Classical Maharshi & Grantha Archive',
+      badgeTe: '8 ప్రామాణిక గ్రంథ వ్యాసాలు',
+      badgeEn: '8 Classical Classics',
       icon: Library,
     },
     {
@@ -508,24 +510,26 @@ export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
                       <span>/{card.slug}</span>
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
-                      <button
-                        type="button"
-                        onClick={(e) => handleCopyCardLink(e, card.slug)}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-900 hover:bg-amber-800 text-amber-100 text-[10px] font-bold cursor-pointer transition-colors"
-                        title={t('ఈ వ్యాసం లింక్ కాపీ చేయండి', 'Copy this article URL')}
-                      >
-                        {isCopied ? (
-                          <>
-                            <CheckCircle2 size={11} className="text-emerald-300" />
-                            <span>{t('కాపీ అయింది', 'Copied')}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy size={11} />
-                            <span>{t('లింక్ కాపీ', 'Copy URL')}</span>
-                          </>
-                        )}
-                      </button>
+                      {isGuruAdmin && (
+                        <button
+                          type="button"
+                          onClick={(e) => handleCopyCardLink(e, card.slug)}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-900 hover:bg-amber-800 text-amber-100 text-[10px] font-bold cursor-pointer transition-colors"
+                          title={t('ఈ వ్యాసం లింక్ కాపీ చేయండి', 'Copy this article URL')}
+                        >
+                          {isCopied ? (
+                            <>
+                              <CheckCircle2 size={11} className="text-emerald-300" />
+                              <span>{t('కాపీ అయింది', 'Copied')}</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={11} />
+                              <span>{t('🔒 లింక్ కాపీ', '🔒 Copy URL')}</span>
+                            </>
+                          )}
+                        </button>
+                      )}
                       <a
                         href={`/${card.slug}`}
                         target="_blank"
@@ -539,15 +543,13 @@ export const VedicArticlesDirectory: React.FC<VedicArticlesDirectoryProps> = ({
                     </div>
                   </div>
 
-                  {/* Archival Author Credit Pill if applicable */}
-                  {card.archivalPublication && (
+                  {/* Classical Grantha Source Pill if applicable */}
+                  {card.archivalAuthorsTe && (
                     <div className="bg-amber-50/70 rounded-2xl p-3 border border-amber-200/80 text-[11px] text-amber-950 space-y-0.5">
                       <p className="font-extrabold text-amber-900">
-                        📚 {t('మూల ఆధారం:', 'Source:')} {card.archivalPublication} (
-                        {card.archivalYear})
+                        📚 {t('మూల గ్రంథ ప్రమాణం:', 'Classical Grantha Source:')}
                       </p>
                       <p className="text-gray-700">
-                        {t('సంపాదకులు:', 'Editor:')} {card.archivalEditor} •{' '}
                         {isTe ? card.archivalAuthorsTe : card.archivalAuthorsEn}
                       </p>
                     </div>

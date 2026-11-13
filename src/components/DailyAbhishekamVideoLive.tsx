@@ -21,6 +21,7 @@ import {
   Film,
 } from 'lucide-react';
 import { OmEmblem } from './OmEmblem';
+import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
 
 export interface DevoteeGotraEntry {
   id: string;
@@ -100,6 +101,7 @@ interface DailyAbhishekamVideoLiveProps {
 export const DailyAbhishekamVideoLive: React.FC<DailyAbhishekamVideoLiveProps> = ({
   onScrollToRegister,
 }) => {
+  const { isGuruAdmin } = useIsGuruAdmin();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isMuted, setIsMuted] = useState<boolean>(true);
@@ -382,17 +384,19 @@ ${SAMPLE_DEVOTEE_GOTRANAMALU.map(
                 <span>{isMuted ? 'శబ్దం ఆన్' : 'మ్యూట్'}</span>
               </button>
 
-              <a
-                href={VIDEO_WITH_SCROLLTEXT}
-                download="Sri-Siva-Rudrabhishekam.mp4"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs sm:text-sm shadow-md border border-amber-200 transition-all transform hover:scale-105 cursor-pointer"
-                title="సంపూర్ణ పూజా వీడియో డౌన్‌లోడ్ (MP4)"
-              >
-                <Download size={15} />
-                <span>పూజా వీడియో డౌన్‌లోడ్ (MP4)</span>
-              </a>
+              {isGuruAdmin && (
+                <a
+                  href={VIDEO_WITH_SCROLLTEXT}
+                  download="Sri-Siva-Rudrabhishekam.mp4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs sm:text-sm shadow-md border border-amber-200 transition-all transform hover:scale-105 cursor-pointer"
+                  title="సంపూర్ణ పూజా వీడియో డౌన్‌లోడ్ (MP4)"
+                >
+                  <Download size={15} />
+                  <span>🔒 పూజా వీడియో డౌన్‌లోడ్ (MP4)</span>
+                </a>
+              )}
             </div>
 
             <div className="flex items-center gap-2">

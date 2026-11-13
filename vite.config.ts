@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
 import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 import { buildRouteHtmlFromTemplate } from './scripts/prerender-ssg';
 import { generateRobotsTxt, generateSitemapXML } from './scripts/generate-sitemap';
 
@@ -19,6 +20,87 @@ export default defineConfig(() => {
     plugins: [
       react(),
       tailwindcss(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: [
+          'favicon.ico',
+          'apple-touch-icon.png',
+          'ganapathi-favicon.svg',
+          'favicon-192x192.png',
+          'favicon-512x512.png',
+          'pwa-maskable-512x512.png',
+        ],
+        manifest: {
+          id: '/',
+          name: 'Telugu Jyothisham (తెలుగు జ్యోతిషం) — పంచాంగం & జన్మ కుండలి',
+          short_name: 'Jyothisham',
+          description:
+            'తెలుగు జ్యోతిషం (Telugu Jyothisham) — నిత్య తెలుగు పంచాంగం, తిథి, నక్షత్రం, రాహుకాలం, 12 రాశుల దిన ఫలాలు మరియు ఉచిత 37-అధ్యాయాల జన్మ కుండలి.',
+          theme_color: '#451a03',
+          background_color: '#451a03',
+          display: 'standalone',
+          start_url: '/',
+          scope: '/',
+          icons: [
+            {
+              src: '/favicon-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: '/favicon-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: '/pwa-maskable-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable',
+            },
+          ],
+        },
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+          maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'google-fonts-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 365,
+                },
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+            {
+              urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'gstatic-fonts-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 365,
+                },
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+          ],
+        },
+        devOptions: {
+          enabled: true,
+          type: 'module',
+        },
+      }),
       {
         name: 'telugu-jyothisham-ssr-seo-middleware',
         configureServer(server) {
@@ -127,7 +209,27 @@ export default defineConfig(() => {
             if (id.includes('node_modules/lucide-react')) {
               return 'vendor-icons';
             }
-            if (id.includes('/src/data/nakshatraPhalaData') || id.includes('/src/data/vedicHubData')) {
+            if (
+              id.includes('node_modules/jspdf') ||
+              id.includes('node_modules/html-to-image') ||
+              id.includes('node_modules/html2canvas')
+            ) {
+              return 'vendor-pdf';
+            }
+            if (id.includes('node_modules/astronomy-engine')) {
+              return 'vendor-astronomy';
+            }
+            if (id.includes('node_modules/firebase') || id.includes('node_modules/@firebase')) {
+              return 'vendor-firebase';
+            }
+            if (id.includes('/src/data/vedicArticlesData')) {
+              return 'data-articles';
+            }
+            if (
+              id.includes('/src/data/nakshatraPhalaData') ||
+              id.includes('/src/data/vedicHubData') ||
+              id.includes('/src/data/nakshatraSeoProfiles')
+            ) {
               return 'data-treatise';
             }
           },

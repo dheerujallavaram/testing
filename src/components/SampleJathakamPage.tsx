@@ -16,6 +16,7 @@ import { computeAccurateJanmaKundali } from '../utils/astronomyPanchangam';
 import {
   buildComprehensiveJathakaPdfHtml,
 } from '../utils/jathakamReportPdfGenerator';
+import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
 import {
   computePlanetaryDignities,
   checkNeechaBhangaRajaYoga,
@@ -38,6 +39,7 @@ export const SampleJathakamPage: React.FC<SampleJathakamPageProps> = ({
   onOpenBooking,
 }) => {
   const [activeTab, setActiveTab] = useState<'preview' | 'faq'>('preview');
+  const { isGuruAdmin } = useIsGuruAdmin();
 
   // Sample Profile Data: Srinivasa Rao, 1994-08-15 09:30, Hyderabad
   const sampleName = 'శ్రీనివాస రావు (నమూనా జాతకం / Sample Profile)';
@@ -215,13 +217,15 @@ export const SampleJathakamPage: React.FC<SampleJathakamPageProps> = ({
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={handlePrintPdf}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-400 text-amber-950 font-bold hover:bg-amber-300 shadow-md transition-all cursor-pointer text-sm"
-            >
-              <Printer size={16} />
-              🖨️ జాతకం PDF డౌన్‌లోడ్ / ప్రింట్ (A4 PDF Download)
-            </button>
+            {isGuruAdmin && (
+              <button
+                onClick={handlePrintPdf}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-400 text-amber-950 font-bold hover:bg-amber-300 shadow-md transition-all cursor-pointer text-sm"
+              >
+                <Printer size={16} />
+                🔒 అడ్మిన్: నమూనా జాతకం PDF డౌన్‌లోడ్ / ప్రింట్
+              </button>
+            )}
             {onNavigateToJathakam && (
               <button
                 onClick={onNavigateToJathakam}

@@ -9,8 +9,17 @@ import {
   ChevronRight,
   Shuffle,
   Image as ImageIcon,
+  Film,
+  Loader2,
+  Hash,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
+import {
+  DailyReelResult,
+  generateDailySubhashithamReelVideo,
+  generateSubhashithamSocialPack,
+} from '../utils/dailyPanchangamVideoRecorder';
 
 export interface SubhashithamItem {
   id: number;
@@ -320,6 +329,7 @@ export interface DailySubhashithamCardProps {
 
 export const DailySubhashithamCard: React.FC<DailySubhashithamCardProps> = ({ isoDate }) => {
   const { t } = useLanguage();
+  const { isGuruAdmin } = useIsGuruAdmin();
 
   const initialIndex = useMemo(() => {
     const str = isoDate || new Date().toISOString().slice(0, 10);
@@ -334,8 +344,46 @@ export const DailySubhashithamCard: React.FC<DailySubhashithamCardProps> = ({ is
   const [cardLangMode, setCardLangMode] = useState<'te' | 'en' | 'both'>('both');
   const [copied, setCopied] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  const [isRecordingVideo, setIsRecordingVideo] = useState<boolean>(false);
+  const [videoProgress, setVideoProgress] = useState<number>(0);
+  const [videoStatus, setVideoStatus] = useState<string>('');
+  const [videoResult, setVideoResult] = useState<DailyReelResult | null>(null);
+  const [showSocialPack, setShowSocialPack] = useState<boolean>(false);
+  const [copiedSocialField, setCopiedSocialField] = useState<string>('');
 
   const item = DAILY_SUBHASHITHALU[currentIndex] || DAILY_SUBHASHITHALU[0];
+
+  const socialPack = useMemo(
+    () => generateSubhashithamSocialPack(item, cardLangMode === 'en' ? 'en' : 'te'),
+    [item, cardLangMode]
+  );
+
+  const handleCopySocialField = async (fieldKey: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedSocialField(fieldKey);
+      setTimeout(() => setCopiedSocialField(''), 2500);
+    } catch {}
+  };
+
+  const handleDownloadSubhashithamVideo = async (mode: 'te' | 'en' | 'both' = cardLangMode) => {
+    if (isRecordingVideo) return;
+    setIsRecordingVideo(true);
+    setVideoProgress(0);
+    setVideoResult(null);
+    setVideoStatus('30 సెకన్ల సుభాషితం & జీవన సందేశం 9:16 వీడియో సిద్ధమవుతోంది...');
+    try {
+      const res = await generateDailySubhashithamReelVideo(item, mode, (pct, label) => {
+        setVideoProgress(pct);
+        setVideoStatus(label);
+      });
+      setVideoResult(res);
+    } catch (e) {
+      console.error('Failed to record subhashitham video:', e);
+    } finally {
+      setIsRecordingVideo(false);
+    }
+  };
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev - 1 + DAILY_SUBHASHITHALU.length) % DAILY_SUBHASHITHALU.length);
@@ -373,17 +421,29 @@ export const DailySubhashithamCard: React.FC<DailySubhashithamCardProps> = ({ is
     window.open(`https://wa.me/?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
-  // Helper to draw a single centered line guaranteed across all browsers
+  // Helper to draw a single centered line guaranteed across all browsers without overflowing borders
   const drawCenteredLine = (
     ctx: CanvasRenderingContext2D,
     text: string,
     centerX: number,
-    y: number
+    y: number,
+    maxWidth = 940
   ) => {
     ctx.save();
     ctx.textAlign = 'left';
     ctx.direction = 'ltr';
-    const textWidth = ctx.measureText(text).width;
+    let textWidth = ctx.measureText(text).width;
+    if (textWidth > maxWidth) {
+      const m = ctx.font.match(/(\d+(?:\.\d+)?)px/);
+      if (m) {
+        let px = parseFloat(m[1]);
+        while (px > 14 && textWidth > maxWidth) {
+          px -= 1;
+          ctx.font = ctx.font.replace(/(\d+(?:\.\d+)?)px/, `${px}px`);
+          textWidth = ctx.measureText(text).width;
+        }
+      }
+    }
     const x = Math.round(centerX - textWidth / 2);
     ctx.fillText(text, x, y);
     ctx.restore();
@@ -914,39 +974,79 @@ export const DailySubhashithamCard: React.FC<DailySubhashithamCardProps> = ({ is
         </div>
       </div>
 
-      {/* Download HD Image (Telugu / English / Both) + Share Bar */}
+      {/* Download 30s Reel Video & HD Image (Admin / Studio Only) + Share Bar */}
       <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-3 pt-1">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            type="button"
-            disabled={isDownloading}
-            onClick={() => handleDownloadQuoteImage('te')}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-amber-950 font-extrabold text-xs sm:text-sm shadow-md inline-flex items-center justify-center gap-2 cursor-pointer transition-all"
-          >
-            <Download size={16} />
-            <span>తెలుగు కోట్ ఇమేజ్ డౌన్‌లోడ్ (PNG)</span>
-          </button>
+        {isGuruAdmin ? (
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              type="button"
+              disabled={isRecordingVideo}
+              onClick={() => handleDownloadSubhashithamVideo(cardLangMode)}
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 via-amber-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 disabled:opacity-65 text-white border-2 border-amber-200 font-extrabold text-xs sm:text-sm shadow-lg inline-flex items-center justify-center gap-2 cursor-pointer transition-all"
+            >
+              {isRecordingVideo ? (
+                <Loader2 size={16} className="animate-spin text-amber-200" />
+              ) : (
+                <Film size={16} className="text-amber-100" />
+              )}
+              <span>
+                {isRecordingVideo
+                  ? `రికార్డింగ్ ${videoProgress}%...`
+                  : '🎬 అడ్మిన్: 30s సుభాషితం వీడియో డౌన్‌లోడ్ (9:16)'}
+              </span>
+            </button>
 
-          <button
-            type="button"
-            disabled={isDownloading}
-            onClick={() => handleDownloadQuoteImage('en')}
-            className="px-4 py-2.5 rounded-xl bg-amber-900/80 hover:bg-amber-800 text-amber-100 border border-amber-400/70 font-extrabold text-xs sm:text-sm inline-flex items-center justify-center gap-2 cursor-pointer transition-all"
-          >
-            <ImageIcon size={15} />
-            <span>Download English Quote (PNG)</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setShowSocialPack((prev) => !prev)}
+              className="px-3.5 py-2.5 rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-200 border-2 border-amber-400 font-extrabold text-xs sm:text-sm shadow-md inline-flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+            >
+              <Hash size={15} className="text-amber-300" />
+              <span>🔒 క్యాప్షన్ & Hashtags</span>
+            </button>
 
-          <button
-            type="button"
-            disabled={isDownloading}
-            onClick={() => handleDownloadQuoteImage('both')}
-            className="px-4 py-2.5 rounded-xl bg-amber-900/80 hover:bg-amber-800 text-amber-100 border border-amber-400/70 font-extrabold text-xs sm:text-sm inline-flex items-center justify-center gap-2 cursor-pointer transition-all"
-          >
-            <Download size={15} />
-            <span>Telugu + English Image (PNG)</span>
-          </button>
-        </div>
+            <button
+              type="button"
+              disabled={isDownloading}
+              onClick={() => handleDownloadQuoteImage('te')}
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-amber-950 font-extrabold text-xs sm:text-sm shadow-md inline-flex items-center justify-center gap-2 cursor-pointer transition-all"
+            >
+              <Download size={16} />
+              <span>🔒 తెలుగు కోట్ ఇమేజ్ (PNG)</span>
+            </button>
+
+            <button
+              type="button"
+              disabled={isDownloading}
+              onClick={() => handleDownloadQuoteImage('en')}
+              className="px-3.5 py-2.5 rounded-xl bg-amber-900/80 hover:bg-amber-800 text-amber-100 border border-amber-400/70 font-extrabold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+            >
+              <ImageIcon size={15} />
+              <span>🔒 English Quote (PNG)</span>
+            </button>
+
+            <button
+              type="button"
+              disabled={isDownloading}
+              onClick={() => handleDownloadQuoteImage('both')}
+              className="px-3.5 py-2.5 rounded-xl bg-amber-900/80 hover:bg-amber-800 text-amber-100 border border-amber-400/70 font-extrabold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+            >
+              <Download size={15} />
+              <span>🔒 Telugu + English (PNG)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCopyText}
+              className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-amber-100 border border-amber-400/40 font-bold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+            >
+              {copied ? <Check size={15} className="text-emerald-300" /> : <Copy size={15} />}
+              <span>{copied ? 'కాపీ అయింది!' : '🔒 Copy Quote'}</span>
+            </button>
+          </div>
+        ) : (
+          <div />
+        )}
 
         <div className="flex flex-wrap items-center gap-2">
           <button
@@ -957,17 +1057,129 @@ export const DailySubhashithamCard: React.FC<DailySubhashithamCardProps> = ({ is
             <Share2 size={15} />
             <span>WhatsApp Status / Share</span>
           </button>
-
-          <button
-            type="button"
-            onClick={handleCopyText}
-            className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-amber-100 border border-amber-400/40 font-bold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 cursor-pointer transition-all"
-          >
-            {copied ? <Check size={15} className="text-emerald-300" /> : <Copy size={15} />}
-            <span>{copied ? 'కాపీ అయింది!' : 'Copy Quote'}</span>
-          </button>
         </div>
       </div>
+
+      {/* Admin-Only 30s Video Progress / Ready Download Bar */}
+      {isGuruAdmin && (isRecordingVideo || videoResult) && (
+        <div className="bg-black/45 border border-amber-400/70 rounded-2xl p-4 space-y-2.5">
+          {isRecordingVideo ? (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-amber-200">
+                <span>🎬 {videoStatus}</span>
+                <span>{videoProgress}%</span>
+              </div>
+              <div className="w-full h-2.5 bg-amber-950 rounded-full overflow-hidden border border-amber-600/50">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-400 via-yellow-300 to-emerald-400 transition-all duration-300"
+                  style={{ width: `${videoProgress}%` }}
+                />
+              </div>
+              <p className="text-[11px] text-amber-300/90">
+                స్టార్టింగ్ సైట్ నేమ్ యానిమేషన్ (0–4.5s) + సుభాషిత శ్లోకం & నేటి తరానికి సందేశం (4.5–24s) + వెబ్‌సైట్ సేవల యాడ్ (24–30s) • 30 సెకన్లు పూర్తికాగానే ఆటోమేటిక్‌గా డౌన్‌లోడ్ అవుతుంది.
+              </p>
+            </div>
+          ) : (
+            videoResult && (
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="text-xs sm:text-sm font-extrabold text-emerald-300">
+                  ✅ మీ 30 సెకన్ల సుభాషితం 9:16 వీడియో సిద్ధమైంది! ({videoResult.filename})
+                </div>
+                <a
+                  href={videoResult.url}
+                  download={videoResult.filename}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-md"
+                >
+                  <Download size={15} />
+                  <span>మళ్ళీ డౌన్‌లోడ్ చేయండి</span>
+                </a>
+              </div>
+            )
+          )}
+        </div>
+      )}
+
+      {/* Admin-Only Subhashitham Video Title, Caption & Hashtags Copy Drawer */}
+      {isGuruAdmin && showSocialPack && (
+        <div className="bg-black/50 border-2 border-amber-400/80 rounded-2xl p-4 sm:p-5 space-y-3 text-left">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-700/60 pb-2.5">
+            <div>
+              <span className="text-xs sm:text-sm font-extrabold text-amber-300 flex items-center gap-1.5">
+                <Hash size={15} />
+                <span>🔒 అడ్మిన్ మాత్రమే: 30s సుభాషితం వీడియో టైటిల్, క్యాప్షన్ & Hashtags (#{item.id})</span>
+              </span>
+              <p className="text-[11px] text-amber-200/80 mt-0.5">
+                YouTube Shorts, Instagram Reels & WhatsApp Status కోసమే సిద్ధం చేసిన శ్లోకం + భావం + వెబ్‌సైట్ సేవల క్యాప్షన్
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleCopySocialField('all', socialPack.fullPostText)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs cursor-pointer shadow-sm"
+            >
+              {copiedSocialField === 'all' ? <Check size={14} /> : <Copy size={14} />}
+              <span>
+                {copiedSocialField === 'all'
+                  ? 'మొత్తం పోస్ట్ కాపీ అయింది!'
+                  : 'మొత్తం పోస్ట్ కాపీ చేయండి (Title + Caption + Hashtags)'}
+              </span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="bg-amber-950/70 border border-amber-700/60 rounded-xl p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-extrabold text-amber-300">1. వీడియో టైటిల్ (Title)</span>
+                <button
+                  type="button"
+                  onClick={() => handleCopySocialField('title', socialPack.youtubeTitle)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-800 hover:bg-amber-700 text-amber-100 text-[11px] font-bold cursor-pointer"
+                >
+                  {copiedSocialField === 'title' ? <Check size={12} /> : <Copy size={12} />}
+                  <span>{copiedSocialField === 'title' ? 'Copied!' : 'Copy'}</span>
+                </button>
+              </div>
+              <p className="text-xs text-amber-100 font-bold leading-relaxed select-all">
+                {socialPack.youtubeTitle}
+              </p>
+            </div>
+
+            <div className="bg-amber-950/70 border border-amber-700/60 rounded-xl p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-extrabold text-amber-300">2. క్యాప్షన్ & సైట్ సేవలు</span>
+                <button
+                  type="button"
+                  onClick={() => handleCopySocialField('caption', socialPack.caption)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-800 hover:bg-amber-700 text-amber-100 text-[11px] font-bold cursor-pointer"
+                >
+                  {copiedSocialField === 'caption' ? <Check size={12} /> : <Copy size={12} />}
+                  <span>{copiedSocialField === 'caption' ? 'Copied!' : 'Copy'}</span>
+                </button>
+              </div>
+              <pre className="text-[11px] text-amber-100/95 whitespace-pre-wrap font-telugu leading-relaxed max-h-36 overflow-y-auto select-all">
+                {socialPack.caption}
+              </pre>
+            </div>
+
+            <div className="bg-amber-950/70 border border-amber-700/60 rounded-xl p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-extrabold text-amber-300">3. వైరల్ Hashtags</span>
+                <button
+                  type="button"
+                  onClick={() => handleCopySocialField('tags', socialPack.hashtags)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-800 hover:bg-amber-700 text-amber-100 text-[11px] font-bold cursor-pointer"
+                >
+                  {copiedSocialField === 'tags' ? <Check size={12} /> : <Copy size={12} />}
+                  <span>{copiedSocialField === 'tags' ? 'Copied!' : 'Copy'}</span>
+                </button>
+              </div>
+              <p className="text-[11px] text-amber-300 font-mono leading-relaxed break-words select-all">
+                {socialPack.hashtags}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

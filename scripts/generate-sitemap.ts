@@ -2,10 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import {
   SITE_URL,
+  SUPPORTED_CITY_SLUGS,
   generateStaticDateParams,
   getTodayIsoDateIST,
 } from '../src/seo/panchangamSsrEngine';
 import { RASHI_LIST } from '../src/utils/gocharaEngine';
+import { VEDIC_CLASSICAL_ARTICLES } from '../src/data/vedicArticlesData';
+import { NAKSHATRA_SEO_PROFILES } from '../src/data/nakshatraSeoProfiles';
 
 export interface SitemapEntry {
   path: string;
@@ -18,16 +21,34 @@ export function getCoreSitemapRoutes(): SitemapEntry[] {
     path: `/gochara-phalalu/${r.slug}`,
     lastmod: '2026-10-30',
   }));
+  const rashiPhalaluEntries: SitemapEntry[] = RASHI_LIST.map((r) => ({
+    path: `/rashi-phalalu/${r.slug}`,
+    lastmod: todayIso,
+  }));
+  const cityPanchangamEntries: SitemapEntry[] = SUPPORTED_CITY_SLUGS.map((slug) => ({
+    path: `/panchangam/${slug}`,
+    lastmod: todayIso,
+  }));
+  const nakshatraEntries: SitemapEntry[] = NAKSHATRA_SEO_PROFILES.map((n) => ({
+    path: `/nakshatra/${n.slug}`,
+    lastmod: todayIso,
+  }));
+  const articleEntries: SitemapEntry[] = VEDIC_CLASSICAL_ARTICLES.map((art) => ({
+    path: `/${art.slug}`,
+    lastmod: art.dateModified || todayIso,
+  }));
 
   return [
     { path: '/', lastmod: todayIso },
     { path: '/panchangam', lastmod: todayIso },
     { path: '/rashi-phalalu', lastmod: todayIso },
+    ...rashiPhalaluEntries,
+    { path: '/festivals-calendar', lastmod: todayIso },
+    { path: '/prashna-kundali', lastmod: todayIso },
+    { path: '/ratna-rudraksha', lastmod: todayIso },
     { path: '/panchangam/calendar', lastmod: todayIso },
-    { path: '/panchangam/hyderabad', lastmod: todayIso },
-    { path: '/panchangam/vijayawada', lastmod: todayIso },
-    { path: '/panchangam/visakhapatnam', lastmod: todayIso },
-    { path: '/panchangam/usa', lastmod: todayIso },
+    ...cityPanchangamEntries,
+    ...nakshatraEntries,
     { path: '/janma-kundali', lastmod: '2026-10-28' },
     { path: '/mee-jatakam', lastmod: '2026-10-28' },
     { path: '/vivaha-pontana', lastmod: '2026-10-26' },
@@ -38,11 +59,18 @@ export function getCoreSitemapRoutes(): SitemapEntry[] {
     { path: '/nitya-sankalpam', lastmod: todayIso },
     { path: '/shubha-muhurthalu', lastmod: '2026-10-21' },
     { path: '/muhurtham', lastmod: todayIso },
+    { path: '/vivaha-muhurtham', lastmod: todayIso },
+    { path: '/gruha-pravesha-muhurtham', lastmod: todayIso },
+    { path: '/muhurtham/november-2026', lastmod: todayIso },
+    { path: '/muhurtham/december-2026', lastmod: todayIso },
+    { path: '/muhurtham/january-2027', lastmod: todayIso },
     { path: '/kartika-abhishekam', lastmod: todayIso },
     { path: '/sample-jathakam', lastmod: '2026-10-28' },
     { path: '/ugadi-rashi-phalalu', lastmod: '2026-10-20' },
     { path: '/vastu-shastra-telugu', lastmod: '2026-10-18' },
     { path: '/dosha-pariharalu', lastmod: '2026-10-17' },
+    { path: '/kuja-dosha', lastmod: todayIso },
+    { path: '/kaal-sarp-dosha', lastmod: todayIso },
     { path: '/gochara-phalalu', lastmod: todayIso },
     { path: '/gochara-phalalu/shani', lastmod: '2026-10-30' },
     { path: '/gochara-phalalu/guru', lastmod: '2026-10-30' },
@@ -58,20 +86,7 @@ export function getCoreSitemapRoutes(): SitemapEntry[] {
     { path: '/disclaimer', lastmod: '2026-10-10' },
     { path: '/vedic-articles', lastmod: todayIso },
     { path: '/dwadasa-rashi-rahasyalu', lastmod: todayIso },
-    { path: '/swarodaya-shastra', lastmod: todayIso },
-    { path: '/balarishta-dosha-shanti', lastmod: todayIso },
-    { path: '/prashna-nimitta-shastra', lastmod: todayIso },
-    { path: '/graha-vakra-gati', lastmod: todayIso },
-    { path: '/surya-siddhanta-kala-ganana', lastmod: todayIso },
-    { path: '/classical-astrology-faq', lastmod: todayIso },
-    { path: '/jyotisha-paribhasha-rahasyalu', lastmod: todayIso },
-    { path: '/hasta-samudrika-rekhala-vignanam', lastmod: todayIso },
-    { path: '/why-are-geminis-so-powerful', lastmod: todayIso },
-    { path: '/who-is-libras-true-love', lastmod: todayIso },
-    { path: '/pawan-kalyan-raja-yoga-horoscope-analysis', lastmod: todayIso },
-    { path: '/cricket-sports-astrology-ind-u19-vs-uae-u19-prashna-guide', lastmod: todayIso },
-    { path: '/swapna-shastra-dream-meaning-medical-astrology-1944', lastmod: todayIso },
-    { path: '/fmge-medical-astrology-doctor-yoga-exam-success-guide', lastmod: todayIso },
+    ...articleEntries,
   ];
 }
 
@@ -90,12 +105,10 @@ export function generateSitemapXML(): string {
   const todayIso = getTodayIsoDateIST();
   const entries: string[] = [];
 
-  // 1. Core Indexable Static, 4 City, Tool & Gochara Routes (Zero doorway town pages, zero /awards)
   for (const route of getCoreSitemapRoutes()) {
     entries.push(buildUrlEntry(`${SITE_URL}${route.path}`, route.lastmod));
   }
 
-  // 2. Pre-built Daily Panchangam Routes (/panchangam/[yyyy-mm-dd] for next 60 days + past 7 days)
   const seenDates = new Set<string>();
   const dailyParams = generateStaticDateParams(60, 7);
   for (const { date } of dailyParams) {
@@ -104,7 +117,6 @@ export function generateSitemapXML(): string {
     entries.push(buildUrlEntry(`${SITE_URL}/panchangam/${date}`, pageLastMod));
   }
 
-  // Guarantee November 2026 audit dates (2026-11-02, 2026-11-03) are also present if build clock is earlier in 2026
   for (const auditDate of ['2026-11-02', '2026-11-03']) {
     if (!seenDates.has(auditDate)) {
       seenDates.add(auditDate);

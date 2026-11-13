@@ -204,6 +204,44 @@ service cloud.firestore {
         data.updatedAt is timestamp;
     }
 
+    function isValidFamilyVaultProfile(data) {
+      return data.keys().hasAll([
+          'localProfileId',
+          'name',
+          'relationTe',
+          'relationEn',
+          'birthDate',
+          'birthTime',
+          'cityId',
+          'ownerId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'localProfileId',
+          'name',
+          'relationTe',
+          'relationEn',
+          'birthDate',
+          'birthTime',
+          'cityId',
+          'ownerId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.localProfileId is string && data.localProfileId.size() >= 2 && data.localProfileId.size() <= 128 && data.localProfileId.matches('^[a-zA-Z0-9_\\-]+$') &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 120 &&
+        data.relationTe is string && data.relationTe.size() >= 1 && data.relationTe.size() <= 80 &&
+        data.relationEn is string && data.relationEn.size() >= 1 && data.relationEn.size() <= 80 &&
+        data.birthDate is string && data.birthDate.size() >= 8 && data.birthDate.size() <= 20 &&
+        data.birthTime is string && data.birthTime.size() >= 4 && data.birthTime.size() <= 20 &&
+        data.cityId is string && data.cityId.size() >= 2 && data.cityId.size() <= 60 &&
+        data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$') &&
+        (data.ownerId == request.auth.uid || isSuperAdmin()) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
     // 4. Collection Match Blocks
     match /test/{docId} {
       allow read: if true;
@@ -335,6 +373,39 @@ service cloud.firestore {
         );
       allow delete: if isVerifiedUser() &&
         isValidId(recordId) &&
+        (existing().ownerId == request.auth.uid || isAdmin());
+    }
+
+    match /familyVault/{profileId} {
+      allow get: if isVerifiedUser() &&
+        isValidId(profileId) &&
+        (existing().ownerId == request.auth.uid || isAdmin());
+      allow list: if isVerifiedUser() &&
+        (existing().ownerId == request.auth.uid || isSuperAdmin());
+      allow create: if isVerifiedUser() &&
+        isValidId(profileId) &&
+        isValidFamilyVaultProfile(incoming()) &&
+        incoming().ownerId == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if isVerifiedUser() &&
+        isValidId(profileId) &&
+        isValidFamilyVaultProfile(incoming()) &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        existing().ownerId == request.auth.uid &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'name',
+          'relationTe',
+          'relationEn',
+          'birthDate',
+          'birthTime',
+          'cityId',
+          'updatedAt'
+        ]);
+      allow delete: if isVerifiedUser() &&
+        isValidId(profileId) &&
         (existing().ownerId == request.auth.uid || isAdmin());
     }
   }

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { playTempleBell } from '../utils/audioChime';
 import { OmEmblem } from './OmEmblem';
+import { PWAInstallButton } from './PWAInstallButton';
 import { useLanguage } from '../context/LanguageContext';
 import { ASTRO_SEARCH_TOPICS, AstroSearchTopic, searchAstroTopics } from '../data/astroSearchIndex';
 
@@ -208,6 +209,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right Action Buttons (Row 1 - Cleanly separated from Ganapathi Emblem) */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <PWAInstallButton />
           {/* Language Switcher: తెలుగు / English */}
           <div
             role="group"

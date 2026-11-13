@@ -8,9 +8,13 @@ import {
 } from 'firebase/auth';
 import {
   getFirestore,
+  collection,
   doc,
   getDoc,
   getDocFromServer,
+  query,
+  where,
+  onSnapshot,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -388,3 +392,99 @@ export async function deleteKundaliRecordFromFirestore(recordId: string): Promis
     handleFirestoreError(error, OperationType.DELETE, docPath);
   }
 }
+
+export interface FamilyVaultProfileDoc {
+  id: string;
+  localProfileId: string;
+  name: string;
+  relationTe: string;
+  relationEn: string;
+  birthDate: string;
+  birthTime: string;
+  cityId: string;
+  ownerId: string;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export async function upsertFamilyVaultProfileInFirestore(input: {
+  localProfileId: string;
+  name: string;
+  relationTe: string;
+  relationEn: string;
+  birthDate: string;
+  birthTime: string;
+  cityId: string;
+}): Promise<string> {
+  const user = auth.currentUser;
+  if (!user) throw new Error('User not authenticated');
+
+  const safeLocalId = sanitizeId(input.localProfileId);
+  const docId = sanitizeId(`${user.uid}_${safeLocalId}`);
+  const docPath = `familyVault/${docId}`;
+  const docRef = doc(db, 'familyVault', docId);
+
+  const mutableFields = {
+    name: clampString(input.name, 1, 120, 'కుటుంబ సభ్యులు'),
+    relationTe: clampString(input.relationTe, 1, 80, 'స్వీయ జాతకం (Self)'),
+    relationEn: clampString(input.relationEn, 1, 80, 'Self'),
+    birthDate: clampString(input.birthDate, 8, 20, '1994-08-15'),
+    birthTime: clampString(input.birthTime, 4, 20, '09:30'),
+    cityId: clampString(input.cityId, 2, 60, 'hyderabad'),
+  };
+
+  try {
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      await updateDoc(docRef, {
+        ...mutableFields,
+        updatedAt: serverTimestamp(),
+      });
+    } else {
+      await setDoc(docRef, {
+        localProfileId: safeLocalId,
+        ...mutableFields,
+        ownerId: sanitizeId(user.uid),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    }
+    return docId;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, docPath);
+  }
+}
+
+export async function deleteFamilyVaultProfileFromFirestore(localProfileId: string): Promise<void> {
+  const user = auth.currentUser;
+  if (!user) return;
+  const docId = sanitizeId(`${user.uid}_${sanitizeId(localProfileId)}`);
+  const docPath = `familyVault/${docId}`;
+  try {
+    await deleteDoc(doc(db, 'familyVault', docId));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, docPath);
+  }
+}
+
+export function subscribeUserFamilyVault(
+  uid: string,
+  onData: (items: FamilyVaultProfileDoc[]) => void
+): () => void {
+  const colPath = 'familyVault';
+  const q = query(collection(db, colPath), where('ownerId', '==', sanitizeId(uid)));
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const items: FamilyVaultProfileDoc[] = snapshot.docs.map((d) => ({
+        id: d.id,
+        ...(d.data() as Omit<FamilyVaultProfileDoc, 'id'>),
+      }));
+      onData(items);
+    },
+    (error) => {
+      handleFirestoreError(error, OperationType.LIST, colPath);
+    }
+  );
+}
+

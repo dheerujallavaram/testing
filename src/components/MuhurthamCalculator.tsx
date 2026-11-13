@@ -35,6 +35,7 @@ import {
 import { NAKSHATRAS, WEEK_DATA } from '../data/panchangamData';
 import { useLanguage } from '../context/LanguageContext';
 import { OmEmblem } from './OmEmblem';
+import { PersonalMuhurthamFinderPanel } from './PersonalMuhurthamFinderPanel';
 
 const CATEGORY_TABS: { id: MuhurthaCategory | 'all'; labelTe: string; labelEn: string; icon: string }[] = [
   { id: 'all', labelTe: 'అన్ని ముహూర్తాలు (All)', labelEn: 'All Muhurthams', icon: '✨' },
@@ -177,6 +178,11 @@ export const MuhurthamCalculator: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Personal 90-Day Muhurtham Scanner */}
+      <div className="max-w-7xl mx-auto mb-8">
+        <PersonalMuhurthamFinderPanel />
       </div>
 
       {/* Main Sub Navigation Bar */}

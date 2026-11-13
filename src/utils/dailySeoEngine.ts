@@ -159,6 +159,12 @@ export function syncHeadMetaTags(payload: HeadMetaPayload): void {
   if (canonicalEl.getAttribute('href') !== payload.canonicalUrl) {
     canonicalEl.setAttribute('href', payload.canonicalUrl);
   }
+  ['te', 'en', 'x-default'].forEach((hl) => {
+    const altEl = document.querySelector(`link[rel="alternate"][hreflang="${hl}"]`) as HTMLLinkElement | null;
+    if (altEl && altEl.getAttribute('href') !== payload.canonicalUrl) {
+      altEl.setAttribute('href', payload.canonicalUrl);
+    }
+  });
 
   upsertMeta('meta[name="description"]', 'name', 'description', payload.description);
   if (payload.robots) {

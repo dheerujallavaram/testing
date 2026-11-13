@@ -3,6 +3,7 @@ import { Calendar, ChevronLeft, ChevronRight, MapPin, Sun, Clock, ShieldAlert, S
 import {
   CityTimingConfig,
   SUPPORTED_CITY_CONFIGS,
+  SUPPORTED_CITY_SLUGS,
   addDaysIso,
   computeCityLocalPanchangam,
   generateStaticDateParams,
@@ -106,13 +107,13 @@ export const DailyPanchangamRouteBar: React.FC<DailyPanchangamRouteBarProps> = (
           </a>
         </div>
 
-        {/* City Local Timings Switcher: Hyderabad, Vijayawada, Visakhapatnam, USA */}
+        {/* City Local Timings Switcher: 13 Telugu & NRI Hubs */}
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-xs font-bold text-amber-900 flex items-center gap-1 mr-1">
             <MapPin size={14} className="text-amber-700" />
             <span>{t('నగర సమయాలు:', 'City Timings:')}</span>
           </span>
-          {(['hyderabad', 'vijayawada', 'visakhapatnam', 'usa'] as const).map((slug) => {
+          {SUPPORTED_CITY_SLUGS.map((slug) => {
             const cfg = SUPPORTED_CITY_CONFIGS[slug];
             const isSelected = (activeCitySlug || 'hyderabad') === slug;
             return (

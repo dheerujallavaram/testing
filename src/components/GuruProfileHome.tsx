@@ -29,6 +29,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { VirupakshaGatewayScene, GopuramSectionHeader } from './VirupakshaGopuramArt';
 import { playTempleBell } from '../utils/audioChime';
 import {
+  CityTimingConfig,
   NATURAL_80_WORD_HOMEPAGE_INTRO_TE,
   addDaysIso,
   computeCityLocalPanchangam,
@@ -42,7 +43,7 @@ export interface GuruProfileHomeProps {
   onNavigateToPanchangam: (isoDate?: string) => void;
   onNavigateToRashiPhalalu?: () => void;
   onNavigateToCalendar?: () => void;
-  onNavigateToCityPanchangam?: (citySlug: 'hyderabad' | 'vijayawada' | 'visakhapatnam' | 'usa') => void;
+  onNavigateToCityPanchangam?: (citySlug: CityTimingConfig['slug']) => void;
   onNavigateToJathakam?: () => void;
   onNavigateToAwards?: () => void;
   onNavigateToArticle?: (slug: string) => void;
@@ -475,8 +476,8 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
           </h2>
           <p className="text-xs sm:text-sm text-amber-200/90 leading-relaxed max-w-2xl">
             {t(
-              'పుట్టిన తేదీ, సమయం, ప్రాంతం ఆధారంగా దృక్సిద్ధాంత రాశి చక్రం (D1), నవాంశ (D9), 12 స్థానాల విశ్లేషణ, 120 ఏళ్ల వింశోత్తరి మహాదశ, భృగు చక్ర 96 ఏళ్ల కాలగమనం మరియు అదృష్ట రత్న పరిహారాలు పొందండి.',
-              'Generate an authentic Telugu Kundali with D1 Rashi, D9 Navamsha, 12 Bhava synthesis, 120-year Mahadasha timeline, Bhrigu progression, and gemstone remedies.'
+              'పుట్టిన తేదీ, సమయం, ప్రాంతం ఆధారంగా 29 అధ్యాయాల సంపూర్ణ బృహత్ జాతకం: D1 రాశి, D9 నవాంశ, సప్తవర్గ D1–D10, అవకహడ చక్రం, KP 249 సబ్‌లార్డ్స్, జైమిని ఇష్టదేవత, భృగు నంది నాడి 1-5-9 సర్క్యూట్లు, 337-బిందు సర్వాష్టకవర్గ, షడ్బలం, 300 రాజయోగాలు, రత్న-రుద్రాక్ష, ఆయుర్వేదం & 120 ఏళ్ల మహాదశ PDF.',
+              'Generate an authentic 29-chapter Telugu Kundali with D1 Rashi, D9 Navamsha, Sapta-Varga D1–D10, KP Cusp Sub-Lords, Avakahada Chakra, Bhrigu Nandi Nadi, Jaimini Ishta Devata, 337-Bindu Sarvashtakavarga, Shadbala, 300 Raja Yogas, Ratna-Rudraksha & 120-year Mahadasha PDF.'
             )}
           </p>
         </div>
@@ -491,8 +492,8 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
           }}
           className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-amber-950 font-extrabold text-sm shadow-lg transition-all cursor-pointer shrink-0 inline-flex items-center gap-2"
         >
-          <Download size={17} />
-          <span>{t('ఉచిత కుండలి నివేదిక పొందండి', 'Generate Kundali Now')}</span>
+          <Sparkles size={17} />
+          <span>{t('మీ జన్మ కుండలి విశ్లేషణ చూడండి', 'Explore Janma Kundali Now')}</span>
         </a>
       </div>
       {/* ============================================================== */}
@@ -528,12 +529,39 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             }}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-900 hover:bg-amber-800 text-amber-100 font-bold text-xs rounded-xl transition shadow-xs shrink-0 self-start sm:self-auto cursor-pointer"
           >
-            <span>{t('అన్ని వ్యాసాలు (14+) →', 'View All Articles (14+) →')}</span>
+            <span>{t('అన్ని వ్యాసాలు (16+) →', 'View All Articles (16+) →')}</span>
           </a>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* Article Card 1 */}
+          <article className="bg-white rounded-2xl border-2 border-amber-400 hover:border-amber-600 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-[11px] font-bold text-amber-900">
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-200 border border-amber-400">భావార్థ రత్నాకర &amp; 300 రాజయోగాలు</span>
+                <span className="flex items-center gap-1 text-slate-500"><Clock size={12} /> 26 నిమిషాలు</span>
+              </div>
+              <h3 className="text-base font-bold text-amber-950 group-hover:text-amber-800 transition line-clamp-2">
+                శ్రీ రామానుజాచార్య భావార్థ రత్నాకర ధన సూత్రాలు, 300 మహారాజ యోగాలు &amp; ఆయుర్వేద వైద్య జ్యోతిషం
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                12 లగ్నాల రహస్య ధన-రాజయోగ సూత్రాలు, గజకేసరి, ధర్మ-కర్మాధిపతి, అమల కీర్తి, వసుమతి యోగాలు మరియు త్రిదోష-సప్తధాతు వైద్య జ్యోతిష విజ్ఞానం.
+              </p>
+            </div>
+            <a
+              href="/bhavartha-ratnakara-300-raja-yogalu-ayurveda-jyotisham"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onNavigateToArticle) onNavigateToArticle('bhavartha-ratnakara-300-raja-yogalu-ayurveda-jyotisham');
+              }}
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 group-hover:text-amber-700 cursor-pointer pt-3 border-t border-amber-100"
+            >
+              <span>పూర్తి వ్యాసం చదవండి</span>
+              <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+            </a>
+          </article>
+
+          {/* Article Card 2 */}
           <article className="bg-white rounded-2xl border-2 border-amber-200/90 hover:border-amber-400 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
             <div className="space-y-3">
               <div className="flex items-center justify-between text-[11px] font-bold text-amber-800">
@@ -560,7 +588,7 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
             </a>
           </article>
 
-          {/* Article Card 2 */}
+          {/* Article Card 3 */}
           <article className="bg-white rounded-2xl border-2 border-amber-200/90 hover:border-amber-400 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
             <div className="space-y-3">
               <div className="flex items-center justify-between text-[11px] font-bold text-amber-800">
@@ -579,33 +607,6 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
               onClick={(e) => {
                 e.preventDefault();
                 if (onNavigateToArticle) onNavigateToArticle('balarishta-dosha-shanti');
-              }}
-              className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 group-hover:text-amber-700 cursor-pointer pt-3 border-t border-amber-100"
-            >
-              <span>పూర్తి వ్యాసం చదవండి</span>
-              <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
-            </a>
-          </article>
-
-          {/* Article Card 3 */}
-          <article className="bg-white rounded-2xl border-2 border-amber-200/90 hover:border-amber-400 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-[11px] font-bold text-amber-800">
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300">సాముద్రికం</span>
-                <span className="flex items-center gap-1 text-slate-500"><Clock size={12} /> 19 నిమిషాలు</span>
-              </div>
-              <h3 className="text-base font-bold text-amber-950 group-hover:text-amber-800 transition line-clamp-2">
-                హస్త సాముద్రిక రేఖల విజ్ఞానం – ఆయుష్షు, ధన, భాగ్య రేఖల శాస్త్రీయ రహస్యాలు
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
-                చేతిలోని ఆయుర్రేఖ, మాతృరేఖ, పితృరేఖ, శని భాగ్యరేఖ, రవి కీర్తిరేఖల గుహ్య సంకేతాలు మరియు పర్వతాల ప్రాశస్త్య విశ్లేషణ.
-              </p>
-            </div>
-            <a
-              href="/hasta-samudrika-rekhala-vignanam"
-              onClick={(e) => {
-                e.preventDefault();
-                if (onNavigateToArticle) onNavigateToArticle('hasta-samudrika-rekhala-vignanam');
               }}
               className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 group-hover:text-amber-700 cursor-pointer pt-3 border-t border-amber-100"
             >

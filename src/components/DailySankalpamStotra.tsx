@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Globe, Copy, Check, Volume2, Square, BookOpen, Sparkles } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import { useLanguage } from '../context/LanguageContext';
+import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
 
 interface DailySankalpamStotraProps {
   day: DayData;
@@ -167,11 +168,13 @@ const WEEKDAY_STOTRAS: Record<string, WeekdayStotra> = {
 
 export const DailySankalpamStotra: React.FC<DailySankalpamStotraProps> = ({ day }) => {
   const { t, tr } = useLanguage();
+  const { isGuruAdmin } = useIsGuruAdmin();
   const [region, setRegion] = useState<SankalpamRegion>('india');
   const [gotram, setGotram] = useState<string>('');
   const [devoteeName, setDevoteeName] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+  const [isSpeakingStotra, setIsSpeakingStotra] = useState<boolean>(false);
 
   const selectedRegion = REGION_CONFIGS.find((r) => r.id === region) || REGION_CONFIGS[0];
   const { ayanam, ruthuvu } = useMemo(() => getAyanamAndRuthuvu(day.panchanga.masam), [day.panchanga.masam]);
@@ -200,6 +203,17 @@ export const DailySankalpamStotra: React.FC<DailySankalpamStotraProps> = ({ day 
     } catch {}
   };
 
+  const pickBestTeluguVoice = (): SpeechSynthesisVoice | null => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices() || [];
+    return (
+      voices.find((v) => v.lang.toLowerCase().startsWith('te')) ||
+      voices.find((v) => v.lang.toLowerCase().includes('in') && v.name.toLowerCase().includes('telugu')) ||
+      voices.find((v) => v.lang.toLowerCase() === 'en-in') ||
+      null
+    );
+  };
+
   const handleSpeakSankalpam = () => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     if (isSpeaking) {
@@ -208,9 +222,12 @@ export const DailySankalpamStotra: React.FC<DailySankalpamStotraProps> = ({ day 
       return;
     }
     window.speechSynthesis.cancel();
+    setIsSpeakingStotra(false);
     const u = new SpeechSynthesisUtterance(fullSankalpamText.replace(/\n+/g, ' '));
-    u.lang = 'te-IN';
-    u.rate = 0.88;
+    const preferredVoice = pickBestTeluguVoice();
+    if (preferredVoice) u.voice = preferredVoice;
+    u.lang = preferredVoice?.lang || 'te-IN';
+    u.rate = 0.86;
     u.onend = () => setIsSpeaking(false);
     u.onerror = () => setIsSpeaking(false);
     setIsSpeaking(true);
@@ -218,6 +235,27 @@ export const DailySankalpamStotra: React.FC<DailySankalpamStotraProps> = ({ day 
   };
 
   const stotra = WEEKDAY_STOTRAS[day.label] || WEEKDAY_STOTRAS['సోమవారం'];
+
+  const handleSpeakStotra = () => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (isSpeakingStotra) {
+      window.speechSynthesis.cancel();
+      setIsSpeakingStotra(false);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    const text = `${stotra.titleTe}. ${stotra.shlokasTe.join(' ')} ${stotra.phalashrutiTe}`;
+    const u = new SpeechSynthesisUtterance(text);
+    const preferredVoice = pickBestTeluguVoice();
+    if (preferredVoice) u.voice = preferredVoice;
+    u.lang = preferredVoice?.lang || 'te-IN';
+    u.rate = 0.84;
+    u.onend = () => setIsSpeakingStotra(false);
+    u.onerror = () => setIsSpeakingStotra(false);
+    setIsSpeakingStotra(true);
+    window.speechSynthesis.speak(u);
+  };
 
   return (
     <div className="space-y-8 font-telugu">
@@ -249,14 +287,16 @@ export const DailySankalpamStotra: React.FC<DailySankalpamStotraProps> = ({ day 
               <span>{isSpeaking ? t('ఆడియో ఆపండి', 'Stop Audio') : t('సంకల్పం వినండి (Audio)', 'Listen Sankalpam')}</span>
             </button>
 
-            <button
-              type="button"
-              onClick={handleCopySankalpam}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-xs sm:text-sm font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0"
-            >
-              {copied ? <Check size={15} className="text-emerald-700" /> : <Copy size={15} />}
-              <span>{copied ? t('కాపీ చేయబడింది!', 'Copied!') : t('సంకల్పం కాపీ చేయండి', 'Copy Text')}</span>
-            </button>
+            {isGuruAdmin && (
+              <button
+                type="button"
+                onClick={handleCopySankalpam}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-xs sm:text-sm font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              >
+                {copied ? <Check size={15} className="text-emerald-700" /> : <Copy size={15} />}
+                <span>{copied ? t('కాపీ చేయబడింది!', 'Copied!') : t('🔒 సంకల్పం కాపీ చేయండి', '🔒 Copy Text')}</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -337,17 +377,31 @@ export const DailySankalpamStotra: React.FC<DailySankalpamStotraProps> = ({ day 
 
       {/* SECTION 2: DAILY WEEKDAY STOTRA PARAYANAM */}
       <section className="bg-gradient-to-br from-amber-950 via-amber-900 to-stone-900 text-white rounded-3xl p-6 sm:p-8 border border-amber-500/60 shadow-lg">
-        <div className="border-b border-amber-800 pb-4 mb-6">
-          <span className="text-xs font-bold uppercase tracking-widest text-amber-300 flex items-center gap-1.5 mb-1">
-            <BookOpen size={14} />
-            <span>{t('నిత్య పారాయణ శ్లోకాలు • Daily Sacred Stotra', 'Daily Sacred Stotra Parayanam')}</span>
-          </span>
-          <h3 className="text-2xl sm:text-3xl font-bold text-white">
-            {t(stotra.titleTe, stotra.titleEn)}
-          </h3>
-          <p className="text-sm text-amber-200 mt-1">
-            {t('ఆరాధ్య దైవం:', 'Presiding Deity:')} <strong>{stotra.deityTe}</strong>
-          </p>
+        <div className="border-b border-amber-800 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-widest text-amber-300 flex items-center gap-1.5 mb-1">
+              <BookOpen size={14} />
+              <span>{t('నిత్య పారాయణ శ్లోకాలు • Daily Sacred Stotra', 'Daily Sacred Stotra Parayanam')}</span>
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold text-white">
+              {t(stotra.titleTe, stotra.titleEn)}
+            </h3>
+            <p className="text-sm text-amber-200 mt-1">
+              {t('ఆరాధ్య దైవం:', 'Presiding Deity:')} <strong>{stotra.deityTe}</strong>
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleSpeakStotra}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 text-xs sm:text-sm font-extrabold transition-colors cursor-pointer whitespace-nowrap shrink-0 self-start"
+          >
+            {isSpeakingStotra ? <Square size={15} /> : <Volume2 size={15} />}
+            <span>
+              {isSpeakingStotra
+                ? t('స్తోత్రం ఆపండి', 'Stop Stotra')
+                : t('స్తోత్రం వినండి (Audio)', 'Listen Stotra')}
+            </span>
+          </button>
         </div>
 
         <div className="space-y-4">

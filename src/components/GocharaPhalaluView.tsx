@@ -7,6 +7,7 @@ import {
 } from '../utils/gocharaEngine';
 import gocharaAuthorContent from '../data/gocharaAuthorContent.json';
 import { useLanguage } from '../context/LanguageContext';
+import { LiveCosmicSkyWheelCard } from './CosmicRadarAndBTRSuite';
 
 export interface GocharaPhalaluViewProps {
   initialPathname?: string;
@@ -416,6 +417,12 @@ export const GocharaPhalaluView: React.FC<GocharaPhalaluViewProps> = ({
           ))}
         </div>
       </section>
+
+      {/* Live Real-Time Sidereal Ephemeris Cosmic Sky Wheel & 12-Month Power Graph */}
+      <LiveCosmicSkyWheelCard
+        natalMoonIdx={Math.max(0, RASHI_LIST.findIndex((r) => r.slug === selectedRashi))}
+        natalLagnaIdx={Math.max(0, RASHI_LIST.findIndex((r) => r.slug === selectedRashi))}
+      />
 
       {/* Descriptive Telugu Anchor Links to Core Pages */}
       <section
