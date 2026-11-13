@@ -39,6 +39,7 @@ import { computeDailyJHoraYogiAndPakshi } from '../utils/jhoraAdvancedEngine';
 import { FamilyProfilesVaultBar } from './FamilyProfilesVaultBar';
 import { PersonalDailyScoreWidget } from './PersonalDailyScoreWidget';
 import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
+import { AdminTelegramDailyBroadcaster } from './AdminTelegramDailyBroadcaster';
 import {
   DailyReelResult,
   generateDailyRashiReelVideo,
@@ -94,6 +95,7 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({
   const [socialPackKind, setSocialPackKind] = useState<'rashi' | 'panchangam' | null>(null);
   const [copiedSocialKey, setCopiedSocialKey] = useState<string | null>(null);
   const [spotlightRashiChoice, setSpotlightRashiChoice] = useState<string>('auto');
+  const [showTelegramBroadcaster, setShowTelegramBroadcaster] = useState<boolean>(false);
   const { language, t, tr } = useLanguage();
   const { isGuruAdmin } = useIsGuruAdmin();
 
@@ -453,7 +455,7 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({
                 <button
                   type="button"
                   disabled={isRecordingRashiVideo}
-                  onClick={() => handleGenerateAdminReelVideo('rashi', language === 'en' ? 'en' : 'te')}
+                  onClick={() => handleGenerateAdminReelVideo('rashi', 'te')}
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 disabled:opacity-60 text-amber-950 font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
                 >
                   {isRecordingRashiVideo ? (
@@ -463,12 +465,31 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({
                   )}
                   <span>
                     {isRecordingRashiVideo
-                      ? `${rashiVideoProgress}% • ${t('రికార్డ్ అవుతోంది...', 'Recording...')}`
-                      : t(
-                          `🎬 ${activeSpotlightRashi.teluguName} పూర్తి ఫలితం + 12 రాశుల వీడియో (60s)`,
-                          `🎬 ${activeSpotlightRashi.englishName} Full + 12 Rashis Video (60s)`
-                        )}
+                      ? `${rashiVideoProgress}% • రికార్డ్ అవుతోంది...`
+                      : `🎬 ${activeSpotlightRashi.teluguName} + 12 రాశుల తెలుగు HD వీడియో (60s)`}
                   </span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isRecordingRashiVideo}
+                  onClick={() => handleGenerateAdminReelVideo('rashi', 'en')}
+                  className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-sky-500 hover:from-indigo-500 hover:to-sky-400 disabled:opacity-60 text-white border border-sky-200 font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+                >
+                  <Film size={15} className="text-sky-100" />
+                  <span>🎬 {activeSpotlightRashi.englishName} + 12 Rashis English HD Video (60s)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowTelegramBroadcaster((prev) => !prev)}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border-2 font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer ${
+                    showTelegramBroadcaster
+                      ? 'bg-sky-400 text-slate-950 border-white'
+                      : 'bg-gradient-to-r from-sky-600 to-blue-600 text-white border-sky-200'
+                  }`}
+                >
+                  <span>📲 రాత్రి 12:00 AM Telegram HD స్టూడియో (TE & EN)</span>
                 </button>
 
                 <button
@@ -478,7 +499,7 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({
                   className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-rose-700 hover:bg-rose-600 disabled:opacity-60 text-white border border-amber-300/60 font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
                 >
                   <Film size={15} className="text-amber-200" />
-                  <span>{t('🎬 పంచాంగం వీడియో (60s)', '🎬 Panchangam Video (60s)')}</span>
+                  <span>{t('🎬 పంచాంగం HD వీడియో (60s)', '🎬 Panchangam HD Video (60s)')}</span>
                 </button>
 
                 <button
@@ -512,6 +533,15 @@ export const DailyHoroscope: React.FC<DailyHoroscopeProps> = ({
                 </button>
               </div>
             </div>
+
+            {showTelegramBroadcaster && (
+              <div className="pt-2">
+                <AdminTelegramDailyBroadcaster
+                  day={activeDay}
+                  initialSpotlightRashiId={spotlightRashiChoice}
+                />
+              </div>
+            )}
 
             {/* Admin-Only Daily Caption & Hashtags Drawer */}
             {socialPackKind && (

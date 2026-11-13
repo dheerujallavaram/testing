@@ -17,6 +17,7 @@ import { getDailyRashiFortunes, RashiDailyFortune } from '../src/utils/panchanga
 import { DayData } from '../src/types/panchangam';
 import { translatePanchangamString } from '../src/context/LanguageContext';
 import { WEEK_DATA } from '../src/data/panchangamData';
+import { generateServerDailyReelVideoBuffer } from './generateDailyPanchangamReel';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1020,12 +1021,124 @@ export async function sendTelegramPhotoBuffer(
   }
 }
 
+export async function sendTelegramVideoBuffer(
+  chatId: string | number,
+  mp4Buffer: Buffer,
+  fileName: string,
+  caption: string,
+  replyMarkup?: object
+): Promise<boolean> {
+  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`;
+
+  async function executeSendVideo() {
+    const form = new FormData();
+    form.append('chat_id', String(chatId));
+    form.append('width', '1080');
+    form.append('height', '1920');
+    form.append('supports_streaming', 'true');
+    form.append('caption', caption.slice(0, 980));
+    const blob = new Blob([new Uint8Array(mp4Buffer)], { type: 'video/mp4' });
+    form.append('video', blob, fileName);
+    if (replyMarkup) {
+      form.append('reply_markup', JSON.stringify(replyMarkup));
+    }
+    const res = await fetch(url, { method: 'POST', body: form });
+    return (await res.json()) as { ok: boolean; description?: string };
+  }
+
+  try {
+    const result = await executeSendVideo();
+    if (!result.ok) {
+      console.warn(`[Telegram] sendVideo warning (${result.description}), falling back to sendDocument...`);
+      const docForm = new FormData();
+      docForm.append('chat_id', String(chatId));
+      docForm.append('caption', caption.slice(0, 980));
+      const blob = new Blob([new Uint8Array(mp4Buffer)], { type: 'video/mp4' });
+      docForm.append('document', blob, fileName);
+      const docRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+        method: 'POST',
+        body: docForm,
+      });
+      const docData = (await docRes.json()) as { ok: boolean };
+      return docData.ok;
+    }
+    return true;
+  } catch (err) {
+    console.error(`[Telegram] sendTelegramVideoBuffer error for ${chatId}:`, err);
+    return false;
+  }
+}
+
+export async function sendSingleHdVideoWithCaptionToChat(
+  chatId: string | number,
+  kind: 'panchangam' | 'rashi',
+  lang: 'te' | 'en'
+): Promise<boolean> {
+  const { day } = getTodayISTData();
+  const { mp4Buffer, filename, socialPack } = generateServerDailyReelVideoBuffer(day, kind, lang);
+
+  const label =
+    kind === 'panchangam'
+      ? lang === 'te'
+        ? `నేటి తెలుగు పంచాంగం Full HD వీడియో (${day.teediVaram})`
+        : `Today English Panchangam Full HD Video (${day.isoDate})`
+      : lang === 'te'
+        ? `నేటి 12 రాశి ఫలాలు తెలుగు Full HD వీడియో (${day.teediVaram})`
+        : `Today 12-Rashi Horoscope English Full HD Video (${day.isoDate})`;
+
+  const shortVideoCaption =
+    `🎬 ${label}\n📌 ${socialPack.youtubeTitle}\n\n🌐 https://www.telugujyothisham.com\n📞 WhatsApp: +91 94405 25660\n\n${socialPack.hashtags}`.slice(
+      0,
+      980
+    );
+
+  const videoOk = await sendTelegramVideoBuffer(
+    chatId,
+    mp4Buffer,
+    filename,
+    shortVideoCaption,
+    getMainInlineKeyboard()
+  );
+
+  // Immediately send the full copy-ready Title + Detailed Caption + All Trending Hashtags
+  const fullCaptionBlock = [
+    `📋 [${label} — FULL CAPTION & HASHTAGS]`,
+    `━━━━━━━━━━━━━━━━━━━━`,
+    socialPack.fullPostText,
+  ].join('\n');
+
+  await sendTelegramMessage(chatId, fullCaptionBlock);
+  return videoOk;
+}
+
+export async function sendAllFourDailyHdVideosToChat(chatId: string | number): Promise<void> {
+  await sendTelegramMessage(
+    chatId,
+    `🎬 *నేటి 4 Full HD (1080p) వీడియోలు (పంచాంగం తెలుగు & ఇంగ్లీష్ + 12 రాశి ఫలాలు తెలుగు & ఇంగ్లీష్) మరియు వాటి క్యాప్షన్స్ & Hashtags సిద్ధమవుతున్నాయి...*`
+  );
+  await sendSingleHdVideoWithCaptionToChat(chatId, 'panchangam', 'te');
+  await sendSingleHdVideoWithCaptionToChat(chatId, 'panchangam', 'en');
+  await sendSingleHdVideoWithCaptionToChat(chatId, 'rashi', 'te');
+  await sendSingleHdVideoWithCaptionToChat(chatId, 'rashi', 'en');
+}
+
 export function getMainInlineKeyboard() {
   return {
     inline_keyboard: [
       [
-        { text: '📅 పంచాంగం HD (Telugu)', callback_data: 'cmd_panchangam' },
-        { text: '🇬🇧 Panchangam HD (English)', callback_data: 'cmd_panchangam_en' },
+        { text: '🚀 4 HD వీడియోలు + క్యాప్షన్స్ (TE & EN)', callback_data: 'cmd_all_videos' },
+      ],
+      [
+        { text: '🎬 పంచాంగం వీడియో (TE)', callback_data: 'cmd_video_panchangam_te' },
+        { text: '🎬 Panchangam Video (EN)', callback_data: 'cmd_video_panchangam_en' },
+      ],
+      [
+        { text: '🎬 12 రాశుల వీడియో (TE)', callback_data: 'cmd_video_rashi_te' },
+        { text: '🎬 12 Rashis Video (EN)', callback_data: 'cmd_video_rashi_en' },
+      ],
+      [
+        { text: '📅 పంచాంగం HD కార్డ్ (TE)', callback_data: 'cmd_panchangam' },
+        { text: '🇬🇧 Panchangam Card (EN)', callback_data: 'cmd_panchangam_en' },
       ],
       [
         { text: '🪐 12 రాశుల ఫలితాలు (All 12)', callback_data: 'cmd_predictions' },
@@ -1112,6 +1225,9 @@ export async function sendFullDailyBundleToChat(chatId: string | number): Promis
   for (const msg of predictionMessages) {
     await sendTelegramMessage(chatId, msg);
   }
+
+  // Also send all 4 Full HD (1080p) Videos (Panchangam TE & EN + Horoscope TE & EN) with Captions & Hashtags
+  await sendAllFourDailyHdVideosToChat(chatId);
 }
 
 export async function sendSingleRashiCardToChat(
@@ -1181,7 +1297,12 @@ export async function sendSingleRashiCardToChat(
 
 async function registerBotCommands() {
   const commands = [
-    { command: 'start', description: 'నేటి పంచాంగం + 12 రాశుల ఫలితాలు & మెనూ' },
+    { command: 'start', description: 'నేటి పంచాంగం + 4 HD వీడియోలు + 12 రాశుల ఫలితాలు' },
+    { command: 'videos', description: '🎬 నేటి 4 Full HD వీడియోలు + క్యాప్షన్స్ & Hashtags (TE & EN)' },
+    { command: 'video_panchangam_te', description: '🎬 తెలుగు పంచాంగం 60s Full HD వీడియో + క్యాప్షన్' },
+    { command: 'video_panchangam_en', description: '🎬 English Panchangam 60s Full HD Video + Caption' },
+    { command: 'video_rashi_te', description: '🎬 12 రాశి ఫలాలు తెలుగు 60s Full HD వీడియో + క్యాప్షన్' },
+    { command: 'video_rashi_en', description: '🎬 12-Rashi Horoscope English 60s Full HD Video + Caption' },
     { command: 'panchangam', description: 'నేటి పంచాంగం HD ఇమేజ్ కార్డ్ & వివరాలు (Telugu)' },
     { command: 'panchangam_en', description: 'Daily Panchangam HD Image Card in English' },
     { command: 'predictions', description: '12 Zodiac Signs Daily Forecast (Telugu & English)' },
@@ -1220,9 +1341,38 @@ export async function handleCommandOrCallback(chatId: number | string, command: 
     if (cleanCmd === 'start' || cleanCmd === 'help') {
       await sendTelegramMessage(
         chatId,
-        '🙏 *నమస్కారం! శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం అధికారిక Telegram బాట్‌కు స్వాగతం!*\n\nనేటి పంచాంగం HD ఇమేజ్ మరియు 12 రాశుల ఫలితాలు (తెలుగు & English) సిద్ధమయ్యాయి, క్రింద వివరాలు చూడండి 👇'
+        '🙏 *నమస్కారం! శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం అధికారిక Telegram బాట్‌కు స్వాగతం!*\n\nనేటి పంచాంగం, 12 రాశుల ఫలితాలు & 4 Full HD వీడియోలు (తెలుగు & English) క్యాప్షన్స్ & Hashtags తో సిద్ధమయ్యాయి 👇'
       );
       await sendFullDailyBundleToChat(chatId);
+      return;
+    }
+
+    if (cleanCmd === 'videos' || cleanCmd === 'cmd_all_videos') {
+      await sendAllFourDailyHdVideosToChat(chatId);
+      return;
+    }
+
+    if (cleanCmd === 'video_panchangam_te' || cleanCmd === 'cmd_video_panchangam_te') {
+      await sendTelegramMessage(chatId, '⏳ *నేటి తెలుగు పంచాంగం 60s Full HD (1080p) వీడియో + క్యాప్షన్ & Hashtags వస్తున్నాయి...*');
+      await sendSingleHdVideoWithCaptionToChat(chatId, 'panchangam', 'te');
+      return;
+    }
+
+    if (cleanCmd === 'video_panchangam_en' || cleanCmd === 'cmd_video_panchangam_en') {
+      await sendTelegramMessage(chatId, '⏳ *Generating Today English Panchangam 60s Full HD (1080p) Video + Caption & Hashtags...*');
+      await sendSingleHdVideoWithCaptionToChat(chatId, 'panchangam', 'en');
+      return;
+    }
+
+    if (cleanCmd === 'video_rashi_te' || cleanCmd === 'cmd_video_rashi_te') {
+      await sendTelegramMessage(chatId, '⏳ *నేటి 12 రాశి ఫలాలు తెలుగు 60s Full HD (1080p) వీడియో + క్యాప్షన్ & Hashtags వస్తున్నాయి...*');
+      await sendSingleHdVideoWithCaptionToChat(chatId, 'rashi', 'te');
+      return;
+    }
+
+    if (cleanCmd === 'video_rashi_en' || cleanCmd === 'cmd_video_rashi_en') {
+      await sendTelegramMessage(chatId, '⏳ *Generating Today 12-Rashi Horoscope English 60s Full HD (1080p) Video + Caption & Hashtags...*');
+      await sendSingleHdVideoWithCaptionToChat(chatId, 'rashi', 'en');
       return;
     }
 
@@ -1388,26 +1538,26 @@ export async function handleCommandOrCallback(chatId: number | string, command: 
 }
 
 let isDaemonRunning = false;
+let isMidnightSchedulerRunning = false;
 
 /**
- * Starts the 24/7 Long-Polling Telegram Bot + Daily 06:00 AM IST Auto-Scheduler
+ * Registers updated Bot Menu Commands on @telugujyothisham_bot and runs the Night 12:00 AM IST (00:00)
+ * automatic broadcast loop for all saved subscribers (including default 1162542343).
  */
-export async function startTelegramBotDaemon() {
-  if (isDaemonRunning) return;
-  if (process.env.ENABLE_TELEGRAM_POLLING !== 'true') {
-    return;
+export async function startMidnightTelegramScheduler() {
+  if (isMidnightSchedulerRunning) return;
+  isMidnightSchedulerRunning = true;
+
+  try {
+    await registerBotCommands();
+    console.log('✅ Registered Bot Menu Commands (/videos, /video_panchangam_te, /video_panchangam_en, /video_rashi_te, /video_rashi_en, /start..)');
+  } catch (err) {
+    console.warn('[Telegram] Command registration warning:', err);
   }
-  isDaemonRunning = true;
 
-  console.log('🕉️ Starting @telugujyothisham_bot (Telugu Jyothisham Daily Panchangam Bot)...');
-  await registerBotCommands();
-  console.log('✅ Registered Bot Menu Commands (/start, /panchangam, /predictions, /allcards, /social, /mesham..)');
-
-  let offset = 0;
   let lastAutoBroadcastDate = '';
-  let consecutiveErrors = 0;
 
-  // Daily 06:00 AM IST automatic broadcast check every 60 seconds
+  // Daily Night 12:00 AM IST (00:00 Midnight) automatic broadcast check every 45 seconds
   setInterval(async () => {
     try {
       const istNow = getTodayISTDate();
@@ -1416,20 +1566,38 @@ export async function startTelegramBotDaemon() {
       const dd = String(istNow.getDate()).padStart(2, '0');
       const dateKey = `${yyyy}-${mm}-${dd}`;
 
-      if (istNow.getHours() === 6 && istNow.getMinutes() <= 5 && lastAutoBroadcastDate !== dateKey) {
+      if (istNow.getHours() === 0 && istNow.getMinutes() <= 5 && lastAutoBroadcastDate !== dateKey) {
         const subscribers = loadSavedChatIds();
-        if (subscribers.length > 0) {
-          lastAutoBroadcastDate = dateKey;
-          for (const chatId of subscribers) {
-            await sendFullDailyBundleToChat(chatId);
-          }
-          console.log(`✅ Auto-broadcasted daily Panchangam & Predictions for ${dateKey} to ${subscribers.length} chats.`);
+        const targets = subscribers.length > 0 ? subscribers : ['1162542343'];
+        lastAutoBroadcastDate = dateKey;
+        for (const chatId of targets) {
+          await sendFullDailyBundleToChat(chatId);
         }
+        console.log(
+          `✅ [Night 12:00 AM IST] Auto-broadcasted daily Panchangam, Predictions & 4 HD Videos for ${dateKey} to ${targets.length} chats.`
+        );
       }
     } catch (err) {
       console.error('Auto-schedule check error:', err);
     }
-  }, 60000);
+  }, 45000);
+}
+
+/**
+ * Starts the 24/7 Long-Polling Telegram Bot + Daily Night 12:00 AM IST Auto-Scheduler
+ */
+export async function startTelegramBotDaemon() {
+  await startMidnightTelegramScheduler();
+  if (isDaemonRunning) return;
+  if (process.env.ENABLE_TELEGRAM_POLLING !== 'true') {
+    return;
+  }
+  isDaemonRunning = true;
+
+  console.log('🕉️ Starting @telugujyothisham_bot (Telugu Jyothisham Daily Panchangam & 4 HD Videos Bot)...');
+
+  let offset = 0;
+  let consecutiveErrors = 0;
 
   // Long-polling loop for instant Telegram responses
   while (true) {
@@ -1480,13 +1648,12 @@ export async function startTelegramBotDaemon() {
               const chatId = update.callback_query.message.chat.id;
               const cbData = update.callback_query.data;
               console.log(`🔘 [Telegram] Callback click from ${chatId}: ${cbData}`);
-              // Answer callback query so loading spinner stops on Telegram mobile
               await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   callback_query_id: update.callback_query.id,
-                  text: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం వివరాలు వస్తున్నాయి...',
+                  text: 'శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం HD వీడియో & వివరాలు వస్తున్నాయి...',
                 }),
               });
               await handleCommandOrCallback(chatId, cbData);
@@ -1508,5 +1675,7 @@ export async function startTelegramBotDaemon() {
 // Run daemon if executed directly
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename);
 if (isMain) {
+  process.env.ENABLE_TELEGRAM_POLLING = 'true';
   startTelegramBotDaemon();
 }
+

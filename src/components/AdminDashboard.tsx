@@ -64,6 +64,8 @@ import {
 import { getDailyRashiFortunes } from '../utils/panchangaLogic';
 import { DAILY_SUBHASHITHALU } from './DailySubhashithamCard';
 import { downloadDailyPanchangamCardImage } from '../utils/panchangamImageGenerator';
+import { AdminGruhapraveshamSamagriStudio } from './AdminGruhapraveshamSamagriStudio';
+import { AdminTelegramDailyBroadcaster } from './AdminTelegramDailyBroadcaster';
 
 export interface ClientKundaliPrefill {
   name: string;
@@ -101,8 +103,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [user, setUser] = useState<User | null>(auth.currentUser);
   const [authReady, setAuthReady] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>('');
-  const [activeSubTab, setActiveSubTab] = useState<'bookings' | 'kundali' | 'announcements'>('bookings');
+  const [activeSubTab, setActiveSubTab] = useState<'bookings' | 'kundali' | 'announcements' | 'samagri'>('bookings');
   const [statusFeedback, setStatusFeedback] = useState<string>('');
+  const [showQuickSamagri, setShowQuickSamagri] = useState<boolean>(false);
   const [isRecordingAdminVideo, setIsRecordingAdminVideo] = useState<boolean>(false);
   const [adminVideoProgress, setAdminVideoProgress] = useState<number>(0);
   const [adminVideoStatus, setAdminVideoStatus] = useState<string>('');
@@ -632,7 +635,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 ) : (
                   <Film size={17} className="text-amber-100" />
                 )}
-                <span>🎬 పంచాంగం వీడియో డౌన్‌లోడ్ (60s)</span>
+                <span>🎬 పంచాంగం HD వీడియో (తెలుగు • 60s)</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={isRecordingAdminVideo}
+                onClick={() => handleDownloadAdminReel('panchangam', 'en')}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-gradient-to-r from-slate-800 via-amber-800 to-slate-900 hover:from-slate-700 hover:to-amber-700 disabled:opacity-60 text-amber-100 border-2 border-amber-300 font-extrabold text-xs sm:text-sm shadow-lg transition-all cursor-pointer"
+              >
+                <Film size={17} className="text-amber-300" />
+                <span>🎬 Panchangam HD Video (English • 60s)</span>
               </button>
 
               <button
@@ -646,7 +659,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 ) : (
                   <Film size={17} className="text-amber-950" />
                 )}
-                <span>🎬 {adminActiveSpotRashi.teluguName} పూర్తి ఫలితం + 12 రాశుల వీడియో (60s)</span>
+                <span>🎬 {adminActiveSpotRashi.teluguName} + 12 రాశుల HD వీడియో (తెలుగు • 60s)</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={isRecordingAdminVideo}
+                onClick={() => handleDownloadAdminReel('rashi', 'en')}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-sky-500 hover:from-indigo-500 hover:to-sky-400 disabled:opacity-60 text-white border-2 border-sky-200 font-extrabold text-xs sm:text-sm shadow-lg transition-all cursor-pointer"
+              >
+                <Film size={17} className="text-sky-100" />
+                <span>🎬 {adminActiveSpotRashi.englishName} + 12 Rashis HD Video (English • 60s)</span>
               </button>
 
               <button
@@ -704,7 +727,34 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <Download size={16} className="text-amber-300" />
                 <span>పంచాంగం ఫోటో కార్డ్</span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setShowQuickSamagri((prev) => !prev)}
+                className={`inline-flex items-center gap-1.5 px-4 py-3 rounded-2xl border-2 font-extrabold text-xs sm:text-sm shadow-lg transition-all cursor-pointer ${
+                  showQuickSamagri
+                    ? 'bg-emerald-600 text-white border-emerald-200'
+                    : 'bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 text-amber-950 border-white'
+                }`}
+              >
+                <Download size={16} />
+                <span>🏡 తెలంగాణ గృహప్రవేశం సామాగ్రి లిస్ట్ డౌన్‌లోడ్</span>
+              </button>
             </div>
+          </div>
+
+          {showQuickSamagri && (
+            <div className="pt-2">
+              <AdminGruhapraveshamSamagriStudio />
+            </div>
+          )}
+
+          {/* Daily Night 12:00 AM Telegram HD Broadcaster (Telugu + English Videos & Captions) */}
+          <div className="pt-2">
+            <AdminTelegramDailyBroadcaster
+              day={currentDay}
+              initialSpotlightRashiId={adminSpotlightRashiId}
+            />
           </div>
 
           {adminSocialKind && (
@@ -949,8 +999,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           </div>
 
-          {/* 3-Tab Admin Navigation */}
-          <div className="bg-amber-950 p-2 rounded-2xl border-2 border-amber-500/60 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          {/* 4-Tab Admin Navigation */}
+          <div className="bg-amber-950 p-2 rounded-2xl border-2 border-amber-500/60 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
             <button
               type="button"
               onClick={() => setActiveSubTab('bookings')}
@@ -985,6 +1035,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             <button
               type="button"
+              onClick={() => setActiveSubTab('samagri')}
+              className={`py-3 px-4 rounded-xl text-left transition-all flex items-center gap-3 cursor-pointer ${
+                activeSubTab === 'samagri'
+                  ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 font-extrabold shadow-md'
+                  : 'text-amber-100 hover:bg-amber-900/70'
+              }`}
+            >
+              <Download size={20} className="shrink-0" />
+              <div>
+                <div className="text-[10px] uppercase tracking-wider opacity-80">3. Pooja Samagri PDF/Poster</div>
+                <div className="text-sm font-bold">🏡 తెలంగాణ గృహప్రవేశం సామాగ్రి లిస్ట్</div>
+              </div>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setActiveSubTab('announcements')}
               className={`py-3 px-4 rounded-xl text-left transition-all flex items-center gap-3 cursor-pointer ${
                 activeSubTab === 'announcements'
@@ -994,11 +1060,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             >
               <Megaphone size={20} className="shrink-0" />
               <div>
-                <div className="text-[10px] uppercase tracking-wider opacity-80">3. Live Website Control</div>
+                <div className="text-[10px] uppercase tracking-wider opacity-80">4. Live Website Control</div>
                 <div className="text-sm font-bold">📢 సైట్ లైవ్ ప్రకటన & సమయాలు</div>
               </div>
             </button>
           </div>
+
+          {activeSubTab === 'samagri' && <AdminGruhapraveshamSamagriStudio />}
 
           {/* TAB 1: BOOKINGS & INQUIRIES CRM */}
           {activeSubTab === 'bookings' && (

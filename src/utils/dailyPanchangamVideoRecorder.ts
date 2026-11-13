@@ -104,6 +104,13 @@ export function generateDailyVideoSocialPack(
     '#TeluguShorts',
     '#TeluguReels',
     '#WhatsAppStatusTelugu',
+    '#AstrologerHyderabad',
+    '#BestAstrologerInHyderabad',
+    '#HyderabadAstrologerTelugu',
+    '#FamousAstrologerHyderabad',
+    '#VedicAstrologerHyderabad',
+    '#TeluguAstrologerHyderabad',
+    '#HyderabadPanchangam',
     '#Bhakti',
     '#SanatanaDharma',
     nakshatraTag ? `#${nakshatraTag}` : '',
@@ -1290,7 +1297,7 @@ function renderReelFrame(
 }
 
 function createRecorderWithTanpura(canvas: HTMLCanvasElement) {
-  const canvasStream = canvas.captureStream(30);
+  const canvasStream = canvas.captureStream(60);
   let audioCtx: AudioContext | null = null;
   const oscNodes: OscillatorNode[] = [];
 
@@ -1321,6 +1328,7 @@ function createRecorderWithTanpura(canvas: HTMLCanvasElement) {
   }
 
   const mimeCandidates = [
+    'video/mp4;codecs=avc1.640028,mp4a.40.2',
     'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
     'video/mp4',
     'video/webm;codecs=vp9,opus',
@@ -1331,7 +1339,7 @@ function createRecorderWithTanpura(canvas: HTMLCanvasElement) {
   const ext = (selectedMime || '').includes('mp4') ? 'mp4' : 'webm';
   const recorder = new MediaRecorder(canvasStream, {
     ...(selectedMime ? { mimeType: selectedMime } : {}),
-    videoBitsPerSecond: 3_500_000,
+    videoBitsPerSecond: 8_000_000,
   });
 
   const cleanupAudio = () => {
@@ -1349,7 +1357,8 @@ function createRecorderWithTanpura(canvas: HTMLCanvasElement) {
 export async function generateDailyPanchangamReelVideo(
   day: DayData,
   lang: Language = 'te',
-  onProgress?: (percent: number, sceneLabel: string) => void
+  onProgress?: (percent: number, sceneLabel: string) => void,
+  autoDownload = true
 ): Promise<DailyReelResult> {
   if (typeof document === 'undefined' || typeof MediaRecorder === 'undefined') {
     throw new Error('Video recording is not supported in this browser.');
@@ -1374,7 +1383,7 @@ export async function generateDailyPanchangamReelVideo(
   const durationSec = 60;
   const durationMs = durationSec * 1000;
   const iso = day.isoDate || day.id || 'today';
-  const filename = `panchangam-reel-60s-${iso}-${lang}.${ext}`;
+  const filename = `panchangam-hd-60s-${iso}-${lang}.${ext}`;
 
   return new Promise<DailyReelResult>((resolve, reject) => {
     recorder.onerror = (err) => {
@@ -1388,14 +1397,16 @@ export async function generateDailyPanchangamReelVideo(
       const blob = new Blob(chunks, { type: mimeType });
       const url = URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => link.remove(), 1200);
+      if (autoDownload) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => link.remove(), 1200);
+      }
 
-      onProgress?.(100, lang === 'en' ? '60s Reel Ready!' : '60 సెకన్ల వీడియో సిద్ధమైంది!');
+      onProgress?.(100, lang === 'en' ? '60s HD Reel Ready!' : '60 సెకన్ల HD వీడియో సిద్ధమైంది!');
       resolve({ blob, url, filename, mimeType, durationSec });
     };
 
@@ -1579,6 +1590,12 @@ function renderRashiReelFrame(
         14
       );
 
+      const enLines = spot.englishFullSummary.split('\n');
+      const enCareerLine = (enLines[1] || enLines[0] || '').replace(/^\d+\.\s*[^:]+:\s*/, '');
+      const enWealthLine = (spot.englishWealthBusiness || enLines[0] || '').replace(/^\d+\.\s*[^:]+:\s*/, '');
+      const enFamilyLine = `${(enLines[2] || '').replace(/^\d+\.\s*[^:]+:\s*/, '')} ${(spot.englishHealthVitality || '').replace(/^\d+\.\s*[^:]+:\s*/, '')}`.trim();
+      const enGuidanceLine = `${spot.doTodayEn || spot.englishDairyam} • Best Time: ${spot.luckyTimeWindowEn || 'Morning Auspicious Hora'}`;
+
       // 4 Website Domain Boxes + 1 Remedy/Lucky Box inside the Spotlight Card
       const domainBoxes =
         lang === 'en'
@@ -1586,7 +1603,7 @@ function renderRashiReelFrame(
               {
                 icon: '💼',
                 label: 'Career, Job & Authority:',
-                text: spot.englishFullSummary.split('\n')[0] || spot.careerFinanceLine,
+                text: enCareerLine,
                 bg: '#f8fafc',
                 border: '#cbd5e1',
                 titleCol: '#0f172a',
@@ -1594,7 +1611,7 @@ function renderRashiReelFrame(
               {
                 icon: '💰',
                 label: 'Wealth, Finance & Business:',
-                text: spot.wealthBusinessLine,
+                text: enWealthLine,
                 bg: '#f0fdf4',
                 border: '#86efac',
                 titleCol: '#065f46',
@@ -1602,7 +1619,7 @@ function renderRashiReelFrame(
               {
                 icon: '👨‍👩‍👧‍👦',
                 label: 'Family Harmony & Health:',
-                text: `${spot.familyHealthLine} ${spot.healthVitalityLine}`,
+                text: enFamilyLine,
                 bg: '#fdf2f8',
                 border: '#f9a8d4',
                 titleCol: '#9d174d',
@@ -1610,7 +1627,7 @@ function renderRashiReelFrame(
               {
                 icon: '🔭',
                 label: 'Planetary Guidance & Best Time:',
-                text: `${spot.doTodayTe} • Best Time: ${spot.luckyTimeWindowTe}`,
+                text: enGuidanceLine,
                 bg: '#eff6ff',
                 border: '#93c5fd',
                 titleCol: '#1e40af',
@@ -1843,9 +1860,10 @@ function renderRashiReelFrame(
 
         // Concise Summary Headline (Career/Day Essence)
         ctx.fillStyle = '#1e293b';
+        const rEnLines = r.englishFullSummary.split('\n');
         const briefText =
           lang === 'en'
-            ? r.englishFullSummary.split('\n')[0] || r.careerFinanceLine
+            ? (rEnLines[1] || rEnLines[0] || '').replace(/^\d+\.\s*[^:]+:\s*/, '')
             : r.careerFinanceLine;
         drawFullFitWrappedText(
           ctx,
@@ -1951,7 +1969,8 @@ export async function generateDailyRashiReelVideo(
   day: DayData,
   lang: Language = 'te',
   onProgress?: (percent: number, sceneLabel: string) => void,
-  spotlightRashiId?: string
+  spotlightRashiId?: string,
+  autoDownload = true
 ): Promise<DailyReelResult> {
   if (typeof document === 'undefined' || typeof MediaRecorder === 'undefined') {
     throw new Error('Video recording is not supported in this browser.');
@@ -1980,7 +1999,7 @@ export async function generateDailyRashiReelVideo(
   const durationSec = 60;
   const durationMs = durationSec * 1000;
   const iso = day.isoDate || day.id || 'today';
-  const filename = `rashi-phalalu-reel-60s-${iso}-${spot.id}-${lang}.${ext}`;
+  const filename = `rashi-phalalu-hd-60s-${iso}-${spot.id}-${lang}.${ext}`;
 
   return new Promise<DailyReelResult>((resolve, reject) => {
     recorder.onerror = (err) => {
@@ -1994,18 +2013,20 @@ export async function generateDailyRashiReelVideo(
       const blob = new Blob(chunks, { type: mimeType });
       const url = URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => link.remove(), 1200);
+      if (autoDownload) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => link.remove(), 1200);
+      }
 
       onProgress?.(
         100,
         lang === 'en'
-          ? `60s Reel Ready (${spot.englishName} Spotlight + 12 Rashis)!`
-          : `60 సెకన్ల వీడియో సిద్ధమైంది (${spot.teluguName} రాశి పూర్తి ఫలితం + 12 రాశులు)!`
+          ? `60s HD Reel Ready (${spot.englishName} Spotlight + 12 Rashis)!`
+          : `60 సెకన్ల HD వీడియో సిద్ధమైంది (${spot.teluguName} రాశి పూర్తి ఫలితం + 12 రాశులు)!`
       );
       resolve({ blob, url, filename, mimeType, durationSec });
     };
@@ -2309,7 +2330,8 @@ function renderSubhashithamReelFrame(
 export async function generateDailySubhashithamReelVideo(
   item: SubhashithamVideoItem,
   langMode: 'te' | 'en' | 'both' = 'te',
-  onProgress?: (percent: number, sceneLabel: string) => void
+  onProgress?: (percent: number, sceneLabel: string) => void,
+  autoDownload = true
 ): Promise<DailyReelResult> {
   if (typeof document === 'undefined' || typeof MediaRecorder === 'undefined') {
     throw new Error('Video recording is not supported in this browser.');
@@ -2333,7 +2355,7 @@ export async function generateDailySubhashithamReelVideo(
 
   const durationSec = 30;
   const durationMs = durationSec * 1000;
-  const filename = `daily-quote-subhashitham-30s-${item.id}-${langMode}.${ext}`;
+  const filename = `daily-quote-subhashitham-hd-30s-${item.id}-${langMode}.${ext}`;
 
   return new Promise<DailyReelResult>((resolve, reject) => {
     recorder.onerror = (err) => {
@@ -2347,14 +2369,16 @@ export async function generateDailySubhashithamReelVideo(
       const blob = new Blob(chunks, { type: mimeType });
       const url = URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => link.remove(), 1200);
+      if (autoDownload) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => link.remove(), 1200);
+      }
 
-      onProgress?.(100, '30 సెకన్ల సుభాషిత వీడియో సిద్ధమైంది!');
+      onProgress?.(100, '30 సెకన్ల HD సుభాషిత వీడియో సిద్ధమైంది!');
       resolve({ blob, url, filename, mimeType, durationSec });
     };
 

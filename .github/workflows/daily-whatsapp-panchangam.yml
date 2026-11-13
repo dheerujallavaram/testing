@@ -1,9 +1,9 @@
-name: Daily 6AM IST WhatsApp Panchangam Automation
+name: Daily Night 12:00 AM IST Telegram & WhatsApp Panchangam + 4 HD Videos Automation
 
 on:
   schedule:
-    # Runs every day at 00:30 UTC (06:00 AM IST)
-    - cron: '30 0 * * *'
+    # Runs every day at 18:30 UTC (Night 12:00 AM / 00:00 IST)
+    - cron: '30 18 * * *'
   workflow_dispatch: # Allows manual 1-click test from GitHub Actions tab
 
 jobs:
@@ -17,6 +17,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - name: Install FFmpeg for 1080p HD Video Generation
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-noto-core
 
       - name: Install Dependencies
         run: npm install --legacy-peer-deps

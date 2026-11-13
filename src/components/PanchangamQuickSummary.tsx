@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Clock, Sun, Moon, Sparkles, ShieldAlert, Award, Volume2, Square, Film, Download, Loader2, Copy, Check, Hash } from 'lucide-react';
+import { Clock, Sun, Moon, Sparkles, ShieldAlert, Award, Volume2, Square, Film, Download, Loader2, Copy, Check, Hash, Send } from 'lucide-react';
 import { DayData } from '../types/panchangam';
 import { useLanguage } from '../context/LanguageContext';
 import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
+import { AdminGruhapraveshamSamagriStudio } from './AdminGruhapraveshamSamagriStudio';
+import { AdminTelegramDailyBroadcaster } from './AdminTelegramDailyBroadcaster';
 import {
   DailyReelResult,
   generateDailyPanchangamReelVideo,
@@ -24,6 +26,8 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
   const [reelStatus, setReelStatus] = useState<string>('');
   const [reelResult, setReelResult] = useState<DailyReelResult | null>(null);
   const [showSocialPack, setShowSocialPack] = useState<boolean>(false);
+  const [showSamagriStudio, setShowSamagriStudio] = useState<boolean>(false);
+  const [showTelegramStudio, setShowTelegramStudio] = useState<boolean>(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
@@ -187,15 +191,15 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
             </button>
           )}
 
-          {/* ADMIN ONLY: Prominent Panchangam 60s Video, Social Captions/Hashtags & Photo Download */}
+          {/* ADMIN ONLY: Prominent Panchangam 60s HD Video (TE & EN), Telegram Night 12:00 AM Broadcaster, Social Captions/Hashtags & Photo Download */}
           {isGuruAdmin && (
             <>
               <button
                 type="button"
                 disabled={isRecordingReel}
-                onClick={() => handleDownloadPanchangamVideo(language === 'en' ? 'en' : 'te')}
+                onClick={() => handleDownloadPanchangamVideo('te')}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-rose-600 via-amber-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 disabled:opacity-60 text-white border-2 border-amber-200 shadow-lg transition-all cursor-pointer"
-                title={t('60 సెకన్ల పంచాంగం 9:16 వీడియో డౌన్‌లోడ్ (Admin Only)', 'Download 60s 9:16 Panchangam Reel Video (Admin Only)')}
+                title="60 సెకన్ల తెలుగు పంచాంగం Full HD 1080p వీడియో డౌన్‌లోడ్ (Admin Only)"
               >
                 {isRecordingReel ? (
                   <Loader2 size={16} className="animate-spin text-amber-200" />
@@ -204,9 +208,34 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
                 )}
                 <span>
                   {isRecordingReel
-                    ? `${reelProgress}% • ${t('వీడియో రికార్డ్ అవుతోంది...', 'Recording 60s Reel...')}`
-                    : t('🔒 అడ్మిన్: పంచాంగం వీడియో (60s)', '🔒 Admin: Panchangam Video (60s)')}
+                    ? `${reelProgress}% • రికార్డ్ అవుతోంది...`
+                    : '🔒 తెలుగు పంచాంగం HD వీడియో (60s)'}
                 </span>
+              </button>
+
+              <button
+                type="button"
+                disabled={isRecordingReel}
+                onClick={() => handleDownloadPanchangamVideo('en')}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-slate-800 via-amber-800 to-slate-900 hover:from-slate-700 hover:to-amber-700 disabled:opacity-60 text-amber-100 border-2 border-amber-300 shadow-lg transition-all cursor-pointer"
+                title="Download 60s English Panchangam Full HD 1080p Video (Admin Only)"
+              >
+                <Film size={15} className="text-amber-300" />
+                <span>🔒 English Panchangam HD Video (60s)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowTelegramStudio((prev) => !prev)}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold border-2 shadow-lg transition-all cursor-pointer ${
+                  showTelegramStudio
+                    ? 'bg-sky-500 text-slate-950 border-white'
+                    : 'bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 text-white border-sky-200'
+                }`}
+                title="డైలీ రాత్రి 12:00 AM టెలిగ్రామ్ HD వీడియో & క్యాప్షన్ బ్రాడ్‌కాస్టర్ (Admin Only)"
+              >
+                <Send size={15} />
+                <span>🔒 📲 రాత్రి 12:00 AM Telegram HD స్టూడియో (TE & EN)</span>
               </button>
 
               <button
@@ -228,6 +257,20 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
                 <Download size={15} className="text-amber-300" />
                 <span>{t('🔒 ఫోటో కార్డ్', '🔒 Status Card')}</span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setShowSamagriStudio((prev) => !prev)}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold border shadow-md transition-all cursor-pointer ${
+                  showSamagriStudio
+                    ? 'bg-emerald-600 text-white border-emerald-300'
+                    : 'bg-gradient-to-r from-amber-500 to-yellow-400 text-amber-950 border-white'
+                }`}
+                title="తెలంగాణ గృహప్రవేశం పూజా సామాగ్రి లిస్ట్ డౌన్‌లోడ్ (Admin Only)"
+              >
+                <Download size={15} />
+                <span>🔒 గృహప్రవేశం సామాగ్రి లిస్ట్</span>
+              </button>
             </>
           )}
 
@@ -239,6 +282,20 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
           </div>
         </div>
       </div>
+
+      {/* Admin-Only Telangana Gruhapravesham Pooja Samagri Studio Drawer */}
+      {isGuruAdmin && showSamagriStudio && (
+        <div className="relative z-10 mt-4">
+          <AdminGruhapraveshamSamagriStudio />
+        </div>
+      )}
+
+      {/* Admin-Only Daily Night 12:00 AM Telegram HD Video & Caption Broadcaster (Always active in background for 12:00 AM auto-trigger, expandable UI) */}
+      {isGuruAdmin && (
+        <div className={showTelegramStudio ? 'relative z-10 mt-4' : 'hidden'}>
+          <AdminTelegramDailyBroadcaster day={day} />
+        </div>
+      )}
 
       {/* Admin-Only Daily Panchangam Video Caption & Hashtags Drawer */}
       {isGuruAdmin && showSocialPack && (

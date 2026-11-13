@@ -3,6 +3,7 @@ import { Sparkles, Calendar, Clock, Flame, Shield, ArrowRight } from 'lucide-rea
 import { POOJA_SERVICES } from '../data/panchangamData';
 import { PoojaService } from '../types/panchangam';
 import { useLanguage } from '../context/LanguageContext';
+import { AdminGruhapraveshamSamagriStudio } from './AdminGruhapraveshamSamagriStudio';
 
 interface PoojaServicesSectionProps {
   onSelectService: (service: PoojaService) => void;
@@ -15,6 +16,10 @@ export const PoojaServicesSection: React.FC<PoojaServicesSectionProps> = ({
 
   return (
     <section id="services" className="my-8 scroll-mt-24 font-telugu">
+      <div className="mb-8">
+        <AdminGruhapraveshamSamagriStudio />
+      </div>
+
       <div className="text-center max-w-3xl mx-auto mb-8">
         <span className="text-xs uppercase tracking-widest font-semibold text-amber-800 font-display bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
           {t('వైదిక క్రతువులు & హోమాలు', 'Authentic Vedic Homams & Rituals')}

@@ -172,17 +172,20 @@ export default defineConfig(() => {
       {
         name: 'telegram-bot-auto-daemon',
         configureServer() {
-          if (process.env.ENABLE_TELEGRAM_POLLING === 'true') {
-            import('./scripts/telegramBot')
-              .then((m) => {
-                if (typeof m.startTelegramBotDaemon === 'function') {
-                  m.startTelegramBotDaemon().catch((err: unknown) =>
-                    console.error('[Telegram Bot Daemon Error]:', err)
-                  );
-                }
-              })
-              .catch((err) => console.error('[Failed to load Telegram Bot Daemon]:', err));
-          }
+          import('./scripts/telegramBot')
+            .then((m) => {
+              if (typeof m.startMidnightTelegramScheduler === 'function') {
+                m.startMidnightTelegramScheduler().catch((err: unknown) =>
+                  console.error('[Telegram Midnight Scheduler Error]:', err)
+                );
+              }
+              if (process.env.ENABLE_TELEGRAM_POLLING === 'true' && typeof m.startTelegramBotDaemon === 'function') {
+                m.startTelegramBotDaemon().catch((err: unknown) =>
+                  console.error('[Telegram Bot Daemon Error]:', err)
+                );
+              }
+            })
+            .catch((err) => console.error('[Failed to load Telegram Bot Daemon]:', err));
         },
       },
     ],
