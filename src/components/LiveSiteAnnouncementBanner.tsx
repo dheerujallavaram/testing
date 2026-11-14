@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Sparkles, ArrowRight, Clock, MessageCircle } from 'lucide-react';
 import { db, type SiteAnnouncementDoc } from '../firebase';
 import { useLanguage } from '../context/LanguageContext';
@@ -19,10 +19,12 @@ export const LiveSiteAnnouncementBanner: React.FC<LiveSiteAnnouncementBannerProp
   const [announcement, setAnnouncement] = useState<SiteAnnouncementDoc | null>(null);
 
   useEffect(() => {
-    const q = query(collection(db, 'siteAnnouncements'), where('isActive', '==', true));
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
+    let active = true;
+    const fetchActiveAnnouncement = async () => {
+      try {
+        const q = query(collection(db, 'siteAnnouncements'), where('isActive', '==', true));
+        const snapshot = await getDocs(q);
+        if (!active) return;
         if (snapshot.empty) {
           setAnnouncement(null);
           return;
@@ -32,12 +34,14 @@ export const LiveSiteAnnouncementBanner: React.FC<LiveSiteAnnouncementBannerProp
           id: docSnap.id,
           ...(docSnap.data() as Omit<SiteAnnouncementDoc, 'id'>),
         });
-      },
-      () => {
-        // Silently ignore if offline
+      } catch {
+        // Silently ignore if offline or transient network glitch
       }
-    );
-    return () => unsubscribe();
+    };
+    void fetchActiveAnnouncement();
+    return () => {
+      active = false;
+    };
   }, []);
 
   if (!announcement || !announcement.isActive) return null;

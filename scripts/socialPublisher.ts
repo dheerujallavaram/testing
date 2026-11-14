@@ -11,12 +11,14 @@
 import { DayData } from '../src/types/panchangam';
 import { RashiDailyFortune } from '../src/utils/panchangaLogic';
 import { getTodayISTData, renderDailyPanchangamPngBuffer } from './telegramBot';
+import { generateServerDailyReelVideoBuffer } from './generateDailyPanchangamReel';
 
 export interface SocialPublishResult {
   success: boolean;
-  channel: 'linkedin' | 'instagram' | 'webhook';
+  channel: 'linkedin' | 'instagram' | 'instagram_reel' | 'facebook' | 'youtube' | 'webhook';
   message: string;
   postId?: string;
+  postUrl?: string;
 }
 
 /**
@@ -338,7 +340,523 @@ export function buildSocialPayload(day: DayData, fortunes: RashiDailyFortune[]) 
 }
 
 /**
- * Triggers the automated daily social post workflow.
+ * Refreshes a Google OAuth2 access token using YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, and YOUTUBE_REFRESH_TOKEN.
+ */
+async function getYouTubeAccessToken(): Promise<{ accessToken?: string; error?: string }> {
+  const clientId = process.env.YOUTUBE_CLIENT_ID?.trim();
+  const clientSecret = process.env.YOUTUBE_CLIENT_SECRET?.trim();
+  const refreshToken = process.env.YOUTUBE_REFRESH_TOKEN?.trim();
+
+  if (!clientId || !clientSecret || !refreshToken) {
+    return {
+      error: 'YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, or YOUTUBE_REFRESH_TOKEN is not configured.',
+    };
+  }
+
+  try {
+    const res = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        refresh_token: refreshToken,
+        grant_type: 'refresh_token',
+      }).toString(),
+    });
+    const data = (await res.json()) as {
+      access_token?: string;
+      error?: string;
+      error_description?: string;
+    };
+    if (!res.ok || !data.access_token) {
+      return {
+        error: `YouTube OAuth refresh failed: ${data.error_description || data.error || res.statusText}`,
+      };
+    }
+    return { accessToken: data.access_token };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+/**
+ * Uploads a 9:16 1080x1920 60s MP4 video directly to YouTube Shorts via YouTube Data API v3 Resumable Upload.
+ */
+export async function uploadVideoToYouTubeShorts(params: {
+  mp4Buffer: Buffer;
+  title: string;
+  description: string;
+  tags?: string[];
+  defaultLanguage?: 'te' | 'en';
+  accessToken?: string;
+}): Promise<SocialPublishResult> {
+  let token = params.accessToken;
+  if (!token) {
+    const auth = await getYouTubeAccessToken();
+    if (!auth.accessToken) {
+      return {
+        success: false,
+        channel: 'youtube',
+        message: auth.error || 'Missing YouTube OAuth token.',
+      };
+    }
+    token = auth.accessToken;
+  }
+
+  const safeTitle = (params.title.includes('#Shorts') ? params.title : `${params.title} #Shorts`).slice(0, 98);
+  const safeDescription = (
+    params.description.includes('#Shorts')
+      ? params.description
+      : `${params.description}\n\n#Shorts #TeluguPanchangam #TeluguJyothisham`
+  ).slice(0, 4900);
+  const privacyStatus =
+    (process.env.YOUTUBE_PRIVACY_STATUS as 'public' | 'unlisted' | 'private') || 'public';
+
+  try {
+    // Step 1: Initiate Resumable Upload session
+    const initRes = await fetch(
+      'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=UTF-8',
+          'X-Upload-Content-Length': String(params.mp4Buffer.byteLength),
+          'X-Upload-Content-Type': 'video/mp4',
+        },
+        body: JSON.stringify({
+          snippet: {
+            title: safeTitle,
+            description: safeDescription,
+            tags: (params.tags || [
+              'Telugu Panchangam',
+              'Rashi Phalalu',
+              'Telugu Jyothisham',
+              'Shorts',
+              'Today Panchangam',
+            ]).slice(0, 25),
+            categoryId: '22', // People & Blogs
+            defaultLanguage: params.defaultLanguage || 'te',
+          },
+          status: {
+            privacyStatus,
+            selfDeclaredMadeForKids: false,
+          },
+        }),
+      }
+    );
+
+    if (!initRes.ok) {
+      const errBody = await initRes.text();
+      return {
+        success: false,
+        channel: 'youtube',
+        message: `YouTube upload init failed (${initRes.status}): ${errBody.slice(0, 300)}`,
+      };
+    }
+
+    const uploadUrl = initRes.headers.get('location');
+    if (!uploadUrl) {
+      return {
+        success: false,
+        channel: 'youtube',
+        message: 'YouTube upload session did not return a resumable Location URL.',
+      };
+    }
+
+    // Step 2: PUT the MP4 binary stream
+    const putRes = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'video/mp4',
+        'Content-Length': String(params.mp4Buffer.byteLength),
+      },
+      body: new Uint8Array(params.mp4Buffer),
+    });
+
+    const putData = (await putRes.json()) as { id?: string; error?: { message: string } };
+    if (putRes.ok && putData.id) {
+      const shortsUrl = `https://youtube.com/shorts/${putData.id}`;
+      return {
+        success: true,
+        channel: 'youtube',
+        postId: putData.id,
+        postUrl: shortsUrl,
+        message: `YouTube Short published: ${shortsUrl}`,
+      };
+    }
+
+    return {
+      success: false,
+      channel: 'youtube',
+      message: `YouTube binary upload failed (${putRes.status}): ${putData.error?.message || 'Unknown error'}`,
+    };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      channel: 'youtube',
+      message: `YouTube upload exception: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
+}
+
+/**
+ * Directly uploads an MP4 video to a Facebook Page via Meta Graph Video API (no external hosting needed).
+ * Requires FACEBOOK_PAGE_ID and FACEBOOK_PAGE_TOKEN.
+ */
+export async function uploadVideoToFacebookPage(params: {
+  mp4Buffer: Buffer;
+  filename: string;
+  title: string;
+  description: string;
+}): Promise<SocialPublishResult> {
+  const pageId = process.env.FACEBOOK_PAGE_ID?.trim();
+  const pageToken = process.env.FACEBOOK_PAGE_TOKEN?.trim();
+
+  if (!pageId || !pageToken) {
+    return {
+      success: false,
+      channel: 'facebook',
+      message: 'FACEBOOK_PAGE_ID or FACEBOOK_PAGE_TOKEN is not configured.',
+    };
+  }
+
+  try {
+    const form = new FormData();
+    form.append('access_token', pageToken);
+    form.append('title', params.title.slice(0, 250));
+    form.append('description', params.description.slice(0, 5000));
+    const blob = new Blob([new Uint8Array(params.mp4Buffer)], { type: 'video/mp4' });
+    form.append('source', blob, params.filename);
+
+    const res = await fetch(`https://graph-video.facebook.com/v21.0/${pageId}/videos`, {
+      method: 'POST',
+      body: form,
+    });
+    const data = (await res.json()) as { id?: string; error?: { message: string } };
+    if (res.ok && data.id) {
+      const fbUrl = `https://www.facebook.com/reel/${data.id}`;
+      return {
+        success: true,
+        channel: 'facebook',
+        postId: data.id,
+        postUrl: fbUrl,
+        message: `Facebook Page video published: ${fbUrl}`,
+      };
+    }
+
+    return {
+      success: false,
+      channel: 'facebook',
+      message: `Facebook video upload failed: ${data.error?.message || `HTTP ${res.status}`}`,
+    };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      channel: 'facebook',
+      message: `Facebook video exception: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
+}
+
+/**
+ * Uploads an MP4 buffer to Cloudinary (unsigned upload preset) so Meta Instagram Reels API has a public HTTPS video_url.
+ */
+async function uploadVideoToCloudinary(
+  mp4Buffer: Buffer,
+  filename: string
+): Promise<{ url?: string; error?: string }> {
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME?.trim();
+  const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET?.trim();
+  if (!cloudName || !uploadPreset) {
+    return { error: 'CLOUDINARY_CLOUD_NAME or CLOUDINARY_UPLOAD_PRESET is not configured.' };
+  }
+
+  try {
+    const form = new FormData();
+    form.append('upload_preset', uploadPreset);
+    form.append('folder', 'telugujyothisham-reels');
+    form.append('public_id', filename.replace(/\.mp4$/i, ''));
+    const blob = new Blob([new Uint8Array(mp4Buffer)], { type: 'video/mp4' });
+    form.append('file', blob, filename);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
+      method: 'POST',
+      body: form,
+    });
+    const data = (await res.json()) as { secure_url?: string; error?: { message: string } };
+    if (res.ok && data.secure_url) {
+      return { url: data.secure_url };
+    }
+    return { error: data.error?.message || `Cloudinary HTTP ${res.status}` };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+/**
+ * Publishes an Instagram Reel via Meta Graph API (media_type=REELS) with automatic container status polling.
+ * Uses provided videoUrl or automatically uploads mp4Buffer to Cloudinary if CLOUDINARY_* secrets are set.
+ */
+export async function publishReelToInstagram(params: {
+  videoUrl?: string;
+  mp4Buffer?: Buffer;
+  filename?: string;
+  caption: string;
+}): Promise<SocialPublishResult> {
+  const token = process.env.INSTAGRAM_ACCESS_TOKEN?.trim();
+  const accountId = process.env.INSTAGRAM_ACCOUNT_ID?.trim();
+
+  if (!token || !accountId) {
+    return {
+      success: false,
+      channel: 'instagram_reel',
+      message: 'INSTAGRAM_ACCESS_TOKEN or INSTAGRAM_ACCOUNT_ID is not configured.',
+    };
+  }
+
+  let publicVideoUrl = params.videoUrl?.trim();
+  if (!publicVideoUrl && params.mp4Buffer && params.filename) {
+    const cloudUpload = await uploadVideoToCloudinary(params.mp4Buffer, params.filename);
+    if (!cloudUpload.url) {
+      return {
+        success: false,
+        channel: 'instagram_reel',
+        message: `Instagram Reels skipped: no public video_url (${cloudUpload.error}).`,
+      };
+    }
+    publicVideoUrl = cloudUpload.url;
+  }
+
+  if (!publicVideoUrl) {
+    return {
+      success: false,
+      channel: 'instagram_reel',
+      message: 'Instagram Reels skipped: public HTTPS videoUrl is required.',
+    };
+  }
+
+  try {
+    const createRes = await fetch(`https://graph.facebook.com/v21.0/${accountId}/media`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        media_type: 'REELS',
+        video_url: publicVideoUrl,
+        caption: params.caption.slice(0, 2200),
+        share_to_feed: true,
+        access_token: token,
+      }),
+    });
+
+    const createData = (await createRes.json()) as { id?: string; error?: { message: string } };
+    if (!createData.id) {
+      return {
+        success: false,
+        channel: 'instagram_reel',
+        message: `Instagram Reel container failed: ${createData.error?.message || 'Unknown error'}`,
+      };
+    }
+
+    // Poll until Meta finishes processing the Reel MP4 (up to ~60s)
+    for (let attempt = 0; attempt < 12; attempt++) {
+      await new Promise((r) => setTimeout(r, 5000));
+      const statusRes = await fetch(
+        `https://graph.facebook.com/v21.0/${createData.id}?fields=status_code,status&access_token=${encodeURIComponent(token)}`
+      );
+      const statusData = (await statusRes.json()) as { status_code?: string; status?: string };
+      if (statusData.status_code === 'FINISHED') {
+        break;
+      }
+      if (statusData.status_code === 'ERROR') {
+        return {
+          success: false,
+          channel: 'instagram_reel',
+          message: `Instagram Reel processing error: ${statusData.status || 'ERROR'}`,
+        };
+      }
+    }
+
+    const publishRes = await fetch(`https://graph.facebook.com/v21.0/${accountId}/media_publish`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        creation_id: createData.id,
+        access_token: token,
+      }),
+    });
+
+    const publishData = (await publishRes.json()) as { id?: string; error?: { message: string } };
+    if (publishData.id) {
+      return {
+        success: true,
+        channel: 'instagram_reel',
+        postId: publishData.id,
+        message: `Instagram Reel published successfully! (Media ID: ${publishData.id})`,
+      };
+    }
+
+    return {
+      success: false,
+      channel: 'instagram_reel',
+      message: `Instagram Reel publish failed: ${publishData.error?.message || 'Unknown error'}`,
+    };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      channel: 'instagram_reel',
+      message: `Instagram Reel exception: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
+}
+
+/**
+ * Publishes Today's 1080x1920 60s Reels to YouTube Shorts, Facebook Page, Instagram Reels, and Webhook.
+ * Reuses cached MP4 buffers from generateServerDailyReelVideoBuffer so zero extra render time is spent when run after Telegram!
+ */
+export async function publishDailyReelsToVideoPlatforms(): Promise<{
+  results: SocialPublishResult[];
+  summary: string;
+}> {
+  const { day } = getTodayISTData();
+  const hasYouTube = Boolean(
+    process.env.YOUTUBE_CLIENT_ID &&
+      process.env.YOUTUBE_CLIENT_SECRET &&
+      process.env.YOUTUBE_REFRESH_TOKEN
+  );
+  const hasFacebook = Boolean(process.env.FACEBOOK_PAGE_ID && process.env.FACEBOOK_PAGE_TOKEN);
+  const hasInstagramReelHost = Boolean(
+    process.env.INSTAGRAM_ACCESS_TOKEN &&
+      process.env.INSTAGRAM_ACCOUNT_ID &&
+      ((process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_UPLOAD_PRESET) ||
+        process.env.INSTAGRAM_PUBLIC_REEL_BASE_URL)
+  );
+  const hasWebhook = Boolean(process.env.SOCIAL_WEBHOOK_URL);
+
+  if (!hasYouTube && !hasFacebook && !hasInstagramReelHost) {
+    return {
+      results: [],
+      summary:
+        'Video auto-upload ready (set YOUTUBE_REFRESH_TOKEN, FACEBOOK_PAGE_TOKEN, or INSTAGRAM_ACCESS_TOKEN + CLOUDINARY_CLOUD_NAME secrets in GitHub).',
+    };
+  }
+
+  const rawVariants = (
+    process.env.REEL_PUBLISH_VARIANTS || 'panchangam_te,rashi_te,panchangam_en,rashi_en'
+  )
+    .split(',')
+    .map((v) => v.trim().toLowerCase())
+    .filter(Boolean);
+
+  const variants: Array<{ kind: 'panchangam' | 'rashi'; lang: 'te' | 'en' }> = rawVariants
+    .map((v) => {
+      const [k, l] = v.split('_');
+      if ((k === 'panchangam' || k === 'rashi') && (l === 'te' || l === 'en')) {
+        return { kind: k, lang: l };
+      }
+      return null;
+    })
+    .filter((v): v is { kind: 'panchangam' | 'rashi'; lang: 'te' | 'en' } => v !== null);
+
+  let ytAccessToken: string | undefined;
+  if (hasYouTube) {
+    const auth = await getYouTubeAccessToken();
+    if (auth.accessToken) {
+      ytAccessToken = auth.accessToken;
+    } else {
+      console.warn('⚠️ YouTube OAuth error:', auth.error);
+    }
+  }
+
+  const results: SocialPublishResult[] = [];
+  const baseReelUrl = process.env.INSTAGRAM_PUBLIC_REEL_BASE_URL?.replace(/\/$/, '');
+
+  for (const variant of variants) {
+    const { mp4Buffer, filename, socialPack } = generateServerDailyReelVideoBuffer(
+      day,
+      variant.kind,
+      variant.lang
+    );
+
+    const tags = socialPack.hashtags
+      .split(/\s+/)
+      .map((t) => t.replace(/^#/, '').trim())
+      .filter((t) => t.length > 1 && t.length <= 30);
+
+    // 1. YouTube Shorts
+    if (ytAccessToken) {
+      const ytRes = await uploadVideoToYouTubeShorts({
+        mp4Buffer,
+        title: socialPack.youtubeTitle,
+        description: `${socialPack.caption}\n\n${socialPack.hashtags}`,
+        tags,
+        defaultLanguage: variant.lang,
+        accessToken: ytAccessToken,
+      });
+      results.push(ytRes);
+      console.log(ytRes.success ? `✅ ${ytRes.message}` : `⚠️ ${ytRes.message}`);
+    }
+
+    // 2. Facebook Page Reels / Video
+    if (hasFacebook) {
+      const fbRes = await uploadVideoToFacebookPage({
+        mp4Buffer,
+        filename,
+        title: socialPack.youtubeTitle,
+        description: socialPack.fullPostText,
+      });
+      results.push(fbRes);
+      console.log(fbRes.success ? `✅ ${fbRes.message}` : `⚠️ ${fbRes.message}`);
+    }
+
+    // 3. Instagram Reels (Cloudinary unsigned upload or configured HTTPS URL)
+    if (hasInstagramReelHost) {
+      const publicUrl = baseReelUrl ? `${baseReelUrl}/${filename}` : undefined;
+      const igReelRes = await publishReelToInstagram({
+        videoUrl: publicUrl,
+        mp4Buffer,
+        filename,
+        caption: `${socialPack.caption}\n\n${socialPack.hashtags}`,
+      });
+      results.push(igReelRes);
+      console.log(igReelRes.success ? `✅ ${igReelRes.message}` : `⚠️ ${igReelRes.message}`);
+    }
+
+    // 4. Optional Webhook notification per video when configured alongside video platforms
+    if (hasWebhook && process.env.SOCIAL_WEBHOOK_URL) {
+      try {
+        await fetch(process.env.SOCIAL_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'daily_reel_published',
+            date: day.isoDate,
+            kind: variant.kind,
+            lang: variant.lang,
+            filename,
+            youtubeTitle: socialPack.youtubeTitle,
+            caption: socialPack.caption,
+            hashtags: socialPack.hashtags,
+            fullPostText: socialPack.fullPostText,
+            publishedLinks: results
+              .filter((r) => r.success && r.postUrl)
+              .map((r) => ({ channel: r.channel, url: r.postUrl })),
+          }),
+        });
+      } catch {}
+    }
+  }
+
+  const okCount = results.filter((r) => r.success).length;
+  return {
+    results,
+    summary: `Video Reels Run: ${okCount}/${results.length} succeeded.`,
+  };
+}
+
+/**
+ * Triggers the automated daily social post workflow (Images, LinkedIn, YouTube Shorts, FB Video, IG Reels, Webhook).
  */
 export async function executeDailySocialPosting(): Promise<{
   results: SocialPublishResult[];
@@ -366,8 +884,12 @@ export async function executeDailySocialPosting(): Promise<{
     results.push(liRes);
   }
 
-  // 3. Direct Instagram
-  if (process.env.INSTAGRAM_ACCESS_TOKEN && process.env.INSTAGRAM_ACCOUNT_ID) {
+  // 3. Direct Instagram Photo Feed (fallback when Reels public video host is not set)
+  const hasReelHosting = Boolean(
+    (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_UPLOAD_PRESET) ||
+      process.env.INSTAGRAM_PUBLIC_REEL_BASE_URL
+  );
+  if (process.env.INSTAGRAM_ACCESS_TOKEN && process.env.INSTAGRAM_ACCOUNT_ID && !hasReelHosting) {
     const igRes = await publishToInstagram({
       imageUrl: payload.imageUrlTe,
       caption: payload.fullSocialCaption,
@@ -375,11 +897,15 @@ export async function executeDailySocialPosting(): Promise<{
     results.push(igRes);
   }
 
+  // 4. YouTube Shorts, Facebook Page Reels & Instagram Reels (Direct HD Video Uploads)
+  const videoRun = await publishDailyReelsToVideoPlatforms();
+  results.push(...videoRun.results);
+
   const successCount = results.filter((r) => r.success).length;
   const summary =
     results.length === 0
-      ? 'No social integrations configured yet (SOCIAL_WEBHOOK_URL, LINKEDIN_ACCESS_TOKEN, or INSTAGRAM_ACCESS_TOKEN).'
-      : `Social Posting Run: ${successCount}/${results.length} succeeded.`;
+      ? 'No social integrations configured yet (YouTube Shorts, Facebook Page, Instagram, LinkedIn, or Webhook).'
+      : `Social Posting Run: ${successCount}/${results.length} succeeded (${videoRun.summary}).`;
 
   return { results, summary };
 }

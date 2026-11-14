@@ -1,0 +1,32 @@
+name: Daily Morning 6:00 AM IST Subhodayam Panchangam + Subhashitham Photo Card
+
+on:
+  schedule:
+    # Runs every day at 00:30 UTC (Morning 6:00 AM IST)
+    - cron: '30 0 * * *'
+  workflow_dispatch: # Allows manual 1-click run from GitHub Actions tab
+
+jobs:
+  send-morning-good-morning-card:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Telugu Fonts for Crisp Card Rendering
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-core
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Generate & Send Morning 6:00 AM IST Panchangam + Subhashitham Cards
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SOCIAL_WEBHOOK_URL: ${{ secrets.SOCIAL_WEBHOOK_URL }}
+        run: npx tsx scripts/sendMorningGoodMorningCard.ts

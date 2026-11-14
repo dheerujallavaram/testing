@@ -24,7 +24,7 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Generate & Send Today's Panchangam Image & 12 Rashi Predictions to Telegram & WhatsApp
+      - name: Generate & Send Today's Panchangam + 4 HD Videos to Telegram, WhatsApp, YouTube Shorts & Social
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -32,4 +32,28 @@ jobs:
           CALLMEBOT_API_KEY: ${{ secrets.CALLMEBOT_API_KEY }} # Optional free personal WhatsApp API key
           META_WA_TOKEN: ${{ secrets.META_WA_TOKEN }} # Optional Meta WhatsApp Cloud API token
           META_PHONE_ID: ${{ secrets.META_PHONE_ID }} # Optional Meta Phone Number ID
+          SAVE_DAILY_REELS_DIR: output/daily-reels
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          YOUTUBE_PRIVACY_STATUS: ${{ secrets.YOUTUBE_PRIVACY_STATUS }}
+          REEL_PUBLISH_VARIANTS: ${{ secrets.REEL_PUBLISH_VARIANTS }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_TOKEN: ${{ secrets.FACEBOOK_PAGE_TOKEN }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_UPLOAD_PRESET: ${{ secrets.CLOUDINARY_UPLOAD_PRESET }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
+          SOCIAL_WEBHOOK_URL: ${{ secrets.SOCIAL_WEBHOOK_URL }}
         run: npx tsx scripts/sendDailyPanchangam.ts
+
+      - name: Save 4 Daily 1080p HD Reels as Downloadable Artifact (7 Days)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-panchangam-rashi-reels-1080p
+          path: output/daily-reels/
+          retention-days: 7
+          if-no-files-found: ignore

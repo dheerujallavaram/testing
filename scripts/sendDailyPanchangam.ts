@@ -66,11 +66,31 @@ async function run() {
     console.error('WhatsApp send error:', waErr);
   }
 
-  // 4. Automated LinkedIn & Instagram Posting
+  // 4. Automated LinkedIn, YouTube Shorts, Facebook Page, Instagram Reels & Webhook
   try {
     const { executeDailySocialPosting } = await import('./socialPublisher');
+    const { sendTelegramMessage } = await import('./telegramBot');
     const socialResult = await executeDailySocialPosting();
     console.log('Social Media Auto-Publishing:', socialResult.summary);
+
+    const publishedItems = socialResult.results.filter((r) => r.success);
+    if (publishedItems.length > 0 && botToken) {
+      const chatIds = loadSavedChatIds();
+      const lines = publishedItems.map(
+        (r) => `• ${r.channel.toUpperCase()}: ${r.postUrl || r.message}`
+      );
+      const reportText = [
+        `🚀 *Daily Social & YouTube Shorts Auto-Upload Report (${todayDay.isoDate})*`,
+        ``,
+        ...lines,
+        ``,
+        `🌐 https://www.telugujyothisham.com`,
+      ].join('\n');
+
+      for (const chatId of chatIds) {
+        await sendTelegramMessage(chatId, reportText);
+      }
+    }
   } catch (socialErr) {
     console.error('Social Media Auto-Publishing error:', socialErr);
   }

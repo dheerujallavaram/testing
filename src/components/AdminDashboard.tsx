@@ -66,6 +66,7 @@ import { DAILY_SUBHASHITHALU } from './DailySubhashithamCard';
 import { downloadDailyPanchangamCardImage } from '../utils/panchangamImageGenerator';
 import { AdminGruhapraveshamSamagriStudio } from './AdminGruhapraveshamSamagriStudio';
 import { AdminTelegramDailyBroadcaster } from './AdminTelegramDailyBroadcaster';
+import { AdminAstrologyGuestPostStudio } from './AdminAstrologyGuestPostStudio';
 
 export interface ClientKundaliPrefill {
   name: string;
@@ -103,9 +104,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [user, setUser] = useState<User | null>(auth.currentUser);
   const [authReady, setAuthReady] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>('');
-  const [activeSubTab, setActiveSubTab] = useState<'bookings' | 'kundali' | 'announcements' | 'samagri'>('bookings');
+  const [activeSubTab, setActiveSubTab] = useState<'bookings' | 'kundali' | 'announcements' | 'samagri' | 'guestposts'>('bookings');
   const [statusFeedback, setStatusFeedback] = useState<string>('');
   const [showQuickSamagri, setShowQuickSamagri] = useState<boolean>(false);
+  const [showQuickGuestPosts, setShowQuickGuestPosts] = useState<boolean>(false);
   const [isRecordingAdminVideo, setIsRecordingAdminVideo] = useState<boolean>(false);
   const [adminVideoProgress, setAdminVideoProgress] = useState<number>(0);
   const [adminVideoStatus, setAdminVideoStatus] = useState<string>('');
@@ -740,12 +742,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <Download size={16} />
                 <span>🏡 తెలంగాణ గృహప్రవేశం సామాగ్రి లిస్ట్ డౌన్‌లోడ్</span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setShowQuickGuestPosts((prev) => !prev)}
+                className={`inline-flex items-center gap-1.5 px-4 py-3 rounded-2xl border-2 font-extrabold text-xs sm:text-sm shadow-lg transition-all cursor-pointer ${
+                  showQuickGuestPosts
+                    ? 'bg-emerald-600 text-white border-emerald-200'
+                    : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white border-sky-200'
+                }`}
+              >
+                <FileText size={16} />
+                <span>🔗 113 Guest Post సైట్ల లిస్ట్ (Clickable PDF & Word)</span>
+              </button>
             </div>
           </div>
 
           {showQuickSamagri && (
             <div className="pt-2">
               <AdminGruhapraveshamSamagriStudio />
+            </div>
+          )}
+
+          {showQuickGuestPosts && (
+            <div className="pt-2">
+              <AdminAstrologyGuestPostStudio />
             </div>
           )}
 
@@ -999,8 +1020,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           </div>
 
-          {/* 4-Tab Admin Navigation */}
-          <div className="bg-amber-950 p-2 rounded-2xl border-2 border-amber-500/60 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+          {/* 5-Tab Admin Navigation */}
+          <div className="bg-amber-950 p-2 rounded-2xl border-2 border-amber-500/60 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
             <button
               type="button"
               onClick={() => setActiveSubTab('bookings')}
@@ -1051,6 +1072,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             <button
               type="button"
+              onClick={() => setActiveSubTab('guestposts')}
+              className={`py-3 px-4 rounded-xl text-left transition-all flex items-center gap-3 cursor-pointer ${
+                activeSubTab === 'guestposts'
+                  ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 font-extrabold shadow-md'
+                  : 'text-amber-100 hover:bg-amber-900/70'
+              }`}
+            >
+              <Sparkles size={20} className="shrink-0" />
+              <div>
+                <div className="text-[10px] uppercase tracking-wider opacity-80">4. Off-Page SEO Backlinks</div>
+                <div className="text-sm font-bold">🔗 113 Guest Post సైట్లు (PDF/Word)</div>
+              </div>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setActiveSubTab('announcements')}
               className={`py-3 px-4 rounded-xl text-left transition-all flex items-center gap-3 cursor-pointer ${
                 activeSubTab === 'announcements'
@@ -1060,13 +1097,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             >
               <Megaphone size={20} className="shrink-0" />
               <div>
-                <div className="text-[10px] uppercase tracking-wider opacity-80">4. Live Website Control</div>
+                <div className="text-[10px] uppercase tracking-wider opacity-80">5. Live Website Control</div>
                 <div className="text-sm font-bold">📢 సైట్ లైవ్ ప్రకటన & సమయాలు</div>
               </div>
             </button>
           </div>
 
           {activeSubTab === 'samagri' && <AdminGruhapraveshamSamagriStudio />}
+          {activeSubTab === 'guestposts' && <AdminAstrologyGuestPostStudio />}
 
           {/* TAB 1: BOOKINGS & INQUIRIES CRM */}
           {activeSubTab === 'bookings' && (

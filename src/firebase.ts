@@ -31,7 +31,7 @@ function createFirestoreClient() {
     return initializeFirestore(
       app,
       {
-        experimentalForceLongPolling: true,
+        experimentalAutoDetectLongPolling: true,
         ignoreUndefinedProperties: true,
       },
       firebaseConfig.firestoreDatabaseId
@@ -50,12 +50,15 @@ export const ADMIN_OWNER_EMAIL = 'dheerujallavaram@gmail.com';
 
 // Validate connection to Firestore on boot per skill requirements
 async function testConnection() {
+  if (typeof window === 'undefined') return;
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
+  await new Promise((resolve) => setTimeout(resolve, 400));
   try {
     await getDocFromServer(doc(db, 'test', 'connection'));
   } catch {
     // Retry once after a short delay to avoid transient cold-start / iframe proxy glitches
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1800));
       await getDocFromServer(doc(db, 'test', 'connection'));
     } catch (retryError) {
       if (retryError instanceof Error && retryError.message.includes('the client is offline')) {
@@ -64,7 +67,7 @@ async function testConnection() {
     }
   }
 }
-testConnection();
+void testConnection();
 
 export enum OperationType {
   CREATE = 'create',

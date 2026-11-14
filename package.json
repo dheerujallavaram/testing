@@ -13,6 +13,8 @@
     "bot:start": "tsx scripts/telegramBot.ts",
     "bot:daily": "tsx scripts/sendDailyPanchangam.ts",
     "video:daily": "tsx scripts/generateDailyPanchangamReel.ts",
+    "morning:daily": "tsx scripts/sendMorningGoodMorningCard.ts",
+    "social:daily": "tsx scripts/publishDailyReelsToSocial.ts",
     "lint": "tsc --noEmit"
   },
   "dependencies": {

@@ -123,6 +123,70 @@ function drawWrapped(
   }
 }
 
+function clamp01(v: number): number {
+  return Math.max(0, Math.min(1, v));
+}
+
+function easeOutCubic(t: number): number {
+  const c = clamp01(t);
+  return 1 - Math.pow(1 - c, 3);
+}
+
+function getStaggeredMotion(sceneProgress: number, delay = 0, duration = 0.16) {
+  const raw = clamp01((sceneProgress - delay) / Math.max(0.01, duration));
+  const eased = easeOutCubic(raw);
+  return {
+    alpha: Math.max(0.04, eased),
+    offsetY: Math.round((1 - eased) * 42),
+  };
+}
+
+/**
+ * Ambient 12-Spoke Celestial Zodiac Mandala & Twinkling Golden Stardust backdrop
+ */
+function drawCelestialBackdrop(ctx: SKRSContext2D, progress: number) {
+  // Warm breathing aura at center
+  const pulse = 0.5 + 0.5 * Math.sin(progress * Math.PI * 10);
+  const radGrad = ctx.createRadialGradient(WIDTH / 2, 1020, 80, WIDTH / 2, 1020, 640);
+  radGrad.addColorStop(0, `rgba(245, 158, 11, ${0.14 + pulse * 0.06})`);
+  radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = radGrad;
+  ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+  // Subtle rotating 12-Spoke Zodiac Chakra in background
+  ctx.save();
+  ctx.translate(WIDTH / 2, 1020);
+  ctx.rotate(progress * Math.PI * 1.5);
+  ctx.strokeStyle = 'rgba(251, 191, 36, 0.09)';
+  ctx.lineWidth = 2.5;
+  for (const r of [240, 360, 480]) {
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  for (let s = 0; s < 12; s++) {
+    const angle = (s * Math.PI * 2) / 12;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(angle) * 140, Math.sin(angle) * 140);
+    ctx.lineTo(Math.cos(angle) * 480, Math.sin(angle) * 480);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // 24 Twinkling Golden Stardust Particles drifting upward
+  for (let i = 0; i < 24; i++) {
+    const px = ((i * 197 + 83) % (WIDTH - 120)) + 60;
+    const speed = 0.25 + ((i * 37) % 10) * 0.05;
+    const py = (((i * 251 + 120) - progress * HEIGHT * speed) % HEIGHT + HEIGHT) % HEIGHT;
+    const twinkle = 0.2 + 0.6 * (0.5 + 0.5 * Math.sin(progress * Math.PI * 18 + i * 1.7));
+    const radius = 2 + (i % 3) * 1.4;
+    ctx.fillStyle = `rgba(253, 224, 71, ${twinkle.toFixed(2)})`;
+    ctx.beginPath();
+    ctx.arc(px, py, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
 function renderBrandIntroScene(
   ctx: SKRSContext2D,
   dayData: DayData,
@@ -131,19 +195,31 @@ function renderBrandIntroScene(
   progress: number
 ) {
   const tr = (v: string) => (lang === 'en' ? translatePanchangamString(v, 'en') : v);
+  const pulse = 0.5 + 0.5 * Math.sin(progress * Math.PI * 4);
 
-  // Sacred Golden Mandala
+  // Sacred Counter-Rotating Lotus Mandala
   ctx.save();
-  ctx.translate(WIDTH / 2, 640);
+  ctx.translate(WIDTH / 2, 540);
   ctx.rotate(progress * Math.PI * 2);
-  ctx.strokeStyle = 'rgba(251, 191, 36, 0.25)';
+  ctx.strokeStyle = `rgba(251, 191, 36, ${0.24 + pulse * 0.14})`;
   ctx.lineWidth = 4;
-  for (const r of [140, 220, 310]) {
+  for (const r of [145, 225, 315]) {
     ctx.beginPath();
     ctx.arc(0, 0, r, 0, Math.PI * 2);
     ctx.stroke();
   }
+  for (let p = 0; p < 12; p++) {
+    const a = (p * Math.PI * 2) / 12;
+    ctx.beginPath();
+    ctx.arc(Math.cos(a) * 225, Math.sin(a) * 225, 24, 0, Math.PI * 2);
+    ctx.stroke();
+  }
   ctx.restore();
+
+  const scaleM = getStaggeredMotion(progress, 0.0, 0.35);
+  ctx.save();
+  ctx.globalAlpha = scaleM.alpha;
+  ctx.translate(0, scaleM.offsetY);
 
   drawRoundedRect(ctx, WIDTH / 2 - 110, 430, 220, 220, 48);
   ctx.fillStyle = '#fbbf24';
@@ -157,6 +233,7 @@ function renderBrandIntroScene(
   drawCentered(ctx, lang === 'en' ? 'OM' : 'ఓం', WIDTH / 2 - 110, 220, 535, 16);
   ctx.font = 'bold 34px "Noto Serif Telugu", serif';
   drawCentered(ctx, lang === 'en' ? 'SHUBHAM' : 'శుభం', WIDTH / 2 - 110, 220, 605, 16);
+  ctx.restore();
 
   ctx.fillStyle = '#fde68a';
   ctx.font = 'bold 30px "Noto Serif Telugu", serif';
@@ -238,7 +315,8 @@ function renderBrandIntroScene(
 
 function renderBrandOutroAdScene(
   ctx: SKRSContext2D,
-  lang: 'te' | 'en'
+  lang: 'te' | 'en',
+  sceneProgress = 1
 ) {
   ctx.fillStyle = '#fde68a';
   ctx.font = 'bold 40px "Noto Serif Telugu", serif';
@@ -271,7 +349,11 @@ function renderBrandOutroAdScene(
         ];
 
   let y = 468;
-  for (const srv of services) {
+  services.forEach((srv, idx) => {
+    const m = getStaggeredMotion(sceneProgress, idx * 0.06, 0.2);
+    ctx.save();
+    ctx.globalAlpha = m.alpha;
+    ctx.translate(0, m.offsetY);
     drawRoundedRect(ctx, 72, y, WIDTH - 144, 146, 24);
     ctx.fillStyle = '#fffbeb';
     ctx.fill();
@@ -286,9 +368,15 @@ function renderBrandOutroAdScene(
     ctx.fillStyle = '#1e293b';
     ctx.font = 'bold 25px "Noto Serif Telugu", serif';
     ctx.fillText(srv.d, 104, y + 106, WIDTH - 208);
+    ctx.restore();
     y += 162;
-  }
+  });
 
+  const ctaPulse = 0.96 + 0.04 * Math.sin(sceneProgress * Math.PI * 6);
+  ctx.save();
+  ctx.translate(WIDTH / 2, 1545);
+  ctx.scale(ctaPulse, ctaPulse);
+  ctx.translate(-WIDTH / 2, -1545);
   drawRoundedRect(ctx, 72, 1460, WIDTH - 144, 170, 32);
   ctx.fillStyle = '#fbbf24';
   ctx.fill();
@@ -298,12 +386,13 @@ function renderBrandOutroAdScene(
   ctx.font = 'bold 32px "Noto Serif Telugu", serif';
   drawCentered(
     ctx,
-    'WhatsApp Consultation: +91 94405 25660 | +91 89779 86166',
+    'WhatsApp Consultation: +91 89779 86166',
     72,
     WIDTH - 144,
     1588,
     20
   );
+  ctx.restore();
 }
 
 function renderRashiReelServerFrame(
@@ -323,13 +412,18 @@ function renderRashiReelServerFrame(
     return;
   }
   if (progress >= 0.83) {
-    renderBrandOutroAdScene(ctx, lang);
+    renderBrandOutroAdScene(ctx, lang, (progress - 0.83) / 0.17);
     return;
   }
 
   const bodyProg = (progress - 0.11) / (0.83 - 0.11);
 
   if (bodyProg < 0.36) {
+    const spotProg = bodyProg / 0.36;
+    const cardMotion = getStaggeredMotion(spotProg, 0, 0.22);
+    ctx.save();
+    ctx.globalAlpha = cardMotion.alpha;
+    ctx.translate(0, cardMotion.offsetY);
     // Spotlight Rashi Full Prediction Scene
     drawRoundedRect(ctx, 72, 370, WIDTH - 144, 78, 39);
     ctx.fillStyle = '#fbbf24';
@@ -426,9 +520,11 @@ function renderRashiReelServerFrame(
       drawWrapped(ctx, sec.b, 124, sy + 92, WIDTH - 248, 36, 3);
       sy += 230;
     }
+    ctx.restore();
   } else {
     // Remaining 11 Rashis in 2 pages (6 + 5) + Website Traffic Hook Banner
     const isFirstBatch = bodyProg < 0.68;
+    const batchProg = isFirstBatch ? (bodyProg - 0.36) / 0.32 : (bodyProg - 0.68) / 0.32;
     const batch = isFirstBatch ? others.slice(0, 6) : others.slice(6, 11);
 
     ctx.fillStyle = '#fde68a';
@@ -445,7 +541,11 @@ function renderRashiReelServerFrame(
     );
 
     let ry = 438;
-    for (const r of batch) {
+    batch.forEach((r, idx) => {
+      const rm = getStaggeredMotion(batchProg, idx * 0.055, 0.2);
+      ctx.save();
+      ctx.globalAlpha = rm.alpha;
+      ctx.translate(0, rm.offsetY);
       drawRoundedRect(ctx, 72, ry, WIDTH - 144, 168, 24);
       ctx.fillStyle = '#fffbeb';
       ctx.fill();
@@ -479,9 +579,10 @@ function renderRashiReelServerFrame(
       ctx.fillStyle = '#065f46';
       ctx.font = 'bold 23px "Noto Serif Telugu", serif';
       ctx.fillText(cleanText(line2), 102, ry + 142, WIDTH - 204);
+      ctx.restore();
 
       ry += 182;
-    }
+    });
 
     // Website Traffic Hook Banner
     drawRoundedRect(ctx, 72, 1540, WIDTH - 144, 108, 26);
@@ -524,6 +625,9 @@ export function renderCliFrame(
   bg.addColorStop(1, '#1e0502');
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+  // Smooth Celestial Mandala + Twinkling Golden Stardust
+  drawCelestialBackdrop(ctx, progress);
 
   // Golden border
   ctx.strokeStyle = '#f59e0b';
@@ -589,12 +693,13 @@ export function renderCliFrame(
     if (progress < 0.11) {
       renderBrandIntroScene(ctx, dayData, 'panchangam', lang, progress / 0.11);
     } else if (progress >= 0.83) {
-      renderBrandOutroAdScene(ctx, lang);
+      renderBrandOutroAdScene(ctx, lang, (progress - 0.83) / 0.17);
     } else {
       const bodyProg = (progress - 0.11) / (0.83 - 0.11);
       const scene = bodyProg < 0.36 ? 1 : bodyProg < 0.70 ? 2 : 3;
 
       if (scene === 1) {
+        const s1Prog = bodyProg / 0.36;
         ctx.fillStyle = '#fef3c7';
         ctx.font = 'bold 42px "Noto Serif Telugu", serif';
         drawCentered(
@@ -616,7 +721,11 @@ export function renderCliFrame(
         ];
 
         let ry = 455;
-        for (const row of rows) {
+        rows.forEach((row, idx) => {
+          const rm = getStaggeredMotion(s1Prog, idx * 0.055, 0.2);
+          ctx.save();
+          ctx.globalAlpha = rm.alpha;
+          ctx.translate(0, rm.offsetY);
           drawRoundedRect(ctx, 76, ry, WIDTH - 152, 168, 28);
           ctx.fillStyle = '#fffbeb';
           ctx.fill();
@@ -630,8 +739,9 @@ export function renderCliFrame(
           ctx.fillStyle = '#290f02';
           ctx.font = 'bold 36px "Noto Serif Telugu", serif';
           ctx.fillText(cleanText(row.v), 112, ry + 118, WIDTH - 224);
+          ctx.restore();
           ry += 188;
-        }
+        });
       } else if (scene === 2) {
         ctx.fillStyle = '#fef3c7';
         ctx.font = 'bold 42px "Noto Serif Telugu", serif';
@@ -792,7 +902,7 @@ export function renderCliFrame(
   ctx.font = 'bold 30px "Noto Serif Telugu", sans-serif';
   drawCentered(
     ctx,
-    'www.telugujyothisham.com • +91 94405 25660',
+    'www.telugujyothisham.com • +91 89779 86166',
     76,
     WIDTH - 152,
     1768,
@@ -800,9 +910,15 @@ export function renderCliFrame(
   );
 }
 
+const renderedReelCache = new Map<
+  string,
+  { mp4Buffer: Buffer; filename: string; socialPack: DailyVideoSocialPack }
+>();
+
 /**
  * Generates a Full HD (1080x1920) 60-Second MP4 video buffer in Node.js for Telegram Bot broadcasting,
  * along with its full copy-ready Title, Caption, and Trending Hashtags.
+ * Results are cached per (isoDate, kind, lang) in-process so social auto-uploaders reuse the exact MP4.
  */
 export function generateServerDailyReelVideoBuffer(
   dayData: DayData,
@@ -815,8 +931,14 @@ export function generateServerDailyReelVideoBuffer(
 } {
   registerAvailableFonts();
   const isoDate = dayData.isoDate || getTodayIsoDateIST();
+  const cacheKey = `${isoDate}::${kind}::${lang}`;
+  const cached = renderedReelCache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
   const durationSec = 60;
-  const inputFps = 2; // 120 crisp scene frames encoded into a 60s 30fps H.264 stream
+  const inputFps = 8; // 480 smooth motion-graphics frames encoded into 30fps H.264 stream
   const totalFrames = durationSec * inputFps;
 
   const tmpBase = fs.mkdtempSync(path.join(os.tmpdir(), `slg-reel-${kind}-${lang}-`));
@@ -829,51 +951,117 @@ export function generateServerDailyReelVideoBuffer(
     for (let i = 0; i < totalFrames; i++) {
       const progress = i / Math.max(1, totalFrames - 1);
       renderCliFrame(ctx, isoDate, lang, 'hyderabad', progress, kind);
-      const framePath = path.join(tmpBase, `frame-${String(i).padStart(4, '0')}.png`);
-      fs.writeFileSync(framePath, canvas.toBuffer('image/png'));
+      const framePath = path.join(tmpBase, `frame-${String(i).padStart(4, '0')}.jpg`);
+      fs.writeFileSync(framePath, canvas.toBuffer('image/jpeg', 92));
     }
 
-    execFileSync(
-      'ffmpeg',
-      [
-        '-y',
-        '-framerate',
-        String(inputFps),
-        '-i',
-        path.join(tmpBase, 'frame-%04d.png'),
-        '-f',
-        'lavfi',
-        '-t',
-        String(durationSec),
-        '-i',
-        'aevalsrc=0.04*sin(2*PI*138.59*t)+0.03*sin(2*PI*207.65*t)+0.02*sin(2*PI*277.18*t):s=44100:c=stereo',
-        '-c:v',
-        'libx264',
-        '-pix_fmt',
-        'yuv420p',
-        '-r',
-        '30',
-        '-preset',
-        'ultrafast',
-        '-crf',
-        '20',
-        '-c:a',
-        'aac',
-        '-b:a',
-        '128k',
-        '-shortest',
-        '-movflags',
-        '+faststart',
-        mp4Path,
-      ],
-      { stdio: 'ignore' }
-    );
+    const customBgmCandidates = [
+      process.env.CUSTOM_BGM_MP3_PATH || '',
+      path.resolve(process.cwd(), 'scripts', 'audio', 'temple_bgm.mp3'),
+      path.resolve(process.cwd(), 'public', 'audio', 'temple_bgm.mp3'),
+    ].filter(Boolean);
+    const customBgmPath = customBgmCandidates.find((p) => fs.existsSync(p));
+
+    // Soothing Carnatic Bhupali/Hamsadhwani Tanpura + Singing Bowl Bell Chimes + Pentatonic Flute Soundscape
+    const tanpuraL = '0.035*sin(2*PI*138.59*t)+0.025*sin(2*PI*207.65*t)+0.018*sin(2*PI*277.18*t)';
+    const bell = '0.065*exp(-1.35*mod(t,10))*(sin(2*PI*554.37*t)+0.45*sin(2*PI*830.61*t)+0.25*sin(2*PI*1108.73*t))';
+    const fluteFreq =
+      '277.18*between(mod(t,21),0,3.5)+311.13*between(mod(t,21),3.5,7)+349.23*between(mod(t,21),7,10.5)+415.30*between(mod(t,21),10.5,14)+466.16*between(mod(t,21),14,17.5)+554.37*between(mod(t,21),17.5,21)';
+    const fluteEnv = '0.042*pow(sin(PI*mod(t,3.5)/3.5),2)';
+    const leftExpr = `(${tanpuraL})+0.95*(${bell})+(${fluteEnv})*sin(2*PI*(${fluteFreq})*t)`;
+    const rightExpr = `(${tanpuraL})+0.95*(${bell})+(${fluteEnv})*sin(2*PI*(${fluteFreq})*(t+0.004))`;
+
+    const ffmpegArgs = customBgmPath
+      ? [
+          '-y',
+          '-framerate',
+          String(inputFps),
+          '-i',
+          path.join(tmpBase, 'frame-%04d.jpg'),
+          '-stream_loop',
+          '-1',
+          '-t',
+          String(durationSec),
+          '-i',
+          customBgmPath,
+          '-af',
+          'volume=0.85,afade=t=in:st=0:d=1.5,afade=t=out:st=57.0:d=3.0',
+          '-c:v',
+          'libx264',
+          '-pix_fmt',
+          'yuv420p',
+          '-r',
+          '30',
+          '-preset',
+          'ultrafast',
+          '-crf',
+          '20',
+          '-c:a',
+          'aac',
+          '-b:a',
+          '160k',
+          '-shortest',
+          '-movflags',
+          '+faststart',
+          mp4Path,
+        ]
+      : [
+          '-y',
+          '-framerate',
+          String(inputFps),
+          '-i',
+          path.join(tmpBase, 'frame-%04d.jpg'),
+          '-f',
+          'lavfi',
+          '-t',
+          String(durationSec),
+          '-i',
+          `aevalsrc='${leftExpr}|${rightExpr}':s=44100`,
+          '-af',
+          'lowpass=f=2200,aecho=0.8:0.88:70|130:0.35|0.22,afade=t=in:st=0:d=1.8,afade=t=out:st=57.0:d=3.0',
+          '-c:v',
+          'libx264',
+          '-pix_fmt',
+          'yuv420p',
+          '-r',
+          '30',
+          '-preset',
+          'ultrafast',
+          '-crf',
+          '20',
+          '-c:a',
+          'aac',
+          '-b:a',
+          '160k',
+          '-shortest',
+          '-movflags',
+          '+faststart',
+          mp4Path,
+        ];
+
+    execFileSync('ffmpeg', ffmpegArgs, { stdio: 'ignore' });
 
     const mp4Buffer = fs.readFileSync(mp4Path);
     const socialPack = generateDailyVideoSocialPack(dayData, kind, lang, 'auto');
     const filename = `Sri_Lakshmi_Ganapathi_${kind === 'panchangam' ? 'Panchangam' : '12_Rashi_Phalalu'}_${lang.toUpperCase()}_${isoDate}_60s_HD.mp4`;
 
-    return { mp4Buffer, filename, socialPack };
+    const result = { mp4Buffer, filename, socialPack };
+    renderedReelCache.set(cacheKey, result);
+
+    const saveDir = process.env.SAVE_DAILY_REELS_DIR;
+    if (saveDir) {
+      try {
+        fs.mkdirSync(saveDir, { recursive: true });
+        fs.writeFileSync(path.join(saveDir, filename), mp4Buffer);
+        fs.writeFileSync(
+          path.join(saveDir, `${filename.replace(/\.mp4$/, '')}-caption.txt`),
+          socialPack.fullPostText,
+          'utf-8'
+        );
+      } catch {}
+    }
+
+    return result;
   } finally {
     try {
       fs.rmSync(tmpBase, { recursive: true, force: true });

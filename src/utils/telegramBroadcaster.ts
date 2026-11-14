@@ -237,7 +237,7 @@ export async function sendVideoAndSocialPackToTelegram(
 
   try {
     // Build a concise caption (<= 950 chars) attached directly to the video file
-    const shortHeader = `🎬 ${label}\n📌 ${socialPack.youtubeTitle}\n\n🌐 www.telugujyothisham.com\n📞 WhatsApp: +91 94405 25660\n\n${socialPack.hashtags}`;
+    const shortHeader = `🎬 ${label}\n📌 ${socialPack.youtubeTitle}\n\n🌐 www.telugujyothisham.com\n📞 WhatsApp: +91 89779 86166\n\n${socialPack.hashtags}`;
     const videoCaption =
       shortHeader.length > 980 ? shortHeader.slice(0, 975) + '...' : shortHeader;
 

@@ -1087,7 +1087,7 @@ export async function sendSingleHdVideoWithCaptionToChat(
         : `Today 12-Rashi Horoscope English Full HD Video (${day.isoDate})`;
 
   const shortVideoCaption =
-    `🎬 ${label}\n📌 ${socialPack.youtubeTitle}\n\n🌐 https://www.telugujyothisham.com\n📞 WhatsApp: +91 94405 25660\n\n${socialPack.hashtags}`.slice(
+    `🎬 ${label}\n📌 ${socialPack.youtubeTitle}\n\n🌐 https://www.telugujyothisham.com\n📞 WhatsApp: +91 89779 86166\n\n${socialPack.hashtags}`.slice(
       0,
       980
     );
