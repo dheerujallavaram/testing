@@ -1,5 +1,36 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
 
 User-agent: Mediapartners-Google
 Allow: /
@@ -8,3 +39,4 @@ User-agent: Google-AdSense
 Allow: /
 
 Sitemap: https://www.telugujyothisham.com/sitemap.xml
+# LLMs & AI Search Index: https://www.telugujyothisham.com/llms.txt

@@ -530,9 +530,15 @@ export function computeCityLocalPanchangam(
 /**
  * Returns today's IST date in YYYY-MM-DD format (computed in Asia/Kolkata).
  */
+/**
+ * Returns the active Panchangam & Horoscope ISO date (YYYY-MM-DD).
+ * Rolls over daily at 9:30 PM IST (21:30 Asia/Kolkata = 16:00 UTC) so evening users
+ * and the 9:45 PM IST Daily SEO Autopilot serve the upcoming day's Panchangam & Rashi Phalalu.
+ */
 export function getTodayIsoDateIST(referenceDate: Date = new Date()): string {
-  const istMs = referenceDate.getTime() + 5.5 * 3600 * 1000;
-  const ist = new Date(istMs);
+  // 21:30 IST = 16:00 UTC -> adding +8.0h shifts UTC midnight to 21:30 IST (+2.5h early rollover)
+  const rolloverIstMs = referenceDate.getTime() + 8 * 3600 * 1000;
+  const ist = new Date(rolloverIstMs);
   const y = ist.getUTCFullYear();
   const m = String(ist.getUTCMonth() + 1).padStart(2, '0');
   const d = String(ist.getUTCDate()).padStart(2, '0');
@@ -2363,6 +2369,20 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       h1: 'పుట్టిన తేదీతో 29 అధ్యాయాల బృహత్ జాతకం & KP కుండలి – Telugu Jathakam PDF',
       breadcrumbName: 'Telugu Jathakam PDF',
     },
+    '/sample-jathakam': {
+      primaryKeyword: 'నమూనా జాతకం pdf',
+      secondaryKeywords: [
+        'sample jathakam report pdf',
+        'తెలుగు జాతకం నమూనా pdf',
+        'telugu horoscope sample report',
+        'బృహత్ జాతక నివేదిక pdf',
+      ],
+      title: 'నమూనా జాతకం PDF – 29 అధ్యాయాల Sample Brihat Jataka Report',
+      description:
+        'నమూనా జాతకం PDF (Sample Telugu Jathakam Report): D1, D9, D10 చక్రాలు, KP సబ్‌లార్డ్స్, కుజదోషం & 120 ఏళ్ల దశలతో కూడిన 29 అధ్యాయాల బృహత్ జాతక నమూనా.',
+      h1: 'నమూనా బృహత్ జాతక నివేదిక PDF (Sample Telugu Jathakam Report)',
+      breadcrumbName: 'నమూనా జాతకం PDF',
+    },
     '/vivaha-pontana': {
       primaryKeyword: 'వివాహ పొంతన',
       secondaryKeywords: [
@@ -2372,9 +2392,9 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
         'అష్టకూట గుణ మిలనం',
         '36 గుణాలు 22 పొంతనలు',
       ],
-      title: 'వివాహ పొంతన – 36 గుణాల అష్టకూటం & 22 పొంతనల మహామేళనం',
+      title: 'వివాహ పొంతన – 36 గుణాల అష్టకూటం & 22 పొంతనలు',
       description:
-        'వివాహ పొంతన (marriage matching in telugu & pelli pontana): వధూవరుల నక్షత్రాల ఆధారంగా 36 గుణాల అష్టకూటం, దక్షిణ భారతీయ 22 పొంతనలు, రజ్జు మరియు కుజ దోష పరిశీలన.',
+        'వివాహ పొంతన (marriage matching in telugu & pelli pontana): వధూవరుల నక్షత్రాల ఆధారంగా 36 గుణాల అష్టకూటం, 22 పొంతనలు మరియు కుజ దోష పరిశీలన.',
       h1: 'వివాహ పొంతన – 36 గుణాల అష్టకూట గుణ మిలనం & 22 పొంతనలు (Marriage Matching in Telugu)',
       breadcrumbName: 'వివాహ పొంతన',
     },
@@ -2452,9 +2472,9 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
         'గృహ ప్రవేశ ముహూర్తం',
         'నేటి మంచి ముహూర్తం',
       ],
-      title: 'శుభ ముహూర్తం నిర్ధారణ – వివాహ, గృహప్రవేశ, వ్యాపార ముహూర్తాలు | Muhurtham Finder',
+      title: 'శుభ ముహూర్తం – వివాహ, గృహప్రవేశ, వ్యాపార ముహూర్తాలు',
       description:
-        'శుభ ముహూర్తం (how to choose good muhurtham): వివాహం, గృహప్రవేశం, వాహనం, వ్యాపారం, బంగారం మరియు 50+ శుభకార్యాల వేద శాస్త్ర ప్రమాణ ముహూర్తాలు (Astrology Horoscope).',
+        'శుభ ముహూర్తం (how to choose good muhurtham): వివాహం, గృహప్రవేశం, వాహనం, వ్యాపారం, బంగారం మరియు 50+ శుభకార్యాల వేద శాస్త్ర ప్రమాణ ముహూర్తాలు.',
       h1: 'శుభ ముహూర్తం – వేద మహర్షుల ప్రమాణ ముహూర్త నిర్ణయ యంత్రం (Muhurtham Finder)',
       breadcrumbName: 'శుభ ముహూర్తం',
     },

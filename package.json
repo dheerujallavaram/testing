@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "generate:sitemap": "tsx scripts/generate-sitemap.ts",
+    "seo:daily": "tsx scripts/dailySeoAutopilot.ts",
     "bot:start": "tsx scripts/telegramBot.ts",
     "bot:daily": "tsx scripts/sendDailyPanchangam.ts",
     "video:daily": "tsx scripts/generateDailyPanchangamReel.ts",

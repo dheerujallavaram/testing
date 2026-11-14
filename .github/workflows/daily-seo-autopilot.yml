@@ -1,0 +1,47 @@
+name: Daily Automatic SEO Autopilot (Sitemap, SSG, Illyism Audit & IndexNow)
+
+on:
+  schedule:
+    # Runs every day at 16:15 UTC (Night 9:45 PM IST — right after 9:30 PM IST date rollover)
+    - cron: '15 16 * * *'
+  workflow_dispatch: # Allows 1-click manual run from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  daily-seo-autopilot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run Daily SEO Autopilot (Refresh Panchangam HTML, Sitemap, Robots, Illyism Audit & IndexNow)
+        env:
+          NOTIFY_TELEGRAM_SEO: '1'
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: npx tsx scripts/dailySeoAutopilot.ts
+
+      - name: Build & Prerender 300+ Static SEO Pages (SSG)
+        run: npm run build
+
+      - name: Commit & Push Daily Updated Sitemap, Robots, Index HTML & SEO Report to GitHub
+        run: |
+          git config user.name "telugujyothisham-seo-bot"
+          git config user.email "astrologer@telugujyothisham.com"
+          git add index.html public/sitemap.xml public/robots.txt public/9f4e7c2b1a8d4f3e8c6b2d1a0e9f8c7b.txt seo/daily-seo-report.md
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(seo): daily automated Panchangam, Sitemap & IndexNow update"
+            git push
+          else
+            echo "No SEO file changes to commit today."
+          fi
