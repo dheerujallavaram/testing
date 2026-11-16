@@ -1,3 +1,5 @@
+import dailyTrendingArticlesJson from './dailyTrendingArticles.json';
+
 export interface VedicArticleSection {
   heading: string;
   subheading?: string;
@@ -98,7 +100,7 @@ export interface VedicClassicalArticle {
   };
 }
 
-export const VEDIC_CLASSICAL_ARTICLES: VedicClassicalArticle[] = [
+export const CURATED_VEDIC_CLASSICAL_ARTICLES: VedicClassicalArticle[] = [
   // ARTICLE 1: SWARODAYA SHASTRA
   {
     slug: 'swarodaya-shastra',
@@ -4640,6 +4642,15 @@ export const VEDIC_CLASSICAL_ARTICLES: VedicClassicalArticle[] = [
       ],
     },
   },
+];
+
+const DAILY_TRENDING_ARTICLES = (
+  Array.isArray(dailyTrendingArticlesJson) ? dailyTrendingArticlesJson : []
+) as VedicClassicalArticle[];
+
+export const VEDIC_CLASSICAL_ARTICLES: VedicClassicalArticle[] = [
+  ...DAILY_TRENDING_ARTICLES,
+  ...CURATED_VEDIC_CLASSICAL_ARTICLES,
 ];
 
 

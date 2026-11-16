@@ -18,6 +18,7 @@ import {
   LUNAR_AND_SHANI_MENTAL_GUIDES,
 } from '../data/dwadasaRashiVedicEncyclopedia';
 import { VEDIC_CLASSICAL_ARTICLES } from '../data/vedicArticlesData';
+import dailyTrendingSeoData from '../data/dailyTrendingSeoData.json';
 import { getDailyRashiFortunes } from '../utils/panchangaLogic';
 import {
   generate12MonthVratasAndFestivals,
@@ -2734,7 +2735,7 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
   if (articleMatch) {
     const canonical = `${SITE_URL}/${articleMatch.slug}`;
     const rawSeoTitle = articleMatch.telugu.seoTitle || `${articleMatch.telugu.title} | వేద జ్యోతిషం`;
-    const title = clampTitle(rawSeoTitle, 65);
+    const title = clampTitle(rawSeoTitle, 60);
     const desc = clampMetaDescription(articleMatch.telugu.metaDescription, 160);
     return {
       title,
@@ -3167,8 +3168,8 @@ function renderRichToolGuideHtml(pathname: string): string {
           <span style="display:inline-block;padding:4px 12px;background:#fef3c7;color:#92400e;border-radius:9999px;font-size:12px;font-weight:700;text-transform:uppercase;border:1px solid #fde68a;">
             ${escapeHtml(article.categoryTe)} • ${escapeHtml(article.categoryEn)}
           </span>
-          <h1 style="margin:12px 0 8px;font-size:26px;color:#451a03;line-height:1.3;">${escapeHtml(te.title)}</h1>
-          <h2 style="margin:0 0 10px;font-size:18px;color:#78350f;font-weight:600;">${escapeHtml(en.title)}</h2>
+          <h2 style="margin:12px 0 8px;font-size:24px;color:#451a03;line-height:1.3;">${escapeHtml(te.title)}</h2>
+          <p style="margin:0 0 10px;font-size:17px;color:#78350f;font-weight:600;">${escapeHtml(en.title)}</p>
           <div style="font-size:13px;color:#64748b;">
             <span>రచన / విశ్లేషణ: <strong>బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ</strong></span> • 
             <span>పఠన సమయం: <strong>${article.readTimeMinutes} నిమిషాలు</strong></span> • 
@@ -3351,7 +3352,7 @@ function renderRichToolGuideHtml(pathname: string): string {
           <span style="display:inline-block;padding:4px 12px;background:#fef3c7;color:#92400e;border-radius:9999px;font-size:12px;font-weight:700;text-transform:uppercase;border:1px solid #fde68a;">
             ప్రాచీన వేద జ్యోతిష గ్రంథాలు &amp; మహర్షి సిద్ధాంతాలు • Standalone Treatises
           </span>
-          <h1 style="margin:12px 0 8px;font-size:26px;color:#451a03;line-height:1.3;">వేద జ్యోతిష శాస్త్ర రహస్యాలు &amp; ప్రాచీన గ్రంథ పరిశోధనా వ్యాసాలు</h1>
+          <h2 style="margin:12px 0 8px;font-size:24px;color:#451a03;line-height:1.3;">వేద జ్యోతిష శాస్త్ర రహస్యాలు &amp; ప్రాచీన గ్రంథ పరిశోధనా వ్యాసాలు</h2>
           <p style="font-size:15px;color:#78350f;margin:0;">
             మహర్షి పరాశరుని "బృహత్ పరాశర హోరా శాస్త్రం", వరాహమిహిరుని "బృహజ్జాతకం", మహర్షి జైమిని సూత్రాలు, మంత్రేశ్వరుని "ఫలదీపిక", శ్రీ రామానుజాచార్యుల "భావార్థ రత్నాకర", సముద్ర మహర్షి "సాముద్రిక శాస్త్రం", కేరళ "ప్రశ్నమార్గ", "శివ స్వరోదయ శాస్త్రం" మరియు ఆయుర్వేద వైద్య జ్యోతిష గ్రంథాల ఆధారంగా రచించబడిన సంపూర్ణ వ్యాసాలు — ప్రతి వ్యాసం ప్రత్యేక 16:9 చిత్రం మరియు సొంత పేజీ లింక్‌తో.
           </p>
@@ -4103,10 +4104,10 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
 
         <nav aria-label="Panchangam Date and City Navigation" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:#fffbeb;border:1px solid #fde68a;padding:12px 16px;border-radius:14px;margin-bottom:20px;">
           <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-            <a href="/panchangam/${prevDate}" style="padding:6px 12px;background:#fff;border:1px solid #d97706;border-radius:8px;color:#78350f;text-decoration:none;font-weight:700;font-size:13px;">← నిన్నటి పంచాంగం (${prevDate})</a>
+            ${prevDate >= '2026-04-01' ? `<a href="/panchangam/${prevDate}" style="padding:6px 12px;background:#fff;border:1px solid #d97706;border-radius:8px;color:#78350f;text-decoration:none;font-weight:700;font-size:13px;">← నిన్నటి పంచాంగం (${prevDate})</a>` : ''}
             <a href="/panchangam/${todayIso}" style="padding:6px 12px;background:#9a3412;border:1px solid #9a3412;border-radius:8px;color:#fff;text-decoration:none;font-weight:700;font-size:13px;">నేటి పంచాంగం (${todayIso})</a>
             <a href="/rashi-phalalu" style="padding:6px 12px;background:#b45309;border:1px solid #f59e0b;border-radius:8px;color:#fff;text-decoration:none;font-weight:700;font-size:13px;">✨ నేటి రాశి ఫలాలు (Rashi Phalalu)</a>
-            <a href="/panchangam/${nextDate}" style="padding:6px 12px;background:#fff;border:1px solid #d97706;border-radius:8px;color:#78350f;text-decoration:none;font-weight:700;font-size:13px;">రేపటి పంచాంగం (${nextDate}) →</a>
+            ${nextDate <= '2027-05-31' ? `<a href="/panchangam/${nextDate}" style="padding:6px 12px;background:#fff;border:1px solid #d97706;border-radius:8px;color:#78350f;text-decoration:none;font-weight:700;font-size:13px;">రేపటి పంచాంగం (${nextDate}) →</a>` : ''}
             <a href="/panchangam/calendar" style="padding:6px 12px;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;color:#78350f;text-decoration:none;font-weight:700;font-size:13px;">📅 తెలుగు క్యాలెండర్ 2026</a>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;">
@@ -4197,6 +4198,20 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
           <p style="margin:0;font-size:15px;color:#1e293b;"><strong>${escapeHtml(dayData.specialEvent || dayData.deity)}:</strong> ${escapeHtml(dayData.phalitham)}</p>
         </section>
 
+        ${
+          dailyTrendingSeoData && dailyTrendingSeoData.seoSummaryTe
+            ? `<section id="panchangam-trending-insight" aria-label="Daily Trending Search & Panchangam Analysis" style="background:#fefce8;border:2px solid #d97706;border-radius:16px;padding:18px;margin-bottom:24px;">
+          <h2 style="margin:0 0 8px;font-size:19px;color:#451a03;">📈 ${escapeHtml(dailyTrendingSeoData.headlineTe)}</h2>
+          <p style="margin:0 0 8px;font-size:14.5px;color:#1e293b;">${escapeHtml(dailyTrendingSeoData.seoSummaryTe)}</p>
+          <p style="margin:0 0 10px;font-size:13.5px;color:#475569;">${escapeHtml(dailyTrendingSeoData.seoSummaryEn)}</p>
+          <p style="margin:0 0 8px;font-size:13px;color:#78350f;"><strong>ట్రెండింగ్ అంశాలు:</strong> ${escapeHtml((dailyTrendingSeoData.trendingKeywordsTe || []).join(' • '))}</p>
+          <p style="margin:0;font-size:13.5px;">
+            <a href="/${escapeHtml(dailyTrendingSeoData.linkedArticleSlug)}" style="color:#9a3412;font-weight:700;text-decoration:underline;">📖 నేటి సంపూర్ణ ట్రెండింగ్ పంచాంగ వ్యాసం చదవండి (Read Trending Article) →</a>
+          </p>
+        </section>`
+            : ''
+        }
+
         ${(() => {
           let hash = 0;
           for (let i = 0; i < targetIsoDate.length; i++) {
@@ -4223,18 +4238,32 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
             <li><a href="/panchangam" style="color:#9a3412;font-weight:700;">నేటి పంచాంగం (Neti Panchangam – ఈ రోజు తిథి, నక్షత్రం, రాహుకాలం)</a></li>
             <li><a href="/rashi-phalalu" style="color:#9a3412;font-weight:700;">నేటి రాశి ఫలాలు – మేషం నుండి మీనం వరకు 12 రాశుల ఫలితాలు</a></li>
             <li><a href="/janma-kundali" style="color:#9a3412;font-weight:700;">జన్మ కుండలి తెలుగులో – 29 అధ్యాయాల బృహత్ జాతకం &amp; KP కుండలి</a></li>
+            <li><a href="/mee-jatakam" style="color:#9a3412;font-weight:700;">మీ జాతకం తెలుసుకోండి – 37 అధ్యాయాల సంపూర్ణ జాతక నివేదిక (Mee Jatakam)</a></li>
+            <li><a href="/sample-jathakam" style="color:#9a3412;font-weight:700;">నమూనా జాతక పత్రిక &amp; PDF రిపోర్ట్ (Sample Jathakam)</a></li>
             <li><a href="/prashna-kundali" style="color:#9a3412;font-weight:700;">1–249 KP ప్రశ్న కుండలి (Instant Horary Prashna Predictor)</a></li>
             <li><a href="/ratna-rudraksha" style="color:#9a3412;font-weight:700;">లగ్న రత్నం, రుద్రాక్ష &amp; దోష పరిహార సలహాదారు</a></li>
             <li><a href="/festivals-calendar" style="color:#9a3412;font-weight:700;">12 నెలల తెలుగు పండుగలు, ఏకాదశి, ప్రదోషం &amp; వ్రత క్యాలెండర్</a></li>
+            <li><a href="/festivals" style="color:#9a3412;font-weight:700;">ప్రధాన తెలుగు పండుగలు &amp; వ్రత విధానాలు (Festivals)</a></li>
+            <li><a href="/kartika-abhishekam" style="color:#9a3412;font-weight:700;">కార్తీక మాసం అభిషేకం, దీపారాధన &amp; శివ పూజా ఫలితాలు</a></li>
             <li><a href="/nitya-sankalpam" style="color:#9a3412;font-weight:700;">నిత్య పూజా సంకల్పం మంత్రం (India &amp; USA EST/CST/PST)</a></li>
             <li><a href="/vivaha-pontana" style="color:#9a3412;font-weight:700;">వివాహ పొంతన – 36 గుణాల అష్టకూట గుణ మిలనం</a></li>
             <li><a href="/telugu-baby-names" style="color:#9a3412;font-weight:700;">నక్షత్రం ప్రకారం పిల్లల పేర్లు (Telugu Baby Names by Nakshatra)</a></li>
+            <li><a href="/naama-nakshatra" style="color:#9a3412;font-weight:700;">పేరు మొదటి అక్షరం ద్వారా నామ నక్షత్రం &amp; రాశి (Naama Nakshatra)</a></li>
             <li><a href="/gowri-panchangam" style="color:#9a3412;font-weight:700;">గౌరీ పంచాంగం &amp; హోరా చక్రం</a></li>
             <li><a href="/tarabalam-chandrabalam" style="color:#9a3412;font-weight:700;">తారాబలం &amp; చంద్రబలం క్యాలిక్యులేటర్</a></li>
-            <li><a href="/gochara-phalalu" style="color:#9a3412;font-weight:700;">గోచార ఫలాలు – శని, గురు, రాహు కేతు గోచారం</a></li>
-            <li><a href="/dosha-pariharalu" style="color:#9a3412;font-weight:700;">ఏలినాటి శని, అష్టమ శని &amp; కుజ దోష పరిహారాలు</a></li>
+            <li><a href="/muhurtham" style="color:#9a3412;font-weight:700;">90 రోజుల వ్యక్తిగత శుభ ముహూర్త స్కానర్ (Shubha Muhurtham Finder)</a></li>
+            <li><a href="/shubha-muhurthalu" style="color:#9a3412;font-weight:700;">2026–2027 శుభ ముహూర్తాల తేదీలు (Shubha Muhurthalu)</a></li>
+            <li><a href="/vivaha-muhurtham" style="color:#9a3412;font-weight:700;">వివాహ శుభ ముహూర్తాలు 2026–2027 (Vivaha Muhurtham)</a></li>
+            <li><a href="/gruha-pravesha-muhurtham" style="color:#9a3412;font-weight:700;">గృహ ప్రవేశ శుభ ముహూర్తాలు (Gruha Pravesha Muhurtham)</a></li>
+            <li><a href="/muhurtham/november-2026" style="color:#9a3412;font-weight:700;">నవంబర్ 2026 శుభ ముహూర్తాలు</a> • <a href="/muhurtham/december-2026" style="color:#9a3412;font-weight:700;">డిసెంబర్ 2026 ముహూర్తాలు</a> • <a href="/muhurtham/january-2027" style="color:#9a3412;font-weight:700;">జనవరి 2027 ముహూర్తాలు</a></li>
+            <li><a href="/vastu-shastra-telugu" style="color:#9a3412;font-weight:700;">గృహ వాస్తు శాస్త్రం – తూర్పు, ఉత్తర, పడమర, దక్షిణ వాస్తు (Vastu Shastra)</a></li>
+            <li><a href="/gochara-phalalu" style="color:#9a3412;font-weight:700;">గోచార ఫలాలు</a> (<a href="/gochara-phalalu/shani" style="color:#9a3412;font-weight:700;">శని గోచారం</a> • <a href="/gochara-phalalu/guru" style="color:#9a3412;font-weight:700;">గురు గోచారం</a> • <a href="/gochara-phalalu/rahu-ketu" style="color:#9a3412;font-weight:700;">రాహు-కేతు గోచారం</a>)</li>
+            <li><a href="/dosha-pariharalu" style="color:#9a3412;font-weight:700;">దోష పరిహారాలు</a> (<a href="/yelinati-shani" style="color:#9a3412;font-weight:700;">ఏలినాటి శని</a> • <a href="/kuja-dosha" style="color:#9a3412;font-weight:700;">కుజ దోషం</a> • <a href="/kaal-sarp-dosha" style="color:#9a3412;font-weight:700;">కాలసర్ప దోషం</a>)</li>
+            <li><a href="/ugadi-rashi-phalalu" style="color:#9a3412;font-weight:700;">శ్రీ పరాభవ నామ సంవత్సర ఉగాది రాశి ఫలాలు 2026–2027</a></li>
             <li><a href="/dwadasa-rashi-rahasyalu" style="color:#9a3412;font-weight:700;">12 రాశుల దాంపత్యం (భార్య-భర్త), పిల్లల విద్యా స్వభావం, వృత్తి-భాగస్వామ్యం &amp; ఆరోగ్యం</a></li>
             <li><a href="/panchangam/calendar" style="color:#9a3412;font-weight:700;">తెలుగు క్యాలెండర్ 2026 – నెలవారీ పంచాంగం</a></li>
+            <li><a href="/vedic-articles" style="color:#9a3412;font-weight:700;">వేద జ్యోతిష శాస్త్ర పరిశోధనా వ్యాసాలు (16 Classical Articles)</a></li>
+            <li><a href="/services" style="color:#9a3412;font-weight:700;">వైదిక పూజలు, హోమాలు &amp; జ్యోతిష సేవలు (Pooja &amp; Consultation Services)</a></li>
           </ul>
           <p style="margin:12px 0 6px;font-size:13.5px;font-weight:700;color:#451a03;">12 రాశుల ప్రత్యేక పేజీలు (Individual Rashi Phalalu Pages):</p>
           <p style="margin:0;font-size:13px;line-height:1.8;">

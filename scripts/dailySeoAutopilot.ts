@@ -267,24 +267,43 @@ async function main() {
   // 3. Run Illyism/seo-skills route & metadata audit
   const audit = runIllyismSeoAudit(todayIso);
 
-  // 4. Push today's updated & money URLs via IndexNow (Bing, ChatGPT Search, DuckDuckGo, Yandex)
-  const dailyPushUrls = [
-    `${SITE_URL}/`,
-    `${SITE_URL}/panchangam`,
-    `${SITE_URL}/panchangam/${todayIso}`,
-    `${SITE_URL}/panchangam/hyderabad`,
-    `${SITE_URL}/rashi-phalalu`,
-    `${SITE_URL}/rashi-phalalu/${todayInfo.spotlightRashiSlug}`,
-    `${SITE_URL}/janma-kundali`,
-    `${SITE_URL}/vivaha-pontana`,
-    `${SITE_URL}/muhurtham`,
-    `${SITE_URL}/services`,
-    `${SITE_URL}/llms.txt`,
-  ];
+  // 4. Push today's updated, trending & money URLs via IndexNow (Bing, ChatGPT Search, DuckDuckGo, Yandex)
+  let trendingSlug = '';
+  try {
+    const trendJsonPath = path.resolve(process.cwd(), 'src', 'data', 'dailyTrendingSeoData.json');
+    if (fs.existsSync(trendJsonPath)) {
+      const parsed = JSON.parse(fs.readFileSync(trendJsonPath, 'utf-8')) as {
+        linkedArticleSlug?: string;
+      };
+      if (parsed.linkedArticleSlug) {
+        trendingSlug = parsed.linkedArticleSlug;
+      }
+    }
+  } catch {
+    // Ignore optional trend JSON read failures
+  }
+
+  const dailyPushUrls = Array.from(
+    new Set([
+      `${SITE_URL}/`,
+      `${SITE_URL}/panchangam`,
+      `${SITE_URL}/panchangam/${todayIso}`,
+      `${SITE_URL}/panchangam/hyderabad`,
+      `${SITE_URL}/rashi-phalalu`,
+      `${SITE_URL}/rashi-phalalu/${todayInfo.spotlightRashiSlug}`,
+      `${SITE_URL}/vedic-articles`,
+      ...(trendingSlug ? [`${SITE_URL}/${trendingSlug}`] : []),
+      `${SITE_URL}/janma-kundali`,
+      `${SITE_URL}/vivaha-pontana`,
+      `${SITE_URL}/muhurtham`,
+      `${SITE_URL}/services`,
+      `${SITE_URL}/llms.txt`,
+    ])
+  );
 
   const indexNowRes = await submitUrlsToIndexNow(dailyPushUrls);
 
-  // 5. Write seo/daily-seo-report.md
+  // 5. Write seo/daily-seo-report.md and seo/daily-seo-report.json
   const seoDir = path.resolve(process.cwd(), 'seo');
   if (!fs.existsSync(seoDir)) fs.mkdirSync(seoDir, { recursive: true });
 
@@ -294,6 +313,7 @@ async function main() {
     `- **Site:** ${SITE_URL}`,
     `- **Today's Panchangam Sync:** Tithi: ${todayInfo.tithi} | Nakshatram: ${todayInfo.nakshatram}`,
     `- **Today's Spotlight Rashi:** ${todayInfo.spotlightRashiTe} (\`/rashi-phalalu/${todayInfo.spotlightRashiSlug}\`)`,
+    ...(trendingSlug ? [`- **Today's Trending Article:** ${SITE_URL}/${trendingSlug}`] : []),
     `- **Sitemap Indexable URLs:** ${totalSitemapUrls}`,
     `- **Routes Audited (\`Illyism/seo-skills\` gates):** ${audit.checkedRoutes}`,
     `- **FATAL Issues:** ${audit.fatalIssues.length}`,
@@ -315,6 +335,31 @@ async function main() {
   ];
 
   fs.writeFileSync(path.join(seoDir, 'daily-seo-report.md'), reportLines.join('\n'), 'utf-8');
+  fs.writeFileSync(
+    path.join(seoDir, 'daily-seo-report.json'),
+    JSON.stringify(
+      {
+        dateIso: todayIso,
+        generatedAtUtc: new Date().toISOString(),
+        tithi: todayInfo.tithi,
+        nakshatram: todayInfo.nakshatram,
+        spotlightRashiTe: todayInfo.spotlightRashiTe,
+        spotlightRashiSlug: todayInfo.spotlightRashiSlug,
+        trendingArticleUrl: trendingSlug ? `${SITE_URL}/${trendingSlug}` : '',
+        sitemapUrls: totalSitemapUrls,
+        checkedRoutes: audit.checkedRoutes,
+        fatalIssuesCount: audit.fatalIssues.length,
+        warningsCount: audit.warnings.length,
+        indexNowOk: indexNowRes.ok,
+        indexNowStatus: indexNowRes.status,
+        indexNowNote: indexNowRes.note,
+        submittedUrlsCount: dailyPushUrls.length,
+      },
+      null,
+      2
+    ),
+    'utf-8'
+  );
 
   console.log(`✅ [Daily SEO Autopilot] Audited ${audit.checkedRoutes} routes | Sitemap URLs: ${totalSitemapUrls} | Fatal: ${audit.fatalIssues.length} | Warnings: ${audit.warnings.length}`);
   console.log(`📡 [IndexNow] Status: ${indexNowRes.status} (${indexNowRes.note})`);
@@ -326,6 +371,7 @@ async function main() {
         `✅ Sitemap & Robots.txt updated (${totalSitemapUrls} URLs)`,
         `📅 Homepage Sync: ${todayInfo.tithi}, ${todayInfo.nakshatram}`,
         `🌟 Spotlight Rashi: ${todayInfo.spotlightRashiTe}`,
+        ...(trendingSlug ? [`📰 Trending Article: ${SITE_URL}/${trendingSlug}`] : []),
         `🔎 SEO Audit (${audit.checkedRoutes} pages): ${audit.fatalIssues.length} Fatal, ${audit.warnings.length} Warnings`,
         `📡 IndexNow (Bing + ChatGPT Search): ${indexNowRes.ok ? 'Success' : indexNowRes.note}`,
       ].join('\n')

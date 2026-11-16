@@ -10,6 +10,9 @@
     "clean": "rm -rf dist server.js",
     "generate:sitemap": "tsx scripts/generate-sitemap.ts",
     "seo:daily": "tsx scripts/dailySeoAutopilot.ts",
+    "seo:trend-writer": "tsx scripts/hermesTrendSeoWriter.ts",
+    "seo:audit": "tsx scripts/openSeoAudit.ts",
+    "seo:telegram-report": "tsx scripts/sendTelegramDeployReport.ts",
     "bot:start": "tsx scripts/telegramBot.ts",
     "bot:daily": "tsx scripts/sendDailyPanchangam.ts",
     "video:daily": "tsx scripts/generateDailyPanchangamReel.ts",
@@ -18,6 +21,8 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@google/genai": "^3.3.0",
+    "@napi-rs/canvas": "^1.1.0",
     "@tailwindcss/vite": "^4.0.0",
     "@vitejs/plugin-react": "^4.0.0 || ^5.0.0 || ^6.0.0",
     "astronomy-engine": "^2.1.19",
@@ -28,8 +33,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.0.0",
-    "vite": "^6.0.0 || ^7.0.0 || ^8.0.0",
-    "@napi-rs/canvas": "^1.1.0"
+    "vite": "^6.0.0 || ^7.0.0 || ^8.0.0"
   },
   "devDependencies": {
     "@firebase/eslint-plugin-security-rules": "^0.0.2",

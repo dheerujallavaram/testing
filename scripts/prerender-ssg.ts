@@ -11,6 +11,7 @@ import {
   generateRobotsTxt,
   generateSitemapXML,
 } from './generate-sitemap';
+import { runOpenSeoAudit } from './openSeoAudit';
 
 function escapeAttr(val: string): string {
   return String(val || '')
@@ -141,9 +142,9 @@ export function runPrerenderSsg() {
   for (const { date } of generateStaticDateParams(60, 7)) {
     allRoutes.add(`/panchangam/${date}`);
   }
-  // Also pre-build all dates from 2026-04-01 through 2027-01-31 so regardless of whether
-  // the build clock is April 2026 (Vercel) or November 2026, all 2026-2027 daily pages exist statically
-  for (const date of getAllDatesBetween('2026-04-01', '2027-01-31')) {
+  // Pre-build all dates from 2026-04-01 through 2027-05-31 so all festivals-calendar
+  // and navigation links resolve to static prerendered HTML with zero 404/SPA fallbacks
+  for (const date of getAllDatesBetween('2026-04-01', '2027-05-31')) {
     allRoutes.add(`/panchangam/${date}`);
   }
 
@@ -178,6 +179,16 @@ export function runPrerenderSsg() {
   }
 
   console.log(`✅ [SSG Pre-Render] Pre-rendered ${count} static HTML pages (.html + /index.html) with raw Panchangam data in dist/`);
+
+  const openSeo = runOpenSeoAudit(process.cwd());
+  console.log(
+    `🔎 [OpenSEO Audit] Score: ${openSeo.score}/100 | Pages: ${openSeo.pagesAudited} | Critical: ${openSeo.criticalCount} | Warnings: ${openSeo.warningCount} | Info: ${openSeo.infoCount}`
+  );
+  if (openSeo.findings.length > 0) {
+    for (const f of openSeo.findings.slice(0, 10)) {
+      console.log(`   [${f.severity.toUpperCase()}] (${f.issueType}) ${f.route}: ${f.detail}`);
+    }
+  }
 }
 
 if (process.argv[1]?.includes('prerender-ssg')) {

@@ -1,4 +1,4 @@
-name: Daily Automatic SEO Autopilot (Sitemap, SSG, Illyism Audit & IndexNow)
+name: Daily Automatic SEO Autopilot (Hermes Trends, Sitemap, SSG, OpenSEO Audit & Auto-Deploy + Telegram Report)
 
 on:
   schedule:
@@ -24,24 +24,62 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Run Daily SEO Autopilot (Refresh Panchangam HTML, Sitemap, Robots, Illyism Audit & IndexNow)
+      - name: Run Hermes Agent Trend Research & Daily SEO Panchangam + Article Writer
         env:
-          NOTIFY_TELEGRAM_SEO: '1'
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          HERMES_API_KEY: ${{ secrets.HERMES_API_KEY }}
+        run: npx tsx scripts/hermesTrendSeoWriter.ts
+
+      - name: Run Daily SEO Autopilot (Refresh Panchangam HTML, Sitemap, Robots & IndexNow)
+        env:
+          NOTIFY_TELEGRAM_SEO: '0'
         run: npx tsx scripts/dailySeoAutopilot.ts
 
-      - name: Build & Prerender 300+ Static SEO Pages (SSG)
+      - name: Build & Prerender 550+ Static SEO Pages (SSG)
         run: npm run build
 
-      - name: Commit & Push Daily Updated Sitemap, Robots, Index HTML & SEO Report to GitHub
+      - name: Run OpenSEO Technical & AI Visibility Audit (Zero Critical Errors Gate)
+        run: npm run seo:audit
+
+      - name: Commit & Push Daily Updated Trending Articles, Sitemap, Robots & SEO Reports
+        id: git_push
         run: |
           git config user.name "telugujyothisham-seo-bot"
           git config user.email "astrologer@telugujyothisham.com"
-          git add index.html public/sitemap.xml public/robots.txt public/9f4e7c2b1a8d4f3e8c6b2d1a0e9f8c7b.txt seo/daily-seo-report.md
+          git add index.html public/sitemap.xml public/robots.txt public/9f4e7c2b1a8d4f3e8c6b2d1a0e9f8c7b.txt seo/daily-seo-report.md seo/daily-seo-report.json seo/open-seo-report.json src/data/dailyTrendingSeoData.json src/data/dailyTrendingArticles.json
           if ! git diff --staged --quiet; then
-            git commit -m "chore(seo): daily automated Panchangam, Sitemap & IndexNow update"
+            git commit -m "chore(seo): daily Hermes trend article, Panchangam, Sitemap & IndexNow update"
             git push
+            echo "status=pushed" >> "$GITHUB_OUTPUT"
           else
             echo "No SEO file changes to commit today."
+            echo "status=no-changes" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Trigger Vercel Production Auto-Deploy Hook (Optional Secret)
+        id: vercel_hook
+        run: |
+          if [ -n "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}" ]; then
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}")
+            echo "Vercel Deploy Hook responded with HTTP $HTTP_CODE"
+            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 400 ]; then
+              echo "status=triggered" >> "$GITHUB_OUTPUT"
+            else
+              echo "status=failed" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "Using Vercel Git integration auto-deploy on git push."
+            echo "status=git-auto-deploy" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send Complete Daily SEO, OpenSEO & Auto-Deploy Report to Telegram Bot
+        if: always()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          WORKFLOW_JOB_STATUS: ${{ job.status }}
+          GIT_PUSH_STATUS: ${{ steps.git_push.outputs.status }}
+          VERCEL_HOOK_STATUS: ${{ steps.vercel_hook.outputs.status }}
+          WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: npx tsx scripts/sendTelegramDeployReport.ts

@@ -1,0 +1,16 @@
+{
+  "generatedAtUtc": "2026-11-15T16:15:16.939Z",
+  "pagesAudited": 550,
+  "sitemapUrls": 193,
+  "criticalCount": 0,
+  "warningCount": 0,
+  "infoCount": 0,
+  "score": 100,
+  "findings": [],
+  "aiVisibilityChecks": {
+    "hasLlmsTxt": true,
+    "hasLlmsFullTxt": true,
+    "robotsAllowsAiBots": true,
+    "hasJsonLdSchema": true
+  }
+}

@@ -1312,6 +1312,8 @@ async function registerBotCommands() {
     { command: 'cards_en', description: '12 Signs Status Image Cards in English' },
     { command: 'social', description: 'Instagram & LinkedIn రెడీమేడ్ పోస్ట్ క్యాప్షన్' },
     { command: 'autopost', description: '🚀 LinkedIn & Instagram ఆటోమేటెడ్ పబ్లిషింగ్' },
+    { command: 'seoreport', description: '📊 నేటి Auto-Deploy, Hermes Trends & OpenSEO రిపోర్ట్' },
+    { command: 'trend', description: '🔥 నేటి ట్రెండింగ్ పంచాంగం & SEO ఆర్టికల్ లింక్' },
     { command: 'mesham', description: 'మేష రాశి నేటి ఫలితం & ఇమేజ్ కార్డ్' },
     { command: 'vrushabham', description: 'వృషభ రాశి నేటి ఫలితం & ఇమేజ్ కార్డ్' },
     { command: 'mithunam', description: 'మిథున రాశి నేటి ఫలితం & ఇమేజ్ కార్డ్' },
@@ -1436,6 +1438,18 @@ export async function handleCommandOrCallback(chatId: number | string, command: 
       const { day, fortunes } = getTodayISTData();
       const copy = buildInstagramLinkedInSocialCopy(day, fortunes);
       await sendTelegramMessage(chatId, copy, getMainInlineKeyboard());
+      return;
+    }
+
+    if (
+      cleanCmd === 'seoreport' ||
+      cleanCmd === 'trend' ||
+      cleanCmd === 'deployreport' ||
+      cleanCmd === 'cmd_seoreport'
+    ) {
+      const { buildTelegramSeoDeployReport } = await import('./sendTelegramDeployReport');
+      const report = await buildTelegramSeoDeployReport({ includeLiveCheck: true });
+      await sendTelegramMessage(chatId, report.markdownText, report.replyMarkup);
       return;
     }
 
