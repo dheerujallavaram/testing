@@ -47,7 +47,7 @@ interface TrendingSeoJson {
   headlineTe?: string;
   topTrendingRashiTe?: string;
   linkedArticleSlug?: string;
-  liveTrendSources?: { title: string; source: string }[];
+  focusThemesTe?: string[];
 }
 
 function readJsonSafe<T>(relPath: string): T | null {
@@ -141,9 +141,9 @@ export async function buildTelegramSeoDeployReport(options?: {
     return '✅ Scheduled Nightly Auto-Deploy (Vercel Git Integration)';
   })();
 
-  const trendSources = (trendData?.liveTrendSources || [])
-    .slice(0, 3)
-    .map((s, idx) => `${idx + 1}. ${s.title.slice(0, 88)}${s.title.length > 88 ? '…' : ''}`);
+  const trendSources = (trendData?.focusThemesTe || [])
+    .slice(0, 4)
+    .map((theme, idx) => `${idx + 1}. ${theme}`);
 
   const openSeoLine = openSeo
     ? `🎯 ${openSeo.score ?? 100}/100 (${openSeo.pagesAudited ?? 0} Static SSG Pages | ${openSeo.criticalCount ?? 0} Critical, ${openSeo.warningCount ?? 0} Warnings)`

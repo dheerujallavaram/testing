@@ -23,7 +23,8 @@ export interface DailyTrendingSeoData {
   seoSummaryEn: string;
   topTrendingRashiTe: string;
   linkedArticleSlug: string;
-  liveTrendSources: { title: string; source: string; link: string }[];
+  focusThemesTe: string[];
+  focusThemesEn: string[];
 }
 
 const VERIFIED_ARTICLE_IMAGES = [
@@ -50,6 +51,81 @@ function decodeXmlEntities(str: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .trim();
+}
+
+const MEDIA_OUTLET_PATTERNS = [
+  /\b(TV9\s*Telugu|TV9|Samayam\s*Telugu|Samayam|Hindustan\s*Times\s*Telugu|Hindustan\s*Times|Asianet\s*News\s*Telugu|Asianet\s*News|Asianet|Eenadu|Sakshi|Andhra\s*Jyothy|ABN|NTV|Zee\s*Telugu|News18\s*Telugu|News18|ABP\s*Desam|ABP|Times\s*of\s*India|Indian\s*Express|NDTV|GreatAndhra|Tupaki|Oneindia\s*Telugu|Oneindia|Google\s*Trends|Google\s*News)\b/gi,
+  /ట్రెండింగ్/g,
+  /సెర్చ్\s*ట్రెండ్స్/g,
+  /\b(Trending|Search\s*Trends)\b/gi,
+];
+
+function scrubMediaAndTrendLabels(text: string): string {
+  let clean = String(text || '');
+  for (const rx of MEDIA_OUTLET_PATTERNS) {
+    clean = clean.replace(rx, '');
+  }
+  return clean
+    .replace(/\s*[-–|:]\s*(?=$|[.,;)])/g, '')
+    .replace(/\(\s*\)/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function distillVedicThemesFromSignals(params: {
+  rssHeadlines: string[];
+  geminiGroundedBrief: string;
+  masamTe: string;
+  nextVrataLabelTe: string;
+  nextVrataLabelEn: string;
+}): {
+  themesTe: string[];
+  themesEn: string[];
+  narrativeTe: string;
+  narrativeEn: string;
+} {
+  const corpus = `${params.rssHeadlines.join(' ')} ${params.geminiGroundedBrief}`.toLowerCase();
+  const themesTe: string[] = [];
+  const themesEn: string[] = [];
+
+  if (/కార్తీక|karthika|kartika/i.test(corpus)) {
+    themesTe.push('కార్తీక మాస పుణ్య తిథులు, దీపారాధన & వ్రత నియమాలు');
+    themesEn.push('Kartika Masam sacred rituals, Deeparadhana & auspicious dates');
+  }
+  if (/వివాహ|పెళ్లి|marriage|vivaha|muhurth|ముహూర్త/i.test(corpus)) {
+    themesTe.push('వివాహ యోగం, గురు-శుక్ర బలం & శుభ ముహూర్త పరిశీలన');
+    themesEn.push('Vivaha Yoga, marriage compatibility & Shubha Muhurtham windows');
+  }
+  if (/రాజయోగం|ధనలాభం|ప్రమోషన్|ఉద్యోగ|career|wealth|rajayoga|promotion|job/i.test(corpus)) {
+    themesTe.push('గ్రహ గోచార రాజయోగం, ఉద్యోగ–వ్యాపార ప్రగతి & ఆర్థిక ఫలితాలు');
+    themesEn.push('Planetary Rajayoga transits, career growth & financial prosperity');
+  }
+  if (/నాగుల|కాలసర్ప|దోష|nagula|kalasarpa|dosha|rahu|shani|శని/i.test(corpus)) {
+    themesTe.push('నాగుల చవితి / సర్ప దోష నివారణ & కాలసర్ప శాంతి మంత్రాలు');
+    themesEn.push('Nagula Chavithi worship, Kalasarpa & Shani Dosha Vedic remedies');
+  }
+  if (/ఏకాదశి|ekadashi|పౌర్ణమి|pournami|అమావాస్య|amavasya|ప్రదోషం|pradosham/i.test(corpus)) {
+    themesTe.push(`${params.nextVrataLabelTe} ఉపవాస వ్రత విధానం & సంకల్పం`);
+    themesEn.push(`${params.nextVrataLabelEn} fasting rules & Sankalpam`);
+  }
+
+  if (themesTe.length === 0) {
+    themesTe.push(
+      `${params.masamTe} శుభ తిథి–నక్షత్ర విశేషాలు & శుభ ముహూర్తాలు`,
+      'ద్వాదశ రాశి గోచార బలం, దోష శాంతి & నిత్య పరిహారాలు',
+      `${params.nextVrataLabelTe} వ్రత విశేషాలు`
+    );
+    themesEn.push(
+      'Daily Tithi, Nakshatra strength & Abhijit Muhurtham',
+      '12-Rashi planetary transit & Vedic remedies',
+      params.nextVrataLabelEn
+    );
+  }
+
+  const narrativeTe = `ప్రస్తుత ${params.masamTe} పుణ్యకాలంలో భక్తులు ప్రధానంగా ${themesTe.slice(0, 3).join(', ')} గురించి విశేషంగా ఆసక్తి చూపుతున్నారు. శాస్త్ర ప్రమాణాల ప్రకారం సరైన తిథి–నక్షత్ర బలంతో కార్యాలు ప్రారంభిస్తే సకల శుభాలు చేకూరుతాయి.`;
+  const narrativeEn = `Devotees seeking authentic Vedic guidance today are focusing on ${themesEn.slice(0, 3).join(', ')}. Observing Drik Siddhanta timings and Natal Tarabalam helps align key decisions with auspicious planetary currents.`;
+
+  return { themesTe, themesEn, narrativeTe, narrativeEn };
 }
 
 async function fetchRssItems(
@@ -165,15 +241,17 @@ async function generateWithLlmOrNull(params: {
   rssHeadlines: string[];
   geminiGroundedBrief: string;
 }): Promise<LlmGeneratedTrendPayload | null> {
-  const prompt = `You are Hermes Agent acting as an authoritative Vedic Jyotisha Scholar (Brahmasri Jallavaram Sai Dheeraj Sharma, Sri Lakshmi Ganapathi Jyothishalayam, Hyderabad - www.telugujyothisham.com, WhatsApp +91 89779 86166).
-Write high-ranking, culturally authentic Telugu & English SEO content aligned with TODAY's real Drik Siddhanta Panchangam and live search trends.
+  const prompt = `You are acting as an authoritative Telugu Vedic Jyotisha Scholar (Brahmasri Jallavaram Sai Dheeraj Sharma, Sri Lakshmi Ganapathi Jyothishalayam, Hyderabad - www.telugujyothisham.com, WhatsApp +91 89779 86166).
+Write high-ranking, culturally authentic Telugu & English Panchangam and Jyotisha guidance aligned with TODAY's real Drik Siddhanta Panchangam and the active devotee topics listed below.
 
 CRITICAL RULES:
 1. NEVER invent or alter Tithi, Nakshatram, Yogam, Karanam, Rahukalam, or Muhurtham timings — strictly use ONLY the astronomical facts provided below.
-2. "seoTitle" MUST be 42 to 57 characters max (never exceed 58 chars!).
-3. "metaDescription" MUST be 110 to 150 characters max.
-4. Keep both Telugu (rich traditional Telugu script) and English completely coherent, informative, zero clickbait, and aligned with Classical Parashara / Surya Siddhanta / Muhurtha Chintamani principles.
-5. Output STRICTLY valid JSON matching this schema (no markdown fences):
+2. NEVER mention any newspaper, TV channel, or media outlet names (NEVER write TV9, Samayam, Hindustan Times, Eenadu, Sakshi, Asianet, Google Trends, etc.) anywhere.
+3. NEVER write the words "ట్రెండింగ్", "సెర్చ్ ట్రెండ్స్", "Trending", "Search Trends", or "Viral" anywhere in public titles, headings, summaries, or body copy. Silently weave the hot topics naturally as authentic Sri Lakshmi Ganapathi Jyothishalayam Vedic guidance.
+4. "seoTitle" MUST be 42 to 57 characters max (never exceed 58 chars!).
+5. "metaDescription" MUST be 110 to 150 characters max.
+6. Keep both Telugu (rich traditional grammatical Telugu) and English completely coherent, zero clickbait, and aligned with Classical Parashara / Surya Siddhanta / Muhurtha Chintamani principles.
+7. Output STRICTLY valid JSON matching this schema (no markdown fences):
 {
   "headlineTe": "string",
   "headlineEn": "string",
@@ -226,9 +304,9 @@ CRITICAL RULES:
 ASTRONOMICAL & PANCHANGAM DATA FOR ${params.todayIso}:
 ${params.panchangamContext}
 
-LIVE SEARCH TRENDS & HEADLINES:
-${params.rssHeadlines.join('\n')}
-${params.geminiGroundedBrief ? `\nSEARCH GROUNDED BRIEF:\n${params.geminiGroundedBrief}` : ''}`;
+ACTIVE DEVOTEE TOPICS TO WEAVE NATURALLY (DO NOT CITE NEWS SOURCES OR USE THE WORD TRENDING):
+${params.rssHeadlines.map((h) => scrubMediaAndTrendLabels(h)).filter(Boolean).join('\n')}
+${params.geminiGroundedBrief ? `\nTOPIC BRIEF:\n${scrubMediaAndTrendLabels(params.geminiGroundedBrief)}` : ''}`;
 
   // Priority 1: OpenRouter / NousResearch Hermes 3 (or custom HERMES_API_KEY)
   const hermesKey = process.env.HERMES_API_KEY || process.env.OPENROUTER_API_KEY;
@@ -314,7 +392,10 @@ function buildDeterministicTrendBundle(params: {
   topFortunes: ReturnType<typeof getDailyRashiFortunes>;
   nextVrataLabelTe: string;
   nextVrataLabelEn: string;
-  rssHeadlines: string[];
+  themesTe: string[];
+  themesEn: string[];
+  narrativeTe: string;
+  narrativeEn: string;
 }): GeneratedTrendBundle {
   const {
     todayIso,
@@ -326,7 +407,10 @@ function buildDeterministicTrendBundle(params: {
     topFortunes,
     nextVrataLabelTe,
     nextVrataLabelEn,
-    rssHeadlines,
+    themesTe,
+    themesEn,
+    narrativeTe,
+    narrativeEn,
   } = params;
 
   const cleanTithi = day.panchanga.tithi.split('(')[0].split('-')[0].trim();
@@ -335,8 +419,8 @@ function buildDeterministicTrendBundle(params: {
   const top3En = topFortunes.slice(0, 3).map((r) => r.englishName).join(', ');
   const deityTe = day.deity || 'శ్రీ మహాగణపతి & ఇష్టదైవం';
 
-  const headlineTe = `${day.teediVaram} (${cleanTithi} • ${cleanNak}) – నేటి ట్రెండింగ్ పంచాంగం & రాశి ఫలాలు`;
-  const headlineEn = `${todayIso} Telugu Panchangam (${cleanTithi}, ${cleanNak}) – Trending Vrata & Rashi Guide`;
+  const headlineTe = `${day.teediVaram} (${cleanTithi} • ${cleanNak}) – నేటి విశేష పంచాంగం, వ్రతాలు & రాశి ఫలాలు`;
+  const headlineEn = `${todayIso} Telugu Panchangam (${cleanTithi}, ${cleanNak}) – Vrata, Muhurtham & Rashi Guide`;
 
   const seoTitleTe = clampLen(`${day.teediVaram} పంచాంగం – ${cleanTithi}, ${cleanNak}`, 58);
   const metaDescTe = clampLen(
@@ -350,16 +434,15 @@ function buildDeterministicTrendBundle(params: {
     152
   );
 
-  const trendHighlightsText =
-    rssHeadlines.length > 0
-      ? `నేటి భారతదేశ/తెలుగు సెర్చ్ ట్రెండ్స్ (${rssHeadlines.slice(0, 3).join(' | ')}) మరియు దృక్సిద్ధాంత గ్రహ స్థితి ఆధారంగా భక్తులు ప్రధానంగా తిథి-నక్షత్ర బలం, వివాహ/గృహ ముహూర్తాలు మరియు దోష పరిహారాల కోసం అన్వేషిస్తున్నారు.`
-      : `నేడు ${day.panchanga.masam}లో ${cleanTithi} తిథి, ${cleanNak} నక్షత్రం కలయిక వల్ల పూజా సంకల్పాలు, నవగ్రహ శాంతి మరియు శుభకార్య ముహూర్తాలపై భక్తులలో అధిక ఆసక్తి నెలకొంది.`;
+  const amruthaClauseTe = /లేవు/i.test(day.shubha.amrutha)
+    ? `నేడు ప్రత్యేక అమృత ఘడియలు లేనప్పటికీ అభిజిత్ ముహూర్త బలం శుభకార్యాలకు అనుకూలంగా ఉంది.`
+    : `అమృత ఘడియలు (${day.shubha.amrutha}) కూడా శుభారంభాలకు అత్యంత ప్రశస్తమైనవి.`;
 
   const article: VedicClassicalArticle = {
     slug,
-    category: 'Daily Trend Panchangam',
-    categoryTe: 'నేటి ట్రెండింగ్ పంచాంగం',
-    categoryEn: 'Daily Trend Panchangam SEO',
+    category: 'Daily Panchangam & Jyotisha',
+    categoryTe: 'నేటి విశేష పంచాంగం',
+    categoryEn: 'Daily Panchangam & Muhurtham',
     readTimeMinutes: 6,
     datePublished: todayIso,
     dateModified: todayIso,
@@ -383,12 +466,12 @@ function buildDeterministicTrendBundle(params: {
         `${cleanNak} నక్షత్ర ఫలితాలు`,
         'నేటి రాశి ఫలాలు తెలుగులో',
       ],
-      summary: `${day.teediVaram} నాడు ${day.panchanga.samvatsaram} · ${day.panchanga.masam} · ${cleanTithi} తిథి మరియు ${cleanNak} నక్షత్ర ప్రాధాన్యతతో పాటు రాహుకాలం (${day.ashubha.rahukalam}), వర్జ్యం (${day.ashubha.varjyam}), అభిజిత్ శుభ ముహూర్తం (${day.shubha.abhijit}) మరియు రాబోయే వ్రత/ముహూర్త విశేషాల సంపూర్ణ SEO విశ్లేషణ.`,
+      summary: `${day.teediVaram} నాడు ${day.panchanga.samvatsaram} · ${day.panchanga.masam} · ${cleanTithi} తిథి మరియు ${cleanNak} నక్షత్ర ప్రాధాన్యతతో పాటు రాహుకాలం (${day.ashubha.rahukalam}), వర్జ్యం (${day.ashubha.varjyam}), అభిజిత్ శుభ ముహూర్తం (${day.shubha.abhijit}) మరియు రాబోయే వ్రత–ముహూర్త విశేషాల సంపూర్ణ విశ్లేషణ.`,
       sections: [
         {
-          heading: `1. ${day.teediVaram} — నేటి ట్రెండింగ్ పంచాంగం & ముఖ్య సమయాలు`,
-          subheading: `${cleanTithi} తిథి • ${cleanNak} నక్షత్రం • ${day.panchanga.yogam} యోగం`,
-          content: `${trendHighlightsText}\n\nదృక్సిద్ధాంత గణిత ప్రమాణం ప్రకారం నేడు సూర్యోదయం ${sunrise}, సూర్యాస్తమయం ${sunset}గా ఉంది. చంద్ర సంచారం ${day.chandra.sancharam}లో ఉండగా ${day.chandra.chandrashtamam} రాశి వారికి తారాబలం చూసి నూతన ప్రయాణాలు చేపట్టడం ఉత్తమం. శుభకార్యాల కోసం పగలు అభిజిత్ ముహూర్తం (${day.shubha.abhijit}) మరియు అమృత ఘడియలు (${day.shubha.amrutha}) అత్యంత ప్రశస్తమైనవి.`,
+          heading: `1. ${day.teediVaram} — నేటి పంచాంగ విశేషాలు, వ్రత నియమాలు & శుభ సమయాలు`,
+          subheading: `${cleanTithi} తిథి • ${cleanNak} నక్షత్రం • ${day.panchanga.yogam.replace(/\s*యోగం$/i, '')} యోగం`,
+          content: `${narrativeTe}\n\nదృక్సిద్ధాంత గణిత ప్రమాణం ప్రకారం నేడు సూర్యోదయం ${sunrise}, సూర్యాస్తమయం ${sunset}గా ఉంది. ${day.chandra.sancharam} ${day.chandra.chandrashtamam} మిగిలిన రాశుల వారు తమ జన్మ నక్షత్ర తారాబలాన్ని సరిచూసుకొని నూతన కార్యాలు, ప్రయాణాలు చేపట్టడం ఉత్తమం. శుభకార్యాల కోసం పగలు అభిజిత్ ముహూర్తం (${day.shubha.abhijit}) అత్యంత ప్రశస్తమైనది. ${amruthaClauseTe}`,
           shloka: {
             sanskrit: 'తిథిర్విష్ణుః తథా వారో నక్షత్రం శంకరః స్మృతః | యోగశ్చ ధనదో జ్ఞేయః కరణం సర్వసిద్ధిదమ్ ||',
             meaning: 'పంచాంగంలోని తిథి శ్రీమహావిష్ణు స్వరూపం, వారం-నక్షత్రం శివశక్తి స్వరూపాలు, యోగం ధనప్రదాయకం మరియు కరణం సకల కార్యసిద్ధిని ఇస్తుంది.',
@@ -467,12 +550,12 @@ function buildDeterministicTrendBundle(params: {
         {
           heading: `1. Today's Verified Drik Siddhanta Panchangam (${todayIso})`,
           subheading: `Tithi: ${cleanTithi} | Nakshatra: ${cleanNak}`,
-          content: `Today's solar and lunar calculations show Sunrise at ${sunrise} and Sunset at ${sunset} (IST). Abhijit Muhurtham spans ${day.shubha.abhijit}, while Rahukalam falls at ${day.ashubha.rahukalam}. Devotees looking up ${nextVrataLabelEn} can combine daily Tarabalam with their natal Rashi for auspicious action.`,
+          content: `${narrativeEn} Today's solar and lunar calculations show Sunrise at ${sunrise} and Sunset at ${sunset} (IST). Abhijit Muhurtham spans ${day.shubha.abhijit}, while Rahukalam falls at ${day.ashubha.rahukalam}. Devotees observing ${nextVrataLabelEn} can combine daily Tarabalam with their natal Rashi for auspicious action.`,
         },
         {
-          heading: `2. Top Trending Rashi Phalalu & Lucky Windows`,
+          heading: `2. Auspicious Rashi Phalalu, Rajayoga & Muhurtham Timings`,
           subheading: `Strongest Moon & Transit Support: ${top3En}`,
-          content: `Based on today's Chandra Sancharam and Drik Bhava calculations, ${top3En} receive elevated positive scores. Check your personalized Free 37-Chapter Janma Kundali PDF or consult Brahmasri Jallavaram Sai Dheeraj Sharma via WhatsApp (+91 89779 86166) for personal Muhurtham or Vivaha Kundali matching.`,
+          content: `Based on today's Chandra Sancharam and Drik Bhava calculations, ${top3En} receive elevated positive transit support (${themesEn.slice(0, 2).join('; ')}). Check your personalized Free 37-Chapter Janma Kundali PDF or consult Brahmasri Jallavaram Sai Dheeraj Sharma via WhatsApp (+91 89779 86166) for personal Muhurtham or Vivaha Kundali matching.`,
         },
       ],
       remedies: [
@@ -502,13 +585,13 @@ function buildDeterministicTrendBundle(params: {
   return {
     headlineTe,
     headlineEn,
-    seoSummaryTe: `${trendHighlightsText} నేటి శుభ సమయం: ${day.shubha.abhijit} | రాహుకాలం: ${day.ashubha.rahukalam} | విశేష రాశులు: ${top3Te}.`,
-    seoSummaryEn: `Daily Telugu Panchangam trend guide for ${todayIso}: ${cleanTithi} Tithi, ${cleanNak} Nakshatra, Abhijit Muhurtham ${day.shubha.abhijit}, and spotlight on ${top3En}.`,
+    seoSummaryTe: `${narrativeTe} నేటి శుభ సమయం: ${day.shubha.abhijit} | రాహుకాలం: ${day.ashubha.rahukalam} | అనుకూల రాశులు: ${top3Te}.`,
+    seoSummaryEn: `Daily Telugu Panchangam guidance for ${todayIso}: ${cleanTithi} Tithi, ${cleanNak} Nakshatra, Abhijit Muhurtham ${day.shubha.abhijit}, spotlight on ${top3En}. ${narrativeEn}`,
     trendingKeywordsTe: [
       'నేటి తెలుగు పంచాంగం',
       `${cleanTithi} తిథి & ${cleanNak}`,
       `${nextVrataLabelTe}`,
-      'నేటి రాశి ఫలాలు',
+      'నేటి రాశి ఫలాలు & రాజయోగం',
     ],
     trendingKeywordsEn: [
       `Telugu Panchangam ${todayIso}`,
@@ -517,7 +600,7 @@ function buildDeterministicTrendBundle(params: {
       'Daily Rashi Phalalu Telugu',
     ],
     article,
-    engineLabel: 'Hermes Trend RSS + Drik Siddhanta Astronomy',
+    engineLabel: 'Hermes Vedic Topic Intelligence + Drik Siddhanta Astronomy',
   };
 }
 
@@ -549,9 +632,17 @@ async function main() {
   const { rssItems, geminiGroundedBrief } = await gatherLiveSearchTrends(todayIso);
   console.log(`📡 [Hermes Trend SEO Writer] Fetched ${rssItems.length} live India & Telugu trend headlines.`);
 
-  const slug = `daily-panchangam-trend-${todayIso}`;
+  const slug = `daily-panchangam-vishesham-${todayIso}`;
   const dateSeed = todayIso.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
   const heroImage = VERIFIED_ARTICLE_IMAGES[dateSeed % VERIFIED_ARTICLE_IMAGES.length];
+
+  const distilled = distillVedicThemesFromSignals({
+    rssHeadlines: rssItems.map((i) => i.title),
+    geminiGroundedBrief,
+    masamTe: day.panchanga.masam,
+    nextVrataLabelTe,
+    nextVrataLabelEn,
+  });
 
   const baseBundle = buildDeterministicTrendBundle({
     todayIso,
@@ -563,7 +654,10 @@ async function main() {
     topFortunes: fortunes,
     nextVrataLabelTe,
     nextVrataLabelEn,
-    rssHeadlines: rssItems.map((i) => i.title),
+    themesTe: distilled.themesTe,
+    themesEn: distilled.themesEn,
+    narrativeTe: distilled.narrativeTe,
+    narrativeEn: distilled.narrativeEn,
   });
 
   const panchangamContext = [
@@ -584,7 +678,7 @@ async function main() {
     slug,
     heroImage,
     panchangamContext,
-    rssHeadlines: rssItems.map((i) => `${i.source}: ${i.title}`),
+    rssHeadlines: rssItems.map((i) => i.title),
     geminiGroundedBrief,
   });
 
@@ -595,14 +689,26 @@ async function main() {
           telugu: {
             ...baseBundle.article.telugu,
             ...llmOutput.telugu,
-            seoTitle: clampLen(llmOutput.telugu.seoTitle || baseBundle.article.telugu.seoTitle, 58),
+            title: scrubMediaAndTrendLabels(llmOutput.telugu.title || baseBundle.article.telugu.title),
+            summary: scrubMediaAndTrendLabels(llmOutput.telugu.summary || baseBundle.article.telugu.summary),
+            seoTitle: clampLen(
+              scrubMediaAndTrendLabels(llmOutput.telugu.seoTitle || baseBundle.article.telugu.seoTitle),
+              58
+            ),
             metaDescription: clampLen(
-              llmOutput.telugu.metaDescription || baseBundle.article.telugu.metaDescription,
+              scrubMediaAndTrendLabels(
+                llmOutput.telugu.metaDescription || baseBundle.article.telugu.metaDescription
+              ),
               154
             ),
             sections:
               Array.isArray(llmOutput.telugu.sections) && llmOutput.telugu.sections.length > 0
-                ? llmOutput.telugu.sections
+                ? llmOutput.telugu.sections.map((s) => ({
+                    ...s,
+                    heading: scrubMediaAndTrendLabels(s.heading),
+                    subheading: s.subheading ? scrubMediaAndTrendLabels(s.subheading) : undefined,
+                    content: scrubMediaAndTrendLabels(s.content),
+                  }))
                 : baseBundle.article.telugu.sections,
             remedies:
               Array.isArray(llmOutput.telugu.remedies) && llmOutput.telugu.remedies.length > 0
@@ -620,14 +726,26 @@ async function main() {
           english: {
             ...baseBundle.article.english,
             ...llmOutput.english,
-            seoTitle: clampLen(llmOutput.english.seoTitle || baseBundle.article.english.seoTitle, 58),
+            title: scrubMediaAndTrendLabels(llmOutput.english.title || baseBundle.article.english.title),
+            summary: scrubMediaAndTrendLabels(llmOutput.english.summary || baseBundle.article.english.summary),
+            seoTitle: clampLen(
+              scrubMediaAndTrendLabels(llmOutput.english.seoTitle || baseBundle.article.english.seoTitle),
+              58
+            ),
             metaDescription: clampLen(
-              llmOutput.english.metaDescription || baseBundle.article.english.metaDescription,
+              scrubMediaAndTrendLabels(
+                llmOutput.english.metaDescription || baseBundle.article.english.metaDescription
+              ),
               154
             ),
             sections:
               Array.isArray(llmOutput.english.sections) && llmOutput.english.sections.length > 0
-                ? llmOutput.english.sections
+                ? llmOutput.english.sections.map((s) => ({
+                    ...s,
+                    heading: scrubMediaAndTrendLabels(s.heading),
+                    subheading: s.subheading ? scrubMediaAndTrendLabels(s.subheading) : undefined,
+                    content: scrubMediaAndTrendLabels(s.content),
+                  }))
                 : baseBundle.article.english.sections,
             remedies:
               Array.isArray(llmOutput.english.remedies) && llmOutput.english.remedies.length > 0
@@ -642,7 +760,7 @@ async function main() {
       : {}),
   };
 
-  // Update src/data/dailyTrendingArticles.json (dedup by slug/date, keep latest 14 days)
+  // Update src/data/dailyTrendingArticles.json (dedup by slug/datePublished, keep latest 14 days)
   const articlesPath = path.resolve(process.cwd(), 'src/data/dailyTrendingArticles.json');
   let existingArticles: VedicClassicalArticle[] = [];
   if (fs.existsSync(articlesPath)) {
@@ -656,15 +774,17 @@ async function main() {
 
   const alreadyHasToday = existingArticles.some((a) => a.slug === slug);
   if (!alreadyHasToday || forceRun || existingArticles.length === 0) {
-    const filtered = existingArticles.filter((a) => a.slug !== slug);
+    const filtered = existingArticles.filter(
+      (a) => a.slug !== slug && a.datePublished !== todayIso
+    );
     const updatedArticles = [finalArticle, ...filtered].slice(0, 14);
     fs.writeFileSync(articlesPath, JSON.stringify(updatedArticles, null, 2) + '\n', 'utf-8');
-    console.log(`✍️ [Hermes Trend SEO Writer] Published trending SEO article -> /${slug} (${updatedArticles.length} trending articles stored)`);
+    console.log(`✍️ [Hermes SEO Writer] Published daily Panchangam article -> /${slug} (${updatedArticles.length} daily articles stored)`);
   } else {
-    console.log(`ℹ️ [Hermes Trend SEO Writer] Trending article for ${todayIso} already exists (/${slug}). Use --force to regenerate.`);
+    console.log(`ℹ️ [Hermes SEO Writer] Article for ${todayIso} already exists (/${slug}). Use --force to regenerate.`);
   }
 
-  // Update src/data/dailyTrendingSeoData.json
+  // Update src/data/dailyTrendingSeoData.json (strictly scrubbed: zero newspaper names or 'Trending' labels)
   const seoDataPath = path.resolve(process.cwd(), 'src/data/dailyTrendingSeoData.json');
   const trendingData: DailyTrendingSeoData = {
     dateIso: todayIso,
@@ -672,23 +792,24 @@ async function main() {
     engine: llmOutput?.engineLabel || baseBundle.engineLabel,
     trendingKeywordsTe:
       Array.isArray(llmOutput?.trendingKeywordsTe) && llmOutput.trendingKeywordsTe.length > 0
-        ? llmOutput.trendingKeywordsTe.slice(0, 6)
+        ? llmOutput.trendingKeywordsTe.map(scrubMediaAndTrendLabels).filter(Boolean).slice(0, 6)
         : baseBundle.trendingKeywordsTe,
     trendingKeywordsEn:
       Array.isArray(llmOutput?.trendingKeywordsEn) && llmOutput.trendingKeywordsEn.length > 0
-        ? llmOutput.trendingKeywordsEn.slice(0, 6)
+        ? llmOutput.trendingKeywordsEn.map(scrubMediaAndTrendLabels).filter(Boolean).slice(0, 6)
         : baseBundle.trendingKeywordsEn,
-    headlineTe: llmOutput?.headlineTe || baseBundle.headlineTe,
-    headlineEn: llmOutput?.headlineEn || baseBundle.headlineEn,
-    seoSummaryTe: llmOutput?.seoSummaryTe || baseBundle.seoSummaryTe,
-    seoSummaryEn: llmOutput?.seoSummaryEn || baseBundle.seoSummaryEn,
+    headlineTe: scrubMediaAndTrendLabels(llmOutput?.headlineTe || baseBundle.headlineTe),
+    headlineEn: scrubMediaAndTrendLabels(llmOutput?.headlineEn || baseBundle.headlineEn),
+    seoSummaryTe: scrubMediaAndTrendLabels(llmOutput?.seoSummaryTe || baseBundle.seoSummaryTe),
+    seoSummaryEn: scrubMediaAndTrendLabels(llmOutput?.seoSummaryEn || baseBundle.seoSummaryEn),
     topTrendingRashiTe: fortunes.slice(0, 3).map((r) => r.teluguName).join(', '),
     linkedArticleSlug: slug,
-    liveTrendSources: rssItems.slice(0, 5),
+    focusThemesTe: distilled.themesTe,
+    focusThemesEn: distilled.themesEn,
   };
 
   fs.writeFileSync(seoDataPath, JSON.stringify(trendingData, null, 2) + '\n', 'utf-8');
-  console.log(`✅ [Hermes Trend SEO Writer] Updated dailyTrendingSeoData.json via ${trendingData.engine}`);
+  console.log(`✅ [Hermes SEO Writer] Updated dailyTrendingSeoData.json via ${trendingData.engine}`);
 }
 
 main().catch((err) => {

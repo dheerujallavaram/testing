@@ -22,7 +22,8 @@ Research live daily search trends in India, Andhra Pradesh, Telangana, and among
      ```bash
      npm run seo:trend-writer
      ```
-   - Verify generated metadata complies with OpenSEO strict limits:
+   - Enforce strict editorial purity:
+     - NEVER cite newspaper/TV channel names (TV9, Samayam, Hindustan Times, Eenadu, Google Trends, etc.) or use the words "Trending" / "ట్రెండింగ్" in public output — silently weave active themes into authentic Sri Lakshmi Ganapathi Jyothishalayam Shastra guidance.
      - `seoTitle` <= 60 characters
      - `metaDescription` 120–156 characters
      - Strictly 1 `<h1>` per route, zero orphan pages, bilingual Telugu + English depth with Sanskrit Grantha shlokas and FAQPage Q&As.

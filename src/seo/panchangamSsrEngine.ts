@@ -2696,7 +2696,7 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       ],
       title: 'వేద జ్యోతిష వ్యాసాలు (16+ Articles) – భావార్థ రత్నాకర, 300 రాజయోగాలు, పరాశర & వైద్య జ్యోతిషం',
       description:
-        '16+ ప్రాచీన & ట్రెండింగ్ వేద జ్యోతిష వ్యాసాలు: శ్రీ రామానుజాచార్య భావార్థ రత్నాకర, 300 మహారాజ యోగాలు, ఆయుర్వేద వైద్య జ్యోతిషం, అష్ట మహా గ్రంథాలు, స్వరోదయ, బాలారిష్ట & స్వప్న శాస్త్రం.',
+        '16+ ప్రాచీన & దినచర్య వేద జ్యోతిష వ్యాసాలు: శ్రీ రామానుజాచార్య భావార్థ రత్నాకర, 300 మహారాజ యోగాలు, ఆయుర్వేద వైద్య జ్యోతిషం, అష్ట మహా గ్రంథాలు, స్వరోదయ, బాలారిష్ట & స్వప్న శాస్త్రం.',
       h1: 'వేద జ్యోతిష శాస్త్ర రహస్యాలు & ప్రాచీన పరిశోధనా వ్యాసాల భాండాగారం (16 Standalone Articles)',
       breadcrumbName: 'వేద శాస్త్రాలు & వ్యాసాలు',
     },
@@ -4200,13 +4200,13 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
 
         ${
           dailyTrendingSeoData && dailyTrendingSeoData.seoSummaryTe
-            ? `<section id="panchangam-trending-insight" aria-label="Daily Trending Search & Panchangam Analysis" style="background:#fefce8;border:2px solid #d97706;border-radius:16px;padding:18px;margin-bottom:24px;">
-          <h2 style="margin:0 0 8px;font-size:19px;color:#451a03;">📈 ${escapeHtml(dailyTrendingSeoData.headlineTe)}</h2>
+            ? `<section id="panchangam-daily-vishesham" aria-label="Daily Panchangam Vrata and Muhurtham Guidance" style="background:#fefce8;border:2px solid #d97706;border-radius:16px;padding:18px;margin-bottom:24px;">
+          <h2 style="margin:0 0 8px;font-size:19px;color:#451a03;">🕉️ ${escapeHtml(dailyTrendingSeoData.headlineTe)}</h2>
           <p style="margin:0 0 8px;font-size:14.5px;color:#1e293b;">${escapeHtml(dailyTrendingSeoData.seoSummaryTe)}</p>
           <p style="margin:0 0 10px;font-size:13.5px;color:#475569;">${escapeHtml(dailyTrendingSeoData.seoSummaryEn)}</p>
-          <p style="margin:0 0 8px;font-size:13px;color:#78350f;"><strong>ట్రెండింగ్ అంశాలు:</strong> ${escapeHtml((dailyTrendingSeoData.trendingKeywordsTe || []).join(' • '))}</p>
+          <p style="margin:0 0 8px;font-size:13px;color:#78350f;"><strong>నేటి ముఖ్య విశేషాలు:</strong> ${escapeHtml((dailyTrendingSeoData.trendingKeywordsTe || []).join(' • '))}</p>
           <p style="margin:0;font-size:13.5px;">
-            <a href="/${escapeHtml(dailyTrendingSeoData.linkedArticleSlug)}" style="color:#9a3412;font-weight:700;text-decoration:underline;">📖 నేటి సంపూర్ణ ట్రెండింగ్ పంచాంగ వ్యాసం చదవండి (Read Trending Article) →</a>
+            <a href="/${escapeHtml(dailyTrendingSeoData.linkedArticleSlug)}" style="color:#9a3412;font-weight:700;text-decoration:underline;">📖 నేటి సంపూర్ణ పంచాంగం &amp; వ్రత విశేష వ్యాసం చదవండి (Read Full Daily Guide) →</a>
           </p>
         </section>`
             : ''

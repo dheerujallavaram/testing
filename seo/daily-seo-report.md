@@ -3,7 +3,7 @@
 - **Site:** https://www.telugujyothisham.com
 - **Today's Panchangam Sync:** Tithi: సప్తమి | Nakshatram: శ్రవణం
 - **Today's Spotlight Rashi:** వృషభం (`/rashi-phalalu/vrushabham`)
-- **Today's Trending Article:** https://www.telugujyothisham.com/daily-panchangam-trend-2026-11-16
+- **Today's Trending Article:** https://www.telugujyothisham.com/daily-panchangam-vishesham-2026-11-16
 - **Sitemap Indexable URLs:** 193
 - **Routes Audited (`Illyism/seo-skills` gates):** 125
 - **FATAL Issues:** 0
@@ -17,7 +17,7 @@
   - https://www.telugujyothisham.com/rashi-phalalu
   - https://www.telugujyothisham.com/rashi-phalalu/vrushabham
   - https://www.telugujyothisham.com/vedic-articles
-  - https://www.telugujyothisham.com/daily-panchangam-trend-2026-11-16
+  - https://www.telugujyothisham.com/daily-panchangam-vishesham-2026-11-16
   - https://www.telugujyothisham.com/janma-kundali
   - https://www.telugujyothisham.com/vivaha-pontana
   - https://www.telugujyothisham.com/muhurtham
