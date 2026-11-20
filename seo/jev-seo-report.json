@@ -1,8 +1,8 @@
 {
-  "generatedAtUtc": "2026-11-20T15:25:59.090Z",
+  "generatedAtUtc": "2026-11-20T22:42:06.068Z",
   "siteUrl": "https://www.telugujyothisham.com",
-  "pagesAudited": 556,
-  "sitemapUrls": 199,
+  "pagesAudited": 557,
+  "sitemapUrls": 200,
   "overall": 100,
   "grade": "A",
   "categories": {
@@ -262,6 +262,22 @@
       "h1_fit": true
     },
     {
+      "route": "/daily-panchangam-vishesham-2026-11-21",
+      "page_type": "article_or_guide",
+      "intent": "informational",
+      "importance": 0.78,
+      "action": "keep_or_improve",
+      "helpfulness": 0.94,
+      "specificity": 0.92,
+      "trust": 0.95,
+      "citable": 0.93,
+      "answer_first": true,
+      "clear_next_step": true,
+      "title_fit": 0.95,
+      "meta_fit": 0.95,
+      "h1_fit": true
+    },
+    {
       "route": "/disclaimer",
       "page_type": "legal_or_policy",
       "intent": "informational",
@@ -312,22 +328,6 @@
     {
       "route": "/festivals",
       "page_type": "article_or_guide",
-      "intent": "informational",
-      "importance": 0.78,
-      "action": "keep_or_improve",
-      "helpfulness": 0.94,
-      "specificity": 0.92,
-      "trust": 0.95,
-      "citable": 0.93,
-      "answer_first": true,
-      "clear_next_step": true,
-      "title_fit": 0.95,
-      "meta_fit": 0.95,
-      "h1_fit": true
-    },
-    {
-      "route": "/festivals-calendar",
-      "page_type": "category_or_listing",
       "intent": "informational",
       "importance": 0.78,
       "action": "keep_or_improve",
