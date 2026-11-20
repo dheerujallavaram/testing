@@ -16,6 +16,7 @@ import { GuruProfileHome } from './components/GuruProfileHome';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { CitySEOData, findCityBySlug } from './data/citiesData';
 import { PanchangamQuickSummary } from './components/PanchangamQuickSummary';
+import { RoyalPanchangamKundaliSheet } from './components/RoyalPanchangamKundaliSheet';
 import { syncHeadMetaTags } from './utils/dailySeoEngine';
 import { resolveLocalizedCityRoute, LocalizedPageIntent } from './components/SEOContentManager';
 import { getOrGenerateDayData } from './utils/astronomyPanchangam';
@@ -87,6 +88,11 @@ const NakshatraSeoPage = lazyWithRetry(() =>
 );
 const SampleJathakamPage = lazyWithRetry(() =>
   import('./components/SampleJathakamPage').then((m) => ({ default: m.SampleJathakamPage }))
+);
+const BirthTimeRectificationPage = lazyWithRetry(() =>
+  import('./components/BirthTimeRectificationPage').then((m) => ({
+    default: m.BirthTimeRectificationPage,
+  }))
 );
 const GocharaPhalaluView = lazyWithRetry(() =>
   import('./components/GocharaPhalaluView').then((m) => ({ default: m.GocharaPhalaluView }))
@@ -472,6 +478,14 @@ export function resolveVedicArticleSlugFromLocation(): string | null {
     return 'ashtagrantha-parashara-nadi-jyotisha-rahasyalu';
   if (pathname === '/bhavartha-ratnakara-300-raja-yogalu-ayurveda-jyotisham')
     return 'bhavartha-ratnakara-300-raja-yogalu-ayurveda-jyotisham';
+  if (pathname === '/janma-samaya-shuddhi-birth-time-rectification-telugu')
+    return 'janma-samaya-shuddhi-birth-time-rectification-telugu';
+  if (pathname === '/pranapada-lagna-kunda-sphuta-btr-rahasyam')
+    return 'pranapada-lagna-kunda-sphuta-btr-rahasyam';
+  if (pathname === '/kp-cuspal-sublord-ruling-planets-btr-telugu')
+    return 'kp-cuspal-sublord-ruling-planets-btr-telugu';
+  if (pathname === '/twins-horoscope-d60-shashtiamsa-telugu')
+    return 'twins-horoscope-d60-shashtiamsa-telugu';
   if (pathname === '/dwadasa-rashi-rahasyalu') return 'dwadasa-rashi-rahasyalu';
   if (pathname === '/neti-nakshatra-vyasam') return 'neti-nakshatra-vyasam';
   if (pathname === '/neti-jyothisha-visleshana') return 'neti-jyothisha-visleshana';
@@ -517,6 +531,18 @@ export function resolveSampleJathakamFromLocation(): boolean {
   return pathname === '/sample-jathakam' || pathname === '/sample-report' || hash === '#sample-jathakam';
 }
 
+export function resolveBtrFromLocation(): boolean {
+  if (typeof window === 'undefined') return false;
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  const hash = window.location.hash.toLowerCase();
+  return (
+    pathname === '/birth-time-rectification' ||
+    pathname === '/janma-samaya-shuddhi' ||
+    pathname === '/btr' ||
+    hash === '#birth-time-rectification'
+  );
+}
+
 export function resolveInitialRashiSlugFromLocation(): string | undefined {
   if (typeof window === 'undefined') return undefined;
   const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '');
@@ -554,6 +580,7 @@ function AppContent() {
   const [isSampleJathakamView, setIsSampleJathakamView] = useState<boolean>(() =>
     resolveSampleJathakamFromLocation()
   );
+  const [isBtrView, setIsBtrView] = useState<boolean>(() => resolveBtrFromLocation());
   const [prefillClient, setPrefillClient] = useState<ClientKundaliPrefill | null>(null);
   const [panchangamSubTab, setPanchangamSubTab] = useState<PanchangamSubTab>(() =>
     resolvePanchangamSubTabFromLocation()
@@ -598,6 +625,7 @@ function AppContent() {
     setIsAdminView(false);
     setIsCalendarView(false);
     setIsSampleJathakamView(false);
+    setIsBtrView(false);
     setIsFestivalsCalendarView(false);
     setIsVedicDirectoryView(false);
     setActiveArticleSlug(null);
@@ -620,6 +648,7 @@ function AppContent() {
     setIsAdminView(false);
     setIsCalendarView(false);
     setIsSampleJathakamView(false);
+    setIsBtrView(false);
     setIsVedicDirectoryView(false);
     setActiveNakshatraSlug(null);
     setActiveArticleSlug(slug);
@@ -640,6 +669,7 @@ function AppContent() {
     setIsAdminView(false);
     setIsCalendarView(false);
     setIsSampleJathakamView(false);
+    setIsBtrView(false);
     setActiveArticleSlug(null);
     setActiveNakshatraSlug(null);
     setIsVedicDirectoryView(false);
@@ -662,6 +692,7 @@ function AppContent() {
     setActiveArticleSlug(null);
     setActiveNakshatraSlug(null);
     setIsVedicDirectoryView(false);
+    setIsBtrView(false);
     setIsSampleJathakamView(true);
     if (typeof window !== 'undefined') {
       try {
@@ -677,6 +708,7 @@ function AppContent() {
     setSelectedCity(null);
     setActiveLegalDoc(null);
     setIsSampleJathakamView(false);
+    setIsBtrView(false);
     setActiveArticleSlug(null);
     setActiveNakshatraSlug(null);
     setIsVedicDirectoryView(false);
@@ -691,12 +723,34 @@ function AppContent() {
     }
   }, []);
 
+  const handleNavigateToBtr = useCallback(() => {
+    setSelectedCity(null);
+    setActiveLegalDoc(null);
+    setIsAdminView(false);
+    setIsCalendarView(false);
+    setIsSampleJathakamView(false);
+    setIsFestivalsCalendarView(false);
+    setActiveArticleSlug(null);
+    setActiveNakshatraSlug(null);
+    setIsVedicDirectoryView(false);
+    setIsBtrView(true);
+    if (typeof window !== 'undefined') {
+      try {
+        if (window.location.pathname !== '/birth-time-rectification') {
+          window.history.pushState({ btr: true }, '', '/birth-time-rectification');
+        }
+      } catch {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+
   const handleSelectTab = useCallback((tab: NavTab) => {
     setSelectedCity(null);
     setActiveLegalDoc(null);
     setIsAdminView(false);
     setIsCalendarView(false);
     setIsSampleJathakamView(false);
+    setIsBtrView(false);
     setIsFestivalsCalendarView(false);
     setActiveArticleSlug(null);
     setIsVedicDirectoryView(false);
@@ -853,6 +907,10 @@ function AppContent() {
       }
       if (path === '/sample-jathakam' || path === '/sample-report') {
         handleNavigateToSampleJathakam();
+        return;
+      }
+      if (path === '/birth-time-rectification' || path === '/janma-samaya-shuddhi' || path === '/btr') {
+        handleNavigateToBtr();
         return;
       }
       if (
@@ -1118,6 +1176,7 @@ function AppContent() {
       setActiveLegalDoc(resolveLegalDocFromLocation());
       setIsAdminView(resolveAdminFromLocation());
       setIsSampleJathakamView(resolveSampleJathakamFromLocation());
+      setIsBtrView(resolveBtrFromLocation());
       setIsFestivalsCalendarView(resolveFestivalsCalendarFromLocation());
       setJumpedRashiId(resolveInitialRashiSlugFromLocation());
       setIsCalendarView(resolveCalendarViewFromLocation());
@@ -1200,6 +1259,7 @@ function AppContent() {
     activeCityTimingSlug,
     activeNakshatraSlug,
     activeLegalDoc,
+    isBtrView,
   ]);
 
   const now = new Date();
@@ -1337,6 +1397,31 @@ function AppContent() {
             />
           </Suspense>
         </main>
+      ) : isBtrView ? (
+        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
+          <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
+            <BirthTimeRectificationPage
+              onOpenKundaliWithTime={({ birthDate, birthTime, cityId }) => {
+                setPrefillClient({
+                  name: '',
+                  birthDate,
+                  birthTime,
+                  cityId,
+                } as ClientKundaliPrefill);
+                setIsBtrView(false);
+                setActiveTab('jathakam');
+                if (typeof window !== 'undefined') {
+                  try {
+                    window.history.pushState({ tab: 'jathakam' }, '', '/janma-kundali');
+                  } catch {}
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+              onSelectArticle={handleSelectVedicArticle}
+              onOpenBooking={() => handleOpenBooking()}
+            />
+          </Suspense>
+        </main>
       ) : isSampleJathakamView ? (
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
           <Suspense fallback={<SectionLoader minHeight="min-h-[600px]" />}>
@@ -1438,6 +1523,23 @@ function AppContent() {
                       'Generate your 37-Chapter Horoscope with South/North/East Charts, D1–D60 Shodashavarga, Sudarshana Chakra, Pratyantardasha & Double Transit, Tajika Varshaphal, Ashtottari & Yogini Dashas, Birth Time Rectification & Live Sky Radar.'
                     )}
                   </p>
+                  <div className="pt-2 flex flex-wrap gap-3">
+                    <a
+                      href="/birth-time-rectification"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleNavigateToBtr();
+                      }}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F5C451] hover:bg-[#e5b540] text-[#2B0705] font-extrabold text-xs sm:text-sm shadow transition-colors"
+                    >
+                      <span>
+                        {t(
+                          'పుట్టిన సమయం సందేహంగా ఉందా? 6-మెథడ్ జన్మ సమయ శుద్ధి (BTR) చేయండి →',
+                          'Uncertain Birth Time? Open 6-Method Birth Time Rectification →'
+                        )}
+                      </span>
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -1635,7 +1737,32 @@ function AppContent() {
 
               {panchangamSubTab === 'main' && (
                 <>
-                  {/* సంపూర్ణ నిత్య పంచాంగం (PANCHANGAM FIRST) */}
+                  {/* రాయల్ 1-స్క్రీన్ నిత్య పంచాంగం + లైవ్ దక్షిణ భారత కుండలి (HD Download Ready) */}
+                  <RoyalPanchangamKundaliSheet
+                    day={currentDay}
+                    cityTe={
+                      activeCityTimingSlug
+                        ? SUPPORTED_CITY_CONFIGS[activeCityTimingSlug].nameTe
+                        : 'హైదరాబాద్'
+                    }
+                    cityEn={
+                      activeCityTimingSlug
+                        ? SUPPORTED_CITY_CONFIGS[activeCityTimingSlug].nameEn
+                        : 'Hyderabad'
+                    }
+                    lat={
+                      activeCityTimingSlug
+                        ? SUPPORTED_CITY_CONFIGS[activeCityTimingSlug].lat
+                        : 17.385
+                    }
+                    lon={
+                      activeCityTimingSlug
+                        ? SUPPORTED_CITY_CONFIGS[activeCityTimingSlug].lon
+                        : 78.4867
+                    }
+                  />
+
+                  {/* సంపూర్ణ నిత్య పంచాంగం (Audio & Admin Broadcaster Summary) */}
                   <PanchangamQuickSummary day={currentDay} />
 
                   {/* నేటి సుభాషిత శ్లోకం & నేటి తరానికి లౌకిక జీవన సందేశం (Image Download in Telugu & English) */}

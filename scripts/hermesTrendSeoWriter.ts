@@ -9,6 +9,7 @@ import {
   getTodayIsoDateIST,
 } from '../src/seo/panchangamSsrEngine';
 import { generate12MonthVratasAndFestivals } from '../src/utils/vrataCalendarAndRatnaEngine';
+import { translatePanchangamString } from '../src/context/LanguageContext';
 import type { VedicClassicalArticle } from '../src/data/vedicArticlesData';
 
 export interface DailyTrendingSeoData {
@@ -17,6 +18,9 @@ export interface DailyTrendingSeoData {
   engine: string;
   trendingKeywordsTe: string[];
   trendingKeywordsEn: string[];
+  longTailKeywordsTe?: string[];
+  longTailKeywordsEn?: string[];
+  socialHashtags?: string[];
   headlineTe: string;
   headlineEn: string;
   seoSummaryTe: string;
@@ -76,37 +80,89 @@ function distillVedicThemesFromSignals(params: {
   rssHeadlines: string[];
   geminiGroundedBrief: string;
   masamTe: string;
+  cleanTithi: string;
+  cleanNak: string;
+  todayIso: string;
   nextVrataLabelTe: string;
   nextVrataLabelEn: string;
 }): {
   themesTe: string[];
   themesEn: string[];
+  keywordsTe: string[];
+  keywordsEn: string[];
+  hashtags: string[];
   narrativeTe: string;
   narrativeEn: string;
 } {
   const corpus = `${params.rssHeadlines.join(' ')} ${params.geminiGroundedBrief}`.toLowerCase();
   const themesTe: string[] = [];
   const themesEn: string[] = [];
+  const keywordsTe: string[] = [
+    'నేటి తెలుగు పంచాంగం',
+    `${params.cleanTithi} తిథి & ${params.cleanNak} నక్షత్రం`,
+    'నేటి రాశి ఫలాలు తెలుగులో',
+    'అభిజిత్ ముహూర్తం & రాహుకాలం',
+  ];
+  const cleanTithiEn = translatePanchangamString(params.cleanTithi, 'en').replace(/\s+/g, ' ').trim();
+  const cleanNakEn = translatePanchangamString(params.cleanNak, 'en').replace(/\s+/g, ' ').trim();
+  const keywordsEn: string[] = [
+    `Today Telugu Panchangam ${params.todayIso}`,
+    `${cleanTithiEn} Tithi ${cleanNakEn} Nakshatra`,
+    'Daily Rashi Phalalu Telugu',
+    'Hyderabad Vedic Astrologer',
+  ];
+  const hashtags: string[] = [
+    '#TeluguPanchangam',
+    '#TeluguJyothisham',
+    '#RasiPhalalu',
+    '#VedicAstrology',
+    '#ShubhaMuhurtham',
+  ];
 
   if (/కార్తీక|karthika|kartika/i.test(corpus)) {
     themesTe.push('కార్తీక మాస పుణ్య తిథులు, దీపారాధన & వ్రత నియమాలు');
     themesEn.push('Kartika Masam sacred rituals, Deeparadhana & auspicious dates');
+    keywordsTe.push('కార్తీక మాసం పూజా విధానం & దీపారాధన');
+    keywordsEn.push('Karthika Masam 2026 Pooja & Deepam');
+    hashtags.push('#KarthikaMasam');
+  }
+  if (/సోమవారం|somavaram|monday|శివ/i.test(corpus)) {
+    keywordsTe.push('కార్తీక సోమవారం శివాభిషేకం');
+    keywordsEn.push('Karthika Somavaram Shiva Abhishekam');
+    hashtags.push('#KarthikaSomavaram');
   }
   if (/వివాహ|పెళ్లి|marriage|vivaha|muhurth|ముహూర్త/i.test(corpus)) {
     themesTe.push('వివాహ యోగం, గురు-శుక్ర బలం & శుభ ముహూర్త పరిశీలన');
     themesEn.push('Vivaha Yoga, marriage compatibility & Shubha Muhurtham windows');
+    keywordsTe.push('వివాహ శుభ ముహూర్తాలు 2026');
+    keywordsEn.push('Vivaha Shubha Muhurtham 2026 Telugu');
+    hashtags.push('#VivahaMuhurtham');
   }
   if (/రాజయోగం|ధనలాభం|ప్రమోషన్|ఉద్యోగ|career|wealth|rajayoga|promotion|job/i.test(corpus)) {
     themesTe.push('గ్రహ గోచార రాజయోగం, ఉద్యోగ–వ్యాపార ప్రగతి & ఆర్థిక ఫలితాలు');
     themesEn.push('Planetary Rajayoga transits, career growth & financial prosperity');
+    keywordsTe.push('రాజయోగ రాశులు & ధనలాభ గోచారం');
+    keywordsEn.push('Rajayoga Rashi Phalalu & Career Transit');
+    hashtags.push('#Rajayoga');
   }
   if (/నాగుల|కాలసర్ప|దోష|nagula|kalasarpa|dosha|rahu|shani|శని/i.test(corpus)) {
     themesTe.push('నాగుల చవితి / సర్ప దోష నివారణ & కాలసర్ప శాంతి మంత్రాలు');
     themesEn.push('Nagula Chavithi worship, Kalasarpa & Shani Dosha Vedic remedies');
+    keywordsTe.push('కుజ దోషం & కాలసర్ప శాంతి పరిహారాలు');
+    keywordsEn.push('Kalasarpa & Kuja Dosha Remedies Telugu');
+    hashtags.push('#DoshaNivarana');
   }
   if (/ఏకాదశి|ekadashi|పౌర్ణమి|pournami|అమావాస్య|amavasya|ప్రదోషం|pradosham/i.test(corpus)) {
     themesTe.push(`${params.nextVrataLabelTe} ఉపవాస వ్రత విధానం & సంకల్పం`);
     themesEn.push(`${params.nextVrataLabelEn} fasting rules & Sankalpam`);
+    keywordsTe.push(params.nextVrataLabelTe);
+    keywordsEn.push(params.nextVrataLabelEn);
+    hashtags.push('#Ekadashi2026');
+  }
+  if (/జాతక|కుండలి|kundali|jathakam|horoscope|nri|usa/i.test(corpus) || true) {
+    keywordsTe.push('ఉచిత జన్మ కుండలి PDF & తారాబలం');
+    keywordsEn.push('Free Telugu Jathakam PDF & Tarabalam');
+    hashtags.push('#TeluguJathakam', '#Hyderabad');
   }
 
   if (themesTe.length === 0) {
@@ -122,10 +178,22 @@ function distillVedicThemesFromSignals(params: {
     );
   }
 
+  const uniqueTe = Array.from(new Set(keywordsTe.map(scrubMediaAndTrendLabels).filter(Boolean))).slice(0, 8);
+  const uniqueEn = Array.from(new Set(keywordsEn.map(scrubMediaAndTrendLabels).filter(Boolean))).slice(0, 8);
+  const uniqueTags = Array.from(new Set(hashtags)).slice(0, 10);
+
   const narrativeTe = `ప్రస్తుత ${params.masamTe} పుణ్యకాలంలో భక్తులు ప్రధానంగా ${themesTe.slice(0, 3).join(', ')} గురించి విశేషంగా ఆసక్తి చూపుతున్నారు. శాస్త్ర ప్రమాణాల ప్రకారం సరైన తిథి–నక్షత్ర బలంతో కార్యాలు ప్రారంభిస్తే సకల శుభాలు చేకూరుతాయి.`;
   const narrativeEn = `Devotees seeking authentic Vedic guidance today are focusing on ${themesEn.slice(0, 3).join(', ')}. Observing Drik Siddhanta timings and Natal Tarabalam helps align key decisions with auspicious planetary currents.`;
 
-  return { themesTe, themesEn, narrativeTe, narrativeEn };
+  return {
+    themesTe,
+    themesEn,
+    keywordsTe: uniqueTe,
+    keywordsEn: uniqueEn,
+    hashtags: uniqueTags,
+    narrativeTe,
+    narrativeEn,
+  };
 }
 
 async function fetchRssItems(
@@ -394,6 +462,8 @@ function buildDeterministicTrendBundle(params: {
   nextVrataLabelEn: string;
   themesTe: string[];
   themesEn: string[];
+  keywordsTe: string[];
+  keywordsEn: string[];
   narrativeTe: string;
   narrativeEn: string;
 }): GeneratedTrendBundle {
@@ -409,6 +479,8 @@ function buildDeterministicTrendBundle(params: {
     nextVrataLabelEn,
     themesTe,
     themesEn,
+    keywordsTe,
+    keywordsEn,
     narrativeTe,
     narrativeEn,
   } = params;
@@ -460,12 +532,7 @@ function buildDeterministicTrendBundle(params: {
       seoTitle: seoTitleTe,
       metaDescription: metaDescTe,
       primaryKeyword: `${day.teediVaram} పంచాంగం`,
-      secondaryKeywords: [
-        'నేటి తెలుగు పంచాంగం',
-        `${cleanTithi} తిథి విశేషం`,
-        `${cleanNak} నక్షత్ర ఫలితాలు`,
-        'నేటి రాశి ఫలాలు తెలుగులో',
-      ],
+      secondaryKeywords: keywordsTe,
       summary: `${day.teediVaram} నాడు ${day.panchanga.samvatsaram} · ${day.panchanga.masam} · ${cleanTithi} తిథి మరియు ${cleanNak} నక్షత్ర ప్రాధాన్యతతో పాటు రాహుకాలం (${day.ashubha.rahukalam}), వర్జ్యం (${day.ashubha.varjyam}), అభిజిత్ శుభ ముహూర్తం (${day.shubha.abhijit}) మరియు రాబోయే వ్రత–ముహూర్త విశేషాల సంపూర్ణ విశ్లేషణ.`,
       sections: [
         {
@@ -539,12 +606,7 @@ function buildDeterministicTrendBundle(params: {
       seoTitle: seoTitleEn,
       metaDescription: metaDescEn,
       primaryKeyword: `Telugu Panchangam ${todayIso}`,
-      secondaryKeywords: [
-        'Today Telugu Panchangam',
-        `${cleanTithi} Tithi Timings`,
-        `${cleanNak} Nakshatra Today`,
-        'Rashi Phalalu in Telugu',
-      ],
+      secondaryKeywords: keywordsEn,
       summary: `Verified Drik Siddhanta Telugu Panchangam guide for ${todayIso}: Tithi (${cleanTithi}), Nakshatra (${cleanNak}), Rahukalam (${day.ashubha.rahukalam}), Abhijit Muhurtham (${day.shubha.abhijit}), upcoming ${nextVrataLabelEn}, and top-performing Rashi Phalalu.`,
       sections: [
         {
@@ -587,18 +649,8 @@ function buildDeterministicTrendBundle(params: {
     headlineEn,
     seoSummaryTe: `${narrativeTe} నేటి శుభ సమయం: ${day.shubha.abhijit} | రాహుకాలం: ${day.ashubha.rahukalam} | అనుకూల రాశులు: ${top3Te}.`,
     seoSummaryEn: `Daily Telugu Panchangam guidance for ${todayIso}: ${cleanTithi} Tithi, ${cleanNak} Nakshatra, Abhijit Muhurtham ${day.shubha.abhijit}, spotlight on ${top3En}. ${narrativeEn}`,
-    trendingKeywordsTe: [
-      'నేటి తెలుగు పంచాంగం',
-      `${cleanTithi} తిథి & ${cleanNak}`,
-      `${nextVrataLabelTe}`,
-      'నేటి రాశి ఫలాలు & రాజయోగం',
-    ],
-    trendingKeywordsEn: [
-      `Telugu Panchangam ${todayIso}`,
-      `${cleanTithi} Tithi Today`,
-      nextVrataLabelEn,
-      'Daily Rashi Phalalu Telugu',
-    ],
+    trendingKeywordsTe: keywordsTe,
+    trendingKeywordsEn: keywordsEn,
     article,
     engineLabel: 'Hermes Vedic Topic Intelligence + Drik Siddhanta Astronomy',
   };
@@ -636,10 +688,16 @@ async function main() {
   const dateSeed = todayIso.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
   const heroImage = VERIFIED_ARTICLE_IMAGES[dateSeed % VERIFIED_ARTICLE_IMAGES.length];
 
+  const cleanTithiToday = day.panchanga.tithi.split('(')[0].split('-')[0].trim();
+  const cleanNakToday = day.panchanga.nakshatram.split('(')[0].split('-')[0].trim();
+
   const distilled = distillVedicThemesFromSignals({
     rssHeadlines: rssItems.map((i) => i.title),
     geminiGroundedBrief,
     masamTe: day.panchanga.masam,
+    cleanTithi: cleanTithiToday,
+    cleanNak: cleanNakToday,
+    todayIso,
     nextVrataLabelTe,
     nextVrataLabelEn,
   });
@@ -656,6 +714,8 @@ async function main() {
     nextVrataLabelEn,
     themesTe: distilled.themesTe,
     themesEn: distilled.themesEn,
+    keywordsTe: distilled.keywordsTe,
+    keywordsEn: distilled.keywordsEn,
     narrativeTe: distilled.narrativeTe,
     narrativeEn: distilled.narrativeEn,
   });
@@ -760,6 +820,35 @@ async function main() {
       : {}),
   };
 
+  const mergedKeywordsTe = Array.from(
+    new Set([
+      ...(Array.isArray(llmOutput?.trendingKeywordsTe)
+        ? llmOutput.trendingKeywordsTe.map(scrubMediaAndTrendLabels).filter(Boolean)
+        : []),
+      ...distilled.keywordsTe,
+    ])
+  ).slice(0, 8);
+
+  const mergedKeywordsEn = Array.from(
+    new Set([
+      ...(Array.isArray(llmOutput?.trendingKeywordsEn)
+        ? llmOutput.trendingKeywordsEn.map(scrubMediaAndTrendLabels).filter(Boolean)
+        : []),
+      ...distilled.keywordsEn,
+    ])
+  ).slice(0, 8);
+
+  finalArticle.telugu.secondaryKeywords = Array.from(
+    new Set([...(finalArticle.telugu.secondaryKeywords || []).map(scrubMediaAndTrendLabels), ...mergedKeywordsTe])
+  )
+    .filter(Boolean)
+    .slice(0, 8);
+  finalArticle.english.secondaryKeywords = Array.from(
+    new Set([...(finalArticle.english.secondaryKeywords || []).map(scrubMediaAndTrendLabels), ...mergedKeywordsEn])
+  )
+    .filter(Boolean)
+    .slice(0, 8);
+
   // Update src/data/dailyTrendingArticles.json (dedup by slug/datePublished, keep latest 14 days)
   const articlesPath = path.resolve(process.cwd(), 'src/data/dailyTrendingArticles.json');
   let existingArticles: VedicClassicalArticle[] = [];
@@ -790,14 +879,11 @@ async function main() {
     dateIso: todayIso,
     generatedAtUtc: new Date().toISOString(),
     engine: llmOutput?.engineLabel || baseBundle.engineLabel,
-    trendingKeywordsTe:
-      Array.isArray(llmOutput?.trendingKeywordsTe) && llmOutput.trendingKeywordsTe.length > 0
-        ? llmOutput.trendingKeywordsTe.map(scrubMediaAndTrendLabels).filter(Boolean).slice(0, 6)
-        : baseBundle.trendingKeywordsTe,
-    trendingKeywordsEn:
-      Array.isArray(llmOutput?.trendingKeywordsEn) && llmOutput.trendingKeywordsEn.length > 0
-        ? llmOutput.trendingKeywordsEn.map(scrubMediaAndTrendLabels).filter(Boolean).slice(0, 6)
-        : baseBundle.trendingKeywordsEn,
+    trendingKeywordsTe: mergedKeywordsTe,
+    trendingKeywordsEn: mergedKeywordsEn,
+    longTailKeywordsTe: distilled.themesTe,
+    longTailKeywordsEn: distilled.themesEn,
+    socialHashtags: distilled.hashtags,
     headlineTe: scrubMediaAndTrendLabels(llmOutput?.headlineTe || baseBundle.headlineTe),
     headlineEn: scrubMediaAndTrendLabels(llmOutput?.headlineEn || baseBundle.headlineEn),
     seoSummaryTe: scrubMediaAndTrendLabels(llmOutput?.seoSummaryTe || baseBundle.seoSummaryTe),
@@ -809,7 +895,7 @@ async function main() {
   };
 
   fs.writeFileSync(seoDataPath, JSON.stringify(trendingData, null, 2) + '\n', 'utf-8');
-  console.log(`✅ [Hermes SEO Writer] Updated dailyTrendingSeoData.json via ${trendingData.engine}`);
+  console.log(`✅ [Hermes SEO Writer] Updated dailyTrendingSeoData.json via ${trendingData.engine} (${mergedKeywordsTe.length} TE + ${mergedKeywordsEn.length} EN keywords)`);
 }
 
 main().catch((err) => {

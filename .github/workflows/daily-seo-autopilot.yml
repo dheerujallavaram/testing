@@ -36,20 +36,23 @@ jobs:
           NOTIFY_TELEGRAM_SEO: '0'
         run: npx tsx scripts/dailySeoAutopilot.ts
 
+      - name: Generate OpenMausBot Daily Social Card & Captions (FB • IG • LinkedIn)
+        run: npx tsx scripts/openMausSocialEngine.ts
+
       - name: Build & Prerender 550+ Static SEO Pages (SSG)
         run: npm run build
 
-      - name: Run OpenSEO Technical & AI Visibility Audit (Zero Critical Errors Gate)
-        run: npm run seo:audit
+      - name: Run OpenSEO & Jev-SEO Technical, Content & AI Visibility Audits (Zero Critical Gate)
+        run: npm run seo:audit && npm run seo:jev
 
-      - name: Commit & Push Daily Updated Trending Articles, Sitemap, Robots & SEO Reports
+      - name: Commit & Push Daily Updated Trending Articles, Sitemap, Robots, Social Assets & SEO Reports
         id: git_push
         run: |
           git config user.name "telugujyothisham-seo-bot"
           git config user.email "astrologer@telugujyothisham.com"
-          git add index.html public/sitemap.xml public/robots.txt public/9f4e7c2b1a8d4f3e8c6b2d1a0e9f8c7b.txt seo/daily-seo-report.md seo/daily-seo-report.json seo/open-seo-report.json src/data/dailyTrendingSeoData.json src/data/dailyTrendingArticles.json
+          git add index.html public/sitemap.xml public/robots.txt public/9f4e7c2b1a8d4f3e8c6b2d1a0e9f8c7b.txt public/social-cards/daily-panchangam-card.png seo/daily-seo-report.md seo/daily-seo-report.json seo/open-seo-report.json seo/jev-seo-report.json seo/jev-seo-report.md seo/social-posts-preview.html seo/social-publish-report.json src/data/dailyTrendingSeoData.json src/data/dailyTrendingArticles.json src/data/dailySocialPosts.json
           if ! git diff --staged --quiet; then
-            git commit -m "chore(seo): daily Hermes trend article, Panchangam, Sitemap & IndexNow update"
+            git commit -m "chore(seo): daily Hermes trend article, Panchangam, Sitemap, Jev-SEO & IndexNow update"
             git push
             echo "status=pushed" >> "$GITHUB_OUTPUT"
           else

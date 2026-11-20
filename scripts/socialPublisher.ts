@@ -15,7 +15,14 @@ import { generateServerDailyReelVideoBuffer } from './generateDailyPanchangamRee
 
 export interface SocialPublishResult {
   success: boolean;
-  channel: 'linkedin' | 'instagram' | 'instagram_reel' | 'facebook' | 'youtube' | 'webhook';
+  channel:
+    | 'linkedin'
+    | 'instagram'
+    | 'instagram_reel'
+    | 'facebook'
+    | 'youtube'
+    | 'postiz'
+    | 'webhook';
   message: string;
   postId?: string;
   postUrl?: string;
@@ -225,8 +232,261 @@ export async function publishToInstagram(params: {
 }
 
 /**
+ * Publishes a Photo + Caption (or Link Feed Post) directly to a Facebook Page via Meta Graph API v21.0.
+ * Requires FACEBOOK_PAGE_ID and FACEBOOK_PAGE_TOKEN.
+ */
+export async function publishToFacebookPage(params: {
+  caption: string;
+  imageBuffer?: Buffer;
+  imageUrl?: string;
+  linkUrl?: string;
+}): Promise<SocialPublishResult> {
+  const pageId = process.env.FACEBOOK_PAGE_ID?.trim();
+  const pageToken = process.env.FACEBOOK_PAGE_TOKEN?.trim();
+
+  if (!pageId || !pageToken) {
+    return {
+      success: false,
+      channel: 'facebook',
+      message: 'FACEBOOK_PAGE_ID or FACEBOOK_PAGE_TOKEN is not configured.',
+    };
+  }
+
+  try {
+    if (params.imageBuffer) {
+      const form = new FormData();
+      form.append('access_token', pageToken);
+      form.append('caption', params.caption.slice(0, 60000));
+      form.append('published', 'true');
+      const blob = new Blob([new Uint8Array(params.imageBuffer)], { type: 'image/png' });
+      form.append('source', blob, 'telugu-jyothisham-daily.png');
+
+      const res = await fetch(`https://graph.facebook.com/v21.0/${pageId}/photos`, {
+        method: 'POST',
+        body: form,
+      });
+      const data = (await res.json()) as {
+        id?: string;
+        post_id?: string;
+        error?: { message: string };
+      };
+      if (res.ok && (data.post_id || data.id)) {
+        const postId = data.post_id || data.id;
+        return {
+          success: true,
+          channel: 'facebook',
+          postId,
+          postUrl: `https://www.facebook.com/${postId}`,
+          message: `Facebook Page photo post published! (Post ID: ${postId})`,
+        };
+      }
+      return {
+        success: false,
+        channel: 'facebook',
+        message: `Facebook Page photo upload failed: ${data.error?.message || `HTTP ${res.status}`}`,
+      };
+    }
+
+    const body: Record<string, string> = {
+      message: params.caption.slice(0, 60000),
+      access_token: pageToken,
+    };
+    if (params.linkUrl) body.link = params.linkUrl;
+
+    const endpoint = params.imageUrl
+      ? `https://graph.facebook.com/v21.0/${pageId}/photos`
+      : `https://graph.facebook.com/v21.0/${pageId}/feed`;
+    if (params.imageUrl) {
+      body.url = params.imageUrl;
+      body.caption = body.message;
+      delete body.message;
+    }
+
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = (await res.json()) as { id?: string; post_id?: string; error?: { message: string } };
+    if (res.ok && (data.post_id || data.id)) {
+      const postId = data.post_id || data.id;
+      return {
+        success: true,
+        channel: 'facebook',
+        postId,
+        postUrl: `https://www.facebook.com/${postId}`,
+        message: `Facebook Page post published! (Post ID: ${postId})`,
+      };
+    }
+
+    return {
+      success: false,
+      channel: 'facebook',
+      message: `Facebook Page API failed: ${data.error?.message || `HTTP ${res.status}`}`,
+    };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      channel: 'facebook',
+      message: `Facebook Page request exception: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
+}
+
+/**
+ * OpenMausBot Postiz Bridge: Publishes simultaneously to Facebook Page, Instagram & LinkedIn
+ * via Postiz Public API (https://api.postiz.com/public/v1 or self-hosted POSTIZ_API_URL).
+ * Requires POSTIZ_API_KEY (and optionally POSTIZ_FACEBOOK_ID, POSTIZ_INSTAGRAM_ID, POSTIZ_LINKEDIN_ID).
+ */
+export async function publishViaPostiz(params: {
+  facebookText: string;
+  instagramText: string;
+  linkedinText: string;
+  imageUrl: string;
+}): Promise<SocialPublishResult[]> {
+  const apiKey = process.env.POSTIZ_API_KEY?.trim();
+  const baseUrl = (process.env.POSTIZ_API_URL || 'https://api.postiz.com/public/v1').replace(/\/$/, '');
+
+  if (!apiKey) {
+    return [
+      {
+        success: false,
+        channel: 'postiz',
+        message: 'POSTIZ_API_KEY is not configured.',
+      },
+    ];
+  }
+
+  try {
+    let facebookId = process.env.POSTIZ_FACEBOOK_ID?.trim() || '';
+    let instagramId = process.env.POSTIZ_INSTAGRAM_ID?.trim() || '';
+    let linkedinId = process.env.POSTIZ_LINKEDIN_ID?.trim() || '';
+
+    if (!facebookId || !instagramId || !linkedinId) {
+      const intRes = await fetch(`${baseUrl}/integrations`, {
+        headers: {
+          Authorization: apiKey,
+        },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (intRes.ok) {
+        const list = (await intRes.json()) as Array<{
+          id: string;
+          identifier?: string;
+          providerIdentifier?: string;
+          name?: string;
+        }>;
+        if (Array.isArray(list)) {
+          for (const item of list) {
+            const ident = `${item.identifier || ''} ${item.providerIdentifier || ''} ${item.name || ''}`.toLowerCase();
+            if (!facebookId && ident.includes('facebook')) facebookId = item.id;
+            if (!instagramId && ident.includes('instagram')) instagramId = item.id;
+            if (!linkedinId && ident.includes('linkedin')) linkedinId = item.id;
+          }
+        }
+      }
+    }
+
+    const targets: Array<{
+      channel: 'facebook' | 'instagram' | 'linkedin';
+      integrationId: string;
+      text: string;
+      provider: string;
+    }> = [];
+    if (facebookId) {
+      targets.push({
+        channel: 'facebook',
+        integrationId: facebookId,
+        text: params.facebookText,
+        provider: 'facebook',
+      });
+    }
+    if (instagramId) {
+      targets.push({
+        channel: 'instagram',
+        integrationId: instagramId,
+        text: params.instagramText,
+        provider: 'instagram',
+      });
+    }
+    if (linkedinId) {
+      targets.push({
+        channel: 'linkedin',
+        integrationId: linkedinId,
+        text: params.linkedinText,
+        provider: 'linkedin',
+      });
+    }
+
+    if (targets.length === 0) {
+      return [
+        {
+          success: false,
+          channel: 'postiz',
+          message: 'Postiz connected but no Facebook, Instagram, or LinkedIn integrations were found.',
+        },
+      ];
+    }
+
+    const nowIso = new Date().toISOString();
+    const res = await fetch(`${baseUrl}/posts`, {
+      method: 'POST',
+      headers: {
+        Authorization: apiKey,
+        'Content-Type': 'application/json',
+      },
+      signal: AbortSignal.timeout(15000),
+      body: JSON.stringify({
+        type: 'now',
+        date: nowIso,
+        shortLink: false,
+        tags: [],
+        posts: targets.map((t) => ({
+          integration: { id: t.integrationId },
+          value: [
+            {
+              content: t.text,
+              image: [{ id: 'daily-card', path: params.imageUrl }],
+            },
+          ],
+          settings: {
+            __type: t.provider,
+          },
+        })),
+      }),
+    });
+
+    const bodyText = await res.text();
+    if (res.ok) {
+      return targets.map((t) => ({
+        success: true,
+        channel: t.channel,
+        postId: 'postiz-published',
+        message: `Published via OpenMausBot Postiz bridge to ${t.channel} (${t.integrationId}).`,
+      }));
+    }
+
+    return [
+      {
+        success: false,
+        channel: 'postiz',
+        message: `Postiz API error (${res.status}): ${bodyText.slice(0, 260)}`,
+      },
+    ];
+  } catch (err: unknown) {
+    return [
+      {
+        success: false,
+        channel: 'postiz',
+        message: `Postiz bridge exception: ${err instanceof Error ? err.message : String(err)}`,
+      },
+    ];
+  }
+}
+
+/**
  * Dispatches the daily post payload to a Webhook (Make.com / Zapier / Pipedream / n8n / Buffer).
- * This is the easiest, most reliable zero-code way to post to both Instagram & LinkedIn simultaneously
+ * This is the easiest, most reliable zero-code way to post to both Facebook, Instagram & LinkedIn simultaneously
  * without requiring Meta App Review or complex OAuth renewal!
  */
 export async function triggerSocialWebhook(payload: {
@@ -874,7 +1134,17 @@ export async function executeDailySocialPosting(): Promise<{
     results.push(whRes);
   }
 
-  // 2. Direct LinkedIn
+  // 2. Direct Facebook Page Photo + Caption + Article Link
+  if (process.env.FACEBOOK_PAGE_ID && process.env.FACEBOOK_PAGE_TOKEN) {
+    const fbPostRes = await publishToFacebookPage({
+      caption: payload.fullSocialCaption,
+      imageBuffer,
+      linkUrl: payload.websiteUrl,
+    });
+    results.push(fbPostRes);
+  }
+
+  // 3. Direct LinkedIn
   if (process.env.LINKEDIN_ACCESS_TOKEN) {
     const liRes = await publishToLinkedIn({
       text: payload.fullSocialCaption,
@@ -884,27 +1154,27 @@ export async function executeDailySocialPosting(): Promise<{
     results.push(liRes);
   }
 
-  // 3. Direct Instagram Photo Feed (fallback when Reels public video host is not set)
+  // 4. Direct Instagram Photo Feed (uses publicly hosted daily card URL when Instagram token is set)
   const hasReelHosting = Boolean(
     (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_UPLOAD_PRESET) ||
       process.env.INSTAGRAM_PUBLIC_REEL_BASE_URL
   );
   if (process.env.INSTAGRAM_ACCESS_TOKEN && process.env.INSTAGRAM_ACCOUNT_ID && !hasReelHosting) {
     const igRes = await publishToInstagram({
-      imageUrl: payload.imageUrlTe,
+      imageUrl: 'https://www.telugujyothisham.com/social-cards/daily-panchangam-card.png',
       caption: payload.fullSocialCaption,
     });
     results.push(igRes);
   }
 
-  // 4. YouTube Shorts, Facebook Page Reels & Instagram Reels (Direct HD Video Uploads)
+  // 5. YouTube Shorts, Facebook Page Reels & Instagram Reels (Direct HD Video Uploads)
   const videoRun = await publishDailyReelsToVideoPlatforms();
   results.push(...videoRun.results);
 
   const successCount = results.filter((r) => r.success).length;
   const summary =
     results.length === 0
-      ? 'No social integrations configured yet (YouTube Shorts, Facebook Page, Instagram, LinkedIn, or Webhook).'
+      ? 'No social integrations configured yet (Facebook Page, Instagram, LinkedIn, Postiz, YouTube Shorts, or Webhook).'
       : `Social Posting Run: ${successCount}/${results.length} succeeded (${videoRun.summary}).`;
 
   return { results, summary };

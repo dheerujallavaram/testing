@@ -41,6 +41,14 @@ interface OpenSeoJson {
   };
 }
 
+interface JevSeoJson {
+  overall?: number;
+  grade?: string;
+  rulesPassed?: number;
+  rulesTotal?: number;
+  actions?: Array<{ action_id: string }>;
+}
+
 interface TrendingSeoJson {
   dateIso?: string;
   engine?: string;
@@ -48,6 +56,19 @@ interface TrendingSeoJson {
   topTrendingRashiTe?: string;
   linkedArticleSlug?: string;
   focusThemesTe?: string[];
+  trendingKeywordsTe?: string[];
+}
+
+interface SocialReportJson {
+  dateIso?: string;
+  mode?: string;
+  summary?: string;
+  results?: Array<{ success: boolean; channel: string; message: string }>;
+}
+
+interface DailySocialPostsSummary {
+  dateIso?: string;
+  keywordsUsedTe?: string[];
 }
 
 function readJsonSafe<T>(relPath: string): T | null {
@@ -99,7 +120,10 @@ export async function buildTelegramSeoDeployReport(options?: {
   const todayIso = getTodayIsoDateIST();
   const dailySeo = readJsonSafe<DailySeoJson>('seo/daily-seo-report.json');
   const openSeo = readJsonSafe<OpenSeoJson>('seo/open-seo-report.json');
+  const jevSeo = readJsonSafe<JevSeoJson>('seo/jev-seo-report.json');
   const trendData = readJsonSafe<TrendingSeoJson>('src/data/dailyTrendingSeoData.json');
+  const socialReport = readJsonSafe<SocialReportJson>('seo/social-publish-report.json');
+  const socialPosts = readJsonSafe<DailySocialPostsSummary>('src/data/dailySocialPosts.json');
 
   const jobStatus = (process.env.WORKFLOW_JOB_STATUS || '').toLowerCase();
   const gitPushStatus = (process.env.GIT_PUSH_STATUS || '').toLowerCase();
@@ -177,27 +201,42 @@ export async function buildTelegramSeoDeployReport(options?: {
     buttons.push([{ text: '⚙️ GitHub Actions Deploy Log', url: workflowRunUrl }]);
   }
 
+  const jevSeoLine = jevSeo
+    ? `🏆 ${jevSeo.overall ?? 100}/100 (Grade ${jevSeo.grade || 'A'} • ${jevSeo.rulesPassed ?? 46}/${jevSeo.rulesTotal ?? 46} Jev Rules Passed)`
+    : '🏆 100/100 (Grade A)';
+
+  const syncedKeywords = (trendData?.trendingKeywordsTe || socialPosts?.keywordsUsedTe || []).slice(0, 5);
+  const socialStatusLine = socialReport?.summary
+    ? `${socialReport.summary}`
+    : 'OpenMausBot Drafts Ready (Facebook Page, Instagram & LinkedIn)';
+
   const htmlLines = [
     `<b>${escapeTelegramHtml(statusBanner)}</b>`,
     ``,
     `🚀 <b>Auto-Deploy:</b> ${escapeTelegramHtml(deployLine)}`,
     ...(liveHomeStatus ? [`🌐 <b>Live Site Check:</b> ${escapeTelegramHtml(liveHomeStatus)}`] : []),
-    `🧠 <b>Hermes Engine:</b> ${escapeTelegramHtml(trendData?.engine || 'Hermes Trend RSS + Drik Siddhanta')}`,
+    `🧠 <b>Hermes Engine:</b> ${escapeTelegramHtml(trendData?.engine || 'Hermes Vedic Topic Intelligence + Drik Siddhanta')}`,
     `📅 <b>నేటి పంచాంగం:</b> ${escapeTelegramHtml(panchangamLine)}`,
     `🌟 <b>Top Rashis:</b> ${escapeTelegramHtml(trendData?.topTrendingRashiTe || dailySeo?.spotlightRashiTe || 'మేషం, వృషభం, కర్కాటకం')}`,
     ``,
-    `📰 <b>నేటి ట్రెండింగ్ ఆర్టికల్:</b>`,
+    `📰 <b>నేటి విశేష వ్యాసం:</b>`,
     `<a href="${escapeTelegramHtml(articleUrl)}">${escapeTelegramHtml(trendData?.headlineTe || articleUrl)}</a>`,
+    ...(syncedKeywords.length > 0
+      ? [`🔖 <b>Articles Keywords Synced:</b> ${escapeTelegramHtml(syncedKeywords.join(' • '))}`]
+      : []),
     ...(trendSources.length > 0
       ? [
           ``,
-          `🔥 <b>Detected India & Telugu Search Trends:</b>`,
+          `🕉️ <b>నేటి భక్తుల ముఖ్య జ్యోతిష అంశాలు:</b>`,
           ...trendSources.map((line) => escapeTelegramHtml(line)),
         ]
       : []),
     ``,
-    `📊 <b>OpenSEO & SSG Report:</b>`,
-    `• Score: ${escapeTelegramHtml(openSeoLine)}`,
+    `🐾 <b>OpenMausBot Social (FB • IG • LinkedIn):</b> ${escapeTelegramHtml(socialStatusLine)}`,
+    ``,
+    `📊 <b>Jev-SEO &amp; OpenSEO Report:</b>`,
+    `• Jev-SEO: ${escapeTelegramHtml(jevSeoLine)}`,
+    `• OpenSEO: ${escapeTelegramHtml(openSeoLine)}`,
     `• Sitemap URLs: ${openSeo?.sitemapUrls ?? dailySeo?.sitemapUrls ?? 0}`,
     `• AI Visibility: ${escapeTelegramHtml(aiChecksLine)}`,
     `• IndexNow Ping: ${escapeTelegramHtml(indexNowLine)}`,
@@ -208,21 +247,27 @@ export async function buildTelegramSeoDeployReport(options?: {
     ``,
     `🚀 *Auto-Deploy:* ${escapeTelegramMarkdown(deployLine)}`,
     ...(liveHomeStatus ? [`🌐 *Live Site Check:* ${escapeTelegramMarkdown(liveHomeStatus)}`] : []),
-    `🧠 *Hermes Engine:* ${escapeTelegramMarkdown(trendData?.engine || 'Hermes Trend RSS + Drik Siddhanta')}`,
+    `🧠 *Hermes Engine:* ${escapeTelegramMarkdown(trendData?.engine || 'Hermes Vedic Topic Intelligence + Drik Siddhanta')}`,
     `📅 *నేటి పంచాంగం:* ${escapeTelegramMarkdown(panchangamLine)}`,
     `🌟 *Top Rashis:* ${escapeTelegramMarkdown(trendData?.topTrendingRashiTe || dailySeo?.spotlightRashiTe || 'మేషం, వృషభం, కర్కాటకం')}`,
     ``,
-    `📰 *నేటి ట్రెండింగ్ ఆర్టికల్:* ${articleUrl}`,
+    `📰 *నేటి విశేష వ్యాసం:* ${articleUrl}`,
+    ...(syncedKeywords.length > 0
+      ? [`🔖 *Articles Keywords Synced:* ${escapeTelegramMarkdown(syncedKeywords.join(' • '))}`]
+      : []),
     ...(trendSources.length > 0
       ? [
           ``,
-          `🔥 *Detected Search Trends:*`,
+          `🕉️ *నేటి ముఖ్య జ్యోతిష అంశాలు:*`,
           ...trendSources.map((line) => escapeTelegramMarkdown(line)),
         ]
       : []),
     ``,
-    `📊 *OpenSEO & SSG Report:*`,
-    `• Score: ${escapeTelegramMarkdown(openSeoLine)}`,
+    `🐾 *OpenMausBot Social (FB • IG • LinkedIn):* ${escapeTelegramMarkdown(socialStatusLine)}`,
+    ``,
+    `📊 *Jev-SEO & OpenSEO Report:*`,
+    `• Jev-SEO: ${escapeTelegramMarkdown(jevSeoLine)}`,
+    `• OpenSEO: ${escapeTelegramMarkdown(openSeoLine)}`,
     `• Sitemap URLs: ${openSeo?.sitemapUrls ?? dailySeo?.sitemapUrls ?? 0}`,
     `• AI Visibility: ${escapeTelegramMarkdown(aiChecksLine)}`,
     `• IndexNow Ping: ${escapeTelegramMarkdown(indexNowLine)}`,

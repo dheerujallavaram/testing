@@ -1026,7 +1026,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({
                     href={whatsappConsultUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-emerald-500 text-white underline shadow-2xs"
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#007a52] text-white underline shadow-2xs"
                   >
                     💬 వాట్సాప్: +91 89779 86166
                   </a>
@@ -2592,7 +2592,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({
                     href={whatsappConsultUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 print:px-2.5 print:py-1 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold text-xs print:text-[10px] border border-emerald-300 shadow-sm underline"
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 print:px-2.5 print:py-1 rounded-xl bg-[#007a52] hover:bg-[#006644] text-white font-extrabold text-xs print:text-[10px] border border-emerald-300 shadow-sm underline"
                   >
                     <span>💬 వాట్సాప్: +91 89779 86166</span>
                   </a>
@@ -5175,7 +5175,7 @@ export const JanmaKundaliGenerator: React.FC<JanmaKundaliGeneratorProps> = ({
                 href={whatsappConsultUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm sm:text-base font-extrabold bg-[#25D366] hover:bg-[#1fb855] text-white border-2 border-emerald-200 shadow-lg transition-all"
+                className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm sm:text-base font-extrabold bg-[#007a52] hover:bg-[#006644] text-white border-2 border-emerald-200 shadow-lg transition-all"
               >
                 <MessageCircle size={18} />
                 <span>

@@ -765,6 +765,64 @@ export const TOOL_PAGE_ORIGINAL_GUIDES: Record<string, ToolGuideContent> = {
       },
     ],
   },
+  '/birth-time-rectification': {
+    primaryKeyword: 'జన్మ సమయ శుద్ధి తెలుగులో',
+    secondaryKeywords: [
+      'Birth Time Rectification in Telugu',
+      'Free Birth Time Rectification Calculator',
+      'Pranapada Lagna BTR',
+      'Kunda Sphuta 81x Moon',
+      'KP 249 Cuspal Sub-Lord Rectification',
+      'Twins Horoscope D60 Shashtiamsa',
+    ],
+    authorPlaceholderTag: '{{AUTHOR_NOTE_BTR_METHODOLOGY}}',
+    introTe:
+      'జన్మ సమయ శుద్ధి క్యాలిక్యులేటర్ (Birth Time Rectification in Telugu): పుట్టిన సమయంలో 5 నుండి 60 నిమిషాల సందేహం ఉన్నవారికి బృహత్ పరాశర హోరా శాస్త్రంలోని ప్రాణపద లగ్నం (Pranapada Lagna), చంద్రుని 81వ భాగమైన కుండ స్ఫుట (Kunda Sphuta), స్థానిక సూర్యోదయ పంచ తత్వ శోధన, KP 249 లగ్న సబ్‌లార్డ్, మండి-లగ్న, D9/D10/D60 వర్గ సెన్సిటివిటీ మరియు నిజమైన జీవిత సంఘటనల (వివాహం, మొదటి ఉద్యోగం, సంతానం, గృహం, సర్జరీ) వింశోత్తరి మహాదశ–అంతర్దశ పరీక్షల ద్వారా అసలైన జన్మ సమయాన్ని ఉచితంగా నిర్ధారించే 6-మెథడ్ శాస్త్రీయ సాధనం.',
+    howItWorksTitle: '6-మెథడ్ జన్మ సమయ శుద్ధి (BTR) గణన ఎలా పనిచేస్తుంది?',
+    howItWorksTe:
+      'మీ పుట్టిన తేదీ, అంచనా సమయం, పుట్టిన నగరం మరియు 2–4 గత జీవిత ఘటనల తేదీలు నమోదు చేయగానే NASA JPL ఖగోళ గణనతో స్థానిక సూర్యోదయం లెక్కించబడి ±15 నుండి ±60 నిమిషాల పరిధిలోని ప్రతి క్యాండిడేట్ నిమిషానికి ప్రాణపద త్రికోణం, కుండ స్ఫుట, పంచ తత్వం, KP లగ్న సబ్‌లార్డ్ మరియు వింశోత్తరి దశా భావ అనుసంధానం పరీక్షించబడతాయి.',
+    termsTitle: 'జన్మ సమయ శుద్ధి (BTR) లోని ముఖ్య శాస్త్రీయ సూత్రాలు',
+    termsListTe: [
+      {
+        term: 'ప్రాణపద లగ్నం (BPHS Pranapada Lagna)',
+        meaning: 'సూర్యోదయం నుండి గడిచిన విఘటికలతో గణించే ప్రాణశక్తి బిందువు; మానవ జన్మలో లగ్నానికి లేదా నవాంశకు 1, 5, 9 లేదా 7వ స్థానంలో ఉండాలి.',
+      },
+      {
+        term: 'కుండ స్ఫుట (81× చంద్రుడు — నవ-నవాంశ)',
+        meaning: 'నిరయన చంద్రుని స్ఫుటాన్ని 81తో గుణించగా వచ్చే రాశి లగ్నానికి త్రికోణంలో (1-5-9) సమన్వయం కావడం శుద్ధ జన్మ సమయ సూచన.',
+      },
+      {
+        term: 'పంచ తత్వ శోధన (Sunrise 90-Min Tatwa Cycle)',
+        meaning: 'స్థానిక సూర్యోదయం నుండి పృథ్వీ (6m), జల (12m), తేజో (18m), వాయు (24m), ఆకాశ (30m) తత్వాల క్రమాన్ని జాతక స్వభావంతో సరిపోల్చడం.',
+      },
+      {
+        term: 'KP 249 లగ్న సబ్‌లార్డ్ (Ascendant Cuspal Sub-Lord)',
+        meaning: 'కృష్ణమూర్తి పద్ధతిలో ప్రతి 4–8 నిమిషాలకు మారే లగ్న ఉప-అధిపతిని జీవిత లక్షణాలతో నిర్ధారించడం.',
+      },
+      {
+        term: 'D9 (13m) · D10 (12m) · D60 షష్ట్యంశ (2m) సెన్సిటివిటీ',
+        meaning: 'వివాహానికి D9, వృత్తికి D10, కవల పిల్లల వ్యత్యాసానికి ప్రతి 2 నిమిషాలకు మారే D60 షష్ట్యంశ లగ్నాన్ని పరిశీలించడం.',
+      },
+    ],
+    faqListTe: [
+      {
+        q: 'జన్మ సమయ శుద్ధి (Birth Time Rectification - BTR) అంటే ఏమిటి?',
+        a: 'పుట్టిన సమయంలో 5–60 నిమిషాల సందేహం ఉన్నప్పుడు ప్రాణపద లగ్నం, కుండ స్ఫుట, KP సబ్‌లార్డ్ మరియు గత జీవిత ఘటనల వింశోత్తరి దశల ద్వారా అసలైన ఖచ్చితమైన జన్మ సమయాన్ని నిర్ధారించే శాస్త్రీయ ప్రక్రియే BTR.',
+      },
+      {
+        q: 'ప్రాణపద లగ్నం మరియు కుండ స్ఫుట ఎలా పనిచేస్తాయి?',
+        a: 'సూర్యోదయ విఘటికల ఆధారంగా లెక్కించే ప్రాణపద లగ్నం మరియు చంద్ర స్ఫుటాన్ని 81తో గుణించే కుండ స్ఫుట రెండూ శుద్ధ జన్మ లగ్నానికి 1, 5, 9 త్రికోణ స్థానాల్లో సమన్వయం అవుతాయి.',
+      },
+      {
+        q: 'కవల పిల్లల జాతకాలు (Twins Horoscope) కొద్ది నిమిషాల తేడాతో ఎలా వేరుగా ఉంటాయి?',
+        a: 'D60 షష్ట్యంశ లగ్నం ప్రతి 2 నిమిషాలకు మరియు KP సబ్‌లార్డ్ ప్రతి 4–8 నిమిషాలకు మారుతుంది కాబట్టి కవలల మధ్య 3–10 నిమిషాల తేడాతోనే వారి సూక్ష్మ కర్మ ఫలితాలు వేరుగా ఉంటాయి.',
+      },
+      {
+        q: 'ఉచిత ఆన్‌లైన్ BTR తర్వాత గురుజీ వ్యక్తిగత పరిశీలన ఎప్పుడు అవసరం?',
+        a: 'పుట్టిన సమయం 2 గంటలకు పైగా తెలియకపోయినా, కవలల జాతక విభజన కావాలన్నా లేదా సెకన్ల స్థాయి D60 + ప్రశ్న కుండలి నిర్ధారణ కోసం బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారిని సంప్రదించడం ఉత్తమం.',
+      },
+    ],
+  },
   '/janma-kundali': {
     primaryKeyword: 'జన్మ కుండలి తెలుగులో',
     secondaryKeywords: [
@@ -2346,6 +2404,21 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       h1: `రాశి ఫలాలు – నేటి రాశి ఫలాలు (Today Rashi Phalalu in Telugu – ${todayData.teediVaram})`,
       breadcrumbName: 'రాశి ఫలాలు (Rashi Phalalu)',
     },
+    '/birth-time-rectification': {
+      primaryKeyword: 'జన్మ సమయ శుద్ధి తెలుగులో',
+      secondaryKeywords: [
+        'Birth Time Rectification in Telugu',
+        'Pranapada Lagna BTR Calculator',
+        'Kunda Sphuta 81x Moon',
+        'KP 249 Sub-Lord BTR',
+        'Twins Horoscope D60',
+      ],
+      title: 'జన్మ సమయ శుద్ధి – Birth Time Rectification Calculator',
+      description:
+        'జన్మ సమయ శుద్ధి (Birth Time Rectification in Telugu): ప్రాణపద లగ్నం, కుండ స్ఫుట, KP 249 సబ్‌లార్డ్ & జీవిత ఘటనల వింశోత్తరి దశతో ఖచ్చితమైన పుట్టిన సమయం ఉచితంగా కనుగొనండి.',
+      h1: 'జన్మ సమయ శుద్ధి క్యాలిక్యులేటర్ (Birth Time Rectification in Telugu)',
+      breadcrumbName: 'జన్మ సమయ శుద్ధి (BTR)',
+    },
     '/janma-kundali': {
       primaryKeyword: 'జన్మ కుండలి తెలుగులో',
       secondaryKeywords: [
@@ -2737,6 +2810,13 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
     const rawSeoTitle = articleMatch.telugu.seoTitle || `${articleMatch.telugu.title} | వేద జ్యోతిషం`;
     const title = clampTitle(rawSeoTitle, 60);
     const desc = clampMetaDescription(articleMatch.telugu.metaDescription, 160);
+    const mergedSecondaryKeywords = Array.from(
+      new Set([
+        ...(articleMatch.telugu.secondaryKeywords || []),
+        ...(dailyTrendingSeoData?.trendingKeywordsTe || []),
+        ...(dailyTrendingSeoData?.trendingKeywordsEn || []),
+      ])
+    ).slice(0, 12);
     return {
       title,
       description: desc,
@@ -2744,7 +2824,7 @@ export function generatePageMetadata(rawPathname: string): PageSeoMetadata {
       robots: defaultRobots,
       h1: articleMatch.telugu.title,
       primaryKeyword: articleMatch.telugu.primaryKeyword,
-      secondaryKeywords: articleMatch.telugu.secondaryKeywords,
+      secondaryKeywords: mergedSecondaryKeywords,
       ogTitle: title,
       ogDescription: desc,
       ogUrl: canonical,
@@ -2835,16 +2915,19 @@ export function buildCleanJsonLdSchema(meta: PageSeoMetadata): Record<string, un
       },
     },
     {
-      '@type': 'Organization',
+      '@type': ['Organization', 'LocalBusiness'],
       '@id': `${SITE_URL}/#organization`,
       name: 'Telugu Jyothisham – శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం',
       url: `${SITE_URL}/`,
+      telephone: '+91-8977986166',
+      priceRange: 'Free Tools & Vedic Consultations (INR)',
       logo: {
         '@type': 'ImageObject',
         url: `${SITE_URL}/favicon-512x512.png`,
         width: 512,
         height: 512,
       },
+      image: `${SITE_URL}/assets/aistudio/photo_6316590677353413998_y_10819dd7.jpg`,
       founder: {
         '@id': `${SITE_URL}/#person`,
       },
@@ -2937,6 +3020,7 @@ export function buildCleanJsonLdSchema(meta: PageSeoMetadata): Record<string, un
 
   const interactiveAppRoutes = new Set([
     `${SITE_URL}/janma-kundali`,
+    `${SITE_URL}/birth-time-rectification`,
     `${SITE_URL}/mee-jatakam`,
     `${SITE_URL}/vivaha-pontana`,
     `${SITE_URL}/telugu-baby-names`,
@@ -3176,7 +3260,7 @@ function renderRichToolGuideHtml(pathname: string): string {
             <span>సంప్రదాయం: <strong>పరాశర &amp; సూర్య సిద్ధాంత వైదిక క్రమం</strong></span>
           </div>
           <div style="margin:16px 0 6px;border-radius:14px;overflow:hidden;border:2px solid #f59e0b;">
-            <img src="${escapeHtml(article.heroImage)}" alt="${escapeHtml(article.imageAltTe)}" referrerpolicy="no-referrer" style="width:100%;height:auto;display:block;" />
+            <img src="${escapeHtml(article.heroImage)}" alt="${escapeHtml(article.imageAltTe)}" width="1280" height="720" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="width:100%;height:auto;display:block;" />
           </div>
         </div>
 
@@ -3328,6 +3412,20 @@ function renderRichToolGuideHtml(pathname: string): string {
           </div>
         </section>
 
+        ${
+          dailyTrendingSeoData && (dailyTrendingSeoData.trendingKeywordsTe?.length || dailyTrendingSeoData.trendingKeywordsEn?.length)
+            ? `<aside aria-label="Daily Vedic Topic Keywords" style="padding:14px 16px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;margin-top:16px;">
+          <h4 style="margin:0 0 8px;font-size:14px;color:#78350f;">🕉️ నేటి ముఖ్య జ్యోతిష &amp; వ్రత అంశాలు (Daily Vedic Focus Keywords — ${escapeHtml(dailyTrendingSeoData.dateIso)}):</h4>
+          <p style="margin:0 0 8px;font-size:13.5px;color:#334155;">
+            ${escapeHtml([...(dailyTrendingSeoData.trendingKeywordsTe || []), ...(dailyTrendingSeoData.trendingKeywordsEn || [])].join(' • '))}
+          </p>
+          <p style="margin:0;font-size:13px;">
+            <a href="/${escapeHtml(dailyTrendingSeoData.linkedArticleSlug)}" style="color:#9a3412;font-weight:700;text-decoration:underline;">📖 ${escapeHtml(dailyTrendingSeoData.headlineTe)} →</a>
+          </p>
+        </aside>`
+            : ''
+        }
+
         <div style="padding-top:16px;border-top:1px solid #fef3c7;margin-top:20px;">
           <h4 style="margin:0 0 10px;font-size:15px;color:#78350f;">ఇతర ప్రత్యేక వేద జ్యోతిష వ్యాసాలు (All Standalone Articles):</h4>
           <div style="display:flex;flex-wrap:wrap;gap:10px;font-size:13px;">
@@ -3364,7 +3462,7 @@ function renderRichToolGuideHtml(pathname: string): string {
             <div style="padding:16px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;">
               <div style="margin-bottom:10px;border-radius:10px;overflow:hidden;border:1px solid #f59e0b;">
                 <a href="/${art.slug}">
-                  <img src="${escapeHtml(art.heroImage)}" alt="${escapeHtml(art.imageAltTe)}" referrerpolicy="no-referrer" style="width:100%;height:auto;display:block;" />
+                  <img src="${escapeHtml(art.heroImage)}" alt="${escapeHtml(art.imageAltTe)}" width="1280" height="720" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="width:100%;height:auto;display:block;" />
                 </a>
               </div>
               <span style="display:inline-block;padding:2px 8px;background:#fef3c7;color:#92400e;border-radius:4px;font-size:11px;font-weight:bold;margin-bottom:6px;">
@@ -4238,6 +4336,7 @@ export function renderServerHtmlBodyForRoute(rawPathname: string): string {
             <li><a href="/panchangam" style="color:#9a3412;font-weight:700;">నేటి పంచాంగం (Neti Panchangam – ఈ రోజు తిథి, నక్షత్రం, రాహుకాలం)</a></li>
             <li><a href="/rashi-phalalu" style="color:#9a3412;font-weight:700;">నేటి రాశి ఫలాలు – మేషం నుండి మీనం వరకు 12 రాశుల ఫలితాలు</a></li>
             <li><a href="/janma-kundali" style="color:#9a3412;font-weight:700;">జన్మ కుండలి తెలుగులో – 29 అధ్యాయాల బృహత్ జాతకం &amp; KP కుండలి</a></li>
+            <li><a href="/birth-time-rectification" style="color:#9a3412;font-weight:700;">జన్మ సమయ శుద్ధి క్యాలిక్యులేటర్ (6-Method Birth Time Rectification – ప్రాణపద, కుండ &amp; KP)</a></li>
             <li><a href="/mee-jatakam" style="color:#9a3412;font-weight:700;">మీ జాతకం తెలుసుకోండి – 37 అధ్యాయాల సంపూర్ణ జాతక నివేదిక (Mee Jatakam)</a></li>
             <li><a href="/sample-jathakam" style="color:#9a3412;font-weight:700;">నమూనా జాతక పత్రిక &amp; PDF రిపోర్ట్ (Sample Jathakam)</a></li>
             <li><a href="/prashna-kundali" style="color:#9a3412;font-weight:700;">1–249 KP ప్రశ్న కుండలి (Instant Horary Prashna Predictor)</a></li>

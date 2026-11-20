@@ -38,6 +38,7 @@ import { DayData } from '../types/panchangam';
 import { computeBhavarthaAndAyurvedaReport } from '../utils/bhavarthaAndAyurvedaEngine';
 import { computePersonalHoroscopeVastu } from '../utils/dakshinaBharatiyaMarriageAndVastuEngine';
 import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
+import dailyTrendingSeoData from '../data/dailyTrendingSeoData.json';
 
 const QUICK_RASHIS_12 = [
   { idx: 0, te: 'మేషం', en: 'Mesha (Aries)', lordTe: 'కుజుడు', gemTe: 'పగడం (Red Coral)' },
@@ -792,21 +793,30 @@ export const VedicArticleReader: React.FC<VedicArticleReaderProps> = ({
               </ul>
             </div>
 
-            {currentContent.secondaryKeywords && currentContent.secondaryKeywords.length > 0 && (
-              <div className="pt-2 border-t border-amber-200/80 flex flex-wrap items-center gap-1.5">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800">
-                  {isTe ? 'ప్రమాణ సూచికలు:' : 'Key Topics:'}
-                </span>
-                {currentContent.secondaryKeywords.map((kw, kIdx) => (
-                  <span
-                    key={kIdx}
-                    className="px-2 py-0.5 rounded bg-white text-amber-900 border border-amber-300 text-[11px] font-telugu font-semibold"
-                  >
-                    {kw}
+            {(() => {
+              const dailyKws = isTe
+                ? dailyTrendingSeoData?.trendingKeywordsTe || []
+                : dailyTrendingSeoData?.trendingKeywordsEn || [];
+              const mergedKws = Array.from(
+                new Set([...(currentContent.secondaryKeywords || []), ...dailyKws])
+              ).slice(0, 10);
+              if (mergedKws.length === 0) return null;
+              return (
+                <div className="pt-2 border-t border-amber-200/80 flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800">
+                    {isTe ? 'ప్రమాణ సూచికలు & నేటి విశేషాలు:' : 'Key Shastra & Daily Topics:'}
                   </span>
-                ))}
-              </div>
-            )}
+                  {mergedKws.map((kw, kIdx) => (
+                    <span
+                      key={kIdx}
+                      className="px-2 py-0.5 rounded bg-white text-amber-900 border border-amber-300 text-[11px] font-telugu font-semibold"
+                    >
+                      {kw}
+                    </span>
+                  ))}
+                </div>
+              );
+            })()}
           </aside>
 
           {currentContent.sections.map((section, idx) => (

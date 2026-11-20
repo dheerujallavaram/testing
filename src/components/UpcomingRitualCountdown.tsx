@@ -641,7 +641,7 @@ export const UpcomingRitualCountdown: React.FC<UpcomingRitualCountdownProps> = (
                 href={whatsappInquiryUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="py-2 px-2.5 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-md cursor-pointer truncate"
+                className="py-2 px-2.5 bg-[#007a52] hover:bg-[#006644] text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-md cursor-pointer truncate"
               >
                 <MessageCircle size={14} className="shrink-0" />
                 <span className="truncate">{t('వాట్సాప్ సంకల్పం', 'WhatsApp Sankalpam')}</span>

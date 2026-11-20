@@ -274,7 +274,7 @@ export const Header: React.FC<HeaderProps> = ({
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 sm:py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm rounded-full shadow-md transition-all font-telugu shrink-0"
+            className="hidden sm:flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 sm:py-2 bg-[#007a52] hover:bg-[#006644] text-white font-bold text-xs sm:text-sm rounded-full shadow-md transition-all font-telugu shrink-0"
           >
             <MessageCircle size={15} />
             <span className="hidden lg:inline">{t('వాట్సాప్ సంప్రదింపు', 'WhatsApp')}</span>
@@ -570,7 +570,7 @@ export const Header: React.FC<HeaderProps> = ({
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-emerald-600 text-white rounded-xl font-bold font-telugu text-sm shadow-md"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#007a52] hover:bg-[#006644] text-white rounded-xl font-bold font-telugu text-sm shadow-md transition-colors"
             >
               <MessageCircle size={16} />
               <span>{t('వాట్సాప్ సంప్రదింపు (8977986166)', 'WhatsApp Guruji (8977986166)')}</span>

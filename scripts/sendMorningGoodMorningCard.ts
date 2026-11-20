@@ -14,9 +14,15 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createCanvas, GlobalFonts, SKRSContext2D } from '@napi-rs/canvas';
+import { createCanvas, GlobalFonts, Image as CanvasImage, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { DayData } from '../src/types/panchangam';
 import { getDailySubhashitham, SubhashithamItem } from '../src/data/subhashithamData';
+import { computeLivePanchangamSheet } from '../src/utils/livePanchangamSheetEngine';
+import {
+  MinimalCanvasContext2D,
+  paintRoyalPanchangamSheet,
+  RoyalCardAspect,
+} from '../src/utils/royalPanchangamCanvasRenderer';
 import {
   BOT_TOKEN,
   getMainInlineKeyboard,
@@ -181,194 +187,48 @@ function drawLeftAlignedWrappedText(
   return y;
 }
 
+let cachedGuruPortraitImg: CanvasImage | null | undefined;
+
+async function loadGuruPortraitAsync(): Promise<CanvasImage | undefined> {
+  if (cachedGuruPortraitImg !== undefined) return cachedGuruPortraitImg || undefined;
+  try {
+    const imgPath = path.resolve(
+      process.cwd(),
+      'public/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg'
+    );
+    if (fs.existsSync(imgPath)) {
+      const img = await loadImage(imgPath);
+      cachedGuruPortraitImg = img;
+      return img;
+    }
+  } catch (err) {
+    console.warn('⚠️ Portrait image fallback:', err);
+  }
+  cachedGuruPortraitImg = null;
+  return undefined;
+}
+
 /**
- * Card 1: 1080x1350 Morning 6:00 AM IST Panchangam Summary Card
+ * Card 1: Royal Temple Manuscript Panchangam + Live 4x4 South Indian Kundali Card
+ * Used automatically by Morning 6:00 AM IST Telegram + OpenMausBot (Facebook Page, Instagram & LinkedIn).
  */
-export function renderMorningPanchangamCardBuffer(day: DayData): Buffer {
+export async function renderMorningPanchangamCardBuffer(
+  day: DayData,
+  aspect: RoyalCardAspect = 'feed_4_5'
+): Promise<Buffer> {
   registerFonts();
   const width = 1080;
-  const height = 1350;
-  const centerX = width / 2;
+  const height = aspect === 'story_9_16' ? 1920 : 1350;
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext('2d');
 
-  // Background gradient: Royal Maroon header & footer, warm cream inner body
-  const bg = ctx.createLinearGradient(0, 0, 0, height);
-  bg.addColorStop(0, '#3b0703');
-  bg.addColorStop(0.185, '#6b1d09');
-  bg.addColorStop(0.19, '#fffbeb');
-  bg.addColorStop(0.895, '#fef3c7');
-  bg.addColorStop(0.9, '#420a04');
-  bg.addColorStop(1, '#240502');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, width, height);
+  const snap = computeLivePanchangamSheet(day);
+  const avatarImage = await loadGuruPortraitAsync();
 
-  // Outer gold frame
-  ctx.strokeStyle = '#f59e0b';
-  ctx.lineWidth = 6;
-  drawRoundedRect(ctx, 26, 26, width - 52, height - 52, 26);
-  ctx.stroke();
-
-  ctx.strokeStyle = 'rgba(253, 224, 71, 0.45)';
-  ctx.lineWidth = 2;
-  drawRoundedRect(ctx, 38, 38, width - 76, height - 76, 20);
-  ctx.stroke();
-
-  // Header Badge + Titles
-  drawRoundedRect(ctx, 64, 58, 118, 134, 20);
-  const badgeGrad = ctx.createLinearGradient(64, 58, 182, 192);
-  badgeGrad.addColorStop(0, '#fbbf24');
-  badgeGrad.addColorStop(1, '#d97706');
-  ctx.fillStyle = badgeGrad;
-  ctx.fill();
-  ctx.strokeStyle = '#fef3c7';
-  ctx.lineWidth = 3;
-  ctx.stroke();
-
-  ctx.fillStyle = '#3b0703';
-  ctx.font = 'bold 42px "Noto Serif Telugu", serif';
-  drawCenteredSingleLine(ctx, 'ఓం', 123, 122, 100);
-  ctx.font = 'bold 24px "Noto Serif Telugu", serif';
-  drawCenteredSingleLine(ctx, 'శుభోదయం', 123, 168, 106);
-
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#fde68a';
-  ctx.font = 'bold 24px "Noto Serif Telugu", "Noto Sans", sans-serif';
-  ctx.fillText('శుభోదయం • నేటి ఉదయకాల పంచాంగం (6:00 AM IST)', 204, 92, 810);
-
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 44px "Noto Serif Telugu", serif';
-  ctx.fillText('శ్రీలక్ష్మి గణపతి జ్యోతిషాలయం', 204, 146, 810);
-
-  ctx.fillStyle = '#fcd34d';
-  ctx.font = 'bold 24px "Noto Serif Telugu", sans-serif';
-  ctx.fillText('బ్రహ్మశ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు', 204, 188, 810);
-
-  // Date Pill Banner
-  drawRoundedRect(ctx, 60, 276, width - 120, 96, 18);
-  ctx.fillStyle = '#78350f';
-  ctx.fill();
-  ctx.strokeStyle = '#f59e0b';
-  ctx.lineWidth = 3;
-  ctx.stroke();
-
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 34px "Noto Serif Telugu", sans-serif';
-  drawCenteredSingleLine(ctx, `${day.teediVaram} (${day.isoDate})`, centerX, 318, 900);
-  ctx.fillStyle = '#fde68a';
-  ctx.font = 'bold 23px "Noto Serif Telugu", sans-serif';
-  drawCenteredSingleLine(
-    ctx,
-    `${day.panchanga.samvatsaram} • ${day.panchanga.masam}`,
-    centerX,
-    356,
-    900
-  );
-
-  // 2x2 Grid for Core Panchangam Details
-  const drawGridCard = (
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    label: string,
-    value: string
-  ) => {
-    drawRoundedRect(ctx, x, y, w, h, 18);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill();
-    ctx.strokeStyle = '#fcd34d';
-    ctx.lineWidth = 2.5;
-    ctx.stroke();
-
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#b45309';
-    ctx.font = 'bold 23px "Noto Serif Telugu", sans-serif';
-    ctx.fillText(stripCanvasEmojis(label), x + 22, y + 40, w - 44);
-
-    ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 25px "Noto Serif Telugu", sans-serif';
-    drawLeftAlignedWrappedText(ctx, value, x + 22, y + 80, w - 44, 36, 3);
-  };
-
-  drawGridCard(60, 396, 466, 182, 'నేటి తిథి (Tithi)', day.panchanga.tithi);
-  drawGridCard(554, 396, 466, 182, 'నేటి నక్షత్రం (Nakshatram)', day.panchanga.nakshatram);
-  drawGridCard(
-    60,
-    598,
-    466,
-    182,
-    'చంద్ర సంచారం & తారాబలం',
-    `${day.chandra.sancharam}\nచంద్రాష్టమం: ${day.chandra.chandrashtamam}`
-  );
-  drawGridCard(
-    554,
-    598,
-    466,
-    182,
-    'యోగం, కరణం & దైవం',
-    `${day.panchanga.yogam.split('-')[0].trim()} / ${day.panchanga.karanam.split('-')[0].trim()}\nదైవం: ${day.deity}`
-  );
-
-  // Shubha Muhurtham Box
-  drawRoundedRect(ctx, 60, 804, width - 120, 182, 20);
-  ctx.fillStyle = '#ecfdf5';
-  ctx.fill();
-  ctx.strokeStyle = '#059669';
-  ctx.lineWidth = 3;
-  ctx.stroke();
-
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#065f46';
-  ctx.font = 'bold 26px "Noto Serif Telugu", sans-serif';
-  ctx.fillText('నేటి శుభ సమయాలు (Auspicious Shubha Timings)', 86, 848, 900);
-
-  ctx.fillStyle = '#064e3b';
-  ctx.font = 'bold 26px "Noto Serif Telugu", sans-serif';
-  ctx.fillText(`అమృత ఘడియలు: ${stripCanvasEmojis(day.shubha.amrutha)}`, 86, 898, 900);
-  ctx.fillText(`అభిజిత్ ముహూర్తం: ${stripCanvasEmojis(day.shubha.abhijit)}`, 86, 946, 900);
-
-  // Ashubha Caution Box
-  drawRoundedRect(ctx, 60, 1006, width - 120, 178, 20);
-  ctx.fillStyle = '#fef2f2';
-  ctx.fill();
-  ctx.strokeStyle = '#dc2626';
-  ctx.lineWidth = 3;
-  ctx.stroke();
-
-  ctx.fillStyle = '#991b1b';
-  ctx.font = 'bold 26px "Noto Serif Telugu", sans-serif';
-  ctx.fillText('జాగ్రత్త వహించాల్సిన సమయాలు (Rahukalam & Varjyam)', 86, 1048, 900);
-
-  ctx.fillStyle = '#7f1d1d';
-  ctx.font = 'bold 25px "Noto Serif Telugu", sans-serif';
-  ctx.fillText(`రాహు కాలం: ${stripCanvasEmojis(day.ashubha.rahukalam)}`, 86, 1096, 900);
-  ctx.fillText(
-    `వర్జ్యం: ${stripCanvasEmojis(day.ashubha.varjyam)}  |  దుర్ముహూర్తం: ${stripCanvasEmojis(day.ashubha.durmuhurtham)}`,
-    86,
-    1144,
-    900
-  );
-
-  // Footer
-  ctx.fillStyle = '#fef3c7';
-  ctx.font = 'bold 28px "Noto Serif Telugu", "Noto Sans", sans-serif';
-  drawCenteredSingleLine(
-    ctx,
-    'www.telugujyothisham.com  •  WhatsApp: +91 89779 86166',
-    centerX,
-    1262,
-    940
-  );
-  ctx.fillStyle = '#fcd34d';
-  ctx.font = '600 21px "Noto Serif Telugu", "Noto Sans", sans-serif';
-  drawCenteredSingleLine(
-    ctx,
-    'Free 100-Page Jathakam PDF & Daily Telugu Panchangam • సర్వే జనాః సుఖినో భవంతు',
-    centerX,
-    1300,
-    940
-  );
+  paintRoyalPanchangamSheet(ctx as unknown as MinimalCanvasContext2D, snap, {
+    aspect,
+    avatarImage,
+  });
 
   return canvas.toBuffer('image/png');
 }
@@ -551,7 +411,7 @@ export async function runMorningGoodMorningAutomation(dryRun = false) {
   const { day } = getTodayISTData();
   const subhashitham = getDailySubhashitham(day.isoDate);
 
-  const panchangamPng = renderMorningPanchangamCardBuffer(day);
+  const panchangamPng = await renderMorningPanchangamCardBuffer(day);
   const subhashithamPng = renderMorningSubhashithamCardBuffer(subhashitham, day);
 
   if (dryRun) {
@@ -639,29 +499,16 @@ export async function runMorningGoodMorningAutomation(dryRun = false) {
     }
   }
 
-  // Optional Webhook dispatch (Make.com / Zapier / n8n) for WhatsApp Channel or Instagram Story automation
-  if (process.env.SOCIAL_WEBHOOK_URL) {
-    try {
-      await fetch(process.env.SOCIAL_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          event: 'morning_6am_good_morning',
-          date: day.isoDate,
-          teediVaram: day.teediVaram,
-          panchangamCaption: morningPanchangamCaption,
-          subhashithamTheme: subhashitham.themeTe,
-          slokamTe: subhashitham.slokamTe,
-          loukikaQuoteTe: subhashitham.loukikaQuoteTe,
-          subhashithamCaption,
-          websiteUrl: 'https://www.telugujyothisham.com',
-          contactPhone: '+91 89779 86166',
-        }),
-      });
-      console.log('✅ Morning 6 AM webhook dispatched.');
-    } catch (whErr) {
-      console.warn('⚠️ Morning webhook error:', whErr);
+  // OpenMausBot Automated Multi-Platform Social Publishing (Facebook Page, Instagram, LinkedIn, Postiz & Webhook)
+  try {
+    const { runOpenMausSocialEngine } = await import('./openMausSocialEngine');
+    const socialOutcome = await runOpenMausSocialEngine({ publish: true });
+    console.log(`🐾 [OpenMausBot Morning Auto-Post] ${socialOutcome.summary}`);
+    for (const r of socialOutcome.results) {
+      console.log(`  ${r.success ? '✅' : '⚠️'} [${r.channel}] ${r.message}`);
     }
+  } catch (socialErr) {
+    console.warn('⚠️ OpenMausBot social auto-post warning:', socialErr);
   }
 }
 

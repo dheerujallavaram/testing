@@ -12,6 +12,7 @@ import {
   generateSitemapXML,
 } from './generate-sitemap';
 import { runOpenSeoAudit } from './openSeoAudit';
+import { runJevSeoAudit, renderJevSeoMarkdownReport } from './jevSeoAudit';
 
 function escapeAttr(val: string): string {
   return String(val || '')
@@ -187,6 +188,24 @@ export function runPrerenderSsg() {
   if (openSeo.findings.length > 0) {
     for (const f of openSeo.findings.slice(0, 10)) {
       console.log(`   [${f.severity.toUpperCase()}] (${f.issueType}) ${f.route}: ${f.detail}`);
+    }
+  }
+
+  const jevSeo = runJevSeoAudit(process.cwd());
+  try {
+    const seoDir = path.resolve(process.cwd(), 'seo');
+    if (!fs.existsSync(seoDir)) fs.mkdirSync(seoDir, { recursive: true });
+    fs.writeFileSync(path.join(seoDir, 'jev-seo-report.json'), JSON.stringify(jevSeo, null, 2), 'utf-8');
+    fs.writeFileSync(path.join(seoDir, 'jev-seo-report.md'), renderJevSeoMarkdownReport(jevSeo), 'utf-8');
+  } catch {
+    // Ignore write errors in read-only environments
+  }
+  console.log(
+    `📊 [Jev-SEO Audit] Score: ${jevSeo.overall}/100 (Grade ${jevSeo.grade}) | Rules Passed: ${jevSeo.rulesPassed}/${jevSeo.rulesTotal} | Actions: ${jevSeo.actions.length}`
+  );
+  if (jevSeo.actions.length > 0) {
+    for (const a of jevSeo.actions.slice(0, 10)) {
+      console.log(`   [${a.action_id}] (${a.priority} • ${a.severity}) ${a.title}: ${a.evidence}`);
     }
   }
 }

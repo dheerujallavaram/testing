@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --color-emerald-600: #007a52;
+  --color-slate-400: #767676;
+}
+
 @layer base {
   :root {
     --font-telugu: 'Noto Serif Telugu', serif;

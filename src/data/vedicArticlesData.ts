@@ -1,4 +1,5 @@
 import dailyTrendingArticlesJson from './dailyTrendingArticles.json';
+import { BTR_CLASSICAL_ARTICLES } from './btrArticlesData';
 
 export interface VedicArticleSection {
   heading: string;
@@ -4650,6 +4651,7 @@ const DAILY_TRENDING_ARTICLES = (
 
 export const VEDIC_CLASSICAL_ARTICLES: VedicClassicalArticle[] = [
   ...DAILY_TRENDING_ARTICLES,
+  ...BTR_CLASSICAL_ARTICLES,
   ...CURATED_VEDIC_CLASSICAL_ARTICLES,
 ];
 

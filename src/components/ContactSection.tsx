@@ -236,7 +236,7 @@ export const ContactSection: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold rounded-xl text-base shadow-lg transition-transform hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3.5 bg-[#007a52] hover:bg-[#006644] text-white font-bold rounded-xl text-base shadow-lg transition-transform hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send size={18} />
                   <span>{t('వాట్సాప్‌లో ధీరజ్ శర్మ గారికి పంపండి (8977986166)', 'Send to Sri Dheeraj Sharma on WhatsApp')}</span>

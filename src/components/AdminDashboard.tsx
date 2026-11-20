@@ -52,6 +52,7 @@ import { ALL_RASHIS, NAKSHATRAS, POOJA_SERVICES } from '../data/panchangamData';
 import { computeAccurateJanmaKundali } from '../utils/astronomyPanchangam';
 import { DayData } from '../types/panchangam';
 import { OmEmblem } from './OmEmblem';
+import { AdminShareChatVideoStudio } from './AdminShareChatVideoStudio';
 import {
   DailyReelResult,
   generateDailyPanchangamReelVideo,
@@ -589,6 +590,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           </div>
         </div>
+
+        {/* ShareChat 2-Minute AI Human Voice Website Promo Video Studio (Telugu & English HD MP4) — TOP OF ADMIN APP */}
+        <AdminShareChatVideoStudio />
 
         {/* Admin Daily 60s Video Download Studio (Panchangam & 12-Rashi Phalalu) + Captions/Hashtags */}
         <div className="bg-gradient-to-r from-[#2b0902] via-amber-950 to-[#2b0902] text-white rounded-3xl p-5 sm:p-6 border-2 border-amber-400/80 shadow-lg space-y-4">
@@ -1431,7 +1435,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             href={formatBookingWhatsAppReply(b)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#25D366] hover:bg-[#1fb855] text-white text-xs font-extrabold shadow-xs"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#007a52] hover:bg-[#006644] text-white text-xs font-extrabold shadow-xs"
                           >
                             <MessageCircle size={14} />
                             <span>WhatsApp కన్ఫర్మేషన్ పంపండి</span>
@@ -1785,7 +1789,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               href={formatKundaliWhatsAppShare(rec)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#1fb855] text-white text-xs font-bold"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#007a52] hover:bg-[#006644] text-white text-xs font-bold"
                             >
                               <MessageCircle size={13} />
                               <span>WhatsApp కు పంపండి</span>

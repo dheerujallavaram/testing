@@ -51,7 +51,7 @@ export const FloatingWhatsApp: React.FC = () => {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className={`relative group flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-none focus:ring-4 focus:ring-emerald-300 ${
+        className={`relative group flex items-center justify-center w-14 h-14 bg-[#007a52] hover:bg-[#006644] text-white rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-none focus:ring-4 focus:ring-emerald-300 ${
           isBouncing ? 'animate-bounce' : ''
         }`}
         title="శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారితో వాట్సాప్ చాట్ చేయండి (8977986166)"

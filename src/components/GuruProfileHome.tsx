@@ -7,14 +7,11 @@ import {
   Flame,
   Home,
   Users,
-  Star,
   CheckCircle2,
   Compass,
   ArrowRight,
   MapPin,
   Sun,
-  Download,
-  ShieldAlert,
   Bell,
   Calendar,
   Clock,
@@ -37,6 +34,7 @@ import {
 } from '../seo/panchangamSsrEngine';
 import { DailySubhashithamCard } from './DailySubhashithamCard';
 import { DevoteeReviewsSection } from './DevoteeReviewsSection';
+import { RoyalPanchangamKundaliSheet } from './RoyalPanchangamKundaliSheet';
 
 export interface GuruProfileHomeProps {
   currentDay: DayData;
@@ -66,7 +64,6 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
   const todayIso = currentDay.isoDate || getTodayIsoDateIST();
   const prevIso = addDaysIso(todayIso, -1);
   const nextIso = addDaysIso(todayIso, 1);
-  const hydPanchangam = computeCityLocalPanchangam(todayIso, 'hyderabad');
 
   const whatsappUrl = `https://wa.me/918977986166?text=${encodeURIComponent(
     'నమస్కారం శ్రీ జల్లవరం సాయి ధీరజ్ శర్మ గారు, నేను పూజా కార్యక్రమం / సమగ్ర బృహత్ జాతక నివేదిక PDF / ముహూర్తం కొరకు సంప్రదిస్తున్నాను.'
@@ -301,83 +298,8 @@ export const GuruProfileHome: React.FC<GuruProfileHomeProps> = ({
           </div>
         </div>
 
-        {/* Core Panchangam Data Grid (Tithi, Nakshatra, Rahukalam, Varjyam, Abhijit) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white rounded-2xl p-4 border-2 border-amber-200 shadow-2xs">
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-800 block">
-              తిథి • Today Tithi
-            </span>
-            <strong className="text-base sm:text-lg font-extrabold text-amber-950 mt-1 block">
-              {tr(currentDay.panchanga.tithi)}
-            </strong>
-            <span className="text-xs text-slate-600 mt-1 block">
-              {tr(currentDay.panchanga.masam)}
-            </span>
-          </div>
-
-          <div className="bg-white rounded-2xl p-4 border-2 border-amber-200 shadow-2xs">
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-800 block">
-              నక్షత్రం • Today Nakshatram
-            </span>
-            <strong className="text-base sm:text-lg font-extrabold text-orange-950 mt-1 block">
-              {tr(currentDay.panchanga.nakshatram)}
-            </strong>
-            <span className="text-xs text-slate-600 mt-1 block">
-              యోగం: {tr(currentDay.panchanga.yogam)} • కరణం: {tr(currentDay.panchanga.karanam)}
-            </span>
-          </div>
-
-          <div className="bg-white rounded-2xl p-4 border-2 border-amber-200 shadow-2xs">
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-800 block">
-              సూర్యోదయం &amp; సూర్యాస్తమయం • Sunrise / Sunset
-            </span>
-            <strong className="text-base sm:text-lg font-extrabold text-amber-950 mt-1 block">
-              {hydPanchangam.sunrise} – {hydPanchangam.sunset}
-            </strong>
-            <span className="text-xs text-slate-600 mt-1 block">
-              {tr(currentDay.panchanga.samvatsaram)}
-            </span>
-          </div>
-
-          <div className="bg-rose-50/90 rounded-2xl p-4 border-2 border-rose-200 shadow-2xs">
-            <span className="text-xs font-bold uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
-              <ShieldAlert size={14} className="text-rose-700" />
-              <span>రాహుకాలం • Rahukalam (వర్జ్యం / Avoid)</span>
-            </span>
-            <strong className="text-base sm:text-lg font-extrabold text-rose-950 mt-1 block">
-              {tr(currentDay.ashubha.rahukalam)}
-            </strong>
-            <span className="text-xs text-rose-800 mt-1 block">
-              యమగండం: {tr(currentDay.ashubha.yamagandam)}
-            </span>
-          </div>
-
-          <div className="bg-rose-50/90 rounded-2xl p-4 border-2 border-rose-200 shadow-2xs">
-            <span className="text-xs font-bold uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
-              <Clock size={14} className="text-rose-700" />
-              <span>వర్జ్యం • Varjyam (అశుభ సమయం)</span>
-            </span>
-            <strong className="text-base sm:text-lg font-extrabold text-rose-950 mt-1 block">
-              {tr(currentDay.ashubha.varjyam)}
-            </strong>
-            <span className="text-xs text-rose-800 mt-1 block">
-              దుర్ముహూర్తం: {tr(currentDay.ashubha.durmuhurtham)}
-            </span>
-          </div>
-
-          <div className="bg-emerald-50/90 rounded-2xl p-4 border-2 border-emerald-300 shadow-2xs">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-1.5">
-              <Sparkles size={14} className="text-emerald-700" />
-              <span>అభిజిత్ ముహూర్తం &amp; అమృత ఘడియలు (శుభం)</span>
-            </span>
-            <strong className="text-base sm:text-lg font-extrabold text-emerald-950 mt-1 block">
-              అభిజిత్: {tr(currentDay.shubha.abhijit)}
-            </strong>
-            <span className="text-xs text-emerald-900 font-semibold mt-1 block">
-              అమృత ఘడియలు: {tr(currentDay.shubha.amrutha)}
-            </span>
-          </div>
-        </div>
+        {/* Unified Royal Temple Manuscript Panchangam + Live 4x4 South Indian Kundali Sheet */}
+        <RoyalPanchangamKundaliSheet day={currentDay} />
 
         {/* Visible Calculation Standard Line (E-E-A-T Requirement 7) */}
         <p className="text-xs font-mono text-amber-900/90">

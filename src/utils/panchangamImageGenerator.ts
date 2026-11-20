@@ -1,6 +1,12 @@
 import { DayData } from '../types/panchangam';
 import { RashiDailyFortune } from './panchangaLogic';
 import { translatePanchangamString, Language } from '../context/LanguageContext';
+import { computeLivePanchangamSheet } from './livePanchangamSheetEngine';
+import {
+  MinimalCanvasContext2D,
+  paintRoyalPanchangamSheet,
+  RoyalCardAspect,
+} from './royalPanchangamCanvasRenderer';
 
 /**
  * Helper to wrap text onto canvas lines using strictly left-aligned LTR rendering
@@ -153,11 +159,71 @@ function drawLeftAlignedTempleHeader(
   );
 }
 
+function loadBrowserImageSafe(src: string): Promise<HTMLImageElement | null> {
+  return new Promise((resolve) => {
+    if (typeof Image === 'undefined') {
+      resolve(null);
+      return;
+    }
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
 /**
- * Generates a 1080x1440 WhatsApp Status / Instagram Portrait PNG image of the Daily Panchangam
- * in either Telugu or English.
+ * Generates and downloads the Royal Temple Manuscript Panchangam + Live South Indian Kundali PNG
+ * Supports both 9:16 (1080x1920 WhatsApp/Insta Story) and 4:5 (1080x1350 Feed Post).
+ */
+export async function downloadRoyalPanchangamKundaliCard(
+  day: DayData,
+  aspect: RoyalCardAspect = 'story_9_16',
+  cityOverride?: { cityTe: string; cityEn: string; lat: number; lon: number }
+): Promise<void> {
+  if (typeof document !== 'undefined' && document.fonts?.ready) {
+    await document.fonts.ready;
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = aspect === 'story_9_16' ? 1920 : 1350;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const snap = computeLivePanchangamSheet(day, cityOverride);
+  const avatarImg = await loadBrowserImageSafe(
+    '/assets/aistudio/photo_6303093205754826517_y_d79034b3.jpg'
+  );
+
+  paintRoyalPanchangamSheet(ctx as unknown as MinimalCanvasContext2D, snap, {
+    aspect,
+    avatarImage: avatarImg || undefined,
+  });
+
+  const dataUrl = canvas.toDataURL('image/png', 1.0);
+  const link = document.createElement('a');
+  const suffix = aspect === 'story_9_16' ? 'story-9x16' : 'post-4x5';
+  link.download = `Telugu-Panchangam-Kundali-${day.isoDate || day.id}-${suffix}.png`;
+  link.href = dataUrl;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+/**
+ * Generates a 1080x1920 WhatsApp Status / Instagram Portrait PNG image of the Daily Panchangam
+ * using the Royal Temple Manuscript + Live Kundali design.
  */
 export async function downloadDailyPanchangamCardImage(
+  day: DayData,
+  _lang: Language = 'te'
+): Promise<void> {
+  return downloadRoyalPanchangamKundaliCard(day, 'story_9_16');
+}
+
+export async function downloadLegacyDailyPanchangamCardImage(
   day: DayData,
   lang: Language = 'te'
 ): Promise<void> {

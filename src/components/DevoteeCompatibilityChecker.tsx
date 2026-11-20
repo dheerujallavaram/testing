@@ -157,7 +157,7 @@ export const DevoteeCompatibilityChecker: React.FC<DevoteeCompatibilityCheckerPr
               <span
                 className={`text-xs px-2.5 py-0.5 rounded-full font-telugu font-bold ${
                   taraResult.grade === 'excellent'
-                    ? 'bg-emerald-500 text-white'
+                    ? 'bg-[#007a52] text-white'
                     : taraResult.grade === 'good'
                     ? 'bg-amber-500 text-white'
                     : taraResult.grade === 'caution'

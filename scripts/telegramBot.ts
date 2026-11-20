@@ -1435,9 +1435,28 @@ export async function handleCommandOrCallback(chatId: number | string, command: 
     }
 
     if (cleanCmd === 'social' || cleanCmd === 'cmd_social') {
-      const { day, fortunes } = getTodayISTData();
-      const copy = buildInstagramLinkedInSocialCopy(day, fortunes);
-      await sendTelegramMessage(chatId, copy, getMainInlineKeyboard());
+      const { buildPlatformNativePosts } = await import('./openMausSocialEngine');
+      const { postsData, cardBuffer } = await buildPlatformNativePosts();
+
+      await sendTelegramPhotoBuffer(
+        chatId,
+        cardBuffer,
+        `openmaus-panchangam-${postsData.dateIso}.png`,
+        `🐾 *OpenMausBot HD Social Card (${postsData.dateIso})*\nFacebook Page • Instagram • LinkedIn Ready`
+      );
+      await sendTelegramMessage(
+        chatId,
+        `📘 *FACEBOOK PAGE POST:*\n\n${postsData.platforms.facebook.caption}`
+      );
+      await sendTelegramMessage(
+        chatId,
+        `📸 *INSTAGRAM POST (${postsData.platforms.instagram.characterCount}/2200 chars • ${postsData.platforms.instagram.hashtagCount} tags):*\n\n${postsData.platforms.instagram.caption}`
+      );
+      await sendTelegramMessage(
+        chatId,
+        `💼 *LINKEDIN POST (${postsData.platforms.linkedin.characterCount}/3000 chars):*\n\n${postsData.platforms.linkedin.caption}`,
+        getMainInlineKeyboard()
+      );
       return;
     }
 
@@ -1455,56 +1474,62 @@ export async function handleCommandOrCallback(chatId: number | string, command: 
 
     if (cleanCmd === 'autopost' || cleanCmd === 'cmd_autopost' || cleanCmd === 'publish_social') {
       const hasConfig = Boolean(
-        process.env.SOCIAL_WEBHOOK_URL ||
-        process.env.LINKEDIN_ACCESS_TOKEN ||
-        (process.env.INSTAGRAM_ACCESS_TOKEN && process.env.INSTAGRAM_ACCOUNT_ID)
+        process.env.POSTIZ_API_KEY ||
+        (process.env.FACEBOOK_PAGE_ID && process.env.FACEBOOK_PAGE_TOKEN) ||
+        (process.env.INSTAGRAM_ACCESS_TOKEN && process.env.INSTAGRAM_ACCOUNT_ID) ||
+        (process.env.LINKEDIN_ACCESS_TOKEN && (process.env.LINKEDIN_PERSON_URN || process.env.LINKEDIN_ORGANIZATION_URN)) ||
+        process.env.SOCIAL_WEBHOOK_URL
       );
 
       if (!hasConfig) {
         const guideText = [
-          `🚀 *LinkedIn & Instagram ఆటోమేటెడ్ పోస్టింగ్ గైడ్*`,
+          `🐾 *OpenMausBot Multi-Platform Auto-Posting గైడ్ (FB • IG • LinkedIn)*`,
           ``,
-          `ప్రస్తుతం బాట్ వద్ద రోజువారీ పంచాంగం HD ఇమేజ్ & రాశి ఫలితాలు సిద్ధంగా ఉన్నాయి. వీటిని ఆటోమేటిక్‌గా పబ్లిష్ చేయడానికి 2 ఉత్తమ మార్గాలు ఉన్నాయి:`,
+          `ప్రతిరోజూ *Facebook Page, Instagram & LinkedIn* లలో నేటి HD పంచాంగం కార్డ్ + విశేష క్యాప్షన్ ఆటోమేటిక్‌గా పోస్ట్ కావడానికి క్రింది వాట్లో ఏదో ఒకటి సెట్ చేయండి:`,
           ``,
-          `*1️⃣ అత్యంత సులువైన పద్ధతి (Make.com లేదా Zapier Webhook - 5 నిమిషాలు):*`,
-          `• [Make.com](https://www.make.com) లో ఉచిత అకౌంట్ తీసుకొని *Custom Webhook* క్రియేట్ చేయండి.`,
-          `• ఆ Webhook కి LinkedIn Create Post & Instagram Publish Photo మాడ్యూల్స్ జతచేయండి.`,
-          `• Webhook URL ను \`.env\` లో \`SOCIAL_WEBHOOK_URL\` గా ఇవ్వండి.`,
-          `• ఇక ప్రతిరోజూ బాట్ ఆటోమేటిక్‌గా ఇమేజ్ + క్యాప్షన్ పంపి పోస్ట్ చేస్తుంది!`,
+          `*1️⃣ Postiz Bridge (OpenMausBot Style — Single Key for All 3):*`,
+          `• \`POSTIZ_API_KEY\` (+ Optional \`POSTIZ_API_URL\`) GitHub Secrets లో ఇవ్వండి.`,
           ``,
-          `*2️⃣ డైరెక్ట్ API పద్ధతి (No Third-Party Tool):*`,
-          `• *LinkedIn:* developer.linkedin.com లో యాప్ క్రియేట్ చేసి \`LINKEDIN_ACCESS_TOKEN\` & \`LINKEDIN_PERSON_URN\` సెట్ చేయండి.`,
-          `• *Instagram:* developers.facebook.com లో \`INSTAGRAM_ACCESS_TOKEN\` & \`INSTAGRAM_ACCOUNT_ID\` సెట్ చేయండి.`,
+          `*2️⃣ Direct Official APIs (Zero Third-Party Tool):*`,
+          `• *Facebook Page:* \`FACEBOOK_PAGE_ID\` & \`FACEBOOK_PAGE_TOKEN\``,
+          `• *Instagram:* \`INSTAGRAM_ACCESS_TOKEN\` & \`INSTAGRAM_ACCOUNT_ID\``,
+          `• *LinkedIn:* \`LINKEDIN_ACCESS_TOKEN\` & \`LINKEDIN_PERSON_URN\` (లేదా \`LINKEDIN_ORGANIZATION_URN\`)`,
           ``,
-          `*3️⃣ ఇప్పుడే తక్షణమే పోస్ట్ చేయాలా?*`,
-          `క్రింద ఉన్న 📸 *Insta & LinkedIn కాపీ* బటన్ నొక్కితే రెడీమేడ్ క్యాప్షన్ + హ్యాష్‌ట్యాగ్స్ సిద్ధంగా వస్తాయి.`,
+          `*3️⃣ Webhook Bridge (Make.com / n8n / Zapier):*`,
+          `• \`SOCIAL_WEBHOOK_URL\` ఇస్తే రోజువారీ Facebook/Instagram/LinkedIn పేలోడ్ అక్కడికి వెళ్తుంది.`,
+          ``,
+          `👇 తక్షణమే 3 ప్లాట్‌ఫాంల రెడీమేడ్ పోస్టులు పొందడానికి బటన్ నొక్కండి:`,
         ].join('\n');
 
         await sendTelegramMessage(chatId, guideText, {
           inline_keyboard: [
             [
-              { text: '📸 రెడీమేడ్ క్యాప్షన్ పొందండి', callback_data: 'cmd_social' },
+              { text: '🐾 FB • IG • LinkedIn కాపీలు', callback_data: 'cmd_social' },
               { text: '📅 పంచాంగం HD కార్డ్', callback_data: 'cmd_panchangam' },
             ],
             [
-              { text: '💼 LinkedIn లో పోస్ట్ చేయండి', url: 'https://www.linkedin.com/feed/' },
-              { text: '📸 Instagram లో పోస్ట్ చేయండి', url: 'https://www.instagram.com/' },
+              { text: '📘 Facebook', url: 'https://www.facebook.com/' },
+              { text: '📸 Instagram', url: 'https://www.instagram.com/' },
+              { text: '💼 LinkedIn', url: 'https://www.linkedin.com/feed/' },
             ],
           ],
         });
         return;
       }
 
-      await sendTelegramMessage(chatId, '⏳ *LinkedIn & Instagram ఆటోమేటిక్ పోస్టింగ్ ప్రారంభమవుతోంది...*');
-      const { executeDailySocialPosting } = await import('./socialPublisher');
-      const { results, summary } = await executeDailySocialPosting();
+      await sendTelegramMessage(
+        chatId,
+        '⏳ *OpenMausBot: Facebook Page, Instagram & LinkedIn ఆటోమేటిక్ పోస్టింగ్ ప్రారంభమవుతోంది...*'
+      );
+      const { runOpenMausSocialEngine } = await import('./openMausSocialEngine');
+      const { results, summary } = await runOpenMausSocialEngine({ publish: true });
 
       const resultLines = results.map(
         (r) => `${r.success ? '✅' : '❌'} *${r.channel.toUpperCase()}:* ${r.message}`
       );
       await sendTelegramMessage(
         chatId,
-        `📊 *ఆటో-పోస్టింగ్ ఫలితం:*\n${summary}\n\n${resultLines.join('\n')}`,
+        `📊 *OpenMausBot ఆటో-పోస్టింగ్ ఫలితం:*\n${summary}\n\n${resultLines.join('\n')}`,
         getMainInlineKeyboard()
       );
       return;

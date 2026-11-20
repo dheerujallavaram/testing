@@ -351,22 +351,30 @@ export const CosmicRadarAndBTRSuite: React.FC<CosmicRadarAndBTRSuiteProps> = ({
         </div>
 
         {/* Highlight Banner */}
-        <div className="rounded-2xl bg-amber-50 border border-amber-300 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="rounded-2xl bg-[#FAF5EA] border border-[#C99634] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="text-xs sm:text-sm space-y-1">
-            <div className="font-extrabold text-amber-950">
-              {t('కుండ స్ఫుట సిఫార్సు చేయబడిన సమయం:', 'Kunda-Verified Recommended Time:')}{' '}
-              <span className="font-mono text-base text-emerald-800">{btrReport.recommendedTime}</span>
+            <div className="font-extrabold text-[#3B0A0C]">
+              {t('6-మెథడ్ శాస్త్రీయ సిఫార్సు సమయం (ప్రాణపద · కుండ · KP):', '6-Method Verified Time (Pranapada · Kunda · KP):')}{' '}
+              <span className="font-mono text-base text-[#007a52]">{btrReport.recommendedTime}</span>
             </div>
             <p className="text-slate-700">{t(btrReport.summaryTe, btrReport.summaryEn)}</p>
           </div>
-          <button
-            type="button"
-            onClick={() => handleApplyTime(btrReport.recommendedTime)}
-            className="no-print shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-900 hover:bg-amber-800 text-white font-bold text-xs cursor-pointer"
-          >
-            <CheckCircle2 size={14} />
-            <span>{t('ఈ సమయం జాతకానికి అప్లై చేయండి →', 'Apply Verified Time →')}</span>
-          </button>
+          <div className="flex flex-wrap gap-2 shrink-0 no-print">
+            <button
+              type="button"
+              onClick={() => handleApplyTime(btrReport.recommendedTime)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#5A1408] hover:bg-[#3B0A0C] text-white font-bold text-xs cursor-pointer"
+            >
+              <CheckCircle2 size={14} />
+              <span>{t('ఈ సమయం జాతకానికి అప్లై చేయండి →', 'Apply Verified Time →')}</span>
+            </button>
+            <a
+              href="/birth-time-rectification"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#C99634] hover:bg-[#FFF5DF] text-[#3B0A0C] font-bold text-xs"
+            >
+              <span>{t('పూర్తి BTR ల్యాబ్ (జీవిత ఘటనలతో) ↗', 'Full Life-Event BTR Lab ↗')}</span>
+            </a>
+          </div>
         </div>
 
         {appliedTimeMsg && (
@@ -379,11 +387,12 @@ export const CosmicRadarAndBTRSuite: React.FC<CosmicRadarAndBTRSuiteProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-amber-950 text-amber-100">
+              <tr className="bg-[#3B0A0C] text-[#FDE68A]">
                 <th className="py-2 px-3 rounded-tl-xl">{t('సమయం', 'Time')}</th>
                 <th className="py-2 px-3">{t('D1 లగ్నం', 'D1 Lagna')}</th>
-                <th className="py-2 px-3">{t('D9 నవాంశ', 'D9 Navamsa')}</th>
-                <th className="py-2 px-3">{t('తత్వం & కుండ', 'Tatwa & Kunda')}</th>
+                <th className="py-2 px-3">{t('D9 / D10', 'D9 / D10')}</th>
+                <th className="py-2 px-3">{t('KP సబ్‌లార్డ్', 'KP Sub')}</th>
+                <th className="py-2 px-3">{t('ప్రాణపద · కుండ', 'Pranapada · Kunda')}</th>
                 <th className="py-2 px-3 rounded-tr-xl">{t('స్కోర్', 'Match %')}</th>
               </tr>
             </thead>
@@ -394,15 +403,26 @@ export const CosmicRadarAndBTRSuite: React.FC<CosmicRadarAndBTRSuiteProps> = ({
                   const isRec = c.timeStr === btrReport.recommendedTime;
                   return (
                     <tr key={c.timeStr} className={isRec ? 'bg-emerald-50/70 font-bold' : 'hover:bg-amber-50/40'}>
-                      <td className="py-2 px-3 font-mono text-amber-950">
+                      <td className="py-2 px-3 font-mono text-amber-950 whitespace-nowrap">
                         {c.timeStr} {c.offsetMins === 0 ? '(Input)' : `(${c.offsetMins > 0 ? '+' : ''}${c.offsetMins}m)`}
                       </td>
-                      <td className="py-2 px-3">{language === 'en' ? c.d1LagnaEn : c.d1LagnaTe}</td>
-                      <td className="py-2 px-3">{language === 'en' ? c.d9NavamshaLagnaEn : c.d9NavamshaLagnaTe}</td>
-                      <td className="py-2 px-3 text-[11px] text-slate-700">
-                        {language === 'en' ? c.tatwaEn : c.tatwaTe} · {c.kundaAligned ? '✓ కుండ' : '—'}
+                      <td className="py-2 px-3 whitespace-nowrap">
+                        {language === 'en' ? c.d1LagnaEn : c.d1LagnaTe}{' '}
+                        <span className="text-[10px] font-mono text-slate-500">{c.lagnaDegreeFormatted}</span>
                       </td>
-                      <td className="py-2 px-3 font-mono font-extrabold text-emerald-800">{c.matchScore}%</td>
+                      <td className="py-2 px-3 whitespace-nowrap">
+                        {language === 'en'
+                          ? `${c.d9NavamshaLagnaEn} / ${c.d10DasamshaLagnaEn}`
+                          : `${c.d9NavamshaLagnaTe} / ${c.d10DasamshaLagnaTe}`}
+                      </td>
+                      <td className="py-2 px-3 font-bold text-[#7C2D12] whitespace-nowrap">
+                        {language === 'en' ? c.kpSubLordEn : c.kpSubLordTe}
+                      </td>
+                      <td className="py-2 px-3 text-[11px] text-slate-700 whitespace-nowrap">
+                        {c.pranapadaAligned ? '✓' : '·'} {language === 'en' ? c.pranapadaSignEn : c.pranapadaSignTe} ·{' '}
+                        {c.kundaAligned ? t('✓ కుండ', '✓ Kunda') : '—'}
+                      </td>
+                      <td className="py-2 px-3 font-mono font-extrabold text-[#007a52]">{c.matchScore}%</td>
                     </tr>
                   );
                 })}

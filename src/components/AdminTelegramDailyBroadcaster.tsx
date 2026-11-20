@@ -36,6 +36,7 @@ import {
   getScheduleCountdownInfo,
   DetectedChatInfo,
 } from '../utils/telegramBroadcaster';
+import dailySocialPostsData from '../data/dailySocialPosts.json';
 
 interface AdminTelegramDailyBroadcasterProps {
   day: DayData;
@@ -80,6 +81,7 @@ export const AdminTelegramDailyBroadcaster: React.FC<AdminTelegramDailyBroadcast
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [previewCardKey, setPreviewCardKey] = useState<string | null>(null);
+  const [socialPlatformTab, setSocialPlatformTab] = useState<'facebook' | 'instagram' | 'linkedin'>('facebook');
   const [generatedVideos, setGeneratedVideos] = useState<
     Partial<Record<'panchangam_te' | 'panchangam_en' | 'rashi_te' | 'rashi_en', DailyReelResult>>
   >({});
@@ -983,6 +985,120 @@ export const AdminTelegramDailyBroadcaster: React.FC<AdminTelegramDailyBroadcast
           })}
         </div>
       )}
+
+      {/* OpenMausBot Multi-Platform Social Studio (Facebook Page • Instagram • LinkedIn) */}
+      <div className="bg-black/45 border border-amber-400/60 rounded-2xl p-4 sm:p-5 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/30 pb-3">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/60 text-amber-200 text-[11px] font-extrabold uppercase">
+                🐾 OpenMausBot Social Engine
+              </span>
+              <span className="text-[11px] font-bold text-emerald-300">
+                ✓ {dailySocialPostsData.dateIso} సిద్ధంగా ఉంది
+              </span>
+            </div>
+            <h4 className="text-sm sm:text-base font-extrabold text-white mt-1">
+              📘 Facebook Page • 📸 Instagram • 💼 LinkedIn డైలీ ఆటో-పోస్ట్ స్టూడియో
+            </h4>
+            <p className="text-xs text-amber-200/80 mt-0.5">
+              ప్రతిరోజూ <strong>6:00 AM IST</strong> కు ఆటో-పోస్ట్ అవుతుంది (లేదా క్రింది బటన్లతో తక్షణమే కాపీ చేసి పోస్ట్ చేయండి).
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <a
+              href="/social-cards/daily-panchangam-card.png"
+              download={`telugu-panchangam-${dailySocialPostsData.dateIso}.png`}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-extrabold text-xs transition-all"
+            >
+              <Download size={13} />
+              <span>HD Card (1080×1350)</span>
+            </a>
+          </div>
+        </div>
+
+        {/* Daily Synced Keywords Chips */}
+        {Array.isArray(dailySocialPostsData.keywordsUsedTe) &&
+          dailySocialPostsData.keywordsUsedTe.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+              <span className="font-extrabold text-amber-300 mr-1">🔖 ఆర్టికల్ కీవర్డ్స్:</span>
+              {dailySocialPostsData.keywordsUsedTe.map((kw) => (
+                <span
+                  key={kw}
+                  className="px-2 py-0.5 rounded-md bg-amber-950/90 border border-amber-500/40 text-amber-100 font-bold"
+                >
+                  {kw}
+                </span>
+              ))}
+            </div>
+          )}
+
+        {/* Platform Selector Tabs */}
+        <div className="flex flex-wrap items-center gap-2">
+          {(
+            [
+              { id: 'facebook', label: '📘 Facebook Page', meta: `${dailySocialPostsData.platforms.facebook.characterCount} chars` },
+              {
+                id: 'instagram',
+                label: '📸 Instagram (4:5)',
+                meta: `${dailySocialPostsData.platforms.instagram.characterCount}/2200 • ${dailySocialPostsData.platforms.instagram.hashtagCount} tags`,
+              },
+              {
+                id: 'linkedin',
+                label: '💼 LinkedIn',
+                meta: `${dailySocialPostsData.platforms.linkedin.characterCount}/3000 chars`,
+              },
+            ] as const
+          ).map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setSocialPlatformTab(tab.id)}
+              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-all cursor-pointer ${
+                socialPlatformTab === tab.id
+                  ? 'bg-amber-400 text-amber-950 border-amber-300 shadow-md'
+                  : 'bg-black/50 text-amber-100 border-amber-500/40 hover:bg-amber-900/50'
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span className="text-[10px] opacity-80 font-mono">({tab.meta})</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Active Platform Copy Box */}
+        <div className="bg-black/60 border border-amber-500/40 rounded-xl p-3.5 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-xs font-extrabold text-amber-300">
+              {socialPlatformTab === 'facebook'
+                ? '📘 Facebook Page Ready Post (+ Article Link & Hashtags)'
+                : socialPlatformTab === 'instagram'
+                  ? '📸 Instagram Ready Caption (<= 2,200 chars • Save & Share)'
+                  : '💼 LinkedIn Ready Post (Hook in first 150 chars)'}
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                handleCopyText(
+                  `openmaus_${socialPlatformTab}`,
+                  dailySocialPostsData.platforms[socialPlatformTab].caption
+                )
+              }
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#007a52] hover:bg-[#006644] text-white font-extrabold text-xs cursor-pointer transition-all"
+            >
+              {copiedId === `openmaus_${socialPlatformTab}` ? <Check size={13} /> : <Copy size={13} />}
+              <span>
+                {copiedId === `openmaus_${socialPlatformTab}` ? 'కాపీ అయింది ✓' : '📋 పోస్ట్ కాపీ చేయండి'}
+              </span>
+            </button>
+          </div>
+
+          <pre className="text-xs text-amber-50/95 whitespace-pre-wrap font-telugu leading-relaxed max-h-52 overflow-y-auto select-all bg-black/30 p-3 rounded-lg border border-amber-500/20">
+            {dailySocialPostsData.platforms[socialPlatformTab].caption}
+          </pre>
+        </div>
+      </div>
     </div>
   );
 };

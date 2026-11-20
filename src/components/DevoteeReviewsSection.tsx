@@ -606,8 +606,8 @@ export const DevoteeReviewsSection: React.FC = () => {
                     <div className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
                       <MapPin size={11} className="text-amber-700 shrink-0" />
                       <span className="truncate">{testi.location}</span>
-                      <span className="text-slate-300">·</span>
-                      <span className="text-[10px] text-slate-400">{testi.dateStr}</span>
+                      <span className="text-[#767676]">·</span>
+                      <span className="text-[10px] text-[#767676]">{testi.dateStr}</span>
                     </div>
                   </div>
 

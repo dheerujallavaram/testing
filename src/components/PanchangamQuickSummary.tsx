@@ -5,6 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useIsGuruAdmin } from '../utils/useIsGuruAdmin';
 import { AdminGruhapraveshamSamagriStudio } from './AdminGruhapraveshamSamagriStudio';
 import { AdminTelegramDailyBroadcaster } from './AdminTelegramDailyBroadcaster';
+import { AdminShareChatVideoStudio } from './AdminShareChatVideoStudio';
 import {
   DailyReelResult,
   generateDailyPanchangamReelVideo,
@@ -28,6 +29,7 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
   const [showSocialPack, setShowSocialPack] = useState<boolean>(false);
   const [showSamagriStudio, setShowSamagriStudio] = useState<boolean>(false);
   const [showTelegramStudio, setShowTelegramStudio] = useState<boolean>(false);
+  const [showShareChatStudio, setShowShareChatStudio] = useState<boolean>(true);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const cleanTithi = day.panchanga.tithi.split('-')[0]?.trim() || day.panchanga.tithi;
@@ -191,9 +193,27 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
             </button>
           )}
 
-          {/* ADMIN ONLY: Prominent Panchangam 60s HD Video (TE & EN), Telegram Night 12:00 AM Broadcaster, Social Captions/Hashtags & Photo Download */}
+          {/* ADMIN ONLY: Prominent ShareChat 2-Min AI Voice Studio, Panchangam 60s HD Video (TE & EN), Telegram Broadcaster, Social Captions & Photo Download */}
           {isGuruAdmin && (
             <>
+              <button
+                type="button"
+                onClick={() => setShowShareChatStudio((prev) => !prev)}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold border-2 shadow-lg transition-all cursor-pointer ${
+                  showShareChatStudio
+                    ? 'bg-[#007a52] text-white border-[#F5C451]'
+                    : 'bg-gradient-to-r from-[#007a52] to-emerald-700 text-white border-amber-200'
+                }`}
+                title="ShareChat 2-Minute AI Human Voice Promo Video Studio (Telugu & English HD MP4)"
+              >
+                <Volume2 size={16} className="text-[#F5C451]" />
+                <span>
+                  {showShareChatStudio
+                    ? '🔒 ShareChat 2-Min AI Voice వీడియో (TE & EN) • ఓపెన్ ఉంది'
+                    : '🔒 ShareChat 2-Min AI Voice వీడియో Ad (TE & EN)'}
+                </span>
+              </button>
+
               <button
                 type="button"
                 disabled={isRecordingReel}
@@ -282,6 +302,13 @@ export const PanchangamQuickSummary: React.FC<PanchangamQuickSummaryProps> = ({ 
           </div>
         </div>
       </div>
+
+      {/* Admin-Only ShareChat 2-Minute AI Human Voice Website Promo Video Studio (Telugu & English HD MP4) */}
+      {isGuruAdmin && showShareChatStudio && (
+        <div className="relative z-10 mt-5">
+          <AdminShareChatVideoStudio />
+        </div>
+      )}
 
       {/* Admin-Only Telangana Gruhapravesham Pooja Samagri Studio Drawer */}
       {isGuruAdmin && showSamagriStudio && (
