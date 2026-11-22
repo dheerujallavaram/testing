@@ -1,9 +1,9 @@
 # Jev-SEO Evidence Audit Report — https://www.telugujyothisham.com
 
-- **Generated (UTC):** 2026-11-21T21:42:02.988Z
+- **Generated (UTC):** 2026-11-22T21:50:59.396Z
 - **Overall Score:** **100/100 (Grade A)**
-- **Static SSG Pages Audited:** 558
-- **Sitemap Indexable URLs:** 201
+- **Static SSG Pages Audited:** 559
+- **Sitemap Indexable URLs:** 202
 - **Deterministic Rules Passed:** **52/52**
 - **Actionable Findings (P1–P3):** 0
 
@@ -41,9 +41,9 @@
 | `/daily-panchangam-vishesham-2026-11-17` | article_or_guide | informational | 94% | 93% | ✅ | ✅ |
 | `/daily-panchangam-vishesham-2026-11-21` | article_or_guide | informational | 94% | 93% | ✅ | ✅ |
 | `/daily-panchangam-vishesham-2026-11-22` | article_or_guide | informational | 94% | 93% | ✅ | ✅ |
+| `/daily-panchangam-vishesham-2026-11-23` | article_or_guide | informational | 94% | 93% | ✅ | ✅ |
 | `/disclaimer` | legal_or_policy | informational | 94% | 93% | ✅ | ✅ |
 | `/dosha-pariharalu` | article_or_guide | informational | 94% | 93% | ✅ | ✅ |
-| `/dwadasa-rashi-rahasyalu` | article_or_guide | informational | 94% | 93% | ✅ | ✅ |
 
 ## 4. Prioritized Action Tracker
 ✅ **Zero P1/P2/P3 issues detected.** All 52 Jev-SEO rules across Crawl, On-Page, Content, Links, Structured Data, AI Search Readiness, Performance, and Security passed.

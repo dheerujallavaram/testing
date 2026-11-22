@@ -1,8 +1,8 @@
 {
-  "generatedAtUtc": "2026-11-21T21:42:02.988Z",
+  "generatedAtUtc": "2026-11-22T21:50:59.396Z",
   "siteUrl": "https://www.telugujyothisham.com",
-  "pagesAudited": 558,
-  "sitemapUrls": 201,
+  "pagesAudited": 559,
+  "sitemapUrls": 202,
   "overall": 100,
   "grade": "A",
   "categories": {
@@ -294,6 +294,22 @@
       "h1_fit": true
     },
     {
+      "route": "/daily-panchangam-vishesham-2026-11-23",
+      "page_type": "article_or_guide",
+      "intent": "informational",
+      "importance": 0.78,
+      "action": "keep_or_improve",
+      "helpfulness": 0.94,
+      "specificity": 0.92,
+      "trust": 0.95,
+      "citable": 0.93,
+      "answer_first": true,
+      "clear_next_step": true,
+      "title_fit": 0.95,
+      "meta_fit": 0.95,
+      "h1_fit": true
+    },
+    {
       "route": "/disclaimer",
       "page_type": "legal_or_policy",
       "intent": "informational",
@@ -311,22 +327,6 @@
     },
     {
       "route": "/dosha-pariharalu",
-      "page_type": "article_or_guide",
-      "intent": "informational",
-      "importance": 0.78,
-      "action": "keep_or_improve",
-      "helpfulness": 0.94,
-      "specificity": 0.92,
-      "trust": 0.95,
-      "citable": 0.93,
-      "answer_first": true,
-      "clear_next_step": true,
-      "title_fit": 0.95,
-      "meta_fit": 0.95,
-      "h1_fit": true
-    },
-    {
-      "route": "/dwadasa-rashi-rahasyalu",
       "page_type": "article_or_guide",
       "intent": "informational",
       "importance": 0.78,
