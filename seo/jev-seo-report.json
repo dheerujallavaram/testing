@@ -1,8 +1,8 @@
 {
-  "generatedAtUtc": "2026-11-24T02:56:52.093Z",
+  "generatedAtUtc": "2026-11-25T00:49:41.524Z",
   "siteUrl": "https://www.telugujyothisham.com",
-  "pagesAudited": 560,
-  "sitemapUrls": 203,
+  "pagesAudited": 561,
+  "sitemapUrls": 204,
   "overall": 100,
   "grade": "A",
   "categories": {
@@ -326,10 +326,10 @@
       "h1_fit": true
     },
     {
-      "route": "/disclaimer",
-      "page_type": "legal_or_policy",
+      "route": "/daily-panchangam-vishesham-2026-11-25",
+      "page_type": "article_or_guide",
       "intent": "informational",
-      "importance": 0.25,
+      "importance": 0.78,
       "action": "keep_or_improve",
       "helpfulness": 0.94,
       "specificity": 0.92,
