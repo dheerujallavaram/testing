@@ -1,9 +1,9 @@
 # Jev-SEO Evidence Audit Report — https://www.telugujyothisham.com
 
-- **Generated (UTC):** 2026-11-25T00:49:41.524Z
+- **Generated (UTC):** 2026-11-26T00:26:49.489Z
 - **Overall Score:** **100/100 (Grade A)**
-- **Static SSG Pages Audited:** 561
-- **Sitemap Indexable URLs:** 204
+- **Static SSG Pages Audited:** 562
+- **Sitemap Indexable URLs:** 205
 - **Deterministic Rules Passed:** **52/52**
 - **Actionable Findings (P1–P3):** 0
 
